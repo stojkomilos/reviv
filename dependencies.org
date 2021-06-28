@@ -1,0 +1,6 @@
+glfw:
+    Compile for =wayland=
+    You will also need the extra-cmake-modules-git
+    "cmake -DGLFW_USE_WAYLAND=ON ../glfw"
+
+    potencijalno arch linux paketi: /glfw/ /glfw-wayland/ /glfw-doc/
