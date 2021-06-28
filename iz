@@ -1,0 +1,13 @@
+Project directory: /home/milos/reviv2
+/home/milos/reviv2/src/renderer/vertex_array.cpp: In member function ‘void VertexArray::addVertexBuffer(VertexBuffer&)’:
+/home/milos/reviv2/src/renderer/vertex_array.cpp:27:25: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+   27 |                         (void*)vertexBuffer.layout.elements[i].offset);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Finished compiling
+Running:
+START
+Starting setting up perlin noise
+Completed setting up perlin noise
+Start reading of model res/models/sphere.obj
+ERROR READING MODEL, CAN'T OPEN FILE: res/models/sphere.obj
+/home/milos/reviv2/compile.sh: line 33:  4649 Segmentation fault      (core dumped) ./izlaz
