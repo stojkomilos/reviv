@@ -1,9 +1,15 @@
 #!/bin/bash
 
-g++ main.cpp \
-    vendor/glad.c \
-    -I/home/milos/reviv/src/include \
-    -L/home/milos/reviv/src/lib \
+
+#project_dir=$(pwd)
+project_dir=/home/milos/reviv2
+printf "Project directory: $project_dir\n"
+
+g++ "$project_dir"/src/main.cpp \
+    -I"$project_dir"/src/ \
+      "$project_dir"/dependencies/glad.c \
+    -I"$project_dir"/dependencies/include \
+    -L"$project_dir"/dependencies/lib \
     -l:libglfw3.a \
     -lGL \
     -lwayland-client \
@@ -16,12 +22,9 @@ if [ $? == 0 ]
 then
     printf "Finished compiling\nRunning:\n"
     ./izlaz
-    exit 0
 else
     printf "Compilation failed\n"
     exit 1
 fi
 
-#-L/home/milos/reviv/src/       - library directory
-#-l:libglfw3.a                  - include library
-
+exit 0
