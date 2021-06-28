@@ -1,5 +1,4 @@
-#include"reviv/renderer/render_manager.h"
-#include"reviv/renderer/opengl_assert.h"
+#include"render_manager.h"
 
 #ifdef NDEBUG
 #define __REVIV_RELEASE__ 1
@@ -57,15 +56,15 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1) {
 	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
 	std::cout << "Version: " << glGetString(GL_VERSION) << std::endl;
 
-	GLCall(glViewport(0, 0, windowWidth, windowHeight));
+	glViewport(0, 0, windowWidth, windowHeight);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE); ///pale se sticky mouse 
 	glfwSetCursorPosCallback(window, mouse_callback);
 
-	shaderTexture.setUp("res/shaders/texture.vs", "res/shaders/texture.fs");
-	shaderMonoChroma.setUp("res/shaders/mono_chroma.vs", "res/shaders/mono_chroma.fs");  
+	shaderTexture.setUp("../resources/shaders/texture.vs", "../resources/shaders/texture.fs");
+	shaderMonoChroma.setUp("../resources/shaders/mono_chroma.vs", "../resources/shaders/mono_chroma.fs");  
 	
 	std::vector<BufferElement> tempVboLayout1 = {
 		{ShaderDataType::Float3, "a_Position", false},
@@ -107,7 +106,7 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1) {
 	//}
 	
 	int nrAttributes;											 //samo jedna provere dal ima otprilike dovoljno atrib pointera
-	GLCall(glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes));
+	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
 	std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
 	assert(nrAttributes >= 10); 
 
@@ -120,12 +119,12 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1) {
 	cubeVbo.bind();
 	cubeVao.addVertexBuffer(cubeVbo);
 
-	GLCall(glEnable(GL_DEPTH_TEST));
-	GLCall(glEnable(GL_BLEND));
-	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	stanicTexture.setUp("res/textures/stene.png");
-	beloTexture.setUp("res/textures/belo.png");
+	stanicTexture.setUp("../resources/textures/stene.png");
+	beloTexture.setUp("../resources/textures/belo.png");
 
 	//---
 	sceneData = new SceneData;

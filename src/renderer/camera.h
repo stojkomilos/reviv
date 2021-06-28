@@ -1,7 +1,7 @@
 #pragma once
 
-#include "reviv/core/mat.h"
-#include "reviv/entity/entity.h"
+#include "core/mat.h"
+#include "entity/entity.h"
 
 class PerspectiveCamera
 {

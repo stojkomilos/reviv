@@ -5,10 +5,10 @@
 #include<iostream>
 #include<string>
 #include<cassert>
-#include <fstream>
-#include <sstream>
+#include<fstream>
+#include<sstream>
 
-#include"reviv/physics/physics_manager.h"
+#include"physics/physics_manager.h"
 
 class FileManager {
 public:

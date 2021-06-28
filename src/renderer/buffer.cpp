@@ -1,5 +1,4 @@
 #include "buffer.h"
-#include "reviv/renderer/opengl_assert.h"
 
 static unsigned int ShaderDataTypeSize(ShaderDataType type) {
 	switch (type)
@@ -101,12 +100,13 @@ VertexBuffer::~VertexBuffer()
 
 void VertexBuffer::bind()
 {
-	GLCall(glBindBuffer(GL_ARRAY_BUFFER, ID));
+	glBindBuffer(GL_ARRAY_BUFFER, ID);
 }
 
 void VertexBuffer::setUp(void* vertices, unsigned int size, unsigned char typeOfDraw1)
 {	
 
+    const int INT_MAX = 2147483646; //quick change
 	assert(GL_STATIC_DRAW < INT_MAX - 1 and GL_STATIC_DRAW > -INT_MAX + 1);
 	assert(GL_DYNAMIC_DRAW < INT_MAX - 1 and GL_DYNAMIC_DRAW > -INT_MAX + 1);
 	if (typeOfDraw1 == 0) {
@@ -120,7 +120,7 @@ void VertexBuffer::setUp(void* vertices, unsigned int size, unsigned char typeOf
 		assert(false);
 	}
 	count = size / layout.stride; ///prvo stavi layout vbo, pa onda setUp
-	GLCall(glGenBuffers(1, &ID));
-	GLCall(glBindBuffer(GL_ARRAY_BUFFER, ID));
-	GLCall(glBufferData(GL_ARRAY_BUFFER, size, vertices, typeOfDraw));
+	glGenBuffers(1, &ID);
+	glBindBuffer(GL_ARRAY_BUFFER, ID);
+	glBufferData(GL_ARRAY_BUFFER, size, vertices, typeOfDraw);
 }

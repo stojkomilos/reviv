@@ -1,5 +1,4 @@
 #include "framebuffer.h"
-#include "opengl_assert.h"
 //
 //Framebuffer::Framebuffer()
 //{

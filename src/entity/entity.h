@@ -1,5 +1,7 @@
 #pragma once
-#include "reviv/core/mat.h"
+
+#include "core/mat.h"
+
 class Entity{
 public:
     Entity();

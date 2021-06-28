@@ -1,12 +1,15 @@
 #pragma once
-#include"reviv/core/mat.h"
-#include"reviv/entity/player.h"
-#include"reviv/core/memory_manager.h"
-#include"reviv/core/file_manager.h"
-#include"reviv/core/random_manager.h"
-#include"reviv/core/memory_manager.h"
+
 #include<assert.h>
 #include<cmath>
+
+#include"core/mat.h"
+#include"entity/player.h"
+#include"core/memory_manager.h"
+#include"core/file_manager.h"
+#include"core/random_manager.h"
+#include"core/memory_manager.h"
+
 class PhysicsManager {
 public:
     PhysicsManager();

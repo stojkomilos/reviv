@@ -3,7 +3,8 @@
 #include<iostream>
 #include<fstream> 
 #include<vector>
-#include"reviv/core/mat.h"
+#include"core/mat.h"
+
 struct TripletOfInts {
 	int x, y, z;
 };

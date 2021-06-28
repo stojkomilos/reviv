@@ -1,10 +1,12 @@
 #pragma once
+
 #include<stdlib.h>
 #include<cmath>
 #include<cassert>
-#include"reviv/core/mat.h"
-#include"reviv/physics/physics_manager.h"
-#include"reviv/core/memory_manager.h"
+
+#include"core/mat.h"
+#include"physics/physics_manager.h"
+#include"core/memory_manager.h"
 
 class RandomManager {
 public:

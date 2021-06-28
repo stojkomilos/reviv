@@ -1,21 +1,21 @@
 #pragma once
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <stb_image/stb_image.h>
+#include<glad/glad.h>
+#include<GLFW/glfw3.h>
+#include<stb_image/stb_image.h>
 
-#include "reviv/core/mat.h"
-#include "reviv/renderer/shader.h"
-#include "reviv/renderer/shader.h"
-#include "reviv/physics/physics_manager.h"
-#include "reviv/renderer/modelloader.h"
-#include "reviv/physics/physics_sim.h"
-#include "reviv/renderer/buffer.h"
-#include "reviv/renderer/vertex_array.h"
-#include "reviv/renderer/render_command.h"
-#include "reviv/renderer/camera.h"
-#include "reviv/renderer/texture.h"
-#include "reviv/renderer/framebuffer.h"
+#include"core/mat.h"
+#include"renderer/shader.h"
+#include"renderer/shader.h"
+#include"physics/physics_manager.h"
+#include"renderer/modelloader.h"
+#include"physics/physics_sim.h"
+#include"renderer/buffer.h"
+#include"renderer/vertex_array.h"
+#include"renderer/render_command.h"
+#include"renderer/camera.h"
+#include"renderer/texture.h"
+#include"renderer/framebuffer.h"
 
 class RenderManager {
 public:

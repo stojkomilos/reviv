@@ -1,6 +1,4 @@
 #include"shader.h"
-#include"reviv/renderer/opengl_assert.h"
-
 
 Shader::Shader() { 
     ID = 0;
@@ -48,14 +46,14 @@ void Shader::setUp(const char* vertexPath, const char* fragmentPath) { //, const
 
 
     unsigned int vertex, fragment;
-    GLCall(vertex = glCreateShader(GL_VERTEX_SHADER));
-    GLCall(glShaderSource(vertex, 1, &vShaderCode, NULL));
-    GLCall(glCompileShader(vertex));
+    vertex = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertex, 1, &vShaderCode, NULL);
+    glCompileShader(vertex);
     checkCompileErrors(vertex, "VERTEX");
 
-    GLCall(fragment = glCreateShader(GL_FRAGMENT_SHADER));
-    GLCall(glShaderSource(fragment, 1, &fShaderCode, NULL));
-    GLCall(glCompileShader(fragment));
+    fragment = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragment, 1, &fShaderCode, NULL);
+    glCompileShader(fragment);
     checkCompileErrors(fragment, "FRAGMENT");
 
     /*unsigned int geometry;
@@ -67,37 +65,37 @@ void Shader::setUp(const char* vertexPath, const char* fragmentPath) { //, const
         checkCompileErrors(geometry, "GEOMETRY");
     }*/
 
-    GLCall(ID = glCreateProgram());
-    GLCall(glAttachShader(ID, vertex));
-    GLCall(glAttachShader(ID, fragment));
+    ID = glCreateProgram();
+    glAttachShader(ID, vertex);
+    glAttachShader(ID, fragment);
     //if (geometryPath != nullptr)
     //    glAttachShader(ID, geometry);
-    GLCall(glLinkProgram(ID));
+    glLinkProgram(ID);
     checkCompileErrors(ID, "PROGRAM");
 
-    GLCall(glDeleteShader(vertex));
-    GLCall(glDeleteShader(fragment));
+    glDeleteShader(vertex);
+    glDeleteShader(fragment);
   //  if (geometryPath != nullptr)
   //      glDeleteShader(geometry);
 }
 void Shader::bind() {
-    GLCall(glUseProgram(ID));
+    glUseProgram(ID);
 }
 
 void Shader::checkCompileErrors(GLuint shader, std::string type) {
     GLint success;
     GLchar infoLog[1024];
     if (type != "PROGRAM") {
-        GLCall(glGetShaderiv(shader, GL_COMPILE_STATUS, &success));
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
         if (!success) {
-            GLCall(glGetShaderInfoLog(shader, 1024, NULL, infoLog));
+            glGetShaderInfoLog(shader, 1024, NULL, infoLog);
             std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
         }
     }
     else {
-        GLCall(glGetProgramiv(shader, GL_LINK_STATUS, &success));
+        glGetProgramiv(shader, GL_LINK_STATUS, &success);
         if (!success) {
-            GLCall(glGetProgramInfoLog(shader, 1024, NULL, infoLog));
+            glGetProgramInfoLog(shader, 1024, NULL, infoLog);
             std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
         }
     }
@@ -105,23 +103,23 @@ void Shader::checkCompileErrors(GLuint shader, std::string type) {
 
 void Shader::uploadUniformMat4(const std::string& name, mat::mat4& matrix)
 {
-    GLCall(unsigned int location = glGetUniformLocation(ID, name.c_str()));
-    GLCall(glUniformMatrix4fv(location, 1, GL_FALSE, (float*)&matrix));
+    unsigned int location = glGetUniformLocation(ID, name.c_str());
+    glUniformMatrix4fv(location, 1, GL_FALSE, (float*)&matrix);
 }
 
 void Shader::uploadUniform3f(const std::string& name, mat::vec3 a)
 {
-    GLCall(unsigned int loc = glGetUniformLocation(ID, name.c_str()));
-    GLCall(glUniform3f(loc, a.x, a.y, a.z));
+    unsigned int loc = glGetUniformLocation(ID, name.c_str());
+    glUniform3f(loc, a.x, a.y, a.z);
 }
 
 void Shader::uploadUniform4f(const std::string& name, mat::vec4 a)
 {
-    GLCall(unsigned int loc = glGetUniformLocation(ID, name.c_str()));
-    GLCall(glUniform4f(loc, a.x, a.y, a.z, a.w));
+    unsigned int loc = glGetUniformLocation(ID, name.c_str());
+    glUniform4f(loc, a.x, a.y, a.z, a.w);
 }
 
 void Shader::uploadUniform1i(const std::string& name, int a) {
-    GLCall(unsigned int loc = glGetUniformLocation(ID, name.c_str()));
-    GLCall(glUniform1i(loc, a));
+    unsigned int loc = glGetUniformLocation(ID, name.c_str());
+    glUniform1i(loc, a);
 }

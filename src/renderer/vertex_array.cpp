@@ -8,12 +8,12 @@ VertexArray::~VertexArray()
 	std::cout << "dodaj destruktor za vao---\n";
 }
 void VertexArray::setUp() {
-	GLCall(glGenVertexArrays(1, &ID));
-	GLCall(glBindVertexArray(ID));
+	glGenVertexArrays(1, &ID);
+	glBindVertexArray(ID);
 }
 void const VertexArray::bind()
 {
-	GLCall(glBindVertexArray(ID));
+	glBindVertexArray(ID);
 }
 void VertexArray::addVertexBuffer(VertexBuffer& vertexBuffer)
 {
@@ -26,7 +26,7 @@ void VertexArray::addVertexBuffer(VertexBuffer& vertexBuffer)
 			vertexBuffer.layout.stride,
 			(void*)vertexBuffer.layout.elements[i].offset);
 
-		GLCall(glEnableVertexAttribArray(i));
+		glEnableVertexAttribArray(i);
 	}
 
 	assert(nrOfTriangles == 0); //treba dodati nacin da vao skonta kolko trouglova ima ako budes dodavao vise vbo za jedan vao, tipa instanced rendereding

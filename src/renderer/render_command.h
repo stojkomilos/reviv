@@ -1,7 +1,7 @@
 #pragma once
 
-#include "vertex_array.h"
-#include "reviv/core/mat.h"
+#include"vertex_array.h"
+#include"core/mat.h"
 
 class RenderCommand
 {

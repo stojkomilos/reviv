@@ -1,7 +1,7 @@
 #pragma once
 
-#include"reviv/entity/entity.h"
-#include"reviv/entity/player.h"
+#include"entity/entity.h"
+#include"entity/player.h"
 
 class EntityManager {
 	Player player;

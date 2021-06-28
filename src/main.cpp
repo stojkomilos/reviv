@@ -4,6 +4,7 @@
 #include<time.h>
 #include<chrono>
 #include<assert.h>
+#include<unistd.h>
 
 #include <reviv.h>
 
@@ -29,8 +30,8 @@ int main(){ ///WTF zasto je fakin levo pozitivna Z(mozda ok)
 	gRandomManager.setUpPerlin(gMapSize); /// moze kroz 5, ili 10, zavisi od generacije
 	std::cout << "Completed setting up perlin noise\n"; 
 
-	sphere.LoadModel("res/models/sphere.obj");
-	cube.LoadModel("res/models/cube.obj");
+	sphere.LoadModel("../resources/models/sphere.obj");
+	cube.LoadModel("../resources/models/cube.obj");
 	gPhysicsManager.startUp(gMapSize, 50, gMapSize, 9.81f);
 	if (gRenderManager.startUp(1280, 720) == -1) {
 		assert(false);
@@ -46,11 +47,11 @@ int main(){ ///WTF zasto je fakin levo pozitivna Z(mozda ok)
 	gPhysicsManager.player.speed = 5;
 	gRenderManager.renderHitbox = false;
 
+    int prolazMs = 0;
 	while(!glfwWindowShouldClose(gRenderManager.window)){
 
-
 		processInput(gRenderManager.window);
-		
+
 		gPointLightPosition = gPhysicsManager.player.position;
 		gPointLightPosition.x += 5 * sin(glfwGetTime() * 2.4);
 		gPointLightPosition.y += 0 ;
@@ -59,7 +60,9 @@ int main(){ ///WTF zasto je fakin levo pozitivna Z(mozda ok)
 		gPhysicsManager.deltat = ((float)glfwGetTime() - time0);
 		time0 = (float)glfwGetTime();
 		if (1.0 / 75.0 - gPhysicsManager.deltat > 0) {
-			Sleep( (DWORD) ((1.f / 75.f - gPhysicsManager.deltat) * 1000.f) );
+            printf("main.cpp, red : 63, linux prelaz namesti usleep! takodje DWORD ne valja\n");
+			//usleep( (DWORD) ((1.f / 75.f - gPhysicsManager.deltat) * 1000.f) );
+            usleep(100);
 			gPhysicsManager.deltat = 1.f / 75.f;
 		}
 		if (gPhysicsManager.deltat > 0.7f)
@@ -84,6 +87,7 @@ int main(){ ///WTF zasto je fakin levo pozitivna Z(mozda ok)
 		gPhysicsManager.doShit();
 		gRenderManager.render();
 		gGameLoopCounter++;
+
 	}
 	
 	gRenderManager.shutDown();

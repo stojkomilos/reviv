@@ -1,14 +1,14 @@
 #pragma once
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
+#include<string>
+#include<fstream>
+#include<sstream>
+#include<iostream>
 #include<assert.h>
 
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
 
-#include"reviv/core/mat.h"
+#include"core/mat.h"
 
 bool GLLogCall();
 void GLClearError();

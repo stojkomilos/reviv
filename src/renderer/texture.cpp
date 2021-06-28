@@ -1,4 +1,5 @@
 #include "texture.h"
+
 unsigned int Texture2D::getHeight()
 {
 	return height;
@@ -40,13 +41,13 @@ void Texture2D::setUp(const std::string& path)
 	}
 
 
-	GLCall(glCreateTextures(GL_TEXTURE_2D, 1, &ID));
-	GLCall(glTextureStorage2D(ID, 1, internalFormat, width, height));
+	glCreateTextures(GL_TEXTURE_2D, 1, &ID);
+	glTextureStorage2D(ID, 1, internalFormat, width, height);
 
-	GLCall(glTextureParameteri(ID, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-	GLCall(glTextureParameteri(ID, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+	glTextureParameteri(ID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTextureParameteri(ID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	GLCall(glTextureSubImage2D(ID, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, data));
+	glTextureSubImage2D(ID, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, data);
 
 	stbi_image_free(data);
 
@@ -56,9 +57,9 @@ Texture2D::Texture2D()
 }
 Texture2D::~Texture2D()
 {
-	GLCall(glDeleteTextures(1, &ID));
+	glDeleteTextures(1, &ID);
 }
 void Texture2D::bind(unsigned int slot)
 {
-	GLCall(glBindTextureUnit(slot, ID));
+	glBindTextureUnit(slot, ID);
 }

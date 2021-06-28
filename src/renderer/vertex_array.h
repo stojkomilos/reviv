@@ -3,7 +3,6 @@
 #include<vector>
 
 #include"buffer.h"
-#include"opengl_assert.h"
 
 class VertexArray {
 public:

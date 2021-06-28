@@ -1,7 +1,7 @@
 #pragma once
 
-#include"reviv/core/mat.h"
-#include"reviv/physics/physics_manager.h"
+#include"core/mat.h"
+#include"physics/physics_manager.h"
 
 class SimulationManager {
 public:
