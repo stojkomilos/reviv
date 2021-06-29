@@ -5,6 +5,7 @@
 #include<chrono>
 #include<assert.h>
 #include<unistd.h>
+#include<sstream>
 
 #include <reviv.h>
 
@@ -30,8 +31,15 @@ int main(){ ///WTF zasto je fakin levo pozitivna Z(mozda ok)
 	gRandomManager.setUpPerlin(gMapSize); /// moze kroz 5, ili 10, zavisi od generacije
 	std::cout << "Completed setting up perlin noise\n"; 
 
+    
+    /// -> nov deo 2021
+    //std::string proj_dir  = "/home/milos/reviv2/";
+    //std::string sphereStr = "resources/models/sphere.obj";
+    //std::string cubeStr   = "resources/models/cube.obj";
 	sphere.LoadModel("../resources/models/sphere.obj");
-	cube.LoadModel("../resources/models/cube.obj");
+	cube.LoadModel  ("../resources/models/sphere.obj");
+    /// -> kraj novog dela 2021
+
 	gPhysicsManager.startUp(gMapSize, 50, gMapSize, 9.81f);
 	if (gRenderManager.startUp(1280, 720) == -1) {
 		assert(false);

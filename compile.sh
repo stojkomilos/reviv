@@ -4,6 +4,7 @@
 #project_dir=$(pwd)
 project_dir=/home/milos/reviv2
 printf "Project directory: $project_dir\n"
+mkdir "$project_dir"/bin
 
 g++ "$project_dir"/src/main.cpp \
     -I"$project_dir"/src/ \
@@ -20,12 +21,14 @@ g++ "$project_dir"/src/main.cpp \
     -lwayland-client \
     -lpthread -ldl \
     -o izlaz
+    #-o "$project_dir"/izlaz
 
 #-lX11 -lXrandr -lXi \
 
 if [ $? == 0 ]
 then
     printf "Finished compiling\nRunning:\n"
+    #cd "$project_dir"
     ./izlaz
 else
     printf "Compilation failed\n"
