@@ -145,7 +145,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=hello
+CMAKE_PROJECT_NAME:STATIC=reviv
 
 //Value Computed by CMake
 CMAKE_PROJECT_VERSION:STATIC=1.0
@@ -225,10 +225,10 @@ CMAKE_STRIP:FILEPATH=/usr/bin/strip
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
 //Value Computed by CMake
-hello_BINARY_DIR:STATIC=/home/milos/reviv2/build
+reviv_BINARY_DIR:STATIC=/home/milos/reviv2/build
 
 //Value Computed by CMake
-hello_SOURCE_DIR:STATIC=/home/milos/reviv2
+reviv_SOURCE_DIR:STATIC=/home/milos/reviv2
 
 
 ########################

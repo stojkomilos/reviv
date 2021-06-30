@@ -63,7 +63,7 @@ CMAKE_BINARY_DIR = /home/milos/reviv2/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/hello.dir/all
+all: CMakeFiles/reviv.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -71,34 +71,34 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/hello.dir/clean
+clean: CMakeFiles/reviv.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/hello.dir
+# Target rules for target CMakeFiles/reviv.dir
 
 # All Build rule for target.
-CMakeFiles/hello.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello.dir/build.make CMakeFiles/hello.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello.dir/build.make CMakeFiles/hello.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/milos/reviv2/build/CMakeFiles --progress-num=1,2 "Built target hello"
-.PHONY : CMakeFiles/hello.dir/all
+CMakeFiles/reviv.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/milos/reviv2/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22 "Built target reviv"
+.PHONY : CMakeFiles/reviv.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/hello.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/milos/reviv2/build/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/hello.dir/all
+CMakeFiles/reviv.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/milos/reviv2/build/CMakeFiles 22
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/reviv.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/milos/reviv2/build/CMakeFiles 0
-.PHONY : CMakeFiles/hello.dir/rule
+.PHONY : CMakeFiles/reviv.dir/rule
 
 # Convenience name for target.
-hello: CMakeFiles/hello.dir/rule
-.PHONY : hello
+reviv: CMakeFiles/reviv.dir/rule
+.PHONY : reviv
 
 # clean rule for target.
-CMakeFiles/hello.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello.dir/build.make CMakeFiles/hello.dir/clean
-.PHONY : CMakeFiles/hello.dir/clean
+CMakeFiles/reviv.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/clean
+.PHONY : CMakeFiles/reviv.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

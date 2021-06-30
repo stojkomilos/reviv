@@ -117,24 +117,240 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named hello
+# Target rules for targets named reviv
 
 # Build rule for target.
-hello: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 hello
-.PHONY : hello
+reviv: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 reviv
+.PHONY : reviv
 
 # fast build rule for target.
-hello/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello.dir/build.make CMakeFiles/hello.dir/build
-.PHONY : hello/fast
+reviv/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/build
+.PHONY : reviv/fast
+
+dependencies/glad.o: dependencies/glad.c.o
+.PHONY : dependencies/glad.o
+
+# target to build an object file
+dependencies/glad.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/dependencies/glad.c.o
+.PHONY : dependencies/glad.c.o
+
+dependencies/glad.i: dependencies/glad.c.i
+.PHONY : dependencies/glad.i
+
+# target to preprocess a source file
+dependencies/glad.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/dependencies/glad.c.i
+.PHONY : dependencies/glad.c.i
+
+dependencies/glad.s: dependencies/glad.c.s
+.PHONY : dependencies/glad.s
+
+# target to generate assembly for a file
+dependencies/glad.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/dependencies/glad.c.s
+.PHONY : dependencies/glad.c.s
+
+dependencies/stb_image.o: dependencies/stb_image.cpp.o
+.PHONY : dependencies/stb_image.o
+
+# target to build an object file
+dependencies/stb_image.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/dependencies/stb_image.cpp.o
+.PHONY : dependencies/stb_image.cpp.o
+
+dependencies/stb_image.i: dependencies/stb_image.cpp.i
+.PHONY : dependencies/stb_image.i
+
+# target to preprocess a source file
+dependencies/stb_image.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/dependencies/stb_image.cpp.i
+.PHONY : dependencies/stb_image.cpp.i
+
+dependencies/stb_image.s: dependencies/stb_image.cpp.s
+.PHONY : dependencies/stb_image.s
+
+# target to generate assembly for a file
+dependencies/stb_image.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/dependencies/stb_image.cpp.s
+.PHONY : dependencies/stb_image.cpp.s
+
+src/core/file_manager.o: src/core/file_manager.cpp.o
+.PHONY : src/core/file_manager.o
+
+# target to build an object file
+src/core/file_manager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/core/file_manager.cpp.o
+.PHONY : src/core/file_manager.cpp.o
+
+src/core/file_manager.i: src/core/file_manager.cpp.i
+.PHONY : src/core/file_manager.i
+
+# target to preprocess a source file
+src/core/file_manager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/core/file_manager.cpp.i
+.PHONY : src/core/file_manager.cpp.i
+
+src/core/file_manager.s: src/core/file_manager.cpp.s
+.PHONY : src/core/file_manager.s
+
+# target to generate assembly for a file
+src/core/file_manager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/core/file_manager.cpp.s
+.PHONY : src/core/file_manager.cpp.s
+
+src/core/hid.o: src/core/hid.cpp.o
+.PHONY : src/core/hid.o
+
+# target to build an object file
+src/core/hid.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/core/hid.cpp.o
+.PHONY : src/core/hid.cpp.o
+
+src/core/hid.i: src/core/hid.cpp.i
+.PHONY : src/core/hid.i
+
+# target to preprocess a source file
+src/core/hid.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/core/hid.cpp.i
+.PHONY : src/core/hid.cpp.i
+
+src/core/hid.s: src/core/hid.cpp.s
+.PHONY : src/core/hid.s
+
+# target to generate assembly for a file
+src/core/hid.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/core/hid.cpp.s
+.PHONY : src/core/hid.cpp.s
+
+src/core/mat.o: src/core/mat.cpp.o
+.PHONY : src/core/mat.o
+
+# target to build an object file
+src/core/mat.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/core/mat.cpp.o
+.PHONY : src/core/mat.cpp.o
+
+src/core/mat.i: src/core/mat.cpp.i
+.PHONY : src/core/mat.i
+
+# target to preprocess a source file
+src/core/mat.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/core/mat.cpp.i
+.PHONY : src/core/mat.cpp.i
+
+src/core/mat.s: src/core/mat.cpp.s
+.PHONY : src/core/mat.s
+
+# target to generate assembly for a file
+src/core/mat.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/core/mat.cpp.s
+.PHONY : src/core/mat.cpp.s
+
+src/core/random_manager.o: src/core/random_manager.cpp.o
+.PHONY : src/core/random_manager.o
+
+# target to build an object file
+src/core/random_manager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/core/random_manager.cpp.o
+.PHONY : src/core/random_manager.cpp.o
+
+src/core/random_manager.i: src/core/random_manager.cpp.i
+.PHONY : src/core/random_manager.i
+
+# target to preprocess a source file
+src/core/random_manager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/core/random_manager.cpp.i
+.PHONY : src/core/random_manager.cpp.i
+
+src/core/random_manager.s: src/core/random_manager.cpp.s
+.PHONY : src/core/random_manager.s
+
+# target to generate assembly for a file
+src/core/random_manager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/core/random_manager.cpp.s
+.PHONY : src/core/random_manager.cpp.s
+
+src/entity/entity.o: src/entity/entity.cpp.o
+.PHONY : src/entity/entity.o
+
+# target to build an object file
+src/entity/entity.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/entity/entity.cpp.o
+.PHONY : src/entity/entity.cpp.o
+
+src/entity/entity.i: src/entity/entity.cpp.i
+.PHONY : src/entity/entity.i
+
+# target to preprocess a source file
+src/entity/entity.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/entity/entity.cpp.i
+.PHONY : src/entity/entity.cpp.i
+
+src/entity/entity.s: src/entity/entity.cpp.s
+.PHONY : src/entity/entity.s
+
+# target to generate assembly for a file
+src/entity/entity.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/entity/entity.cpp.s
+.PHONY : src/entity/entity.cpp.s
+
+src/entity/entity_manager.o: src/entity/entity_manager.cpp.o
+.PHONY : src/entity/entity_manager.o
+
+# target to build an object file
+src/entity/entity_manager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/entity/entity_manager.cpp.o
+.PHONY : src/entity/entity_manager.cpp.o
+
+src/entity/entity_manager.i: src/entity/entity_manager.cpp.i
+.PHONY : src/entity/entity_manager.i
+
+# target to preprocess a source file
+src/entity/entity_manager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/entity/entity_manager.cpp.i
+.PHONY : src/entity/entity_manager.cpp.i
+
+src/entity/entity_manager.s: src/entity/entity_manager.cpp.s
+.PHONY : src/entity/entity_manager.s
+
+# target to generate assembly for a file
+src/entity/entity_manager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/entity/entity_manager.cpp.s
+.PHONY : src/entity/entity_manager.cpp.s
+
+src/entity/player.o: src/entity/player.cpp.o
+.PHONY : src/entity/player.o
+
+# target to build an object file
+src/entity/player.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/entity/player.cpp.o
+.PHONY : src/entity/player.cpp.o
+
+src/entity/player.i: src/entity/player.cpp.i
+.PHONY : src/entity/player.i
+
+# target to preprocess a source file
+src/entity/player.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/entity/player.cpp.i
+.PHONY : src/entity/player.cpp.i
+
+src/entity/player.s: src/entity/player.cpp.s
+.PHONY : src/entity/player.s
+
+# target to generate assembly for a file
+src/entity/player.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/entity/player.cpp.s
+.PHONY : src/entity/player.cpp.s
 
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
 # target to build an object file
 src/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello.dir/build.make CMakeFiles/hello.dir/src/main.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/main.cpp.o
 .PHONY : src/main.cpp.o
 
 src/main.i: src/main.cpp.i
@@ -142,7 +358,7 @@ src/main.i: src/main.cpp.i
 
 # target to preprocess a source file
 src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello.dir/build.make CMakeFiles/hello.dir/src/main.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/main.cpp.i
 .PHONY : src/main.cpp.i
 
 src/main.s: src/main.cpp.s
@@ -150,8 +366,272 @@ src/main.s: src/main.cpp.s
 
 # target to generate assembly for a file
 src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello.dir/build.make CMakeFiles/hello.dir/src/main.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
+
+src/physics/physics_manager.o: src/physics/physics_manager.cpp.o
+.PHONY : src/physics/physics_manager.o
+
+# target to build an object file
+src/physics/physics_manager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/physics/physics_manager.cpp.o
+.PHONY : src/physics/physics_manager.cpp.o
+
+src/physics/physics_manager.i: src/physics/physics_manager.cpp.i
+.PHONY : src/physics/physics_manager.i
+
+# target to preprocess a source file
+src/physics/physics_manager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/physics/physics_manager.cpp.i
+.PHONY : src/physics/physics_manager.cpp.i
+
+src/physics/physics_manager.s: src/physics/physics_manager.cpp.s
+.PHONY : src/physics/physics_manager.s
+
+# target to generate assembly for a file
+src/physics/physics_manager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/physics/physics_manager.cpp.s
+.PHONY : src/physics/physics_manager.cpp.s
+
+src/physics/physics_sim.o: src/physics/physics_sim.cpp.o
+.PHONY : src/physics/physics_sim.o
+
+# target to build an object file
+src/physics/physics_sim.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/physics/physics_sim.cpp.o
+.PHONY : src/physics/physics_sim.cpp.o
+
+src/physics/physics_sim.i: src/physics/physics_sim.cpp.i
+.PHONY : src/physics/physics_sim.i
+
+# target to preprocess a source file
+src/physics/physics_sim.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/physics/physics_sim.cpp.i
+.PHONY : src/physics/physics_sim.cpp.i
+
+src/physics/physics_sim.s: src/physics/physics_sim.cpp.s
+.PHONY : src/physics/physics_sim.s
+
+# target to generate assembly for a file
+src/physics/physics_sim.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/physics/physics_sim.cpp.s
+.PHONY : src/physics/physics_sim.cpp.s
+
+src/renderer/buffer.o: src/renderer/buffer.cpp.o
+.PHONY : src/renderer/buffer.o
+
+# target to build an object file
+src/renderer/buffer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/buffer.cpp.o
+.PHONY : src/renderer/buffer.cpp.o
+
+src/renderer/buffer.i: src/renderer/buffer.cpp.i
+.PHONY : src/renderer/buffer.i
+
+# target to preprocess a source file
+src/renderer/buffer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/buffer.cpp.i
+.PHONY : src/renderer/buffer.cpp.i
+
+src/renderer/buffer.s: src/renderer/buffer.cpp.s
+.PHONY : src/renderer/buffer.s
+
+# target to generate assembly for a file
+src/renderer/buffer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/buffer.cpp.s
+.PHONY : src/renderer/buffer.cpp.s
+
+src/renderer/camera.o: src/renderer/camera.cpp.o
+.PHONY : src/renderer/camera.o
+
+# target to build an object file
+src/renderer/camera.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/camera.cpp.o
+.PHONY : src/renderer/camera.cpp.o
+
+src/renderer/camera.i: src/renderer/camera.cpp.i
+.PHONY : src/renderer/camera.i
+
+# target to preprocess a source file
+src/renderer/camera.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/camera.cpp.i
+.PHONY : src/renderer/camera.cpp.i
+
+src/renderer/camera.s: src/renderer/camera.cpp.s
+.PHONY : src/renderer/camera.s
+
+# target to generate assembly for a file
+src/renderer/camera.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/camera.cpp.s
+.PHONY : src/renderer/camera.cpp.s
+
+src/renderer/framebuffer.o: src/renderer/framebuffer.cpp.o
+.PHONY : src/renderer/framebuffer.o
+
+# target to build an object file
+src/renderer/framebuffer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/framebuffer.cpp.o
+.PHONY : src/renderer/framebuffer.cpp.o
+
+src/renderer/framebuffer.i: src/renderer/framebuffer.cpp.i
+.PHONY : src/renderer/framebuffer.i
+
+# target to preprocess a source file
+src/renderer/framebuffer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/framebuffer.cpp.i
+.PHONY : src/renderer/framebuffer.cpp.i
+
+src/renderer/framebuffer.s: src/renderer/framebuffer.cpp.s
+.PHONY : src/renderer/framebuffer.s
+
+# target to generate assembly for a file
+src/renderer/framebuffer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/framebuffer.cpp.s
+.PHONY : src/renderer/framebuffer.cpp.s
+
+src/renderer/modelloader.o: src/renderer/modelloader.cpp.o
+.PHONY : src/renderer/modelloader.o
+
+# target to build an object file
+src/renderer/modelloader.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/modelloader.cpp.o
+.PHONY : src/renderer/modelloader.cpp.o
+
+src/renderer/modelloader.i: src/renderer/modelloader.cpp.i
+.PHONY : src/renderer/modelloader.i
+
+# target to preprocess a source file
+src/renderer/modelloader.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/modelloader.cpp.i
+.PHONY : src/renderer/modelloader.cpp.i
+
+src/renderer/modelloader.s: src/renderer/modelloader.cpp.s
+.PHONY : src/renderer/modelloader.s
+
+# target to generate assembly for a file
+src/renderer/modelloader.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/modelloader.cpp.s
+.PHONY : src/renderer/modelloader.cpp.s
+
+src/renderer/render_command.o: src/renderer/render_command.cpp.o
+.PHONY : src/renderer/render_command.o
+
+# target to build an object file
+src/renderer/render_command.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/render_command.cpp.o
+.PHONY : src/renderer/render_command.cpp.o
+
+src/renderer/render_command.i: src/renderer/render_command.cpp.i
+.PHONY : src/renderer/render_command.i
+
+# target to preprocess a source file
+src/renderer/render_command.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/render_command.cpp.i
+.PHONY : src/renderer/render_command.cpp.i
+
+src/renderer/render_command.s: src/renderer/render_command.cpp.s
+.PHONY : src/renderer/render_command.s
+
+# target to generate assembly for a file
+src/renderer/render_command.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/render_command.cpp.s
+.PHONY : src/renderer/render_command.cpp.s
+
+src/renderer/render_manager.o: src/renderer/render_manager.cpp.o
+.PHONY : src/renderer/render_manager.o
+
+# target to build an object file
+src/renderer/render_manager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/render_manager.cpp.o
+.PHONY : src/renderer/render_manager.cpp.o
+
+src/renderer/render_manager.i: src/renderer/render_manager.cpp.i
+.PHONY : src/renderer/render_manager.i
+
+# target to preprocess a source file
+src/renderer/render_manager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/render_manager.cpp.i
+.PHONY : src/renderer/render_manager.cpp.i
+
+src/renderer/render_manager.s: src/renderer/render_manager.cpp.s
+.PHONY : src/renderer/render_manager.s
+
+# target to generate assembly for a file
+src/renderer/render_manager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/render_manager.cpp.s
+.PHONY : src/renderer/render_manager.cpp.s
+
+src/renderer/shader.o: src/renderer/shader.cpp.o
+.PHONY : src/renderer/shader.o
+
+# target to build an object file
+src/renderer/shader.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/shader.cpp.o
+.PHONY : src/renderer/shader.cpp.o
+
+src/renderer/shader.i: src/renderer/shader.cpp.i
+.PHONY : src/renderer/shader.i
+
+# target to preprocess a source file
+src/renderer/shader.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/shader.cpp.i
+.PHONY : src/renderer/shader.cpp.i
+
+src/renderer/shader.s: src/renderer/shader.cpp.s
+.PHONY : src/renderer/shader.s
+
+# target to generate assembly for a file
+src/renderer/shader.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/shader.cpp.s
+.PHONY : src/renderer/shader.cpp.s
+
+src/renderer/texture.o: src/renderer/texture.cpp.o
+.PHONY : src/renderer/texture.o
+
+# target to build an object file
+src/renderer/texture.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/texture.cpp.o
+.PHONY : src/renderer/texture.cpp.o
+
+src/renderer/texture.i: src/renderer/texture.cpp.i
+.PHONY : src/renderer/texture.i
+
+# target to preprocess a source file
+src/renderer/texture.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/texture.cpp.i
+.PHONY : src/renderer/texture.cpp.i
+
+src/renderer/texture.s: src/renderer/texture.cpp.s
+.PHONY : src/renderer/texture.s
+
+# target to generate assembly for a file
+src/renderer/texture.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/texture.cpp.s
+.PHONY : src/renderer/texture.cpp.s
+
+src/renderer/vertex_array.o: src/renderer/vertex_array.cpp.o
+.PHONY : src/renderer/vertex_array.o
+
+# target to build an object file
+src/renderer/vertex_array.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/vertex_array.cpp.o
+.PHONY : src/renderer/vertex_array.cpp.o
+
+src/renderer/vertex_array.i: src/renderer/vertex_array.cpp.i
+.PHONY : src/renderer/vertex_array.i
+
+# target to preprocess a source file
+src/renderer/vertex_array.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/vertex_array.cpp.i
+.PHONY : src/renderer/vertex_array.cpp.i
+
+src/renderer/vertex_array.s: src/renderer/vertex_array.cpp.s
+.PHONY : src/renderer/vertex_array.s
+
+# target to generate assembly for a file
+src/renderer/vertex_array.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/reviv.dir/build.make CMakeFiles/reviv.dir/src/renderer/vertex_array.cpp.s
+.PHONY : src/renderer/vertex_array.cpp.s
 
 # Help Target
 help:
@@ -161,10 +641,70 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... hello"
+	@echo "... reviv"
+	@echo "... dependencies/glad.o"
+	@echo "... dependencies/glad.i"
+	@echo "... dependencies/glad.s"
+	@echo "... dependencies/stb_image.o"
+	@echo "... dependencies/stb_image.i"
+	@echo "... dependencies/stb_image.s"
+	@echo "... src/core/file_manager.o"
+	@echo "... src/core/file_manager.i"
+	@echo "... src/core/file_manager.s"
+	@echo "... src/core/hid.o"
+	@echo "... src/core/hid.i"
+	@echo "... src/core/hid.s"
+	@echo "... src/core/mat.o"
+	@echo "... src/core/mat.i"
+	@echo "... src/core/mat.s"
+	@echo "... src/core/random_manager.o"
+	@echo "... src/core/random_manager.i"
+	@echo "... src/core/random_manager.s"
+	@echo "... src/entity/entity.o"
+	@echo "... src/entity/entity.i"
+	@echo "... src/entity/entity.s"
+	@echo "... src/entity/entity_manager.o"
+	@echo "... src/entity/entity_manager.i"
+	@echo "... src/entity/entity_manager.s"
+	@echo "... src/entity/player.o"
+	@echo "... src/entity/player.i"
+	@echo "... src/entity/player.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/physics/physics_manager.o"
+	@echo "... src/physics/physics_manager.i"
+	@echo "... src/physics/physics_manager.s"
+	@echo "... src/physics/physics_sim.o"
+	@echo "... src/physics/physics_sim.i"
+	@echo "... src/physics/physics_sim.s"
+	@echo "... src/renderer/buffer.o"
+	@echo "... src/renderer/buffer.i"
+	@echo "... src/renderer/buffer.s"
+	@echo "... src/renderer/camera.o"
+	@echo "... src/renderer/camera.i"
+	@echo "... src/renderer/camera.s"
+	@echo "... src/renderer/framebuffer.o"
+	@echo "... src/renderer/framebuffer.i"
+	@echo "... src/renderer/framebuffer.s"
+	@echo "... src/renderer/modelloader.o"
+	@echo "... src/renderer/modelloader.i"
+	@echo "... src/renderer/modelloader.s"
+	@echo "... src/renderer/render_command.o"
+	@echo "... src/renderer/render_command.i"
+	@echo "... src/renderer/render_command.s"
+	@echo "... src/renderer/render_manager.o"
+	@echo "... src/renderer/render_manager.i"
+	@echo "... src/renderer/render_manager.s"
+	@echo "... src/renderer/shader.o"
+	@echo "... src/renderer/shader.i"
+	@echo "... src/renderer/shader.s"
+	@echo "... src/renderer/texture.o"
+	@echo "... src/renderer/texture.i"
+	@echo "... src/renderer/texture.s"
+	@echo "... src/renderer/vertex_array.o"
+	@echo "... src/renderer/vertex_array.i"
+	@echo "... src/renderer/vertex_array.s"
 .PHONY : help
 
 
