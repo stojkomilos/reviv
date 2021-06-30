@@ -31,7 +31,9 @@
 *.out
 *.app
 
-build/
 build/**
+!build/build.sh
+!build/radi.sh
+!build/clean.sh
+
 .vscode/
-.vscode/**
