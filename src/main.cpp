@@ -7,6 +7,8 @@
 #include<unistd.h>
 #include<sstream>
 
+#include<filesystem>
+
 #include <reviv.h>
 
 RenderManager gRenderManager;
@@ -36,6 +38,13 @@ int main(){ ///WTF zasto je fakin levo pozitivna Z(mozda ok)
     //std::string proj_dir  = "/home/milos/reviv2/";
     //std::string sphereStr = "resources/models/sphere.obj";
     //std::string cubeStr   = "resources/models/cube.obj";
+
+	using std::filesystem::current_path;
+
+	char tmp[256];
+	getcwd(tmp, 256);
+	std::cout << "Current directory: " << tmp << std::endl;
+
 	sphere.LoadModel("../resources/models/sphere.obj");
 	cube.LoadModel  ("../resources/models/sphere.obj");
     /// -> kraj novog dela 2021

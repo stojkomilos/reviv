@@ -32,5 +32,4 @@ target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/l
 #   find_library(wayland-client_library wayland-client REQUIRED)
 #   find_library(pthread_library pthread REQUIRED)
 #   find_library(dl_library dl REQUIRED)
-
 #   target_link_libraries(${PROJECT_NAME} PUBLIC glfw3 ${GL_library} ${wayland-client_library} ${pthread_library} ${dl_library})
