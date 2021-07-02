@@ -7,6 +7,8 @@ RandomManager::RandomManager() {
 }
 
 void RandomManager::setUpPerlin(int perlinMapSize) {
+
+	std::cout << "Starting setting up perlin noise\n";
 	sizeOfPerlinMap = perlinMapSize;
 	
 	gridGradient.setUp(sizeOfPerlinMap, sizeOfPerlinMap);
@@ -30,6 +32,7 @@ void RandomManager::setUpPerlin(int perlinMapSize) {
 		}
 	}
 
+	std::cout << "Completed setting up perlin noise\n"; 
 }
 float RandomManager::lerp(float a, float b, float weightA) {
 	return a * weightA + b * (1 - weightA);

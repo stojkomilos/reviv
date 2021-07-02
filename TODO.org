@@ -1,3 +1,38 @@
+trenutni cilj:
+ - minimum viable product, ovim skontaj codebase ovo ono, i onda posle radi nove stvari:
+   - lopta koja se krece
+   - kvadrat, svetlo?
+   - basic shading na lopti
+   - kretanje u creative mode, jako basic (posle mozes napravit ko u MC ili kako god)
+
+-----
+kompnente:
+
+template T -> id komponente tipa T (idk) -> return pointer tipa T
+
+-----
+
+https://www.youtube.com/watch?v=akxevYYWd9g
+
+To render you need:
+ * object:
+     - vertex array
+     - transformation matrix of cube
+     - advanced: surface texture thing
+     - shader
+ * environment/scene:
+     - camera, projection matrix
+     - advanced: environemnts (lights...)
+
+Submit stuff to queue, and render *only* after its all submited for a /lot/ of opmiziation n shit.
+
+mesh = material + vertex array + transformation + shader ??
+-----
+low prio:
+    =physicsmanager.setUp= preimenuj u physicsmanager.init(), i tako za sve setup sisteme
+    preimenovati *_manager.[h,cpp] -> tipa *.[h,cpp]
+
+-----
 Da moze da se kompajluje bez errora
 Skontati koji flagovi, da li ide =-Wall= itd...
 Skontati flagove za optimizaciju, release, debug, arhitekturu itd...
@@ -5,3 +40,10 @@ Binary moze da mi stoji u root directoriju zbog resources
 Emulacija, najvrv visual studio jer je premocan, npr ono sto pise koliko vremena je gde proveo
 
 cmake-generators
+
+
+* static
+
+- static local variable:
+   lifetime -> entire program
+   scope -> limited to that scope

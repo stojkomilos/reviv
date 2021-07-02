@@ -3,6 +3,10 @@
 extern mat::Camera camera;
 extern FileManager gFileManager;
 extern RandomManager gRandomManager;
+
+extern mat::vec3 gPlayerInitialPosition;
+extern mat::vec3 gPointLightPosition;
+
 extern int gGameLoopCounter;
 float hitboxWidth = 0.6f;
 float hitboxDepth = 0.6f;
@@ -12,110 +16,45 @@ float hitboxHeight = playerHeight;
 void PhysicsManager::startUp(int mapSizeX1, int mapSizeY1, int mapSizeZ1, float gravity) {
 
 	srand(0);
-	g = gravity;
-	//gFileManager.setUpWorld();
-	worldIsLoadedFromFile = false;//stavi u komenentar ili izbaci
-	if (!worldIsLoadedFromFile) { ///generate new world
-		mapSizeX = mapSizeX1;
-		mapSizeY = mapSizeY1;
-		mapSizeZ = mapSizeZ1;
-		std::cout << "GENERATING NEW WORLD OF DIMENSIONS " << mapSizeX << " " << mapSizeY << " " << mapSizeZ << std::endl;
-		assert(mapSizeX % 2 == 0 and mapSizeZ % 2 == 0);
-		assert(mapSizeX == mapSizeZ);
 
-		kocke = new Entity[mapSizeX * mapSizeZ + 10]; ///todo: oduzeti ovih 10
-		blockMap.setUp(mapSizeX + 1, mapSizeY + 1, mapSizeZ + 1);
-		for (int i = 0; i < mapSizeX; i++) {
-			for (int j = 0; j < mapSizeY; j++) {
-				for (int k = 0; k < mapSizeZ; k++) {
-					*blockMap.adr(i, j, k) = (char)0;
-				}
-			}
-		}
-		numberOfTerrainCubesCurrently = 0;
+	//player.getComponent("Player")->speed = 25.0f;
+	player.getComponent("Player")->speed = 25.0f;
 
-		for (int i = 0; i < mapSizeX * mapSizeZ; i++) {
-			int x = i / mapSizeX;
-			int z = i % mapSizeX;
-			//int y = rand() % mapSizeY;
-			int y = (int)((gRandomManager.perlin(mat::vec2(x / 10.f + 0.01f, z / 10.f + 0.01f)) + 1) * 0.5f * (mapSizeY - 1));
-			*blockMap.adr(x, y, z) = 1;
-			float x1 = x - mapSizeX / 2 + 0.5f;
-			float y1 = y - 0.5f;
-			float z1 = z - mapSizeX / 2 + 0.5f;
-			//std::cout << "gen x = " << x << " z = " << z << std::endl;
-			//std::cout << "gen x1 = " << x1 << " z1 = " << z1 << std::endl << std::endl << std::endl;
-			(kocke + i)->valid = true;
-			(kocke + i)->position = mat::vec3(x1, y1, z1);                                                      ///kriticno!!!
-			numberOfTerrainCubesCurrently++;
-		}
-		numberOfTerrainCubesOnStart = numberOfTerrainCubesCurrently;
-		std::cout << "GENERATED " << numberOfTerrainCubesCurrently << " CUBES\n" << std::endl;
-		//std::cout << "ISPIS SVIH KOCKI\n";
-	   // for (int i = 0; i < 4; i++) {
-		  //  std::cout << "i = " << i << " x = " << (kocke + i)->position.x << " y = " << (kocke + i)->position.y << " z = " << (kocke + i)->position.z << std::endl;
-	   // }
-	   // std::cout << std::endl << std::endl << std::endl;
-		//gFileManager.saveCurrentWorld();
-	}
-
-	player.speed = 25.0f;
-	player.jumpSpeed = 5.f;
 	player.flyUpSpeed = player.speed;
-	player.destroyRange = 100;
-	spawnHeight = 5;
-	player.height = playerHeight;
 
 	player.creativeMode = true;
-	player.position = mat::vec3(0.f, spawnHeight + player.height + mapSizeY - 1, 0.f); ///todo: premesti nesto od ovog u world.ini
+	player.position = gPlayerInitialPosition; ///todo: premesti nesto od ovog u world.ini
 	player.velocity = mat::vec3(0, 0, 0);
-	player.acceleration = mat::vec3(0.f, -g, 0.f);
+	player.acceleration = mat::vec3(0.f, 0, 0.f);
 	player.pitch = 0;
 	player.yaw = 0;
 	player.standingOnSurface = 0;
+}
+void PhysicsManager::cummulatePosition(){
+	player.position.x += deltat * player.velocity.x;
+	player.position.y += deltat * player.velocity.y;
+	player.position.z += deltat * player.velocity.z;
 
-	hitboxDepth = 0.6f;
-	hitboxWidth = 0.6f;
-	hitboxHeight = player.height;
+	gPointLightPosition = gPlayerInitialPosition;
+	gPointLightPosition.x += 5 * sin(glfwGetTime() * 2.4);
+	gPointLightPosition.y += 0 ;
+	gPointLightPosition.z += 5 * cos(glfwGetTime() * 2.4);
 
+}
+void PhysicsManager::cummulateVelocity(){
+	player.velocity.x += deltat * player.acceleration.x;
+	player.velocity.y += deltat * player.acceleration.y;
+	player.velocity.z += deltat * player.acceleration.z;
 
-	surroundingCubes[0] = mat::vec3(0,  1, 0);
-	surroundingCubes[1] = mat::vec3(0, -1, 0);
-	surroundingCubes[2] = mat::vec3(0, -2, 0);
-	surroundingCubes[3] = mat::vec3(0, -3, 0);
-	
-	surroundingCubes[4] = mat::vec3(-1,  0, 0);
-	surroundingCubes[5] = mat::vec3(+1,  0, 0);
-	surroundingCubes[6] = mat::vec3(-1, -1, 0);
-	surroundingCubes[7] = mat::vec3(+1, -1, 0);
-	surroundingCubes[8] = mat::vec3(-1, -2, 0);
-	surroundingCubes[9] = mat::vec3(+1, -2, 0);
-	surroundingCubes[10] = mat::vec3(-1, -3, 0);
-	surroundingCubes[11] = mat::vec3(+1, -3, 0);
-	
-	surroundingCubes[12] = mat::vec3( 0,  0, -1);
-	surroundingCubes[13] = mat::vec3( 0,  0, +1);
-	surroundingCubes[14] = mat::vec3( 0, -1, -1);
-	surroundingCubes[15] = mat::vec3( 0, -1, +1);
-	surroundingCubes[16] = mat::vec3( 0, -2, -1);
-	surroundingCubes[17] = mat::vec3( 0, -2, +1);
-	surroundingCubes[18] = mat::vec3( 0, -3, -1);
-	surroundingCubes[19] = mat::vec3( 0, -3, +1);
-	
-	for (int i = -2; i <= 2; i++)
-		for (int j = -2; j <= 1; j++)
-			for (int k = -2; k <= 2; k++) {
-				surroundingCubes[k + 2 + (j + 2) * 5 + (i + 2) * 4 * 5 + 20] = mat::vec3((float)i, (float)j, (float)k);
-			}
 }
 void PhysicsManager::doShit() {
 
-	assert(abs(playerHeight - player.height) <= 0.01f);///ukloni
-
+	//assert(abs(playerHeight - player.height) <= 0.01f);///ukloni
 
 	if (!player.creativeMode) {
+		//std::cout << "Player is in creative mode\n";
 		//if(!player.standingOnSurface)
-			player.acceleration.y = -g;
+		player.acceleration.y = -g;
 	}
 	
 	if (!player.walking) {
@@ -131,17 +70,12 @@ void PhysicsManager::doShit() {
 
 	player.standingOnSurface = false;
 
-	player.position.x += deltat * player.velocity.x;
-	player.position.y += deltat * player.velocity.y;
-	player.position.z += deltat * player.velocity.z;
-
-	player.velocity.x += deltat * player.acceleration.x;
-	player.velocity.y += deltat * player.acceleration.y;
-	player.velocity.z += deltat * player.acceleration.z;
+	cummulatePosition();
+	cummulateVelocity();
 
 
-	if (gGameLoopCounter != 0)
-		collidePlayerWithVoxelTerrain();
+	//if (gGameLoopCounter != 0)
+	//	collidePlayerWithVoxelTerrain();
 	player.previousPosition = player.position;
 	previousPlayerHitbox.update(player.previousPosition);
 
@@ -168,9 +102,9 @@ void PhysicsManager::doShit() {
 
 	player.updateUnitDirectionalVectors();
 
-	if (player.holdingLeftClick) {
-		rayCastVoxelTerrain(player.position, mat::add(player.position, mat::multiplyScalar(player.direction, -player.destroyRange)));
-	}
+	//if (player.holdingLeftClick) {
+	//	rayCastVoxelTerrain(player.position, mat::add(player.position, mat::multiplyScalar(player.direction, -player.destroyRange)));
+	//}
 }
 void PhysicsManager::collidePlayerWithVoxelTerrain() {
 

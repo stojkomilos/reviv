@@ -44,11 +44,13 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
 		return -1;
+		assert(false);
 	}
 	glfwMakeContextCurrent(window);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		std::cout << "Failed to initialize GLAD" << std::endl;
+		assert(false);
 		return -1;
 	}
 	

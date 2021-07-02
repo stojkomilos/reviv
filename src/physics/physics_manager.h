@@ -3,8 +3,13 @@
 #include<assert.h>
 #include<cmath>
 
+#include<GLFW/glfw3.h>
+
+//#include"entity/entity.h" // TODO: ukloniti
+//#include"entity/player.h" // TODO: ukloniti
+#include"core/entity.h"
+
 #include"core/mat.h"
-#include"entity/player.h"
 #include"core/memory_manager.h"
 #include"core/file_manager.h"
 #include"core/random_manager.h"
@@ -41,11 +46,13 @@ public:
     float deltat;
     bool worldIsLoadedFromFile;
     int numberOfTerrainCubesOnStart, numberOfTerrainCubesCurrently;
-    Player player;
+    Entity player;
     Entity* kocke;
     TripletOfInts worldToArrayCords(mat::vec3 postion);
     MemoryManager::Array3D<char> blockMap;
     mat::vec3 arrayToWorldCords(int x, int y, int z);
     mat::vec3 surroundingCubes[150];
     int qRecentCollision[150], qRecentCollisionSize;
+    void cummulatePosition();
+    void cummulateVelocity();
 };
