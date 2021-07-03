@@ -89,21 +89,21 @@ BufferLayout::BufferLayout()
 }
 
 
-VertexBuffer::VertexBuffer()
+VertexBufferComponent::VertexBufferComponent()
 {
 
 }
-VertexBuffer::~VertexBuffer()
+VertexBufferComponent::~VertexBufferComponent()
 {
 	std::cout << "dodaj destruktor koji valja za VertexBuffer, obican, scope based nece radit, reference counting?, dynamicaly alocated?\n";
 }
 
-void VertexBuffer::bind()
+void VertexBufferComponent::bind()
 {
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 }
 
-void VertexBuffer::setUp(void* vertices, unsigned int size, unsigned char typeOfDraw1)
+void VertexBufferComponent::setUp(void* vertices, unsigned int size, unsigned char typeOfDraw1)
 {	
 
     const int INT_MAX = 2147483646; //quick change

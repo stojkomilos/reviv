@@ -37,7 +37,7 @@ int main(){
 	PositionComponent stanicPosition(Vec3f(3, 3, 3));
 	gStanic.addComponent<PositionComponent>(&stanicPosition);
 
-	Vec3f trans = Vec3f(0, 0, 0);
+	TransformComponent trans = Mat4();
 	gStanic.addComponent<TransformComponent>(&trans);
 
 	PositionComponent pos(Vec3f(1, 1, 1));
@@ -81,8 +81,9 @@ int main(){
 		gPhysicsManager.deltat *= 1;
 		*/
 
-		if (gGameLoopCounter % 5 == 0)
+		if (gGameLoopCounter % 1 == 0)
 		{
+			cout << "radi\n";
 			/*
 			std::cout << "fps = " << 1.0f / gPhysicsManager.deltat << std::endl;
 			std::cout << "x = " << gPhysicsManager.player.position.x << " y = " << gPhysicsManager.player.position.y << " z = " << gPhysicsManager.player.position.z << std::endl;

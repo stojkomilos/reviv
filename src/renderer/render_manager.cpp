@@ -6,6 +6,9 @@
 #define __REVIV_RELEASE__ 0
 #endif
 
+VertexArrayComponent stanicVao;
+VertexBufferComponent stanicVbo;
+
 //extern SimulationManager gSimulationManager;
 //extern PhysicsManager gPhysicsManager;
 
@@ -21,7 +24,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
 RenderCommand gRenderCommand;
-int RenderManager::startUp(int windowWidth1, int windowHeight1) {
+int RenderManager::startUp(int windowWidth1, int windowHeight1)
+{
 
 	windowWidth = windowWidth1;
 	windowHeight = windowHeight1;
@@ -97,6 +101,19 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1) {
 
 	//auto jedan = (*gStanic.getComponent<ModelLoader>()); TODOO
 
+
+	//////
+	gStanic.addComponent<VertexArrayComponent>(&stanicVao);
+	gStanic.addComponent<VertexBufferComponent>(&stanicVbo);
+
+	gStanic.getComponent<VertexArrayComponent>()->setUp();
+	gStanic.getComponent<VertexArrayComponent>()->bind();
+
+	gStanic.getComponent<VertexBufferComponent>()->layout = vboLayout1;
+	gStanic.getComponent<VertexBufferComponent>()->setUp((void*)gStanic.getComponent<ModelLoader>()->pointer, gStanic.getComponent<ModelLoader>()->nrTriangles * 3 * (2 * sizeof(Vec3f) + sizeof(Vec2f)), 0);
+	gStanic.getComponent<VertexBufferComponent>()->bind();
+	gStanic.getComponent<VertexArrayComponent>()->addVertexBuffer(*gStanic.getComponent<VertexBufferComponent>());
+
 	//cubeVao.setUp();
 	//cubeVao.bind();
 	
@@ -104,6 +121,8 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1) {
 	//cubeVbo.setUp((void*)cube.pointer, cube.nrTriangles * 3 * (2 * sizeof(Vec3f) + sizeof(Vec2f)), 0);
 	//cubeVbo.bind();
 	//cubeVao.addVertexBuffer(cubeVbo);
+
+	//////
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -115,7 +134,7 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1) {
 	//---
 	sceneData = new SceneData;
 	
-	(*gCamera.getComponent<PerspectiveCameraComponent>()).setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(windowWidth)) / ((float)(windowHeight)));
+	gCamera.getComponent<PerspectiveCameraComponent>()->setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(windowWidth)) / ((float)(windowHeight)));
 	gCamera.getComponent<PerspectiveCameraComponent>()->recalculateProjectionMatrix();
 	//camera.setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(windowWidth)) / ((float)(windowHeight)));
 	//camera.recalculateProjectionMatrix();
@@ -125,7 +144,8 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1) {
 	return 1;
 }
 
-int RenderManager::render() {
+int RenderManager::render()
+{
 	
 	Mat4 model;
 
@@ -147,7 +167,7 @@ int RenderManager::render() {
 	stanicTexture.bind(0);
 	shaderMonoChroma.uploadUniform1i("u_Texture", 0);
 
-	submit(shaderMonoChroma, cubeVao, model);
+	submit(shaderMonoChroma, *gStanic.getComponent<VertexArrayComponent>(), model);
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();
@@ -176,7 +196,8 @@ RenderManager::RenderManager()
 	window = nullptr;
 }
 
-void RenderManager::submit(Shader& shader, VertexArray& object, Mat4& transform) {
+void RenderManager::submit(Shader& shader, VertexArrayComponent& object, Mat4& transform)
+{
 	shader.bind();
 	shader.uploadUniformMat4("u_Model", transform);
 	shader.uploadUniformMat4("u_View", sceneData->viewMatrix);

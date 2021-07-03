@@ -57,6 +57,11 @@ unsigned int SpecificComponent<T>::getId()
 template <class T>
 void Entity::addComponent(void* newComponent)
 {
+    if(((Component*)newComponent)->getId() != T::id)
+    {
+        cout << "ERROR: trying to add a component that does not match the type specified";
+        assert(false);
+    }
     cout << "==> Adding component\n";
     components.push_back((T*)newComponent);
 }

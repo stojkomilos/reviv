@@ -26,8 +26,8 @@ public:
 	int startUp(int windowWidth1, int windowHeight1); ///npr, 800x600, 1920x1080
 	int render();
 	int shutDown();
-	VertexArray cubeVao, sphereVao;
-	VertexBuffer cubeVbo, sphereVbo;
+//	VertexArray cubeVao, sphereVao;
+//	VertexBuffer cubeVbo, sphereVbo;
 	GLFWwindow* window;
 	int windowWidth, windowHeight;
 	float renderDistance = 1000;
@@ -40,7 +40,7 @@ public:
 	size_t sizeOfVoxelBuffer;
 	bool fullscreen = false;
 	
-	void submit(Shader& shader, VertexArray& object, Mat4& transform);
+	void submit(Shader& shader, VertexArrayComponent& object, Mat4& transform);
 	void beginScene(PerspectiveCameraComponent& camera);
 	void endScene();
 

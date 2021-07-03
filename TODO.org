@@ -17,14 +17,19 @@ trenutni cilj:
    - kretanje u creative mode, jako basic (posle mozes napravit ko u MC ili kako god)
 
 * Renderer
+
+** 
+
 To render you need:
 
 - stanic:
-  - vertex array
+  - mesh/renderable
+    elementi: 
+      - vertex array
+      - model?
+      - ?shader(bar info koji uzima, mozda?) mozda?
   - transformation matrix
-  - ?shader(bar info koji uzima, mozda?) mozda?
-  - ?position, scale?
-
+  - ?position, scale?, rotation?
 
  * object:
      - vertex array
@@ -41,7 +46,31 @@ mesh = material + vertex array + transformation + shader ??
 
 https://www.youtube.com/watch?v=akxevYYWd9g
 
+** flow
+
+for(entity list)
+ if(entity.has(Mesh) and entity.has(Transform) and entity.isRenderable)
+   gRenderManager.submit(const entity&);
+
+
+ILI:
+------
+
+entity;
+for(entity list)
+ if(entity.doRender)
+   gRenderManager.submit(const entity&);
+
+
+//submit(shaderTexture, cubeVao, model);
+//submit(entity.shaderthingIDK, entity.model, entity.model);
+
+
+
 * Low prio
+
+- preimenovati VertexArary u Vao
+- preimenovati VetexBuffer u Vbo
 
 low prio:
     =physicsmanager.setUp= preimenuj u physicsmanager.init(), i tako za sve setup sisteme
@@ -87,7 +116,6 @@ Zavsisi sa koje /strane/ =*= je =const=.
   };
 #+end_src
 
-
 * Ideje za ecs
 
 *nemoj ga praviti*
@@ -100,6 +128,10 @@ Zavsisi sa koje /strane/ =*= je =const=.
 
 - U listi komponenti, svaka komponenta ima svoj =bool= koji oznacava da li da je sistem /ignorise/ (tojest da li je "obrisana") ili da je sistem koristi (renderuje/physics-uje itd...)
 
+Proveravanje da li ima bilo koji broj komponenti u O(1):
+    - Da bi proverio da li neki entity ima recimo: transform i mesh, radim preko *bit-flagova* i bit operaciaj, kazem entity.has(TRANSFORM_COMPONENT_FLAG & MESH_COMPONENT_FLAG)
+Uzimanje pointer od komponente u O(1):
+    - Samo /store-uj/ pointere ka svim komponentama.
 -----
 
 kompnente:

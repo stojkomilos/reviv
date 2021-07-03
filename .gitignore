@@ -37,3 +37,6 @@ build/**
 !build/clean.sh
 
 .vscode/
+
+ltximg/
+**/ltximg/

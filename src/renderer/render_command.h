@@ -6,7 +6,7 @@
 class RenderCommand
 {
 public:
-	void drawArrays(const VertexArray& object);
+	void drawArrays(const VertexArrayComponent& object);
 	void setClearColor(Vec4f color);
 	void clear();
 };

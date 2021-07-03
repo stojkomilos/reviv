@@ -3,15 +3,17 @@
 #include<vector>
 
 #include"buffer.h"
+#include"core/entity.h"
 
-class VertexArray {
+class VertexArrayComponent : public SpecificComponent<VertexArrayComponent>
+{
 public:
-	VertexArray();
-	~VertexArray();
+	VertexArrayComponent();
+	~VertexArrayComponent();
 	void setUp();
 	void const bind();
-	void addVertexBuffer(VertexBuffer& vertexBuffer);
-	std::vector<VertexBuffer> VertexBuffers;
+	void addVertexBuffer(VertexBufferComponent& vertexBuffer);
+	std::vector<VertexBufferComponent> VertexBuffers;
 	unsigned int ID;
 	unsigned int nrOfTriangles;
 };

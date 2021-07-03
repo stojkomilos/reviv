@@ -1,21 +1,21 @@
 #include "vertex_array.h"
 
-VertexArray::VertexArray() : nrOfTriangles(0)
+VertexArrayComponent::VertexArrayComponent() : nrOfTriangles(0)
 {
 }
-VertexArray::~VertexArray()
+VertexArrayComponent::~VertexArrayComponent()
 {
 	std::cout << "dodaj destruktor za vao---\n";
 }
-void VertexArray::setUp() {
+void VertexArrayComponent::setUp() {
 	glGenVertexArrays(1, &ID);
 	glBindVertexArray(ID);
 }
-void const VertexArray::bind()
+void const VertexArrayComponent::bind()
 {
 	glBindVertexArray(ID);
 }
-void VertexArray::addVertexBuffer(VertexBuffer& vertexBuffer)
+void VertexArrayComponent::addVertexBuffer(VertexBufferComponent& vertexBuffer)
 {
 	for (int i = 0; i < vertexBuffer.layout.elements.size(); i++)
 	{

@@ -7,6 +7,8 @@
 #include<iostream>
 #include<assert.h>
 
+#include"core/entity.h"
+
 enum class ShaderDataType
 {
 	None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool
@@ -38,11 +40,11 @@ public:
 };
 
 
-class VertexBuffer 
+class VertexBufferComponent : public SpecificComponent<VertexBufferComponent>
 {
 public:
-	VertexBuffer();
-	~VertexBuffer();
+	VertexBufferComponent();
+	~VertexBufferComponent();
 	void bind();
 	void unbind();
 	void setUp(void* vertices, unsigned int size, unsigned char typeOfDraw1);
