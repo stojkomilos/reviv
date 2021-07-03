@@ -24,6 +24,7 @@ class Entity
 public:
     Entity();
     std::vector<Component*> components;
+    bool valid = true;
 
     template <class T>
     void addComponent(void* newComponent);

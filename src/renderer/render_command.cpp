@@ -1,6 +1,6 @@
 #include "render_command.h"
 
-void RenderCommand::drawArrays(const VertexArrayComponent& object) {
+void RenderCommand::drawArrays(const VaoComponent& object) {
 	glDrawArrays(GL_TRIANGLES, 0, object.nrOfTriangles * 3);
 }
 void RenderCommand::setClearColor(Vec4f color)

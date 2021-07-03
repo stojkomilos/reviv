@@ -40,7 +40,7 @@ public:
 	size_t sizeOfVoxelBuffer;
 	bool fullscreen = false;
 	
-	void submit(Shader& shader, VertexArrayComponent& object, Mat4& transform);
+	void submit(Shader& shader, VaoComponent& object, Mat4& transform);
 	void beginScene(PerspectiveCameraComponent& camera);
 	void endScene();
 

@@ -1,30 +1,4 @@
 #include "camera.h"
-
-//PerspectiveCamera::PerspectiveCamera()
-//{
-//}
-
-void PerspectiveCameraComponent::alignWithEntity(const Entity& entity)
-{
-    bool prvi = entity.hasComponent<PositionComponent>();
-    bool drugi = entity.hasComponent<RotationComponent>();
-    if(prvi and drugi){
-        position = entity.getComponent<PositionComponent>()->position;
-        pitch = entity.getComponent<RotationComponent>()->pitch;
-        yaw = entity.getComponent<RotationComponent>()->yaw;
-        roll = entity.getComponent<RotationComponent>()->roll;
-    }
-    else {
-        cout << "ERROR: Required components are not present in entity\n";
-        assert(false);
-    }
-
-    //std::cout << "pitch = " << pitch << " " << yaw << " " << roll << "\n";
-
-    recalculateViewMatrix();
-}
-
-
 void PerspectiveCameraComponent::setUp(float nearPlane1, float farPlane1, float fov1, float ratio1)
 {
     nearPlane = nearPlane1; 

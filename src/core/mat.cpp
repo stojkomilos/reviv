@@ -1,6 +1,6 @@
 #include "mat.h"
 
-mat::Mat4 identity(1); // TODO, const?
+Mat4 identity(1); // TODO, const?
 
 
 

@@ -16,16 +16,17 @@ Entity gStojko;
 Entity gCamera;
 Entity gPlayer;
 
-Entity* gEntityList[4];
+//Entity gEntityList[4];
+std::vector<Entity*> gEntityList;
 
 using std::cin; using std::cout; using std::endl;
 
 int main(){ 
 			
-	gEntityList[0] = &gStanic;
-	gEntityList[1] = &gStojko;
-	gEntityList[2] = &gCamera;
-	gEntityList[3] = &gPlayer;
+//	gEntityList[0] = &gStanic;
+//	gEntityList[1] = &gStojko;
+//	gEntityList[2] = &gCamera;
+//	gEntityList[3] = &gPlayer;
 
 	std::cout << "START\n";
 

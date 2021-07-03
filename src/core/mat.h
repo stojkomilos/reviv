@@ -44,7 +44,7 @@ namespace mat{
         Mat4(float n);
     };
 
-    Mat4 translate(Mat4 a, Vec3f b);
+    Mat4 translate(Mat4 a, const Vec3f& b);
     Mat4 scale(Mat4 a, Vec3f b);
     Mat4 rotateX(Mat4 a, float theta);
     Mat4 rotateY(Mat4 a, float theta);

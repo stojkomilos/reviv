@@ -6,17 +6,14 @@
 #define __REVIV_RELEASE__ 0
 #endif
 
-VertexArrayComponent stanicVao;
-VertexBufferComponent stanicVbo;
+VaoComponent stanicVao;
+Vbo stanicVbo;
 
 //extern SimulationManager gSimulationManager;
 //extern PhysicsManager gPhysicsManager;
 
-extern Entity gStanic;
-extern Entity gStojko;
-extern Entity gCamera;
-extern Entity gPlayer;
-extern Entity* gEntityList[4];
+extern std::vector<Entity*> gEntityList;
+extern Entity* gPlayerEntity, gCameraEntity;
 
 extern Mat4 identity;
 extern int gGameLoopCounter;
@@ -72,7 +69,7 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE); ///pale se sticky mouse 
-	//glfwSetCursorPosCallback(window, mouse_callback); TODO
+	//glfwSetCursorPosCallback(window, mouse_callback); TODOOO
 
 	shaderTexture.setUp("../resources/shaders/texture.vs", "../resources/shaders/texture.fs");
 	shaderMonoChroma.setUp("../resources/shaders/mono_chroma.vs", "../resources/shaders/mono_chroma.fs");  
@@ -103,16 +100,16 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
 
 
 	//////
-	gStanic.addComponent<VertexArrayComponent>(&stanicVao);
-	gStanic.addComponent<VertexBufferComponent>(&stanicVbo);
+	gStanic.addComponent<VaoComponent>(&stanicVao);
+	gStanic.addComponent<Vbo>(&stanicVbo);
 
-	gStanic.getComponent<VertexArrayComponent>()->setUp();
-	gStanic.getComponent<VertexArrayComponent>()->bind();
+	gStanic.getComponent<VaoComponent>()->setUp();
+	gStanic.getComponent<VaoComponent>()->bind();
 
-	gStanic.getComponent<VertexBufferComponent>()->layout = vboLayout1;
-	gStanic.getComponent<VertexBufferComponent>()->setUp((void*)gStanic.getComponent<ModelLoader>()->pointer, gStanic.getComponent<ModelLoader>()->nrTriangles * 3 * (2 * sizeof(Vec3f) + sizeof(Vec2f)), 0);
-	gStanic.getComponent<VertexBufferComponent>()->bind();
-	gStanic.getComponent<VertexArrayComponent>()->addVertexBuffer(*gStanic.getComponent<VertexBufferComponent>());
+	gStanic.getComponent<Vbo>()->layout = vboLayout1;
+	gStanic.getComponent<Vbo>()->setUp((void*)gStanic.getComponent<ModelLoader>()->pointer, gStanic.getComponent<ModelLoader>()->nrTriangles * 3 * (2 * sizeof(Vec3f) + sizeof(Vec2f)), 0);
+	gStanic.getComponent<Vbo>()->bind();
+	gStanic.getComponent<VaoComponent>()->addVertexBuffer(*gStanic.getComponent<Vbo>());
 
 	//cubeVao.setUp();
 	//cubeVao.bind();
@@ -134,8 +131,8 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
 	//---
 	sceneData = new SceneData;
 	
-	gCamera.getComponent<PerspectiveCameraComponent>()->setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(windowWidth)) / ((float)(windowHeight)));
-	gCamera.getComponent<PerspectiveCameraComponent>()->recalculateProjectionMatrix();
+	gCameraEntity.getComponent<PerspectiveCameraComponent>()->setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(windowWidth)) / ((float)(windowHeight)));
+	gCameraEntity.getComponent<PerspectiveCameraComponent>()->recalculateProjectionMatrix();
 	//camera.setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(windowWidth)) / ((float)(windowHeight)));
 	//camera.recalculateProjectionMatrix();
 	
@@ -146,33 +143,58 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
 
 int RenderManager::render()
 {
-	
-	Mat4 model;
-
 	gRenderCommand.setClearColor(Vec4f(0.0f, 0.0f, 0.0f, 0.9f));
 	gRenderCommand.clear();
 
-	beginScene(*gCamera.getComponent<PerspectiveCameraComponent>());
-	
-	gCamera.getComponent<PerspectiveCameraComponent>()->alignWithEntity(gPlayer);
+	beginScene(*gCameraEntity.getComponent<PerspectiveCameraComponent>());
 
-	auto playerPosition = (*gPlayer.getComponent<PositionComponent>()).position;
-	cout << "gPlayer->position=";
-	log(playerPosition);
-	model = translate(identity, playerPosition);
+	for(Entity* entity : gEntityList)
+	{
+		if(entity->valid)
+		{
+			if(entity->hasComponent<Mesh>() and entity->hasComponent<Transform>())
+			{
+				submit(*entity);
+			}
+		}
+	}
 
-	shaderMonoChroma.bind();
-	shaderMonoChroma.uploadUniform4f("u_Color", Vec4f(1, 1, 1, 1));
-
-	stanicTexture.bind(0);
-	shaderMonoChroma.uploadUniform1i("u_Texture", 0);
-
-	submit(shaderMonoChroma, *gStanic.getComponent<VertexArrayComponent>(), model);
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();
 
 	endScene();
+	////------------
+
+
+	//Mat4 model;
+
+	//gRenderCommand.setClearColor(Vec4f(0.0f, 0.0f, 0.0f, 0.9f));
+	//gRenderCommand.clear();
+
+	//beginScene(*gCamera.getComponent<PerspectiveCameraComponent>());
+	
+	//gCamera.getComponent<PerspectiveCameraComponent>()->alignWithEntity(gPlayer);
+
+	//auto playerPosition = (*gPlayer.getComponent<PositionComponent>()).position;
+
+	//cout << "gPlayer->position=";
+	//log(playerPosition);
+
+	//model = translate(identity, playerPosition);
+
+	//shaderMonoChroma.bind();
+	//shaderMonoChroma.uploadUniform4f("u_Color", Vec4f(1, 1, 1, 1));
+
+	//stanicTexture.bind(0);
+	//shaderMonoChroma.uploadUniform1i("u_Texture", 0);
+
+	//submit(shaderMonoChroma, *gStanic.getComponent<VaoComponent>(), model);
+
+	//glfwSwapBuffers(window);
+	//glfwPollEvents();
+
+	//endScene();
 	
 	return 0;
 }
@@ -196,7 +218,7 @@ RenderManager::RenderManager()
 	window = nullptr;
 }
 
-void RenderManager::submit(Shader& shader, VertexArrayComponent& object, Mat4& transform)
+void RenderManager::submit(Shader& shader, VaoComponent& object, Mat4& transform)
 {
 	shader.bind();
 	shader.uploadUniformMat4("u_Model", transform);
@@ -208,6 +230,8 @@ void RenderManager::submit(Shader& shader, VertexArrayComponent& object, Mat4& t
 
 void RenderManager::beginScene(PerspectiveCameraComponent& camera)
 {
+	camera.recalculateViewMatrix();
+	//camera.recalculateProjectionMatrix();
 	sceneData->projectionMatrix = camera.projectionMatrix;
 	sceneData->viewMatrix = camera.viewMatrix;
 }

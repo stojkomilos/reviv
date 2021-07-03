@@ -40,11 +40,11 @@ public:
 };
 
 
-class VertexBufferComponent : public SpecificComponent<VertexBufferComponent>
+class Vbo : public SpecificComponent<Vbo>
 {
 public:
-	VertexBufferComponent();
-	~VertexBufferComponent();
+	Vbo();
+	~Vbo();
 	void bind();
 	void unbind();
 	void setUp(void* vertices, unsigned int size, unsigned char typeOfDraw1);
