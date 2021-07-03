@@ -1,5 +1,6 @@
 #include"random_manager.h"
 
+/*
 extern PhysicsManager gPhysicsManager;
 
 RandomManager::RandomManager() {
@@ -25,9 +26,9 @@ void RandomManager::setUpPerlin(int perlinMapSize) {
 
 	for (int i = 0; i < sizeOfPerlinMap - 1; i++) {
 		for (int j = 0; j < sizeOfPerlinMap - 1; j++) {
-			*gridPerlin.adr(i, j) = mat::dot(mat::vec2(1, 0), mat::vec2(gridGradient.adr(i + 1, j)->x, gridGradient.adr(i + 1, j)->y));
-			*gridPerlin.adr(i, j) += mat::dot(mat::vec2(0, 1), mat::vec2(gridGradient.adr(i, j + 1)->x, gridGradient.adr(i, j + 1)->y));
-			*gridPerlin.adr(i, j) += mat::dot(mat::normalise(mat::vec2(1, 1)), mat::vec2(gridGradient.adr(i + 1, j + 1)->x, gridGradient.adr(i + 1, j + 1)->y));
+			*gridPerlin.adr(i, j) = mat::dot(Vec2f(1, 0), Vec2f(gridGradient.adr(i + 1, j)->x, gridGradient.adr(i + 1, j)->y));
+			*gridPerlin.adr(i, j) += mat::dot(Vec2f(0, 1), Vec2f(gridGradient.adr(i, j + 1)->x, gridGradient.adr(i, j + 1)->y));
+			*gridPerlin.adr(i, j) += mat::dot(mat::normalise(Vec2f(1, 1)), Vec2f(gridGradient.adr(i + 1, j + 1)->x, gridGradient.adr(i + 1, j + 1)->y));
 			*gridPerlin.adr(i, j) /= 3;
 		}
 	}
@@ -37,7 +38,7 @@ void RandomManager::setUpPerlin(int perlinMapSize) {
 float RandomManager::lerp(float a, float b, float weightA) {
 	return a * weightA + b * (1 - weightA);
 }
-float RandomManager::perlin(mat::vec2 position) {
+float RandomManager::perlin(Vec2f position) {
 
 	if (position.x - 1.01f > sizeOfPerlinMap or position.y - 1.01f > sizeOfPerlinMap) {
 		std::cout << "ERROR: WORLD TRIED TO GENERATE OUTSIDE OF THE PERLIN MAP ";
@@ -59,3 +60,5 @@ float RandomManager::perlin(mat::vec2 position) {
 	float result = lerp(r1, r2, 1.f - position.y + y);
 	return result;
 }
+
+*/

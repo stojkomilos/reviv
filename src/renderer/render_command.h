@@ -7,6 +7,6 @@ class RenderCommand
 {
 public:
 	void drawArrays(const VertexArray& object);
-	void setClearColor(mat::vec4 color);
+	void setClearColor(Vec4f color);
 	void clear();
 };

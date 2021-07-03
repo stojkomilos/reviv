@@ -6,11 +6,16 @@
 #define __REVIV_RELEASE__ 0
 #endif
 
-extern SimulationManager gSimulationManager;
-extern ModelLoader sphere;
-extern ModelLoader cube;
-extern mat::mat4 identity;
-extern PhysicsManager gPhysicsManager;
+//extern SimulationManager gSimulationManager;
+//extern PhysicsManager gPhysicsManager;
+
+extern Entity gStanic;
+extern Entity gStojko;
+extern Entity gCamera;
+extern Entity gPlayer;
+extern Entity* gEntityList[4];
+
+extern Mat4 identity;
 extern int gGameLoopCounter;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -63,7 +68,7 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1) {
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE); ///pale se sticky mouse 
-	glfwSetCursorPosCallback(window, mouse_callback);
+	//glfwSetCursorPosCallback(window, mouse_callback); TODO
 
 	shaderTexture.setUp("../resources/shaders/texture.vs", "../resources/shaders/texture.fs");
 	shaderMonoChroma.setUp("../resources/shaders/mono_chroma.vs", "../resources/shaders/mono_chroma.fs");  
@@ -75,51 +80,30 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1) {
 	};
 	BufferLayout vboLayout1(tempVboLayout1);
 
-	sphereVao.setUp();
-	sphereVao.bind();
+	//sphereVao.setUp();
+	//sphereVao.bind();
+	
+	//sphereVbo.layout = vboLayout1;
+	//sphereVbo.setUp(sphere.pointer, sphere.nrTriangles * 3 * (2 * sizeof(Vec3f) + sizeof(Vec2)), 0);	
+	//sphereVao.addVertexBuffer(sphereVbo);
 
-	sphereVbo.layout = vboLayout1;
-	sphereVbo.setUp(sphere.pointer, sphere.nrTriangles * 3 * (2 * sizeof(mat::vec3) + sizeof(mat::vec2)), 0);	
-	sphereVao.addVertexBuffer(sphereVbo);
-
-	assert(sizeof(float) * 3 == sizeof(mat::vec3));
+	assert(sizeof(float) * 3 == sizeof(Vec3f));
 	assert(sizeof(int) * 3 == sizeof(TripletOfInts));
 
-
-	nrOfValidCubes = 0;
-	for (int i = 0; i < gPhysicsManager.numberOfTerrainCubesOnStart; i++) {
-		if ((gPhysicsManager.kocke + i)->valid)
-			nrOfValidCubes++;
-	}
-	
-	//sizeOfVoxelBuffer = sizeof(float) * 3 * (nrOfValidCubes + 100) + sizeof(cubeVertices);
-	//voxelBuffer = new float[sizeOfVoxelBuffer / sizeof(float)];
-	//
-	//memcpy(voxelBuffer, &cubeVertices[0], sizeof(cubeVertices));
-	//
-	//int p = 0;
-	//for (int i = 0; i < gPhysicsManager.numberOfTerrainCubesOnStart; i++) {
-	//	if ((gPhysicsManager.kocke + i)->valid) {
-	//		voxelBuffer[sizeof(cubeVertices) / sizeof(float) + p * 3 + 0] = (gPhysicsManager.kocke + i)->position.x;
-	//		voxelBuffer[sizeof(cubeVertices) / sizeof(float) + p * 3 + 1] = (gPhysicsManager.kocke + i)->position.y;
-	//		voxelBuffer[sizeof(cubeVertices) / sizeof(float) + p * 3 + 2] = (gPhysicsManager.kocke + i)->position.z;
-	//		p++;
-	//	}
-	//}
-	
 	int nrAttributes;											 //samo jedna provere dal ima otprilike dovoljno atrib pointera
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
 	std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
 	assert(nrAttributes >= 10); 
 
+	//auto jedan = (*gStanic.getComponent<ModelLoader>()); TODOO
 
-	cubeVao.setUp();
-	cubeVao.bind();
+	//cubeVao.setUp();
+	//cubeVao.bind();
 	
-	cubeVbo.layout = vboLayout1;
-	cubeVbo.setUp((void*)cube.pointer, cube.nrTriangles * 3 * (2 * sizeof(mat::vec3) + sizeof(mat::vec2)), 0);
-	cubeVbo.bind();
-	cubeVao.addVertexBuffer(cubeVbo);
+	//cubeVbo.layout = vboLayout1;
+	//cubeVbo.setUp((void*)cube.pointer, cube.nrTriangles * 3 * (2 * sizeof(Vec3f) + sizeof(Vec2f)), 0);
+	//cubeVbo.bind();
+	//cubeVao.addVertexBuffer(cubeVbo);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -130,8 +114,11 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1) {
 
 	//---
 	sceneData = new SceneData;
-	camera.setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(windowWidth)) / ((float)(windowHeight)));
-	camera.recalculateProjectionMatrix();
+	
+	(*gCamera.getComponent<PerspectiveCameraComponent>()).setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(windowWidth)) / ((float)(windowHeight)));
+	gCamera.getComponent<PerspectiveCameraComponent>()->recalculateProjectionMatrix();
+	//camera.setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(windowWidth)) / ((float)(windowHeight)));
+	//camera.recalculateProjectionMatrix();
 	
 	///--
 
@@ -140,53 +127,27 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1) {
 
 int RenderManager::render() {
 	
-	mat::mat4 model;
+	Mat4 model;
 
-
-	gRenderCommand.setClearColor(mat::vec4(0.0f, 0.0f, 0.0f, 0.0f));
+	gRenderCommand.setClearColor(Vec4f(0.0f, 0.0f, 0.0f, 0.9f));
 	gRenderCommand.clear();
 
-	camera.alignWithEntity(gPhysicsManager.player);
-	beginScene(camera);
-
-	extern mat::vec3 gPointLightPosition;
-
-	for (int i = 0; i < gPhysicsManager.numberOfTerrainCubesOnStart; i++) {
-		if ((gPhysicsManager.kocke + i)->valid) {
-
-			shaderTexture.bind();
-			
-			model = mat::translate(identity, (gPhysicsManager.kocke + i)->position);
-			shaderTexture.uploadUniform3f("u_LightPosition", gPointLightPosition);
-			shaderTexture.uploadUniform3f("u_CameraPosition", camera.position);
-			shaderTexture.uploadUniform1i("u_Texture", 1);
-			beloTexture.bind(1);
-			submit(shaderTexture, cubeVao, model);
-		}
-	}
-
+	beginScene(*gCamera.getComponent<PerspectiveCameraComponent>());
 	
-	model = mat::translate(identity, gPointLightPosition);
+	gCamera.getComponent<PerspectiveCameraComponent>()->alignWithEntity(gPlayer);
+
+	auto playerPosition = (*gPlayer.getComponent<PositionComponent>()).position;
+	cout << "gPlayer->position=";
+	log(playerPosition);
+	model = translate(identity, playerPosition);
+
 	shaderMonoChroma.bind();
-	shaderMonoChroma.uploadUniform4f("u_Color", mat::vec4(1, 1, 1, 1));
+	shaderMonoChroma.uploadUniform4f("u_Color", Vec4f(1, 1, 1, 1));
 
 	stanicTexture.bind(0);
 	shaderMonoChroma.uploadUniform1i("u_Texture", 0);
 
 	submit(shaderMonoChroma, cubeVao, model);
-
-
-	//ovo moze da se apdejtuje mnogo redje
-	//int p = 0;
-	//for (int i = 0; i < gPhysicsManager.numberOfTerrainCubesOnStart; i++) {
-	//	if ((gPhysicsManager.kocke + i)->valid) {
-	//		voxelBuffer[sizeof(cubeVertices) / sizeof(float) + p * 3 + 0] = (gPhysicsManager.kocke + i)->position.x;
-	//		voxelBuffer[sizeof(cubeVertices) / sizeof(float) + p * 3 + 1] = (gPhysicsManager.kocke + i)->position.y;
-	//		voxelBuffer[sizeof(cubeVertices) / sizeof(float) + p * 3 + 2] = (gPhysicsManager.kocke + i)->position.z;
-	//		p++;
-	//	}
-
-
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();
@@ -215,7 +176,7 @@ RenderManager::RenderManager()
 	window = nullptr;
 }
 
-void RenderManager::submit(Shader& shader, VertexArray& object, mat::mat4& transform) {
+void RenderManager::submit(Shader& shader, VertexArray& object, Mat4& transform) {
 	shader.bind();
 	shader.uploadUniformMat4("u_Model", transform);
 	shader.uploadUniformMat4("u_View", sceneData->viewMatrix);
@@ -224,7 +185,7 @@ void RenderManager::submit(Shader& shader, VertexArray& object, mat::mat4& trans
 	gRenderCommand.drawArrays(object);
 }
 
-void RenderManager::beginScene(PerspectiveCamera& camera)
+void RenderManager::beginScene(PerspectiveCameraComponent& camera)
 {
 	sceneData->projectionMatrix = camera.projectionMatrix;
 	sceneData->viewMatrix = camera.viewMatrix;

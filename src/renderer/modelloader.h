@@ -4,11 +4,14 @@
 #include<fstream> 
 #include<vector>
 #include"core/mat.h"
+#include"core/entity.h"
 
-struct TripletOfInts {
+struct TripletOfInts
+{
 	int x, y, z;
 };
-class ModelLoader {
+class ModelLoader : public SpecificComponent<ModelLoader>
+{
 public:
 	ModelLoader();
 	~ModelLoader();

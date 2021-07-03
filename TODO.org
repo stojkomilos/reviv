@@ -1,20 +1,31 @@
+* Ciljevi
+
+danas:
+ - implementacija ecs u /ograniceni/ kod projekta
+ - copy constructor pogledati, i popraviti gde vidim, const reference, default constructor itd...
+ - onaj chernov video (entt introduction)
+ - renderer flow?
+
+proveriti "has"
+align: has "Position" "Rotation"
+
 trenutni cilj:
- - minimum viable product, ovim skontaj codebase ovo ono, i onda posle radi nove stvari:
+ - minimum viable product:
    - lopta koja se krece
    - kvadrat, svetlo?
    - basic shading na lopti
    - kretanje u creative mode, jako basic (posle mozes napravit ko u MC ili kako god)
 
------
-kompnente:
-
-template T -> id komponente tipa T (idk) -> return pointer tipa T
-
------
-
-https://www.youtube.com/watch?v=akxevYYWd9g
-
+* Renderer
 To render you need:
+
+- stanic:
+  - vertex array
+  - transformation matrix
+  - ?shader(bar info koji uzima, mozda?) mozda?
+  - ?position, scale?
+
+
  * object:
      - vertex array
      - transformation matrix of cube
@@ -27,12 +38,17 @@ To render you need:
 Submit stuff to queue, and render *only* after its all submited for a /lot/ of opmiziation n shit.
 
 mesh = material + vertex array + transformation + shader ??
------
+
+https://www.youtube.com/watch?v=akxevYYWd9g
+
+* Low prio
+
 low prio:
     =physicsmanager.setUp= preimenuj u physicsmanager.init(), i tako za sve setup sisteme
     preimenovati *_manager.[h,cpp] -> tipa *.[h,cpp]
 
------
+* Compiler
+
 Da moze da se kompajluje bez errora
 Skontati koji flagovi, da li ide =-Wall= itd...
 Skontati flagove za optimizaciju, release, debug, arhitekturu itd...
@@ -41,9 +57,51 @@ Emulacija, najvrv visual studio jer je premocan, npr ono sto pise koliko vremena
 
 cmake-generators
 
-
-* static
-
+* beleske
+** Static
 - static local variable:
    lifetime -> entire program
    scope -> limited to that scope
+
+** =delete =default
+Stackoverflow odgovor: https://stackoverflow.com/a/6502854
+
+** const
+
+Zavsisi sa koje /strane/ =*= je =const=.
+
+- =int const* A= $\equiv$ =const int* A=   -> ne mozes menjati A, mozes menjati gde pokazuje pointer
+
+- =int * const a=                    -> mozes menjati A, ne mozes menjati gde pokazuje pointer
+
+- =const= na kraju imena =metode= garantuje da metoda nece menjati clanove klase.
+#+begin_src cpp
+  class A{
+
+    int b;
+    int radi() const
+    {
+      cout << b;
+    }
+
+  };
+#+end_src
+
+
+* Ideje za ecs
+
+*nemoj ga praviti*
+
+- Najvrv da svaki =entity= moze da ima po jedan od svakog =component=, tako i profesionalni ecs radi.
+
+- Svaki entity ima svoj ID.
+
+- U listi komponenti, svaka komponenta ima svoj ID. Onda ces moci dobiti sve ostale informacije vezane za taj entity ID.
+
+- U listi komponenti, svaka komponenta ima svoj =bool= koji oznacava da li da je sistem /ignorise/ (tojest da li je "obrisana") ili da je sistem koristi (renderuje/physics-uje itd...)
+
+-----
+
+kompnente:
+
+template T -> id komponente tipa T (idk) -> return pointer tipa T

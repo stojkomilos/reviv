@@ -1,48 +1,48 @@
 #include "mat.h"
 
-mat::mat4 identity(1);
+mat::Mat4 identity(1); // TODO, const?
+
+
+
+void log(Vec3f thing){
+    cout << thing.x << " " << thing.y << " " << thing.z << endl;
+}
+void log(Mat4 thing){
+        cout << thing.a.x << " " << thing.b.x << " " << thing.c.x << " " << thing.d.x << endl;
+        cout << thing.a.y << " " << thing.b.y << " " << thing.c.y << " " << thing.d.y << endl;
+        cout << thing.a.z << " " << thing.b.z << " " << thing.c.z << " " << thing.d.z << endl;
+        cout << thing.a.w << " " << thing.b.w << " " << thing.c.w << " " << thing.d.w << endl;
+}
+void log(Vec2f thing) {
+    std::cout << thing.x << " " << thing.y << std::endl;
+}
 
 namespace mat{
 
-    vec2::vec2(float a, float b) : x(a), y(b) {}
-    vec2::vec2() { x = y = 0; }
-    vec3::vec3(float a, float b, float c) : x(a), y(b), z(c) {}
-    vec3::vec3():x(0), y(0), z(0){}
-    void vec3::log(std::string s){
-        std::cout << s << std::endl;
-        std::cout << x << " " << y << " " << z << std::endl;
-    }
-    vec4::vec4(): x(0), y(0), z(0), w(0){}
-    vec4::vec4(float p, float q, float r, float s): x(p), y(q), z(r), w(s){}
+    Vec2f::Vec2f(float x, float y) : x(x), y(y) {}
+    Vec2f::Vec2f() { x = y = 0; }
+    Vec3f::Vec3f(float x, float y, float z) : x(x), y(y), z(z) {}
+    Vec3f::Vec3f():x(0), y(0), z(0){}
+    Vec4f::Vec4f(): x(0), y(0), z(0), w(0){}
+    Vec4f::Vec4f(float x, float y, float z, float w): x(x), y(y), z(z), w(w){}
 
-    mat4::mat4(){}
-    mat4::mat4(float n){
+    Mat4::Mat4(){}
+    Mat4::Mat4(float n){
         a.x = b.y = c.z = d.w = n;
     }
-    void mat4::log(std::string s){
-            std::cout << s << std::endl;
-            std::cout << a.x << " " << b.x << " " << c.x << " " << d.x << std::endl;
-            std::cout << a.y << " " << b.y << " " << c.y << " " << d.y << std::endl;
-            std::cout << a.z << " " << b.z << " " << c.z << " " << d.z << std::endl;
-            std::cout << a.w << " " << b.w << " " << c.w << " " << d.w << std::endl;
-    }
-    void vec2::log(std::string s) {
-        std::cout << s << std::endl;
-        std::cout << x << " " << y << std::endl;
-    }
-    mat4 translate(mat4 a, vec3 b){
+    Mat4 translate(Mat4 a, Vec3f b){
         a.d.x += b.x;
         a.d.y += b.y;
         a.d.z += b.z;
         return a;
     }
-    mat4 scale(mat4 a, vec3 b) {
+    Mat4 scale(Mat4 a, Vec3f b) {
         a.a.x *= b.x;
         a.b.y *= b.y;
         a.c.z *= b.z;
         return a;
     }
-    mat4 rotateX(mat4 a, float theta){
+    Mat4 rotateX(Mat4 a, float theta){
         a.a.x = 1;
         a.b.y = cos(theta);
         a.b.z = sin(theta);
@@ -51,7 +51,7 @@ namespace mat{
         a.d.w = 1;
         return a;
     }
-    mat4 rotateY(mat4 a, float theta){
+    Mat4 rotateY(Mat4 a, float theta){
 
         a.a.x = cos(theta);
         a.a.z = -sin(theta);
@@ -61,7 +61,7 @@ namespace mat{
         a.d.w = 1;
         return a;
     }
-    mat4 rotateZ(mat4 a, float theta){
+    Mat4 rotateZ(Mat4 a, float theta){
         a.a.x = cos(theta);
         a.a.y = sin(theta);
         a.b.x = -sin(theta);
@@ -71,9 +71,9 @@ namespace mat{
         return a;
     }
 
-    mat4 perspective(float close, float far, float fov, float R){
+    Mat4 perspective(float close, float far, float fov, float R){
 
-        mat4 p(0);
+        Mat4 p(0);
         float L = 2.0f * tan(fov / 2) * close;
 
         float H = L / R;
@@ -88,10 +88,10 @@ namespace mat{
         return p;
     }
 
-    vec4 multiply(mat4 a, vec4 b){
+    Vec4f multiply(Mat4 a, Vec4f b){
 
         //std::cout << "BBB";
-        vec4 rez;
+        Vec4f rez;
         rez.x = a.a.x * b.x + a.b.x * b.y + a.c.x * b.z + a.d.x * b.w;
         rez.y = a.a.y * b.x + a.b.y * b.y + a.c.y * b.z + a.d.y * b.w;
         rez.z = a.a.z * b.x + a.b.z * b.y + a.c.z * b.z + a.d.z * b.w;
@@ -101,75 +101,75 @@ namespace mat{
 
     }
 
-    float module(vec3 a){
+    float module(Vec3f a){
         return sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
     }
-    float module(vec2 a) {
+    float module(Vec2f a) {
         return sqrt(a.x * a.x + a.y * a.y);
     }
-    float dot(vec3 a, vec3 b){
+    float dot(Vec3f a, Vec3f b){
         return a.x * b.x + a.y * b.y + a.z * b.z;
     }
-    float dot(vec2 a, vec2 b) {
+    float dot(Vec2f a, Vec2f b) {
         return a.x * b.x + a.y * b.y;
     }
-    vec3 projection(vec3 a, vec3 b){
+    Vec3f projection(Vec3f a, Vec3f b){
         float d = (module(b)) * (module(b)) / dot(a, b);
-        vec3 c;
+        Vec3f c;
         c.x = a.x * d;
         c.y = a.y * d;
         c.z = a.z * d;
         return c;
     }
-    vec3 normalise(vec3 a){
+    Vec3f normalise(Vec3f a){
         float b = module(a);
         a.x /= b;
         a.y /= b;
         a.z /= b;
         return a;
     }
-    vec2 normalise(vec2 a) {
+    Vec2f normalise(Vec2f a) {
         float b = module(a);
         a.x /= b;
         a.y /= b;
         return a;
     }
-    vec3 cross(vec3 a, vec3 b){
+    Vec3f cross(Vec3f a, Vec3f b){
 
-        vec3 rez;
+        Vec3f rez;
         rez.x = a.y * b.z - a.z * b.y;
         rez.y = -(a.x * b.z - a.z * b.x);
         rez.z = a.x * b.y - a.y * b.x;
         return rez;
     }
-    vec3 multiplyScalar(vec3 a, float b){
+    Vec3f multiplyScalar(Vec3f a, float b){
         a.x *= b;
         a.y *= b;
         a.z *= b;
         return a;
     }
-    vec3 multiplyScalar(vec3 a, int b) {
+    Vec3f multiplyScalar(Vec3f a, int b) {
         a.x *= b;
         a.y *= b;
         a.z *= b;
         return a;
     }
-    vec3 add(vec3 a, vec3 b){
-        vec3 c;
+    Vec3f add(Vec3f a, Vec3f b){
+        Vec3f c;
         c.x = a.x + b.x;
         c.y = a.y + b.y;
         c.z = a.z + b.z;
         return c;
     }
-    vec3 subtract(vec3 a, vec3 b) {
-        vec3 c;
+    Vec3f subtract(Vec3f a, Vec3f b) {
+        Vec3f c;
         c.x = a.x - b.x;
         c.y = a.y - b.y;
         c.z = a.z - b.z;
         return c;
     }
-    vec2 subtract(vec2 a, vec2 b) {
-        vec2 c;
+    Vec2f subtract(Vec2f a, Vec2f b) {
+        Vec2f c;
         c.x = a.x - b.x;
         c.y = a.y - b.y;
         return c;
@@ -225,12 +225,12 @@ namespace mat{
         viewMatrix.d.w = 1;
 
     }
-    void Camera::setViewMatrix(vec3 position, vec3 direction){
-        right = normalise(cross(direction, vec3(0, 1, 0)));
+    void Camera::setViewMatrix(Vec3f position, Vec3f direction){
+        right = normalise(cross(direction, Vec3f(0, 1, 0)));
         up = normalise(cross(right, up));
         setViewMatrix();
     }
-    void Camera::setViewMatrix(vec3 position, float pitch1, float yaw1){
+    void Camera::setViewMatrix(Vec3f position, float pitch1, float yaw1){
         pitch = pitch1;
         yaw = yaw1;
         direction.x = -cos(pitch) * cos(yaw);
@@ -238,7 +238,7 @@ namespace mat{
         direction.z = -cos(pitch) * sin(yaw);
         direction = normalise(direction);
 
-        right = normalise(cross(direction, vec3(0, 1, 0)));
+        right = normalise(cross(direction, Vec3f(0, 1, 0)));
         up = normalise(cross(right, direction));
         setViewMatrix();
     }

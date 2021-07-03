@@ -2,6 +2,8 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
+// Novo TODO: reformisati ModelLoader klasu, tako da nema svaka instanca .Load funciju. Mozda nek to bude neka globna funkcija, mozda metoda Render_manager-a, mozda samo static metoda kod ModelLoader-a? idk
+
 #include<ctime>
 #include<vector>
 #include<cassert>
@@ -17,9 +19,9 @@ bool ModelLoader::LoadModel(const char* path) {
 	std::cout << "Start reading of model " << path << std::endl;
 	clock_t clock = std::clock();
 
-	std::vector<mat::vec3> vVertices;
-	std::vector<mat::vec2> vTextures;
-	std::vector<mat::vec3> vNormals;
+	std::vector<Vec3f> vVertices;
+	std::vector<Vec2f> vTextures;
+	std::vector<Vec3f> vNormals;
 	std::vector<TripletOfInts> vVertexIndices;
 	std::vector<TripletOfInts> vTextureIndices;
 	std::vector<TripletOfInts> vNormalIndices;
@@ -33,8 +35,8 @@ bool ModelLoader::LoadModel(const char* path) {
 
 
 	while (1) {
-		mat::vec3 vertex;
-		mat::vec2 textureVertex;
+		Vec3f vertex;
+		Vec2f textureVertex;
 		char antiWarningChar = fscanf(file, "%c", &c);
 		if (antiWarningChar == EOF) {
 			break;
@@ -138,16 +140,16 @@ bool ModelLoader::LoadModel(const char* path) {
 	fclose(file);
 
 
-	bufferSize = vVertexIndices.size() * 3 * (2 * sizeof(mat::vec3) + sizeof(mat::vec2));   
+	bufferSize = vVertexIndices.size() * 3 * (2 * sizeof(Vec3f) + sizeof(Vec2f));   
 	pointer = new char[bufferSize];
 	for (int i = 0; i < vVertexIndices.size(); i ++){ ///ovo ubacivanje u heap izgleda cudno jer je polu prilagodjeno za koriscenje element array objecta, al trenutno ne koristim
 		for (int j = 0; j < 3; j++) {
-			char* address = pointer + (sizeof(mat::vec3) * 2 + sizeof(mat::vec2)) * (i * 3 + j);
+			char* address = pointer + (sizeof(Vec3f) * 2 + sizeof(Vec2f)) * (i * 3 + j);
 
 
-			*((mat::vec3*)(address))                                         = vVertices[*((int*)((char*)&vVertexIndices[i].x  + j * sizeof(int)))];
-			*((mat::vec2*)(address + sizeof(mat::vec3)))                     = vTextures[*((int*)((char*)&vTextureIndices[i].x + j * sizeof(int)))];
-			*((mat::vec3*)(address + sizeof(mat::vec3) + sizeof(mat::vec2))) = vNormals [*((int*)((char*)&vNormalIndices[i].x  + j * sizeof(int)))];
+			*((Vec3f*)(address))                                         = vVertices[*((int*)((char*)&vVertexIndices[i].x  + j * sizeof(int)))];
+			*((Vec2f*)(address + sizeof(Vec3f)))                     = vTextures[*((int*)((char*)&vTextureIndices[i].x + j * sizeof(int)))];
+			*((Vec3f*)(address + sizeof(Vec3f) + sizeof(Vec2f))) = vNormals [*((int*)((char*)&vNormalIndices[i].x  + j * sizeof(int)))];
 		}
 	}
 
@@ -160,7 +162,7 @@ bool ModelLoader::LoadModel(const char* path) {
 	nrVertices = vVertices.size();
 	nrTriangles = vVertexIndices.size(); ///vertex buffer layout, cherno ima dobar video, meni su svi trenutno zajedno a ne po jednom vertexu sto mozda ne valja za cash ili tako nesto
 
-	std::cout << "End of reading model " << path << std::endl << "#triangles " << nrTriangles << " #vertices " << nrVertices << std::endl << "Time: " << (std::clock() - clock) / (CLOCKS_PER_SEC * 1.0f) << " Data size " << nrTriangles * sizeof(mat::vec3) / 1024.f << "KB\n";
+	std::cout << "End of reading model " << path << std::endl << "#triangles " << nrTriangles << " #vertices " << nrVertices << std::endl << "Time: " << (std::clock() - clock) / (CLOCKS_PER_SEC * 1.0f) << " Data size " << nrTriangles * sizeof(Vec3f) / 1024.f << "KB\n";
 
 	vVertices.clear();
 	

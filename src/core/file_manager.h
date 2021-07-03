@@ -8,7 +8,7 @@
 #include<fstream>
 #include<sstream>
 
-#include"physics/physics_manager.h"
+//#include"physics/physics_manager.h"
 
 class FileManager {
 public:

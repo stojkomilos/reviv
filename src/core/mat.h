@@ -3,66 +3,70 @@
 #include<iostream>
 #include<cmath>
 
+// NOVO TODO: stavi da log metoda bude van strukture, mozda cak i van namespace-a
+// NOVO TODO: optimizovanje koriscenjem "initializer list" i copy construtor. takodje, const refererence za mat::add, itd
+// NOVO TODO: operatori da se koriste: add, multiply, ==, etc...
+// NOVO TODO: operator >> da se koristi za cout
+// NOVO TODO: kapitalizacija SVIH klasa i struktura ovde i pretvori ih odma sve i u klase
+
+using std::cin; using std::cout; using std::endl;
+
 namespace mat{
 
-    struct vec1{
-        float x;
-        vec1();
-        vec1(float a);
-        void log(std::string s);
-    };
-    struct vec2{
-        float x, y;
-        vec2();
-        vec2(float a, float b);
-        void log(std::string s);
-    };
-    struct vec3{
-        float x, y, z;
-        vec3();
-        vec3(float x, float y, float c);
-        void log(std::string s);
-    };
-    struct vec4{
-        float x, y, z, w;
-        vec4();
-        vec4(float p, float q, float r, float s);
-        void log(std::string s);
-    };
-    class mat4{
+    class Vec1f{
     public:
-        vec4 a, b, c, d;
-
-        mat4();
-        mat4(float n);
-        void log(std::string s);
+        float x;
+        Vec1f();
+        Vec1f(float x);
+    };
+    class Vec2f{
+    public:
+        float x, y;
+        Vec2f();
+        Vec2f(float x, float y);
+    };
+    class Vec3f{
+    public:
+        float x, y, z;
+        Vec3f();
+        Vec3f(float x, float y, float z);
+    };
+    class Vec4f{
+    public:
+        float x, y, z, w;
+        Vec4f();
+        Vec4f(float x, float y, float z, float w);
+    };
+    class Mat4{
+    public:
+        Vec4f a, b, c, d;
+        Mat4();
+        Mat4(float n);
     };
 
-    mat4 translate(mat4 a, vec3 b);
-    mat4 scale(mat4 a, vec3 b);
-    mat4 rotateX(mat4 a, float theta);
-    mat4 rotateY(mat4 a, float theta);
-    mat4 rotateZ(mat4 a, float theta);
+    Mat4 translate(Mat4 a, Vec3f b);
+    Mat4 scale(Mat4 a, Vec3f b);
+    Mat4 rotateX(Mat4 a, float theta);
+    Mat4 rotateY(Mat4 a, float theta);
+    Mat4 rotateZ(Mat4 a, float theta);
 
-    mat4 perspective(float close, float far, float fov, float R);
+    Mat4 perspective(float close, float far, float fov, float R);
 
-    vec4 multiply(mat4 a, vec4 b);
+    Vec4f multiply(Mat4 a, Vec4f b);
 
-    void log(std::string s, mat4 a);
-    float module(vec3 a);
-    float module(vec2 a);
-    float dot(vec3 a, vec3 b);
-    float dot(vec2 a, vec2 b);
-    vec3 projection(vec3 a, vec3 b);
-    vec3 normalise(vec3 a);
-    vec2 normalise(vec2 a);
-    vec3 cross(vec3 a, vec3 b);
-    vec3 multiplyScalar(vec3 a, float b);
-    vec3 multiplyScalar(vec3 a, int b);
-    vec3 add(vec3 a, vec3 b);
-    vec3 subtract(vec3 a, vec3 b);
-    vec2 subtract(vec2 a, vec2 b);
-    void log(std::string s, vec3 a);
+    float module(Vec3f a);
+    float module(Vec2f a);
+    float dot(Vec3f a, Vec3f b);
+    float dot(Vec2f a, Vec2f b);
+    Vec3f projection(Vec3f a, Vec3f b);
+    Vec3f normalise(Vec3f a);
+    Vec2f normalise(Vec2f a);
+    Vec3f cross(Vec3f a, Vec3f b);
+    Vec3f multiplyScalar(Vec3f a, float b);
+    Vec3f multiplyScalar(Vec3f a, int b);
+    Vec3f add(Vec3f a, Vec3f b);
+    Vec3f subtract(Vec3f a, Vec3f b);
+    Vec2f subtract(Vec2f a, Vec2f b);
     int sgn(int n);
     int sgn(float n);
     float clampTwoSide(float minPossibleValue, float maxPossibleValue, float n);
@@ -71,13 +75,19 @@ namespace mat{
 
     class Camera{
     public:
-        vec3 position, right, up, direction;
-        mat4 viewMatrix;
+        Vec3f position, right, up, direction;
+        Mat4 viewMatrix;
         float pitch, yaw;
         void setViewMatrix();
-        void setViewMatrix(vec3 position, vec3 direction);
-        void setViewMatrix(vec3 position, float pitch1, float yaw1);
+        void setViewMatrix(Vec3f position, Vec3f direction);
+        void setViewMatrix(Vec3f position, float pitch1, float yaw1);
         Camera();
 
     };
 }
+
+using namespace mat;
+
+void log(Vec3f thing);
+void log(Mat4 thing);
+void log(Vec2f thing);

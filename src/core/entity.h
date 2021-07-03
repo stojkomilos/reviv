@@ -13,28 +13,26 @@ class Component
 {
 public:
     std::string name;
-    mat::vec2 position; //TODO
+    Vec2f position; //TODO
     virtual unsigned int getId() = 0;
-    Component()
-    {
-
-    }
-    virtual ~Component()
-    {
-
-    }
+    Component();
+    virtual ~Component();
 };
-
 
 class Entity
 {
 public:
+    Entity();
     std::vector<Component*> components;
 
     template <class T>
-    T* getComponent();
-
     void addComponent(void* newComponent);
+
+    template <class T>
+    bool hasComponent() const;
+
+    template <class T>
+    T* getComponent() const;
 };
 
 template <class T>
@@ -42,26 +40,13 @@ class SpecificComponent : public Component
 {
 public:
     static unsigned int id;
-    T* getComponent();
     unsigned int getId() override;
-    SpecificComponent()
-    {
-
-    }
-    virtual ~SpecificComponent()
-    {
-
-    }
+    SpecificComponent();
+    virtual ~SpecificComponent();
 };
 
 template <class T>
 unsigned int SpecificComponent<T>::id(gid++);
-
-//class kurac
-//{
-//public:
-//    unsigned int giveId(int help2);
-//};
 
 template <class T>
 unsigned int SpecificComponent<T>::getId()
@@ -70,32 +55,64 @@ unsigned int SpecificComponent<T>::getId()
 }
 
 template <class T>
-T* Entity::getComponent()
+void Entity::addComponent(void* newComponent)
+{
+    cout << "==> Adding component\n";
+    components.push_back((T*)newComponent);
+}
+
+template <class T>
+bool Entity::hasComponent() const
 {
     int size = components.size();
     for(int i=0; i<size; i++)
     {
-        if((*components[i]).getId() == T::id) // ->
+        if(components[i]->getId() == T::id)
         {
-            std::cout << "nasao id: " << T::id << "=" << (*components[i]).getId() << std::endl;
-            return  (T*)components[i];
+            return true;
         }
     }
-    std::cout << "ERROR, nije nasao, entity.h, L:54\n" << std::endl;
-    assert(false);
-    return nullptr;
+    return false;
 }
 
+template <class T>
+T* Entity::getComponent() const
+{
+    T* result = nullptr;
 
-//template <class T>
-//unsigned int SpecificComponent<T>::getId()
-//{
-//    return id;
-//}
+    int size = components.size();
+    for(int i=0; i<size; i++)
+    {
+        cout << "i=" << i << " size=" << size << " T::id=" << T::id << endl;
+        if((*components[i]).getId() == T::id) // ->
+        {
+            if(result != nullptr)
+            {
+                cout << "ERROR: Requested component that has multiple instances in one entity";
+                assert(false);
+            }
+            cout << "nasao id: " << T::id << "=" << (*components[i]).getId() << endl;
+            result = (T*)components[i];
+        }
+    }
 
-//template <class T>
-//SpecificComponent<T>::SpecificComponent()
-//{
-//SpecificComponent<T>::id = gid++;
-//std::cout << "konstruktor id: " << id << " gid: " << gid << std::endl;
-//}
+    if(result == nullptr)
+    {
+        cout << "ERROR, nije nasao" << endl;
+        assert(false);
+    }
+
+    return result;
+}
+
+template <class T>
+SpecificComponent<T>::SpecificComponent()
+{
+
+}
+
+template <class T>
+SpecificComponent<T>::~SpecificComponent()
+{
+
+}

@@ -7,15 +7,18 @@
 #include"core/mat.h"
 #include"renderer/shader.h"
 #include"renderer/shader.h"
-#include"physics/physics_manager.h"
+//#include"physics/physics_manager.h"
 #include"renderer/modelloader.h"
-#include"physics/physics_sim.h"
+//#include"physics/physics_sim.h"
 #include"renderer/buffer.h"
 #include"renderer/vertex_array.h"
 #include"renderer/render_command.h"
 #include"renderer/camera.h"
 #include"renderer/texture.h"
 #include"renderer/framebuffer.h"
+
+#include"core/entity.h"
+#include"core/basic_components.h"
 
 class RenderManager {
 public:
@@ -37,24 +40,24 @@ public:
 	size_t sizeOfVoxelBuffer;
 	bool fullscreen = false;
 	
-	void submit(Shader& shader, VertexArray& object, mat::mat4& transform);
-	void beginScene(PerspectiveCamera& camera);
+	void submit(Shader& shader, VertexArray& object, Mat4& transform);
+	void beginScene(PerspectiveCameraComponent& camera);
 	void endScene();
 
 	Texture2D stanicTexture;
 	Texture2D beloTexture;
 
-	PerspectiveCamera camera;
+	//PerspectiveCamera camera;
 
 	int nrOfValidCubes;
 
 	struct SceneData
 	{
-		mat::mat4 viewMatrix, projectionMatrix;
+		Mat4 viewMatrix, projectionMatrix;
 	};
 	SceneData* sceneData;
 
 private:
-
-
 };
+
+/// NOVO

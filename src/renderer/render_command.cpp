@@ -3,7 +3,7 @@
 void RenderCommand::drawArrays(const VertexArray& object) {
 	glDrawArrays(GL_TRIANGLES, 0, object.nrOfTriangles * 3);
 }
-void RenderCommand::setClearColor(mat::vec4 color)
+void RenderCommand::setClearColor(Vec4f color)
 {
 	glClearColor(color.x, color.y, color.z, color.w);
 }

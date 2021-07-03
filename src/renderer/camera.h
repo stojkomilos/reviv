@@ -2,21 +2,24 @@
 
 #include"core/mat.h"
 #include"core/entity.h"
+#include"core/basic_components.h"
 
-class PerspectiveCamera
+class PerspectiveCameraComponent : public SpecificComponent<PerspectiveCameraComponent>
 {
 public:
-	PerspectiveCamera();
-	void setUp(float nearPlane, float farPlane, float fov, float ratio);
+	PerspectiveCameraComponent() = default;
+	PerspectiveCameraComponent(const PerspectiveCameraComponent&) = default;
+
+	void setUp(float nearPlane, float farPlane, float fov, float ratio); // TODO: staviti ovo u constructor
 	void recalculateViewMatrix();
 	void recalculateProjectionMatrix();
-	void alignWithEntity(Entity& entity);
+	void alignWithEntity(const Entity& entity);
 
-	mat::vec3 position;
+	Vec3f position;
 	float pitch, yaw, roll;
-	mat::vec3 right, up, direction;
+	Vec3f right, up, direction;
 
-	mat::mat4 viewMatrix, projectionMatrix;
+	Mat4 viewMatrix, projectionMatrix;
 
 	float leftPlane, rightPlane, bottomPlane, topPlane, nearPlane, farPlane;
 	float ratio, fov;

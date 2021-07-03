@@ -1,6 +1,7 @@
 #include"hid.h"
 
-extern PhysicsManager gPhysicsManager;
+/*
+//extern PhysicsManager gPhysicsManager;
 const float sensitivity = 0.002f;
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -70,7 +71,7 @@ void processInput(GLFWwindow* window) {
         gPhysicsManager.player.velocity.z = -gPhysicsManager.player.right.z * gPhysicsManager.player.speed;
     }
     if ((movingForward ^ movingBack) and (movingLeft ^ movingRight)) {
-        gPhysicsManager.player.velocity = mat::add(mat::multiplyScalar(mat::normalise(mat::add(mat::multiplyScalar(gPhysicsManager.player.forward, movingForward * 2 - 1), mat::multiplyScalar(gPhysicsManager.player.right, movingRight * 2 - 1))), gPhysicsManager.player.speed), mat::vec3(0.f, gPhysicsManager.player.velocity.y, 0.f));
+        gPhysicsManager.player.velocity = mat::add(mat::multiplyScalar(mat::normalise(mat::add(mat::multiplyScalar(gPhysicsManager.player.forward, movingForward * 2 - 1), mat::multiplyScalar(gPhysicsManager.player.right, movingRight * 2 - 1))), gPhysicsManager.player.speed), Vec3f(0.f, gPhysicsManager.player.velocity.y, 0.f));
     }
     if ((glfwGetKey(window, GLFW_KEY_LEFT_ALT)) == GLFW_PRESS) {
         gPhysicsManager.player.acceleration.y = 0;
@@ -102,3 +103,4 @@ void processInput(GLFWwindow* window) {
 
 }
 
+*/

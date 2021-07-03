@@ -101,19 +101,19 @@ void Shader::checkCompileErrors(GLuint shader, std::string type) {
     }
 }
 
-void Shader::uploadUniformMat4(const std::string& name, mat::mat4& matrix)
+void Shader::uploadUniformMat4(const std::string& name, Mat4& matrix)
 {
     unsigned int location = glGetUniformLocation(ID, name.c_str());
     glUniformMatrix4fv(location, 1, GL_FALSE, (float*)&matrix);
 }
 
-void Shader::uploadUniform3f(const std::string& name, mat::vec3 a)
+void Shader::uploadUniform3f(const std::string& name, Vec3f a)
 {
     unsigned int loc = glGetUniformLocation(ID, name.c_str());
     glUniform3f(loc, a.x, a.y, a.z);
 }
 
-void Shader::uploadUniform4f(const std::string& name, mat::vec4 a)
+void Shader::uploadUniform4f(const std::string& name, Vec4f a)
 {
     unsigned int loc = glGetUniformLocation(ID, name.c_str());
     glUniform4f(loc, a.x, a.y, a.z, a.w);

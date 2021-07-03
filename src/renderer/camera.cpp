@@ -1,59 +1,69 @@
 #include "camera.h"
 
-PerspectiveCamera::PerspectiveCamera()
+//PerspectiveCamera::PerspectiveCamera()
+//{
+//}
+
+void PerspectiveCameraComponent::alignWithEntity(const Entity& entity)
 {
-}
-void PerspectiveCamera::alignWithEntity(Entity& entity)
-{
-    position = entity.position;
-    pitch = entity.pitch;
-    yaw = entity.yaw;
-    roll = entity.roll;
+    bool prvi = entity.hasComponent<PositionComponent>();
+    bool drugi = entity.hasComponent<RotationComponent>();
+    if(prvi and drugi){
+        position = entity.getComponent<PositionComponent>()->position;
+        pitch = entity.getComponent<RotationComponent>()->pitch;
+        yaw = entity.getComponent<RotationComponent>()->yaw;
+        roll = entity.getComponent<RotationComponent>()->roll;
+    }
+    else {
+        cout << "ERROR: Required components are not present in entity\n";
+        assert(false);
+    }
 
     //std::cout << "pitch = " << pitch << " " << yaw << " " << roll << "\n";
 
     recalculateViewMatrix();
 }
 
-void PerspectiveCamera::setUp(float nearPlane1, float farPlane1, float fov1, float ratio1)
+
+void PerspectiveCameraComponent::setUp(float nearPlane1, float farPlane1, float fov1, float ratio1)
 {
     nearPlane = nearPlane1; 
     farPlane = farPlane1;
     fov = fov1;
     ratio = ratio1;
 }
-void PerspectiveCamera::recalculateViewMatrix()
+void PerspectiveCameraComponent::recalculateViewMatrix()
 {
 
     direction.x = -cos(pitch) * cos(yaw);
     direction.y = -sin(pitch);
     direction.z = -cos(pitch) * sin(yaw);
-    direction = mat::normalise(direction);
+    direction = normalise(direction);
 
-    right = mat::normalise(mat::cross(direction, mat::vec3(0, 1, 0)));
-    up = mat::normalise(mat::cross(right, direction));
+    right = normalise(cross(direction, Vec3f(0, 1, 0)));
+    up = normalise(cross(right, direction));
 
     viewMatrix.a.x = right.x;
     viewMatrix.b.x = right.y;
     viewMatrix.c.x = right.z;
-    viewMatrix.d.x = -mat::dot(position, right);
+    viewMatrix.d.x = -dot(position, right);
 
     viewMatrix.a.y = up.x;
     viewMatrix.b.y = up.y;
     viewMatrix.c.y = up.z;
-    viewMatrix.d.y = -mat::dot(position, up);
+    viewMatrix.d.y = -dot(position, up);
 
     viewMatrix.a.z = direction.x;
     viewMatrix.b.z = direction.y;
     viewMatrix.c.z = direction.z;
-    viewMatrix.d.z = -mat::dot(position, direction);
+    viewMatrix.d.z = -dot(position, direction);
 
     viewMatrix.a.w = 0;
     viewMatrix.b.w = 0;
     viewMatrix.c.w = 0;
     viewMatrix.d.w = 1;
 }
-void PerspectiveCamera::recalculateProjectionMatrix()
+void PerspectiveCameraComponent::recalculateProjectionMatrix()
 {
 
     float L = 2.0f * tan(fov / 2) * nearPlane;
@@ -68,7 +78,3 @@ void PerspectiveCamera::recalculateProjectionMatrix()
     projectionMatrix.c.w = -1;
 
 }
-
-
-
-
