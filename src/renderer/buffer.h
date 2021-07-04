@@ -40,7 +40,7 @@ public:
 };
 
 
-class Vbo : public SpecificComponent<Vbo>
+class Vbo
 {
 public:
 	Vbo();

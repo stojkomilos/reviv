@@ -1,12 +1,12 @@
 #include "camera.h"
-void PerspectiveCameraComponent::setUp(float nearPlane1, float farPlane1, float fov1, float ratio1)
+void PerspectiveCamera::setUp(float nearPlane1, float farPlane1, float fov1, float ratio1)
 {
     nearPlane = nearPlane1; 
     farPlane = farPlane1;
     fov = fov1;
     ratio = ratio1;
 }
-void PerspectiveCameraComponent::recalculateViewMatrix()
+void PerspectiveCamera::recalculateViewMatrix()
 {
 
     direction.x = -cos(pitch) * cos(yaw);
@@ -37,7 +37,7 @@ void PerspectiveCameraComponent::recalculateViewMatrix()
     viewMatrix.c.w = 0;
     viewMatrix.d.w = 1;
 }
-void PerspectiveCameraComponent::recalculateProjectionMatrix()
+void PerspectiveCamera::recalculateProjectionMatrix()
 {
 
     float L = 2.0f * tan(fov / 2) * nearPlane;

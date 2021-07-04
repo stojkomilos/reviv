@@ -24,7 +24,10 @@ class Entity
 public:
     Entity();
     std::vector<Component*> components;
+    std::string name = "nameless";
     bool valid = true;
+    void log() const;
+    void print() const;
 
     template <class T>
     void addComponent(void* newComponent);
@@ -65,14 +68,19 @@ void Entity::addComponent(void* newComponent)
     }
     cout << "==> Adding component\n";
     components.push_back((T*)newComponent);
+
+    log();
+
 }
 
 template <class T>
 bool Entity::hasComponent() const
 {
+//    log();
     int size = components.size();
     for(int i=0; i<size; i++)
     {
+        cout << "D T::id = " << T::id << endl;
         if(components[i]->getId() == T::id)
         {
             return true;

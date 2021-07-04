@@ -19,12 +19,12 @@ public:
     Shader();
     unsigned int ID;
     void setUp(const char* vertexPath, const char* fragmentPath); ///, const char* geometryPath
-    void bind();
+    void bind() const;
 
-    void uploadUniformMat4(const std::string& name, Mat4& matrix);
-    void uploadUniform3f(const std::string& name, Vec3f a); //mogu se optimizovati koristecu drugu glUniform funkciju
-    void uploadUniform4f(const std::string& name, Vec4f a);
-    void uploadUniform1i(const std::string& name, int a);
+    void uploadUniformMat4(const std::string& name, const Mat4& matrix) const;
+    void uploadUniform3f(const std::string& name, const Vec3f& a) const; //mogu se optimizovati koristecu drugu glUniform funkciju
+    void uploadUniform4f(const std::string& name, const Vec4f& a) const;
+    void uploadUniform1i(const std::string& name, int a) const;
 private:
     void checkCompileErrors(GLuint shader, std::string type);
 };

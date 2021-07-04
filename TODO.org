@@ -1,12 +1,10 @@
 * Ciljevi
 
-sutra, stvarno idk:
- - pogledaj informativno:
-   - https://www.youtube.com/watch?v=d5wL6eZnWMU
-   - https://learnopengl.com/Getting-started/Textures
-   - https://www.youtube.com/watch?v=qEfohFgQ1-I&t=298s
-   - https://www.youtube.com/watch?v=2k5FjtMNQsM&t=1296s
-   - hazel source code?
+sutra cilj:
+ - MVP, samo staniceva faca na kocki da se rotira oko mene (pogledaj TODOO, gRenderManager.[update, setup]
+ - object lifetime, ownership stuff, raii
+ - entity class deep copy (copy construktor ili obicna funkcija)
+ - transfer projekta u ecs
  
  
 
@@ -20,9 +18,15 @@ posle toga:
  - ovaj /ceo/ chapter: https://learnopengl.com/Model-Loading/Assimp
  - cherno materials video-i, cherno textures video-i
 
+** 
+
+Kako razviti veliki kvalitetan kod?
+ - Prvo napravis MVP /(minimum viable product)/, i onda /iteracijama/ poboljsavas kod.
+
 * Renderer
 ** material
 
+*** 
 - Shader
 - Shader data -> uniforms + textures
 - Flags:
@@ -31,6 +35,56 @@ posle toga:
   - blending
   - etc...
 
+*** 
+
+neki =uniformi= su vezani za =materijal=, a neki za =renderer/scenu=.
+renderer/scena:
+ - pozicija svetlosti
+ - pozicija predmeta
+ - projection matrix
+ - view matrix
+ - transformation matrix
+
+-----
+
+#+begin_src cpp
+  Material* material = new Material(m_FlatColorShader)
+  material->set("u_Color", redColor);
+  //squareMesh->setMaterial(material);   -   mozda, al msm da ne, dodaj mesh-ove jednog dana ako budu tada potrebni, al do tada stvarno nemoj
+  // ml->setTexture("asdf", texture);  -  ili ml->set("asdf", texture);      -> texture= texture reference? texture classa?
+#+end_src
+
+Konstrukcija shadera. Ovo *nije* nesto bitno, napravi ako ti je dosadno.
+#+begin_src cpp
+  shader = Shader::Create("Ime_Shadera", const std::string& vetexSrc, const std::string& fragmentSrc);
+  // Koristi ime (prvi argument) umesto ID, jer je vise human readable
+#+end_src
+
+Kad renderujes: 
+
+#+begin_src cpp
+  void RenderManager::submit(material, vao, transform)
+  {
+    material.bind();
+    //vao....
+    //transformstuff
+  }
+
+  void material.bind()
+  {
+    shader.bind()
+    shader.setdata
+    shader.setdata
+    shader.setdata
+    shader.setdata
+  }
+#+end_src
+jedna moja ideja kako implementirati to "set"-ovanje:
+    void set(const std::string& s, mat::Vec3 color);
+    hash za ovaj string koji dobijes
+    svaki put kada renderuje treba da set-uje te stvari? ili samo kada se promene pa mozda da skonta preko pointera????
+          cherno -> std::unordered_map<std::string, Ref<Shader>> m_Shaders;
+ 
 ** 
 
 https://learnopengl.com/Model-Loading/Assimp -> ona slika dole
@@ -45,7 +99,7 @@ Da bi submitovao treba ti:
             shaderTexture.uploadUniform3f("u_CameraPosition", camera.position);
             shaderTexture.uploadUniform1i("u_Texture", 1);
  - Vao
------
+--------------
 
 To render you need:
 
@@ -147,6 +201,8 @@ Zavsisi sa koje /strane/ =*= je =const=.
 - Updating a uniform *does* require you to /first/ use the program. (da li moze update posle prvog koriscenja iako nije trentuno in-use???)
 * Ideje za ecs
 
+za basic ecs (malkice bolja verzija mozda ovog mog, ili bar malo vise citka mozda): https://stackoverflow.com/questions/17058701/member-function-called-only-on-initialization-of-first-instance-of-a-class-c
+
 *nemoj ga praviti*
 
 - Najvrv da svaki =entity= moze da ima po jedan od svakog =component=, tako i profesionalni ecs radi.
@@ -170,3 +226,5 @@ template T -> id komponente tipa T (idk) -> return pointer tipa T
 * Optimizacija
 
 Cach-iranje pozicija uniform-ova u shader-u pri kompajlovanju
+
+Koristiti std::array umesto std::vector, zbog heap allocation shita - kaze Cherno. Ili napraviti svoju implementaciju vektora ili array-a

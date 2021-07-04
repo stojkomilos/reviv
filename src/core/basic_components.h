@@ -3,20 +3,21 @@
 #include"entity.h"
 #include"core/mat.h"
 
-struct TransformComponent : SpecificComponent<TransformComponent>
+class Transform : public SpecificComponent<Transform>
 {
+public:
     Mat4 transform;
 
-    TransformComponent() = default; // default constructor
-    TransformComponent(const TransformComponent&) = default; // copy constructor
-    TransformComponent(const Mat4& transform) // convenient constructor that takes parameters
+    Transform() = default; // default constructor
+    Transform(const Transform&) = default; // copy constructor
+    Transform(const Mat4& transform) // convenient constructor that takes parameters
         : transform(transform) {}
     
     //operator const Mat4& () const { return transform; } // allows implicit (and explicit) cast, idk how it works. Allows stuff like DoMath(TranformComponent asdf)
     operator Mat4& () { return transform; }
 };
 
-struct PositionComponent : SpecificComponent<PositionComponent>
+class PositionComponent : public SpecificComponent<PositionComponent>
 {
 public:
     Vec3f position;
@@ -30,8 +31,9 @@ public:
     operator Vec3f& () { return position; }
 };
 
-struct RotationComponent : SpecificComponent<RotationComponent>
+class RotationComponent : public SpecificComponent<RotationComponent>
 {
+public:
     float pitch, yaw, roll;
 
     RotationComponent() = default;

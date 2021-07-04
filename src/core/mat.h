@@ -45,28 +45,28 @@ namespace mat{
     };
 
     Mat4 translate(Mat4 a, const Vec3f& b);
-    Mat4 scale(Mat4 a, Vec3f b);
+    Mat4 scale(Mat4 a, const Vec3f& b);
     Mat4 rotateX(Mat4 a, float theta);
     Mat4 rotateY(Mat4 a, float theta);
     Mat4 rotateZ(Mat4 a, float theta);
 
     Mat4 perspective(float close, float far, float fov, float R);
 
-    Vec4f multiply(Mat4 a, Vec4f b);
+    Vec4f multiply(const Mat4& a, const Vec4f& b);
 
-    float module(Vec3f a);
-    float module(Vec2f a);
-    float dot(Vec3f a, Vec3f b);
-    float dot(Vec2f a, Vec2f b);
-    Vec3f projection(Vec3f a, Vec3f b);
+    float module(const Vec3f& a);
+    float module(const Vec2f& a);
+    float dot(const Vec3f& a, const Vec3f& b);
+    float dot(const Vec2f& a, const Vec2f& b);
+    Vec3f projection(const Vec3f& a, const Vec3f& b);
     Vec3f normalise(Vec3f a);
     Vec2f normalise(Vec2f a);
-    Vec3f cross(Vec3f a, Vec3f b);
+    Vec3f cross(const Vec3f& a, const Vec3f& b);
     Vec3f multiplyScalar(Vec3f a, float b);
     Vec3f multiplyScalar(Vec3f a, int b);
-    Vec3f add(Vec3f a, Vec3f b);
-    Vec3f subtract(Vec3f a, Vec3f b);
-    Vec2f subtract(Vec2f a, Vec2f b);
+    Vec3f add(const Vec3f& a, const Vec3f& b);
+    Vec3f subtract(const Vec3f& a, const Vec3f& b);
+    Vec2f subtract(const Vec2f& a, const Vec2f& b);
     int sgn(int n);
     int sgn(float n);
     float clampTwoSide(float minPossibleValue, float maxPossibleValue, float n);
@@ -79,8 +79,8 @@ namespace mat{
         Mat4 viewMatrix;
         float pitch, yaw;
         void setViewMatrix();
-        void setViewMatrix(Vec3f position, Vec3f direction);
-        void setViewMatrix(Vec3f position, float pitch1, float yaw1);
+        void setViewMatrix(const Vec3f& position, const Vec3f& direction);
+        void setViewMatrix(const Vec3f& position, float pitch1, float yaw1);
         Camera();
 
     };
@@ -88,6 +88,6 @@ namespace mat{
 
 using namespace mat;
 
-void log(Vec3f thing);
-void log(Mat4 thing);
-void log(Vec2f thing);
+void log(const Vec3f& thing);
+void log(const Mat4& thing);
+void log(const Vec2f& thing);

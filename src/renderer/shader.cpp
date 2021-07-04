@@ -78,7 +78,8 @@ void Shader::setUp(const char* vertexPath, const char* fragmentPath) { //, const
   //  if (geometryPath != nullptr)
   //      glDeleteShader(geometry);
 }
-void Shader::bind() {
+void Shader::bind() const
+{
     glUseProgram(ID);
 }
 
@@ -101,25 +102,26 @@ void Shader::checkCompileErrors(GLuint shader, std::string type) {
     }
 }
 
-void Shader::uploadUniformMat4(const std::string& name, Mat4& matrix)
+void Shader::uploadUniformMat4(const std::string& name, const Mat4& matrix) const
 {
     unsigned int location = glGetUniformLocation(ID, name.c_str());
     glUniformMatrix4fv(location, 1, GL_FALSE, (float*)&matrix);
 }
 
-void Shader::uploadUniform3f(const std::string& name, Vec3f a)
+void Shader::uploadUniform3f(const std::string& name, const Vec3f& a) const
 {
     unsigned int loc = glGetUniformLocation(ID, name.c_str());
     glUniform3f(loc, a.x, a.y, a.z);
 }
 
-void Shader::uploadUniform4f(const std::string& name, Vec4f a)
+void Shader::uploadUniform4f(const std::string& name, const Vec4f& a) const
 {
     unsigned int loc = glGetUniformLocation(ID, name.c_str());
     glUniform4f(loc, a.x, a.y, a.z, a.w);
 }
 
-void Shader::uploadUniform1i(const std::string& name, int a) {
+void Shader::uploadUniform1i(const std::string& name, int a) const
+{
     unsigned int loc = glGetUniformLocation(ID, name.c_str());
     glUniform1i(loc, a);
 }

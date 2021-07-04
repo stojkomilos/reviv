@@ -4,11 +4,11 @@
 #include"core/entity.h"
 #include"core/basic_components.h"
 
-class PerspectiveCameraComponent : public SpecificComponent<PerspectiveCameraComponent>
+class PerspectiveCamera : public SpecificComponent<PerspectiveCamera>
 {
 public:
-	PerspectiveCameraComponent() = default;
-	PerspectiveCameraComponent(const PerspectiveCameraComponent&) = default;
+	PerspectiveCamera() = default;
+	PerspectiveCamera(const PerspectiveCamera&) = default;
 
 	void setUp(float nearPlane, float farPlane, float fov, float ratio); // TODO: staviti ovo u constructor
 	void recalculateViewMatrix();

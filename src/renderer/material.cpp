@@ -1,44 +1,88 @@
 #include"material.h"
+#include<iostream>
 
-/*
-Da bi submitovao treba ti:
- - Transform
- - Material
-    - Texture bind
-    - Shader bind
-    - Uniform upload (object and globa/scene)
-            shaderTexture.uploadUniform3f("u_LightPosition", gPointLightPosition);
-            shaderTexture.uploadUniform3f("u_CameraPosition", camera.position);
-            shaderTexture.uploadUniform1i("u_Texture", 1);
-*/
+void Material::bind() const
+{
+    shader.bind();
 
-// shader.bind()
-// shader.uploadUniform()                       // mozda ne mora da upload svaki put?
-// shader.uploadUniform("u_Texture", int?)
-// submit()
+    MaterialHelpingStruct help;
+    std::string typeName;
+    for(const auto& [uniformName, help] : map)
+    {
+        switch(help.type)
+        {
+            case UniformDataType::UniformDataTypeMat4:
+                shader.uploadUniformMat4(uniformName, *(Mat4*)(help.ptr));
+                break;
+
+            case UniformDataType::UniformDataTypeVec3f:
+                shader.uploadUniform3f(uniformName, *(Vec3f*)(help.ptr));
+                break;
+
+            case UniformDataType::UniformDataTypeVec4f:
+                shader.uploadUniform4f(uniformName, *(Vec4f*)(help.ptr));
+                break;
+
+            case UniformDataType::UniformDataTypeIntiger1:
+                shader.uploadUniform1i(uniformName, *(int*)(help.ptr));
+                break;
+
+            default:
+                std::cout << "ERROR: Specified uniform data type not found";
+        }
+    }
+}
+
+void Material::set(const std::string& uniformName, const Mat4& matrix)
+{
+    MaterialHelpingStruct help1;
+    help1.type = UniformDataType::UniformDataTypeMat4;
+    help1.ptr = new Mat4;
+    *(Mat4*)(help1.ptr) = matrix;
+    map[uniformName] =  help1;
+}
+
+void Material::set(const std::string& uniformName, const Vec3f& a)
+{
+    MaterialHelpingStruct help1;
+    help1.type = UniformDataType::UniformDataTypeVec3f;
+    help1.ptr = new Vec3f;
+    *(Vec3f*)(help1.ptr) = a;
+    map[uniformName] =  help1;
+}
+void Material::set(const std::string& uniformName, const Vec4f& a)
+{
+    MaterialHelpingStruct help1;
+    help1.type = UniformDataType::UniformDataTypeVec4f;
+    help1.ptr = new Vec4f;
+    *(Vec4f*)(help1.ptr) = a;
+    map[uniformName] =  help1;
+}
+void Material::set(const std::string& uniformName, int a)
+{
+    MaterialHelpingStruct help1;
+    help1.type = UniformDataType::UniformDataTypeIntiger1;
+    help1.ptr = new int;
+    *(int*)(help1.ptr) = a;
+    map[uniformName] =  help1;
+}
 
 
+//void Material::set(const std::string& uniformName, const Mat4& matrix) const
+//{
+//    shader.uploadUniformMat4(uniformName, matrix);
+//}
+//void Material::set(const std::string& uniformName, const Vec3f& a) const
+//{
+//    shader.uploadUniformVec3f(uniformName, a);
+//}
+//void Material::set(const std::string& uniformName, const Vec4f& a) const
+//{
+//    shader.uploadUniform4f(name, a);
+//}
+//void Material::set(const std::string& uniformName, int a) const
+//{
+//    shader.uploadUniform1i(name, a);
+//}
 
-//Mat4 model;
-
-//gRenderCommand.setClearColor(Vec4f(0.0f, 0.0f, 0.0f, 0.9f));
-//gRenderCommand.clear();
-
-//beginScene(*gCamera.getComponent<PerspectiveCameraComponent>());
-
-//gCamera.getComponent<PerspectiveCameraComponent>()->alignWithEntity(gPlayer);
-
-//auto playerPosition = (*gPlayer.getComponent<PositionComponent>()).position;
-
-//cout << "gPlayer->position=";
-//log(playerPosition);
-
-//model = translate(identity, playerPosition);
-
-//shaderMonoChroma.bind();
-//shaderMonoChroma.uploadUniform4f("u_Color", Vec4f(1, 1, 1, 1));
-
-//stanicTexture.bind(0);
-//shaderMonoChroma.uploadUniform1i("u_Texture", 0);
-
-//submit(shaderMonoChroma, *gStanic.getComponent<VaoComponent>(), model);
+// -----

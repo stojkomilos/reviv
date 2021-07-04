@@ -11,13 +11,11 @@ ModelLoader cube;
 int gGameLoopCounter = 0;
 const int gMapSize = 50;
 
-Entity gStanic;
-Entity gStojko;
-Entity gCamera;
-Entity gPlayer;
-
 //Entity gEntityList[4];
-std::vector<Entity*> gEntityList;
+Entity *gpPlayerEntity;
+Entity *gpCameraEntity;
+
+std::vector<Entity> gEntityList;
 
 using std::cin; using std::cout; using std::endl;
 
@@ -30,32 +28,44 @@ int main(){
 
 	std::cout << "START\n";
 
+    gEntityList.push_back(Entity());
+    gEntityList.push_back(Entity());
+    gEntityList.push_back(Entity());
+
+    gEntityList[0].name = "Player";
+    gEntityList[1].name = "Camera";
+    gEntityList[2].name = "Stanic";
+
+    gpPlayerEntity = &gEntityList[0];
+    gpCameraEntity = &gEntityList[1];
+
     ////
 	ModelLoader cubeModel;
-	gStanic.addComponent<ModelLoader>(&cubeModel);
-	(*gStanic.getComponent<ModelLoader>()).LoadModel("../resources/models/cube.obj");
+	gEntityList[2].addComponent<ModelLoader>(&cubeModel);
+	gEntityList[2].getComponent<ModelLoader>()->LoadModel("../resources/models/cube.obj");
 
 	PositionComponent stanicPosition(Vec3f(3, 3, 3));
-	gStanic.addComponent<PositionComponent>(&stanicPosition);
+	gEntityList[2].addComponent<PositionComponent>(&stanicPosition);
 
-	TransformComponent trans = Mat4();
-	gStanic.addComponent<TransformComponent>(&trans);
+	Transform trans = Mat4();
+	gEntityList[2].addComponent<Transform>(&trans);
 
 	PositionComponent pos(Vec3f(1, 1, 1));
-	gPlayer.addComponent<PositionComponent>(&pos);
+	gpPlayerEntity->addComponent<PositionComponent>(&pos);
 	RotationComponent rot(Vec3f(0, 0, 0));
-	gPlayer.addComponent<RotationComponent>(&rot);
+	gpPlayerEntity->addComponent<RotationComponent>(&rot);
 	////
 
-	PerspectiveCameraComponent kam;
-	gCamera.addComponent<PerspectiveCameraComponent>(&kam);
+	PerspectiveCamera kam;
+	gpCameraEntity->addComponent<PerspectiveCamera>(&kam);
+	gpCameraEntity->addComponent<PositionComponent>(&pos);
+	gpCameraEntity->addComponent<RotationComponent>(&rot);
 
 	ModelLoader sphereModel;
 	sphereModel.LoadModel("../resources/models/sphere.obj");
 
 
-	if (gRenderManager.startUp(1280, 720) == -1)
-	{
+	if (gRenderManager.startUp(1280, 720) == -1) {
 		return -1;
 	}
 

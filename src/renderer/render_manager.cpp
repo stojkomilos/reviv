@@ -6,14 +6,15 @@
 #define __REVIV_RELEASE__ 0
 #endif
 
-VaoComponent stanicVao;
+Vao stanicVao;
 Vbo stanicVbo;
 
 //extern SimulationManager gSimulationManager;
 //extern PhysicsManager gPhysicsManager;
 
-extern std::vector<Entity*> gEntityList;
-extern Entity* gPlayerEntity, gCameraEntity;
+extern std::vector<Entity> gEntityList;
+extern Entity* gpPlayerEntity;
+extern Entity* gpCameraEntity;
 
 extern Mat4 identity;
 extern int gGameLoopCounter;
@@ -71,8 +72,17 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
 	glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE); ///pale se sticky mouse 
 	//glfwSetCursorPosCallback(window, mouse_callback); TODOOO
 
-	shaderTexture.setUp("../resources/shaders/texture.vs", "../resources/shaders/texture.fs");
-	shaderMonoChroma.setUp("../resources/shaders/mono_chroma.vs", "../resources/shaders/mono_chroma.fs");  
+    /// -------- MATERIALS ------------------------------------------------------------
+
+	praviMono.setUp("../resources/shaders/pravi.vs", "../resources/shaders/pravi.fs");
+    //Material stanicMaterial(praviMono);
+    gEntityList[2].addComponent<Material>(new Material(praviMono));
+
+
+	//shaderTexture.setUp("../resources/shaders/texture.vs", "../resources/shaders/texture.fs");
+	//shaderMonoChroma.setUp("../resources/shaders/mono_chroma.vs", "../resources/shaders/mono_chroma.fs");  
+
+    /// ----------------------------------------------------------------------------
 	
 	std::vector<BufferElement> tempVboLayout1 = {
 		{ShaderDataType::Float3, "a_Position", false},
@@ -100,16 +110,27 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
 
 
 	//////
-	gStanic.addComponent<VaoComponent>(&stanicVao);
-	gStanic.addComponent<Vbo>(&stanicVbo);
+    // Konvertuj ovo u pravi Entity shit TODOO
+	//gStanic.addComponent<Vao>(&stanicVao); // clan vao -> vbo
+	//gStanic.addComponent<Vbo>(&stanicVbo);
 
-	gStanic.getComponent<VaoComponent>()->setUp();
-	gStanic.getComponent<VaoComponent>()->bind();
+	//gStanic.getComponent<Vao>()->setUp();
+	//gStanic.getComponent<Vao>()->bind();
 
-	gStanic.getComponent<Vbo>()->layout = vboLayout1;
-	gStanic.getComponent<Vbo>()->setUp((void*)gStanic.getComponent<ModelLoader>()->pointer, gStanic.getComponent<ModelLoader>()->nrTriangles * 3 * (2 * sizeof(Vec3f) + sizeof(Vec2f)), 0);
-	gStanic.getComponent<Vbo>()->bind();
-	gStanic.getComponent<VaoComponent>()->addVertexBuffer(*gStanic.getComponent<Vbo>());
+	//gStanic.getComponent<Vbo>()->layout = vboLayout1;
+	//gStanic.getComponent<Vbo>()->setUp((void*)gStanic.getComponent<ModelLoader>()->pointer, gStanic.getComponent<ModelLoader>()->nrTriangles * 3 * (2 * sizeof(Vec3f) + sizeof(Vec2f)), 0);
+	//gStanic.getComponent<Vbo>()->bind();
+	//gStanic.getComponent<Vao>()->addVertexBuffer(*gStanic.getComponent<Vbo>());
+
+    //Vao stanicVao;
+    gEntityList[2].addComponent<Vao>(new Vao);
+    gEntityList[2].getComponent<Vao>()->setUp();
+    gEntityList[2].getComponent<Vao>()->bind();
+
+    gEntityList[2].getComponent<Vao>()->vbo.layout = vboLayout1;
+    gEntityList[2].getComponent<Vao>()->vbo.setUp((void*)gEntityList[2].getComponent<ModelLoader>()->pointer, gEntityList[2].getComponent<ModelLoader>()->nrTriangles * 3 * (2 * sizeof(Vec3f) + sizeof(Vec2f)), 0);
+    gEntityList[2].getComponent<Vao>()->vbo.bind();
+    gEntityList[2].getComponent<Vao>()->addVertexBuffer(gEntityList[2].getComponent<Vao>()->vbo);
 
 	//cubeVao.setUp();
 	//cubeVao.bind();
@@ -131,14 +152,14 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
 	//---
 	sceneData = new SceneData;
 	
-	gCameraEntity.getComponent<PerspectiveCameraComponent>()->setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(windowWidth)) / ((float)(windowHeight)));
-	gCameraEntity.getComponent<PerspectiveCameraComponent>()->recalculateProjectionMatrix();
+	gpCameraEntity->getComponent<PerspectiveCamera>()->setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(windowWidth)) / ((float)(windowHeight)));
+	gpCameraEntity->getComponent<PerspectiveCamera>()->recalculateProjectionMatrix();
 	//camera.setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(windowWidth)) / ((float)(windowHeight)));
 	//camera.recalculateProjectionMatrix();
-	
+
 	///--
 
-	return 1;
+	return 0;
 }
 
 int RenderManager::render()
@@ -146,15 +167,23 @@ int RenderManager::render()
 	gRenderCommand.setClearColor(Vec4f(0.0f, 0.0f, 0.0f, 0.9f));
 	gRenderCommand.clear();
 
-	beginScene(*gCameraEntity.getComponent<PerspectiveCameraComponent>());
+	beginScene(*gpCameraEntity->getComponent<PerspectiveCamera>());
 
-	for(Entity* entity : gEntityList)
-	{
-		if(entity->valid)
+	for(Entity entity : gEntityList)
+    {
+		if(entity.valid)
 		{
-			if(entity->hasComponent<Mesh>() and entity->hasComponent<Transform>())
+            cout << "ID Material: " << Material::id << endl;
+            cout << "ID Transform: " << Transform::id << endl;
+            cout << "ID Vao: " << Vao::id << endl;
+
+			if(entity.hasComponent<Material>() and entity.hasComponent<Transform>() and entity.hasComponent<Vao>())
 			{
-				submit(*entity);
+                cout << "Rendering entity: " << entity.name << endl;
+				submit(
+					*entity.getComponent<Material>(), 
+					*entity.getComponent<Transform>(), 
+					*entity.getComponent<Vao>());
 			}
 		}
 	}
@@ -172,9 +201,9 @@ int RenderManager::render()
 	//gRenderCommand.setClearColor(Vec4f(0.0f, 0.0f, 0.0f, 0.9f));
 	//gRenderCommand.clear();
 
-	//beginScene(*gCamera.getComponent<PerspectiveCameraComponent>());
+	//beginScene(*gCamera.getComponent<PerspectiveCamera>());
 	
-	//gCamera.getComponent<PerspectiveCameraComponent>()->alignWithEntity(gPlayer);
+	//gCamera.getComponent<PerspectiveCamera>()->alignWithEntity(gPlayer);
 
 	//auto playerPosition = (*gPlayer.getComponent<PositionComponent>()).position;
 
@@ -189,7 +218,7 @@ int RenderManager::render()
 	//stanicTexture.bind(0);
 	//shaderMonoChroma.uploadUniform1i("u_Texture", 0);
 
-	//submit(shaderMonoChroma, *gStanic.getComponent<VaoComponent>(), model);
+	//submit(shaderMonoChroma, *gStanic.getComponent<Vao>(), model);
 
 	//glfwSwapBuffers(window);
 	//glfwPollEvents();
@@ -218,7 +247,16 @@ RenderManager::RenderManager()
 	window = nullptr;
 }
 
-void RenderManager::submit(Shader& shader, VaoComponent& object, Mat4& transform)
+
+void RenderManager::submit(const Material& material, const Transform& transform, const Vao& vao)
+{
+    
+    material.bind();
+    // TODOOO -> material uniforme environment specific
+    vao.bind();
+    gRenderCommand.drawArrays(vao);
+}
+/*void RenderManager::submit(Shader& shader, Vao& object, Mat4& transform)
 {
 	shader.bind();
 	shader.uploadUniformMat4("u_Model", transform);
@@ -226,9 +264,9 @@ void RenderManager::submit(Shader& shader, VaoComponent& object, Mat4& transform
 	shader.uploadUniformMat4("u_Projection", sceneData->projectionMatrix);
 	object.bind();
 	gRenderCommand.drawArrays(object);
-}
+}*/
 
-void RenderManager::beginScene(PerspectiveCameraComponent& camera)
+void RenderManager::beginScene(PerspectiveCamera& camera)
 {
 	camera.recalculateViewMatrix();
 	//camera.recalculateProjectionMatrix();

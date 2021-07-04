@@ -5,15 +5,16 @@
 #include"buffer.h"
 #include"core/entity.h"
 
-class VaoComponent : public SpecificComponent<VaoComponent>
+class Vao: public SpecificComponent<Vao>
 {
 public:
-	VaoComponent();
-	~VaoComponent();
-	void setUp();
-	void const bind();
-	void addVertexBuffer(Vbo& vertexBuffer);
-	std::vector<Vbo> VertexBuffers;
 	unsigned int ID;
 	unsigned int nrOfTriangles;
+    Vbo vbo;
+	std::vector<Vbo> VertexBuffers;
+	Vao();
+	~Vao();
+	void addVertexBuffer(Vbo& vertexBuffer);
+	void setUp();
+	void bind() const;
 };

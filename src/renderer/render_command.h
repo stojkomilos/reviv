@@ -6,7 +6,7 @@
 class RenderCommand
 {
 public:
-	void drawArrays(const VaoComponent& object);
+	void drawArrays(const Vao& object);
 	void setClearColor(Vec4f color);
 	void clear();
 };

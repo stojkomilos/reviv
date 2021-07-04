@@ -88,7 +88,7 @@ void processInput(GLFWwindow* window) {
         if (!gPhysicsManager.player.creativeMode) {
             if (gPhysicsManager.player.standingOnSurface) {
                 gPhysicsManager.player.velocity.y = 5;
-                gPhysicsManager.player.position.y += 0.1f; ///TODOOOOOOOOOOOOOO smanji
+                gPhysicsManager.player.position.y += 0.1f;
 
 
             }

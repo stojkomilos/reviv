@@ -20,6 +20,8 @@
 #include"core/entity.h"
 #include"core/basic_components.h"
 
+#include"renderer/material.h"
+
 class RenderManager {
 public:
 	RenderManager();
@@ -31,6 +33,7 @@ public:
 	GLFWwindow* window;
 	int windowWidth, windowHeight;
 	float renderDistance = 1000;
+    Shader praviMono;
 	Shader shaderTexture;
 	Shader shaderNoTexture;
 	Shader shaderInstanced;
@@ -40,8 +43,9 @@ public:
 	size_t sizeOfVoxelBuffer;
 	bool fullscreen = false;
 	
-	void submit(Shader& shader, VaoComponent& object, Mat4& transform);
-	void beginScene(PerspectiveCameraComponent& camera);
+	//void submit(Shader& shader, Vao& object, Mat4& transform);
+	void submit(const Material& material, const Transform& transform, const Vao& vao);
+	void beginScene(PerspectiveCamera& camera);
 	void endScene();
 
 	Texture2D stanicTexture;
