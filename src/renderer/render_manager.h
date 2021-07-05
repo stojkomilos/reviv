@@ -36,16 +36,18 @@ public:
     Shader praviMono;
 	Shader shaderTexture;
 	Shader shaderNoTexture;
-	Shader shaderInstanced;
-	Shader shaderMonoChroma;
+    Shader shaderInstanced;
+    Shader shaderMonoChroma;
 	bool renderHitbox;
 	float* voxelBuffer;
 	size_t sizeOfVoxelBuffer;
 	bool fullscreen = false;
-	
+
+	static void openGlLogMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParams);
+
 	//void submit(Shader& shader, Vao& object, Mat4& transform);
-	void submit(const Material& material, const Transform& transform, const Vao& vao);
-	void beginScene(PerspectiveCamera& camera);
+	void submit(Material* material, const Transform& transform, const Vao& vao);
+	void beginScene(Entity* camera);
 	void endScene();
 
 	Texture2D stanicTexture;

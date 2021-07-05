@@ -25,13 +25,12 @@ void Entity::log() const
     int size = components.size();
     cout << name << ".log | " << size << " Components: ";
     cout << endl;
-    cout << "KURAC\n";
 
     for(int i=0; i<size; i++)
     {
-        cout << "Ci=" << i << "C=";
+        //cout << "Ci=" << i << "C=";
         cout << components[i]->getId() << " ";
-        cout << "|\n";
+        //cout << "|\n";
     }
     cout << endl;
 }

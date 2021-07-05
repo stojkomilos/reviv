@@ -6,6 +6,7 @@
 
 class PhysicsManager
 {
+public:
     void updateTransforms();
     void alignPositionAndRotation(const Entity& parentEntity, Entity* childEntity);
     void update();

@@ -9,28 +9,36 @@ void Material::bind() const
     std::string typeName;
     for(const auto& [uniformName, help] : map)
     {
+        //cout << "Setting uniform: " << uniformName << " type: " << help.type << " ";
         switch(help.type)
         {
             case UniformDataType::UniformDataTypeMat4:
                 shader.uploadUniformMat4(uniformName, *(Mat4*)(help.ptr));
+        //        cout << "Mat4";
                 break;
 
             case UniformDataType::UniformDataTypeVec3f:
                 shader.uploadUniform3f(uniformName, *(Vec3f*)(help.ptr));
+//                cout << "Vec3f";
                 break;
 
             case UniformDataType::UniformDataTypeVec4f:
                 shader.uploadUniform4f(uniformName, *(Vec4f*)(help.ptr));
+//                cout << "Vec4f";
                 break;
 
             case UniformDataType::UniformDataTypeIntiger1:
                 shader.uploadUniform1i(uniformName, *(int*)(help.ptr));
+//                cout << "Intiger1";
                 break;
 
             default:
                 std::cout << "ERROR: Specified uniform data type not found";
+                assert(false);
         }
+        //cout << endl;
     }
+    shader.bind(); //TODO ovo se mozda moze ukloniti
 }
 
 void Material::set(const std::string& uniformName, const Mat4& matrix)

@@ -11,12 +11,11 @@ public:
 	PerspectiveCamera(const PerspectiveCamera&) = default;
 
 	void setUp(float nearPlane, float farPlane, float fov, float ratio); // TODO: staviti ovo u constructor
-	void recalculateViewMatrix();
-	void recalculateProjectionMatrix();
 	void alignWithEntity(const Entity& entity);
 
-	Vec3f position;
-	float pitch, yaw, roll;
+    void recalculateViewMatrix(const PositionComponent& position, const RotationComponent& rotation); // gRenderManager -> recalculateViewMatrix ili static deo ProjectionCamera klase
+	void recalculateProjectionMatrix();
+
 	Vec3f right, up, direction;
 
 	Mat4 viewMatrix, projectionMatrix;

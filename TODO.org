@@ -1,5 +1,12 @@
 * Ciljevi
 
+proveri- ako nesto ne radi:
+ - sam shader
+ - shader material specific uniform
+ - shader environment uniform, transform n shit
+ - vao
+ - opengl errors cherno video
+
 sutra cilj:
  - MVP, samo staniceva faca na kocki da se rotira oko mene (pogledaj TODOO, gRenderManager.[update, setup]
  - object lifetime, ownership stuff, raii, reference counting...
@@ -10,7 +17,7 @@ sutra cilj:
      - weight references? (nisam dobro cuo cherno-a vrv)
  - entity class deep copy (copy construktor ili obicna funkcija)
  - transfer projekta u ecs
- 
+ - glfwInit()?, generalno glfwAptrakcija, mozda pogledati /hazel source/
  
 
 trenutni cilj:
@@ -23,6 +30,9 @@ posle toga:
  - ovaj /ceo/ chapter: https://learnopengl.com/Model-Loading/Assimp
  - cherno materials video-i, cherno textures video-i
 
+jedan =components.h= fajl? (pogledaj hazel) (bolje ipak ne, postane jako komplikovano!!)
+string u =Entity= constructor
+ 
 ** 
 
 Kako razviti veliki kvalitetan kod?
@@ -30,7 +40,6 @@ Kako razviti veliki kvalitetan kod?
 
 * Renderer
 ** material
-
 *** 
 - Shader
 - Shader data -> uniforms + textures
@@ -39,6 +48,8 @@ Kako razviti veliki kvalitetan kod?
   - depth test
   - blending
   - etc...
+
+Jedno potencijalno resenje za =light uniforme= je navodno "light manager" koji se pokrece unutar render loop-a.
 
 *** 
 
@@ -204,6 +215,10 @@ Zavsisi sa koje /strane/ =*= je =const=.
 - Finding uniform location does note require you to use the shader program first.
 
 - Updating a uniform *does* require you to /first/ use the program. (da li moze update posle prvog koriscenja iako nije trentuno in-use???)
+** pointers
+Cherno kaze: On /licno/ koristi ili =shared pointer= ili =raw pointer=. U praksi ne koristi =unique pointer= jer se oni koriste kada je bitna performansa, a tada /might as well use raw/.
+https://www.youtube.com/watch?v=HkGZ378nArE
+https://www.youtube.com/watch?v=sLlGEUO_EGE
 * Ideje za ecs
 
 za basic ecs (malkice bolja verzija mozda ovog mog, ili bar malo vise citka mozda): https://stackoverflow.com/questions/17058701/member-function-called-only-on-initialization-of-first-instance-of-a-class-c
@@ -233,3 +248,7 @@ template T -> id komponente tipa T (idk) -> return pointer tipa T
 Cach-iranje pozicija uniform-ova u shader-u pri kompajlovanju
 
 Koristiti std::array umesto std::vector, zbog heap allocation shita - kaze Cherno. Ili napraviti svoju implementaciju vektora ili array-a
+
+* Long term ideje
+
+camera.renderTarget(Entity)  ->  track-uje neki entity

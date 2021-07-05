@@ -15,3 +15,4 @@
 #include"core/file_manager.h"
 #include"core/hid.h"
 #include"core/basic_components.h"
+#include"physics/physics_manager.h"

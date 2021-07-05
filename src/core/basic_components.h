@@ -13,7 +13,7 @@ public:
     Transform(const Mat4& transform) // convenient constructor that takes parameters
         : transform(transform) {}
     
-    //operator const Mat4& () const { return transform; } // allows implicit (and explicit) cast, idk how it works. Allows stuff like DoMath(TranformComponent asdf)
+    operator const Mat4& () const { return transform; } // allows implicit (and explicit) cast, idk how it works. Allows stuff like DoMath(TranformComponent asdf)
     operator Mat4& () { return transform; }
 };
 
@@ -28,6 +28,7 @@ public:
         : position(position) {}
 
     //operator const PositionComponent&() const { return position };
+    operator const Vec3f& () const { return position; }
     operator Vec3f& () { return position; }
 };
 
@@ -41,5 +42,6 @@ public:
     RotationComponent(const Vec3f rotation)
         : pitch(rotation.x), yaw(rotation.y), roll(rotation.z) {}
 
+    //operator const Vec3f& () const { return Vec3f(pitch, yaw, roll); }
     operator Vec3f () { return Vec3f(pitch, yaw, roll); }
 };

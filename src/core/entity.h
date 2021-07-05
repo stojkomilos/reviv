@@ -80,7 +80,7 @@ bool Entity::hasComponent() const
     int size = components.size();
     for(int i=0; i<size; i++)
     {
-        cout << "D T::id = " << T::id << endl;
+        //cout << "D T::id = " << T::id << endl;
         if(components[i]->getId() == T::id)
         {
             return true;
@@ -97,7 +97,7 @@ T* Entity::getComponent() const
     int size = components.size();
     for(int i=0; i<size; i++)
     {
-        cout << "i=" << i << " size=" << size << " T::id=" << T::id << endl;
+        //cout << "i=" << i << " size=" << size << " T::id=" << T::id << endl;
         if((*components[i]).getId() == T::id) // ->
         {
             if(result != nullptr)
@@ -105,7 +105,7 @@ T* Entity::getComponent() const
                 cout << "ERROR: Requested component that has multiple instances in one entity";
                 assert(false);
             }
-            cout << "nasao id: " << T::id << "=" << (*components[i]).getId() << endl;
+            //cout << "nasao id: " << T::id << "=" << (*components[i]).getId() << endl;
             result = (T*)components[i];
         }
     }

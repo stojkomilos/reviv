@@ -1,7 +1,8 @@
 #include"hid.h"
 
-/*
-//extern PhysicsManager gPhysicsManager;
+extern Entity* gpPlayerEntity;
+extern Entity* gpCameraEntity;
+
 const float sensitivity = 0.002f;
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -17,13 +18,17 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 
     float difX = (float)xpos - lastX;
     float difY = (float)ypos - lastY;
-    gPhysicsManager.player.yaw -= difX * sensitivity;
-    gPhysicsManager.player.pitch -= difY * sensitivity;
+    gpPlayerEntity->getComponent<RotationComponent>()->yaw -= difX * sensitivity;
+    gpPlayerEntity->getComponent<RotationComponent>()->pitch -= difY * sensitivity;
 
-    if (gPhysicsManager.player.pitch >= 1.55f)
-        gPhysicsManager.player.pitch = 1.55f;
-    else if (gPhysicsManager.player.pitch <= -1.55f)
-        gPhysicsManager.player.pitch = -1.55f;
+    if (gpPlayerEntity->getComponent<RotationComponent>()->pitch >= 1.55f)
+    {
+        gpPlayerEntity->getComponent<RotationComponent>()->pitch = 1.55f;
+    }
+    else if (gpPlayerEntity->getComponent<RotationComponent>()->pitch <= -1.55f)
+    {
+        gpPlayerEntity->getComponent<RotationComponent>()->pitch = -1.55f;
+    }
     lastX = (float) xpos;
     lastY = (float)ypos;
 
@@ -32,75 +37,74 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 
 void processInput(GLFWwindow* window) {
 
-    gPhysicsManager.player.walking = false;
-    gPhysicsManager.player.holdingLeftClick = false;
-    gPhysicsManager.player.holdingFlyDownButton = false;
-    gPhysicsManager.player.holdingFlyUpButton = false;
+   // gpPlayerEntity->getComponent<>().walking = false;
+   // gpPlayerEntity->getComponent<>().holdingLeftClick = false;
+   // gpPlayerEntity->getComponent<>().holdingFlyDownButton = false;
+   // gpPlayerEntity->getComponent<>().holdingFlyUpButton = false;
 
 
+/*
     bool movingForward, movingBack, movingRight, movingLeft;
     movingForward = movingBack = movingRight = movingLeft = false;
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-        gPhysicsManager.player.holdingLeftClick = true;
+        gpPlayerEntity->getComponent<>().holdingLeftClick = true;
     }
     if ((glfwGetKey(window, GLFW_KEY_W)) == GLFW_PRESS) {
-        gPhysicsManager.player.walking = true;
+        gpPlayerEntity->getComponent<>().walking = true;
         movingForward = true;
-        gPhysicsManager.player.velocity.x = gPhysicsManager.player.forward.x * gPhysicsManager.player.speed;
-        gPhysicsManager.player.velocity.z = gPhysicsManager.player.forward.z * gPhysicsManager.player.speed;
+        gpPlayerEntity->getComponent<>().velocity.x = gpPlayerEntity->getComponent<>().forward.x * gpPlayerEntity->getComponent<>().speed;
+        gpPlayerEntity->getComponent<>().velocity.z = gpPlayerEntity->getComponent<>().forward.z * gpPlayerEntity->getComponent<>().speed;
     }
     if ((glfwGetKey(window, GLFW_KEY_S)) == GLFW_PRESS) {
-        gPhysicsManager.player.walking = true;
+        gpPlayerEntity->getComponent<>().walking = true;
         movingBack = true;
-        gPhysicsManager.player.velocity.x = -gPhysicsManager.player.forward.x * gPhysicsManager.player.speed;
-        gPhysicsManager.player.velocity.z = -gPhysicsManager.player.forward.z * gPhysicsManager.player.speed;
+        gpPlayerEntity->getComponent<>().velocity.x = -gpPlayerEntity->getComponent<>().forward.x * gpPlayerEntity->getComponent<>().speed;
+        gpPlayerEntity->getComponent<>().velocity.z = -gpPlayerEntity->getComponent<>().forward.z * gpPlayerEntity->getComponent<>().speed;
     }
     if ((glfwGetKey(window, GLFW_KEY_D)) == GLFW_PRESS) {
-        gPhysicsManager.player.walking = true;
+        gpPlayerEntity->getComponent<>().walking = true;
         movingRight = true;
-        gPhysicsManager.player.velocity.x = gPhysicsManager.player.right.x * gPhysicsManager.player.speed;
-        gPhysicsManager.player.velocity.z = gPhysicsManager.player.right.z * gPhysicsManager.player.speed;
+        gpPlayerEntity->getComponent<>().velocity.x = gpPlayerEntity->getComponent<>().right.x * gpPlayerEntity->getComponent<>().speed;
+        gpPlayerEntity->getComponent<>().velocity.z = gpPlayerEntity->getComponent<>().right.z * gpPlayerEntity->getComponent<>().speed;
     }
     if ((glfwGetKey(window, GLFW_KEY_A)) == GLFW_PRESS) {
-        gPhysicsManager.player.walking = true;
+        gpPlayerEntity->getComponent<>().walking = true;
         movingLeft = true;
-        gPhysicsManager.player.velocity.x = -gPhysicsManager.player.right.x * gPhysicsManager.player.speed;
-        gPhysicsManager.player.velocity.z = -gPhysicsManager.player.right.z * gPhysicsManager.player.speed;
+        gpPlayerEntity->getComponent<>().velocity.x = -gpPlayerEntity->getComponent<>().right.x * gpPlayerEntity->getComponent<>().speed;
+        gpPlayerEntity->getComponent<>().velocity.z = -gpPlayerEntity->getComponent<>().right.z * gpPlayerEntity->getComponent<>().speed;
     }
     if ((movingForward ^ movingBack) and (movingLeft ^ movingRight)) {
-        gPhysicsManager.player.velocity = mat::add(mat::multiplyScalar(mat::normalise(mat::add(mat::multiplyScalar(gPhysicsManager.player.forward, movingForward * 2 - 1), mat::multiplyScalar(gPhysicsManager.player.right, movingRight * 2 - 1))), gPhysicsManager.player.speed), Vec3f(0.f, gPhysicsManager.player.velocity.y, 0.f));
+        gpPlayerEntity->getComponent<>().velocity = mat::add(mat::multiplyScalar(mat::normalise(mat::add(mat::multiplyScalar(gpPlayerEntity->getComponent<>().forward, movingForward * 2 - 1), mat::multiplyScalar(gpPlayerEntity->getComponent<>().right, movingRight * 2 - 1))), gpPlayerEntity->getComponent<>().speed), Vec3f(0.f, gpPlayerEntity->getComponent<>().velocity.y, 0.f));
     }
     if ((glfwGetKey(window, GLFW_KEY_LEFT_ALT)) == GLFW_PRESS) {
-        gPhysicsManager.player.acceleration.y = 0;
-        gPhysicsManager.player.velocity.y = 0;
+        gpPlayerEntity->getComponent<>().acceleration.y = 0;
+        gpPlayerEntity->getComponent<>().velocity.y = 0;
         //std::cout << "A" << std::endl;
     }
     if ((glfwGetKey(window, GLFW_KEY_LEFT_SHIFT)) == GLFW_PRESS) {
-        gPhysicsManager.player.velocity.y = -gPhysicsManager.player.flyUpSpeed;
-        gPhysicsManager.player.acceleration.y = 0;
+        gpPlayerEntity->getComponent<>().velocity.y = -gpPlayerEntity->getComponent<>().flyUpSpeed;
+        gpPlayerEntity->getComponent<>().acceleration.y = 0;
         // std::cout << "B" << std::endl;
-        gPhysicsManager.player.holdingFlyDownButton = true;
+        gpPlayerEntity->getComponent<>().holdingFlyDownButton = true;
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-        if (!gPhysicsManager.player.creativeMode) {
-            if (gPhysicsManager.player.standingOnSurface) {
-                gPhysicsManager.player.velocity.y = 5;
-                gPhysicsManager.player.position.y += 0.1f;
+        if (!gpPlayerEntity->getComponent<>().creativeMode) {
+            if (gpPlayerEntity->getComponent<>().standingOnSurface) {
+                gpPlayerEntity->getComponent<>().velocity.y = 5;
+                gpPlayerEntity->getComponent<>().position.y += 0.1f;
 
 
             }
         }
         else {
-            gPhysicsManager.player.velocity.y = gPhysicsManager.player.flyUpSpeed;
-            gPhysicsManager.player.holdingFlyUpButton = true; 
+            gpPlayerEntity->getComponent<>().velocity.y = gpPlayerEntity->getComponent<>().flyUpSpeed;
+            gpPlayerEntity->getComponent<>().holdingFlyUpButton = true; 
         }
 
     }
-
+*/
 
 }
-
-*/

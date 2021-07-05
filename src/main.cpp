@@ -3,11 +3,11 @@
 using namespace mat;
 
 RenderManager gRenderManager;
+PhysicsManager gPhysicsManager;
 
 ModelLoader sphere;
 ModelLoader cube;
 
-//void processInput(GLFWwindow* window);
 int gGameLoopCounter = 0;
 const int gMapSize = 50;
 
@@ -21,12 +21,6 @@ using std::cin; using std::cout; using std::endl;
 
 int main(){ 
 			
-    int* kurac = std::new int;
-//	gEntityList[0] = &gStanic;
-//	gEntityList[1] = &gStojko;
-//	gEntityList[2] = &gCamera;
-//	gEntityList[3] = &gPlayer;
-
 	std::cout << "START\n";
 
     gEntityList.push_back(Entity());
@@ -62,8 +56,8 @@ int main(){
 	gpCameraEntity->addComponent<PositionComponent>(&pos);
 	gpCameraEntity->addComponent<RotationComponent>(&rot);
 
-	ModelLoader sphereModel;
-	sphereModel.LoadModel("../resources/models/sphere.obj");
+//	ModelLoader sphereModel;
+//	sphereModel.LoadModel("../resources/models/sphere.obj");
 
 
 	if (gRenderManager.startUp(1280, 720) == -1) {
@@ -77,7 +71,7 @@ int main(){
 
 	while(!glfwWindowShouldClose(gRenderManager.window)){
 
-		//processInput(gRenderManager.window);
+		processInput(gRenderManager.window);
 
 		/*
 		gPhysicsManager.deltat = ((float)glfwGetTime() - time0);
@@ -95,7 +89,7 @@ int main(){
 
 		if (gGameLoopCounter % 1 == 0)
 		{
-			cout << "radi\n";
+			//cout << "radi\n";
 			/*
 			std::cout << "fps = " << 1.0f / gPhysicsManager.deltat << std::endl;
 			std::cout << "x = " << gPhysicsManager.player.position.x << " y = " << gPhysicsManager.player.position.y << " z = " << gPhysicsManager.player.position.z << std::endl;
@@ -107,6 +101,7 @@ int main(){
 			*/
 		}
 
+        gPhysicsManager.update();
 		gRenderManager.render();
 		gGameLoopCounter++;
 

@@ -74,7 +74,7 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
 
     /// -------- MATERIALS ------------------------------------------------------------
 
-	praviMono.setUp("../resources/shaders/pravi.vs", "../resources/shaders/pravi.fs");
+	praviMono.setUp("../resources/shaders/jedan.vs", "../resources/shaders/jedan.fs");
     //Material stanicMaterial(praviMono);
     gEntityList[2].addComponent<Material>(new Material(praviMono));
 
@@ -142,6 +142,12 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
 
 	//////
 
+    glDebugMessageCallback(openGlLogMessage, nullptr);
+    glEnable(GL_DEBUG_OUTPUT);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS); // enables you too look in the call stack
+    /////
+
+
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -167,21 +173,21 @@ int RenderManager::render()
 	gRenderCommand.setClearColor(Vec4f(0.0f, 0.0f, 0.0f, 0.9f));
 	gRenderCommand.clear();
 
-	beginScene(*gpCameraEntity->getComponent<PerspectiveCamera>());
+	beginScene(gpCameraEntity);
 
-	for(Entity entity : gEntityList)
+	for(const Entity& entity : gEntityList)
     {
 		if(entity.valid)
 		{
-            cout << "ID Material: " << Material::id << endl;
-            cout << "ID Transform: " << Transform::id << endl;
-            cout << "ID Vao: " << Vao::id << endl;
+            //cout << "ID Material: " << Material::id << endl;
+            //cout << "ID Transform: " << Transform::id << endl;
+            //cout << "ID Vao: " << Vao::id << endl;
 
 			if(entity.hasComponent<Material>() and entity.hasComponent<Transform>() and entity.hasComponent<Vao>())
 			{
                 cout << "Rendering entity: " << entity.name << endl;
 				submit(
-					*entity.getComponent<Material>(), 
+					entity.getComponent<Material>(), 
 					*entity.getComponent<Transform>(), 
 					*entity.getComponent<Vao>());
 			}
@@ -193,37 +199,6 @@ int RenderManager::render()
 	glfwPollEvents();
 
 	endScene();
-	////------------
-
-
-	//Mat4 model;
-
-	//gRenderCommand.setClearColor(Vec4f(0.0f, 0.0f, 0.0f, 0.9f));
-	//gRenderCommand.clear();
-
-	//beginScene(*gCamera.getComponent<PerspectiveCamera>());
-	
-	//gCamera.getComponent<PerspectiveCamera>()->alignWithEntity(gPlayer);
-
-	//auto playerPosition = (*gPlayer.getComponent<PositionComponent>()).position;
-
-	//cout << "gPlayer->position=";
-	//log(playerPosition);
-
-	//model = translate(identity, playerPosition);
-
-	//shaderMonoChroma.bind();
-	//shaderMonoChroma.uploadUniform4f("u_Color", Vec4f(1, 1, 1, 1));
-
-	//stanicTexture.bind(0);
-	//shaderMonoChroma.uploadUniform1i("u_Texture", 0);
-
-	//submit(shaderMonoChroma, *gStanic.getComponent<Vao>(), model);
-
-	//glfwSwapBuffers(window);
-	//glfwPollEvents();
-
-	//endScene();
 	
 	return 0;
 }
@@ -247,33 +222,73 @@ RenderManager::RenderManager()
 	window = nullptr;
 }
 
-
-void RenderManager::submit(const Material& material, const Transform& transform, const Vao& vao)
+void RenderManager::submit(Material* material, const Transform& transform, const Vao& vao)
 {
-    
-    material.bind();
+    // PRE SETA MORA DA SHADER BUDE BOUNDOVAN
+    material->shader.bind();
+
+    material->set("u_Color", Vec4f(1, 0, 0, 1));
+
+    material->set("u_Projection", sceneData->projectionMatrix);
+
+    material->set("u_View", sceneData->viewMatrix);
+
+    material->set("u_Model", transform);
+
+    material->bind();
     // TODOOO -> material uniforme environment specific
     vao.bind();
     gRenderCommand.drawArrays(vao);
 }
-/*void RenderManager::submit(Shader& shader, Vao& object, Mat4& transform)
+void RenderManager::beginScene(Entity* camera)
 {
-	shader.bind();
-	shader.uploadUniformMat4("u_Model", transform);
-	shader.uploadUniformMat4("u_View", sceneData->viewMatrix);
-	shader.uploadUniformMat4("u_Projection", sceneData->projectionMatrix);
-	object.bind();
-	gRenderCommand.drawArrays(object);
-}*/
+    if(!(camera->hasComponent<PerspectiveCamera>() and camera->hasComponent<PositionComponent>() and camera->hasComponent<RotationComponent>()))
+    {
+        cout << "ERROR: submitted entity is supposed to be a camera, but does NOT have required components" << endl;
+        assert(false);
+    }
+    else {
+        cout << "Camera entity: " << camera->name << endl;
+    }
 
-void RenderManager::beginScene(PerspectiveCamera& camera)
-{
-	camera.recalculateViewMatrix();
-	//camera.recalculateProjectionMatrix();
-	sceneData->projectionMatrix = camera.projectionMatrix;
-	sceneData->viewMatrix = camera.viewMatrix;
+	camera->getComponent<PerspectiveCamera>()->recalculateViewMatrix(
+        *camera->getComponent<PositionComponent>(),
+        *camera->getComponent<RotationComponent>());
+
+
+	sceneData->projectionMatrix = camera->getComponent<PerspectiveCamera>()->projectionMatrix;
+	sceneData->viewMatrix = camera->getComponent<PerspectiveCamera>()->viewMatrix;
 }
 void RenderManager::endScene()
 {
 
+}
+void RenderManager::openGlLogMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParams)
+{
+    cout << endl;
+    switch(severity)
+    {
+        case GL_DEBUG_SEVERITY_HIGH:
+            cout << "[OpenGL Debug HIGH] " << message << endl;
+            assert(false);
+            break;
+
+        case GL_DEBUG_SEVERITY_MEDIUM:
+            cout << "[OpenGL Debug MEDIUM] " << message << endl;
+            assert(false);
+            break;
+
+        case GL_DEBUG_SEVERITY_LOW:
+            cout << "[OpenGL Debug LOW] " << message << endl;
+            assert(false);
+            break;
+
+        case GL_DEBUG_SEVERITY_NOTIFICATION:
+            cout << "[OpenGL Debug NOTIFICATION] " << message << endl;
+            break;
+
+        default:
+            cout << "ERROR: opengl returned unknown debug error SEVERITY" << endl;
+            assert(false);
+    }
 }
