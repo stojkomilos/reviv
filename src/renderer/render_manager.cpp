@@ -16,7 +16,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
 RenderCommand gRenderCommand;
-int RenderManager::startUp(int windowWidth1, int windowHeight1) {
+int RenderManager::startUp(int windowWidth1, ijnt windowHeight1) {
 
 	windowWidth = windowWidth1;
 	windowHeight = windowHeight1;
