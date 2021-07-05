@@ -2,7 +2,12 @@
 
 sutra cilj:
  - MVP, samo staniceva faca na kocki da se rotira oko mene (pogledaj TODOO, gRenderManager.[update, setup]
- - object lifetime, ownership stuff, raii
+ - object lifetime, ownership stuff, raii, reference counting...
+   - https://www.youtube.com/watch?v=sLlGEUO_EGE
+   - writing your own:
+     - scope based pointer - equivalent of std::unique_pointer
+     - reference counting system - equivalent of std::shared_pointer
+     - weight references? (nisam dobro cuo cherno-a vrv)
  - entity class deep copy (copy construktor ili obicna funkcija)
  - transfer projekta u ecs
  

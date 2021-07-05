@@ -21,6 +21,7 @@ using std::cin; using std::cout; using std::endl;
 
 int main(){ 
 			
+    int* kurac = std::new int;
 //	gEntityList[0] = &gStanic;
 //	gEntityList[1] = &gStojko;
 //	gEntityList[2] = &gCamera;
