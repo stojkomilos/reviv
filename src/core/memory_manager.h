@@ -1,10 +1,26 @@
 #pragma once
 
+#include<memory>
+
+template<typename T>
+using Scope = std::unique_ptr<T>;
+
+template<typename T>
+using Ref = std::shared_ptr<T>;
+
+/*
+template<typename T>
+class Ref
+{
+
+};*/
+
+
+
+/*
 #include<cstddef>
 #include<iostream>
 #include<cassert>
-
-#define LOG(x) std::cout << x << std::endl;
 
 class MemoryManager {
 public:
@@ -134,5 +150,4 @@ template<typename T>
 MemoryManager::Array3D<T>::~Array3D() {
 	delete[] p;
 }
-
-
+*/

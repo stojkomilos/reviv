@@ -53,7 +53,7 @@ public:
 	Texture2D stanicTexture;
 	Texture2D beloTexture;
 
-	//PerspectiveCamera camera;
+	//Cameraa camera;
 
 	int nrOfValidCubes;
 

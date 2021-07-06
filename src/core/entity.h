@@ -22,10 +22,12 @@ public:
 class Entity
 {
 public:
-    Entity();
     std::vector<Component*> components;
-    std::string name = "nameless";
+    std::string name;
     bool valid = true;
+    Entity();
+    Entity(const std::string& name);
+    //Entity(const Entity& entity); // TODO
     void log() const;
     void print() const;
 
@@ -66,7 +68,7 @@ void Entity::addComponent(void* newComponent)
         cout << "ERROR: trying to add a component that does not match the type specified";
         assert(false);
     }
-    cout << "==> Adding component\n";
+    //cout << "==> Adding component\n";
     components.push_back((T*)newComponent);
 
     log();

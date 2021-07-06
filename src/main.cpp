@@ -23,13 +23,9 @@ int main(){
 			
 	std::cout << "START\n";
 
-    gEntityList.push_back(Entity());
-    gEntityList.push_back(Entity());
-    gEntityList.push_back(Entity());
-
-    gEntityList[0].name = "Player";
-    gEntityList[1].name = "Camera";
-    gEntityList[2].name = "Stanic";
+    gEntityList.push_back(Entity("Player"));
+    gEntityList.push_back(Entity("Camera"));
+    gEntityList.push_back(Entity("Stanic"));
 
     gpPlayerEntity = &gEntityList[0];
     gpCameraEntity = &gEntityList[1];
@@ -51,8 +47,8 @@ int main(){
 	gpPlayerEntity->addComponent<RotationComponent>(&rot);
 	////
 
-	PerspectiveCamera kam;
-	gpCameraEntity->addComponent<PerspectiveCamera>(&kam);
+	Cameraa kam;
+	gpCameraEntity->addComponent<Cameraa>(&kam);
 	gpCameraEntity->addComponent<PositionComponent>(&pos);
 	gpCameraEntity->addComponent<RotationComponent>(&rot);
 

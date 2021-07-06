@@ -57,9 +57,9 @@ void PhysicsManager::update()
     cout << "Camera position: ";
     log(*gpCameraEntity->getComponent<PositionComponent>());
     cout << "Camera viewmatrix";
-    log(gpCameraEntity->getComponent<PerspectiveCamera>()->viewMatrix);
+    log(gpCameraEntity->getComponent<Cameraa>()->viewMatrix);
     cout << "Camera projectionmatrix";
-    log(gpCameraEntity->getComponent<PerspectiveCamera>()->projectionMatrix);
+    log(gpCameraEntity->getComponent<Cameraa>()->projectionMatrix);
     // ---
 
     alignPositionAndRotation(*gpPlayerEntity, gpCameraEntity);

@@ -158,8 +158,8 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
 	//---
 	sceneData = new SceneData;
 	
-	gpCameraEntity->getComponent<PerspectiveCamera>()->setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(windowWidth)) / ((float)(windowHeight)));
-	gpCameraEntity->getComponent<PerspectiveCamera>()->recalculateProjectionMatrix();
+	gpCameraEntity->getComponent<Cameraa>()->setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(windowWidth)) / ((float)(windowHeight)));
+	gpCameraEntity->getComponent<Cameraa>()->recalculateProjectionMatrix();
 	//camera.setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(windowWidth)) / ((float)(windowHeight)));
 	//camera.recalculateProjectionMatrix();
 
@@ -195,7 +195,7 @@ int RenderManager::render()
 	}
 
 
-	glfwSwapBuffers(window);
+	glfwSwapBuffers(window); // abstract mozda informacija ima u cherno video-ima: game engine window
 	glfwPollEvents();
 
 	endScene();
@@ -242,7 +242,7 @@ void RenderManager::submit(Material* material, const Transform& transform, const
 }
 void RenderManager::beginScene(Entity* camera)
 {
-    if(!(camera->hasComponent<PerspectiveCamera>() and camera->hasComponent<PositionComponent>() and camera->hasComponent<RotationComponent>()))
+    if(!(camera->hasComponent<Cameraa>() and camera->hasComponent<PositionComponent>() and camera->hasComponent<RotationComponent>()))
     {
         cout << "ERROR: submitted entity is supposed to be a camera, but does NOT have required components" << endl;
         assert(false);
@@ -251,13 +251,13 @@ void RenderManager::beginScene(Entity* camera)
         cout << "Camera entity: " << camera->name << endl;
     }
 
-	camera->getComponent<PerspectiveCamera>()->recalculateViewMatrix(
+	camera->getComponent<Cameraa>()->recalculateViewMatrix(
         *camera->getComponent<PositionComponent>(),
         *camera->getComponent<RotationComponent>());
 
 
-	sceneData->projectionMatrix = camera->getComponent<PerspectiveCamera>()->projectionMatrix;
-	sceneData->viewMatrix = camera->getComponent<PerspectiveCamera>()->viewMatrix;
+	sceneData->projectionMatrix = camera->getComponent<Cameraa>()->projectionMatrix;
+	sceneData->viewMatrix = camera->getComponent<Cameraa>()->viewMatrix;
 }
 void RenderManager::endScene()
 {

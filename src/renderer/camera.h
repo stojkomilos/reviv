@@ -4,11 +4,11 @@
 #include"core/entity.h"
 #include"core/basic_components.h"
 
-class PerspectiveCamera : public SpecificComponent<PerspectiveCamera>
+class Cameraa : public SpecificComponent<Cameraa>
 {
 public:
-	PerspectiveCamera() = default;
-	PerspectiveCamera(const PerspectiveCamera&) = default;
+	Cameraa() = default;
+	Cameraa(const Cameraa&) = default;
 
 	void setUp(float nearPlane, float farPlane, float fov, float ratio); // TODO: staviti ovo u constructor
 	void alignWithEntity(const Entity& entity);

@@ -8,17 +8,25 @@ proveri- ako nesto ne radi:
  - opengl errors cherno video
 
 sutra cilj:
- - MVP, samo staniceva faca na kocki da se rotira oko mene (pogledaj TODOO, gRenderManager.[update, setup]
+ - _nek se rotira *bas* staniceva faca. Tojest namesti teksture bar malo da rade. Cherno texture game engine video_
+ - _material da radi kako treba_
+ - clean
+   - RenderManager::startUp();
+   - RenderManager::RenderManager; (cherno singleton video, moj codebase singleton pogledaj, ako singleton uopste treba)
+ - glfwInit()
+ - ?glInit()?
+ - transfer projekta u ecs
+    - entity class deep copy
+    - basic object lifetime
+    - virtual destructor
+
+neki od nedeljnih ciljeva:
  - object lifetime, ownership stuff, raii, reference counting...
    - https://www.youtube.com/watch?v=sLlGEUO_EGE
    - writing your own:
      - scope based pointer - equivalent of std::unique_pointer
      - reference counting system - equivalent of std::shared_pointer
      - weight references? (nisam dobro cuo cherno-a vrv)
- - entity class deep copy (copy construktor ili obicna funkcija)
- - transfer projekta u ecs
- - glfwInit()?, generalno glfwAptrakcija, mozda pogledati /hazel source/
- 
 
 trenutni cilj:
  - minimum viable product:
@@ -29,6 +37,14 @@ trenutni cilj:
 posle toga:
  - ovaj /ceo/ chapter: https://learnopengl.com/Model-Loading/Assimp
  - cherno materials video-i, cherno textures video-i
+ - cherno event stuff:
+   - event preparation
+   - event
+   - window event
+   - layers
+   -----
+   - key and mouse codes
+   - input polling
 
 jedan =components.h= fajl? (pogledaj hazel) (bolje ipak ne, postane jako komplikovano!!)
 string u =Entity= constructor

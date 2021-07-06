@@ -6,20 +6,6 @@
 
 int gid;
 
-Component::Component()
-{
-
-}
-Component::~Component()
-{
-
-}
-
-Entity::Entity()
-{
-    components.clear();
-}
-
 void Entity::log() const
 {
     int size = components.size();
@@ -35,38 +21,27 @@ void Entity::log() const
     cout << endl;
 }
 
-//void Entity::print() const
+Component::Component()
+{
+
+}
+Component::~Component()
+{
+
+}
+Entity::Entity()
+{
+    components.clear();
+}
+
+Entity::Entity(const std::string& name)
+    : name(name)
+{
+    components.clear();
+}
+
+//Entity::Entity(const std::string& name = "nameless")
+//    : name(name)
 //{
-//    int size = components.size();
-//    cout << name << ".log2 | " << size << " Components: ";
-//
-//    if(hasComponent<Material>())
-//    {
-//        cout << "Material " << getComponent\n";
-//    }
-//
-//    if(hasComponent<TransformComponent>())
-//    {
-//        cout << "Transform \n";
-//    }
-//
-//    if(hasComponent<RotationComponent>())
-//    {
-//        cout << "Rotation ";
-//    }
-//
-//    if(hasComponent<ProjectionCamera>())
-//    {
-//        cout << "ProjectionCamera ";
-//    }
-//
-//    if(hasComponent<ModelLoader>())
-//    {
-//        cout << "ModelLoader ";
-//    }
-//
-//    if(hasComponent<Vao>())
-//    {
-//        cout << "Vao ";
-//    }
+//    components.clear();
 //}
