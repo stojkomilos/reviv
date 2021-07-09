@@ -11,49 +11,79 @@ ModelLoader cube;
 int gGameLoopCounter = 0;
 const int gMapSize = 50;
 
-//Entity gEntityList[4];
-Entity *gpPlayerEntity;
-Entity *gpCameraEntity;
-
-std::vector<Entity> gEntityList;
-
 using std::cin; using std::cout; using std::endl;
+//Entity* stanic;
 
+Entity* stanic;
+Entity* player;
 int main(){ 
 			
+ //   assert(false);
 	std::cout << "START\n";
+//    assert(false);
+ //   return 0;
+//	std::cout << "START\n";
+//	std::cout << "START\n";
+//	std::cout << "START\n";
+//	std::cout << "START\n";
+//	std::cout << "START\n";
 
-    gEntityList.push_back(Entity("Player"));
-    gEntityList.push_back(Entity("Camera"));
-    gEntityList.push_back(Entity("Stanic"));
+//    return 0;
 
-    gpPlayerEntity = &gEntityList[0];
-    gpCameraEntity = &gEntityList[1];
+    Scene::createEntity("Stanic");
+    cout << "pPlayerPre:" << Scene::getInstance().pPlayerEntity << endl;
+
+    player = Scene::createEntity("Player");
+    Scene::setPlayerEntity(player);
+    cout << "player->entityName: " << player->entityName << endl;
+
+    cout << "pPlayerPosle:" << Scene::getInstance().pPlayerEntity << endl;
+    auto* camera = Scene::createEntity("Camera");
+    Scene::setCameraEntity(camera);
+    Scene::createEntity("Kurac");
+
+
+    stanic = &Scene::getInstance().entityList[0];
+    //stanic = nullptr;
+
+    stanic->add<PositionComponent>();
+    auto* stanicPos = stanic->get<PositionComponent>();
+
+    *stanicPos = Vec3f(3, 3, 3);
+    cout << "EVO POS: ";
+    log(*stanic->get<PositionComponent>());
+    cout << "NOV SIZE: " << stanic->components.size() << endl;
+
+
+    //cout << "NOV SIZE: " << stanic->components.size() << endl;
+    //Scene::createEntity("Camera");
+    //cout << "NOV SIZE: " << stanic->components.size() << endl;
+    //Scene::setPlayerEntity(a);
+    //Scene::setCameraEntity(b);
+
+    //Scene::setPlayerEntity(Scene::createEntity("Player"));
+    //Scene::setCameraEntity(Scene::createEntity("Camera"));
 
     ////
-	ModelLoader cubeModel;
-	gEntityList[2].addComponent<ModelLoader>(&cubeModel);
-	gEntityList[2].getComponent<ModelLoader>()->LoadModel("../resources/models/cube.obj");
 
-	PositionComponent stanicPosition(Vec3f(3, 3, 3));
-	gEntityList[2].addComponent<PositionComponent>(&stanicPosition);
+    auto* stanicTrans = stanic->add<TransformComponent>();
+    cout << "NOV SIZE: " << stanic->components.size() << endl;
+    //*stanicTrans = Mat4();
 
-	Transform trans = Mat4();
-	gEntityList[2].addComponent<Transform>(&trans);
+    log(*stanic->get<TransformComponent>());
 
-	PositionComponent pos(Vec3f(1, 1, 1));
-	gpPlayerEntity->addComponent<PositionComponent>(&pos);
-	RotationComponent rot(Vec3f(0, 0, 0));
-	gpPlayerEntity->addComponent<RotationComponent>(&rot);
+    auto stanicModel = stanic->add<ModelLoaderComponent>();
+    stanicModel->modelLoader.LoadModel("../resources/models/cube.obj");
+
+    auto* playerPos = Scene::getPlayerEntity(1)->add<PositionComponent>();
+    *playerPos = PositionComponent(Vec3f(1, 1, 1));
+    auto* playerRot = Scene::getPlayerEntity(2)->add<RotationComponent>();
+    *playerRot = RotationComponent(Vec3f(0, 0, 0));
 	////
 
-	Cameraa kam;
-	gpCameraEntity->addComponent<Cameraa>(&kam);
-	gpCameraEntity->addComponent<PositionComponent>(&pos);
-	gpCameraEntity->addComponent<RotationComponent>(&rot);
-
-//	ModelLoader sphereModel;
-//	sphereModel.LoadModel("../resources/models/sphere.obj");
+    auto* cameraCamera = Scene::getCameraEntity()->add<CameraComponent>();
+    auto* cameraPos = Scene::getCameraEntity()->add<PositionComponent>();
+    auto* cameraRot = Scene::getCameraEntity()->add<RotationComponent>();
 
 
 	if (gRenderManager.startUp(1280, 720) == -1) {

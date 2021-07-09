@@ -1,5 +1,7 @@
 #include"shader.h"
 
+#include<GLFW/glfw3.h>
+
 Shader::Shader() { 
     ID = 0;
 };

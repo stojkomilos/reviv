@@ -1,12 +1,11 @@
 #include"hid.h"
 
-extern Entity* gpPlayerEntity;
-extern Entity* gpCameraEntity;
-
 const float sensitivity = 0.002f;
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 
+    assert(false);
+    cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
     static float lastX, lastY;
     static bool firstMouse = true;
 
@@ -18,16 +17,16 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 
     float difX = (float)xpos - lastX;
     float difY = (float)ypos - lastY;
-    gpPlayerEntity->getComponent<RotationComponent>()->yaw -= difX * sensitivity;
-    gpPlayerEntity->getComponent<RotationComponent>()->pitch -= difY * sensitivity;
+    Scene::getPlayerEntity()->get<RotationComponent>()->rotation.yaw -= difX * sensitivity;
+    Scene::getPlayerEntity()->get<RotationComponent>()->rotation.pitch -= difY * sensitivity;
 
-    if (gpPlayerEntity->getComponent<RotationComponent>()->pitch >= 1.55f)
+    if (Scene::getPlayerEntity()->get<RotationComponent>()->rotation.pitch >= 1.55f)
     {
-        gpPlayerEntity->getComponent<RotationComponent>()->pitch = 1.55f;
+        Scene::getPlayerEntity()->get<RotationComponent>()->rotation.pitch = 1.55f;
     }
-    else if (gpPlayerEntity->getComponent<RotationComponent>()->pitch <= -1.55f)
+    else if (Scene::getPlayerEntity()->get<RotationComponent>()->rotation.pitch <= -1.55f)
     {
-        gpPlayerEntity->getComponent<RotationComponent>()->pitch = -1.55f;
+        Scene::getPlayerEntity()->get<RotationComponent>()->rotation.pitch = -1.55f;
     }
     lastX = (float) xpos;
     lastY = (float)ypos;
@@ -37,10 +36,10 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 
 void processInput(GLFWwindow* window) {
 
-   // gpPlayerEntity->getComponent<>().walking = false;
-   // gpPlayerEntity->getComponent<>().holdingLeftClick = false;
-   // gpPlayerEntity->getComponent<>().holdingFlyDownButton = false;
-   // gpPlayerEntity->getComponent<>().holdingFlyUpButton = false;
+   // Scene::getPlayerEntity()->get<>().walking = false;
+   // Scene::getPlayerEntity()->get<>().holdingLeftClick = false;
+   // Scene::getPlayerEntity()->get<>().holdingFlyDownButton = false;
+   // Scene::getPlayerEntity()->get<>().holdingFlyUpButton = false;
 
 
 /*
@@ -50,58 +49,58 @@ void processInput(GLFWwindow* window) {
         glfwSetWindowShouldClose(window, true);
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-        gpPlayerEntity->getComponent<>().holdingLeftClick = true;
+        Scene::getPlayerEntity()->get<>().holdingLeftClick = true;
     }
     if ((glfwGetKey(window, GLFW_KEY_W)) == GLFW_PRESS) {
-        gpPlayerEntity->getComponent<>().walking = true;
+        Scene::getPlayerEntity()->get<>().walking = true;
         movingForward = true;
-        gpPlayerEntity->getComponent<>().velocity.x = gpPlayerEntity->getComponent<>().forward.x * gpPlayerEntity->getComponent<>().speed;
-        gpPlayerEntity->getComponent<>().velocity.z = gpPlayerEntity->getComponent<>().forward.z * gpPlayerEntity->getComponent<>().speed;
+        Scene::getPlayerEntity()->get<>().velocity.x = Scene::getPlayerEntity()->get<>().forward.x * Scene::getPlayerEntity()->get<>().speed;
+        Scene::getPlayerEntity()->get<>().velocity.z = Scene::getPlayerEntity()->get<>().forward.z * Scene::getPlayerEntity()->get<>().speed;
     }
     if ((glfwGetKey(window, GLFW_KEY_S)) == GLFW_PRESS) {
-        gpPlayerEntity->getComponent<>().walking = true;
+        Scene::getPlayerEntity()->get<>().walking = true;
         movingBack = true;
-        gpPlayerEntity->getComponent<>().velocity.x = -gpPlayerEntity->getComponent<>().forward.x * gpPlayerEntity->getComponent<>().speed;
-        gpPlayerEntity->getComponent<>().velocity.z = -gpPlayerEntity->getComponent<>().forward.z * gpPlayerEntity->getComponent<>().speed;
+        Scene::getPlayerEntity()->get<>().velocity.x = -Scene::getPlayerEntity()->get<>().forward.x * Scene::getPlayerEntity()->get<>().speed;
+        Scene::getPlayerEntity()->get<>().velocity.z = -Scene::getPlayerEntity()->get<>().forward.z * Scene::getPlayerEntity()->get<>().speed;
     }
     if ((glfwGetKey(window, GLFW_KEY_D)) == GLFW_PRESS) {
-        gpPlayerEntity->getComponent<>().walking = true;
+        Scene::getPlayerEntity()->get<>().walking = true;
         movingRight = true;
-        gpPlayerEntity->getComponent<>().velocity.x = gpPlayerEntity->getComponent<>().right.x * gpPlayerEntity->getComponent<>().speed;
-        gpPlayerEntity->getComponent<>().velocity.z = gpPlayerEntity->getComponent<>().right.z * gpPlayerEntity->getComponent<>().speed;
+        Scene::getPlayerEntity()->get<>().velocity.x = Scene::getPlayerEntity()->get<>().right.x * Scene::getPlayerEntity()->get<>().speed;
+        Scene::getPlayerEntity()->get<>().velocity.z = Scene::getPlayerEntity()->get<>().right.z * Scene::getPlayerEntity()->get<>().speed;
     }
     if ((glfwGetKey(window, GLFW_KEY_A)) == GLFW_PRESS) {
-        gpPlayerEntity->getComponent<>().walking = true;
+        Scene::getPlayerEntity()->get<>().walking = true;
         movingLeft = true;
-        gpPlayerEntity->getComponent<>().velocity.x = -gpPlayerEntity->getComponent<>().right.x * gpPlayerEntity->getComponent<>().speed;
-        gpPlayerEntity->getComponent<>().velocity.z = -gpPlayerEntity->getComponent<>().right.z * gpPlayerEntity->getComponent<>().speed;
+        Scene::getPlayerEntity()->get<>().velocity.x = -Scene::getPlayerEntity()->get<>().right.x * Scene::getPlayerEntity()->get<>().speed;
+        Scene::getPlayerEntity()->get<>().velocity.z = -Scene::getPlayerEntity()->get<>().right.z * Scene::getPlayerEntity()->get<>().speed;
     }
     if ((movingForward ^ movingBack) and (movingLeft ^ movingRight)) {
-        gpPlayerEntity->getComponent<>().velocity = mat::add(mat::multiplyScalar(mat::normalise(mat::add(mat::multiplyScalar(gpPlayerEntity->getComponent<>().forward, movingForward * 2 - 1), mat::multiplyScalar(gpPlayerEntity->getComponent<>().right, movingRight * 2 - 1))), gpPlayerEntity->getComponent<>().speed), Vec3f(0.f, gpPlayerEntity->getComponent<>().velocity.y, 0.f));
+        Scene::getPlayerEntity()->get<>().velocity = mat::add(mat::multiplyScalar(mat::normalise(mat::add(mat::multiplyScalar(Scene::getPlayerEntity()->get<>().forward, movingForward * 2 - 1), mat::multiplyScalar(Scene::getPlayerEntity()->get<>().right, movingRight * 2 - 1))), Scene::getPlayerEntity()->get<>().speed), Vec3f(0.f, Scene::getPlayerEntity()->get<>().velocity.y, 0.f));
     }
     if ((glfwGetKey(window, GLFW_KEY_LEFT_ALT)) == GLFW_PRESS) {
-        gpPlayerEntity->getComponent<>().acceleration.y = 0;
-        gpPlayerEntity->getComponent<>().velocity.y = 0;
+        Scene::getPlayerEntity()->get<>().acceleration.y = 0;
+        Scene::getPlayerEntity()->get<>().velocity.y = 0;
         //std::cout << "A" << std::endl;
     }
     if ((glfwGetKey(window, GLFW_KEY_LEFT_SHIFT)) == GLFW_PRESS) {
-        gpPlayerEntity->getComponent<>().velocity.y = -gpPlayerEntity->getComponent<>().flyUpSpeed;
-        gpPlayerEntity->getComponent<>().acceleration.y = 0;
+        Scene::getPlayerEntity()->get<>().velocity.y = -Scene::getPlayerEntity()->get<>().flyUpSpeed;
+        Scene::getPlayerEntity()->get<>().acceleration.y = 0;
         // std::cout << "B" << std::endl;
-        gpPlayerEntity->getComponent<>().holdingFlyDownButton = true;
+        Scene::getPlayerEntity()->get<>().holdingFlyDownButton = true;
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-        if (!gpPlayerEntity->getComponent<>().creativeMode) {
-            if (gpPlayerEntity->getComponent<>().standingOnSurface) {
-                gpPlayerEntity->getComponent<>().velocity.y = 5;
-                gpPlayerEntity->getComponent<>().position.y += 0.1f;
+        if (!Scene::getPlayerEntity()->get<>().creativeMode) {
+            if (Scene::getPlayerEntity()->get<>().standingOnSurface) {
+                Scene::getPlayerEntity()->get<>().velocity.y = 5;
+                Scene::getPlayerEntity()->get<>().position.y += 0.1f;
 
 
             }
         }
         else {
-            gpPlayerEntity->getComponent<>().velocity.y = gpPlayerEntity->getComponent<>().flyUpSpeed;
-            gpPlayerEntity->getComponent<>().holdingFlyUpButton = true; 
+            Scene::getPlayerEntity()->get<>().velocity.y = Scene::getPlayerEntity()->get<>().flyUpSpeed;
+            Scene::getPlayerEntity()->get<>().holdingFlyUpButton = true; 
         }
 
     }

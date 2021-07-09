@@ -7,6 +7,9 @@ Mat4 identity(1); // TODO, const?
 void log(const Vec3f& thing){
     cout << thing.x << " " << thing.y << " " << thing.z << endl;
 }
+void log(const Rotation& thing){
+    cout << "pitch=" << thing.pitch << " yaw=" << thing.yaw << " roll=" << thing.roll << endl;
+}
 void log(const Mat4& thing){
         cout << thing.a.x << " " << thing.b.x << " " << thing.c.x << " " << thing.d.x << endl;
         cout << thing.a.y << " " << thing.b.y << " " << thing.c.y << " " << thing.d.y << endl;
@@ -203,47 +206,47 @@ namespace mat{
         else return n;
     }
   
-    void Camera::setViewMatrix(){
-        viewMatrix.a.x = right.x;
-        viewMatrix.b.x = right.y;
-        viewMatrix.c.x = right.z;
-        viewMatrix.d.x = -dot(position, right);
+    //void Camera::setViewMatrix(){
+    //    viewMatrix.a.x = right.x;
+    //    viewMatrix.b.x = right.y;
+    //    viewMatrix.c.x = right.z;
+    //    viewMatrix.d.x = -dot(position, right);
 
-        viewMatrix.a.y = up.x;
-        viewMatrix.b.y = up.y;
-        viewMatrix.c.y = up.z;
-        viewMatrix.d.y = -dot(position, up);
+    //    viewMatrix.a.y = up.x;
+    //    viewMatrix.b.y = up.y;
+    //    viewMatrix.c.y = up.z;
+    //    viewMatrix.d.y = -dot(position, up);
 
-        viewMatrix.a.z = direction.x;
-        viewMatrix.b.z = direction.y;
-        viewMatrix.c.z = direction.z;
-        viewMatrix.d.z = -dot(position, direction);
+    //    viewMatrix.a.z = direction.x;
+    //    viewMatrix.b.z = direction.y;
+    //    viewMatrix.c.z = direction.z;
+    //    viewMatrix.d.z = -dot(position, direction);
 
-        viewMatrix.a.w = 0;
-        viewMatrix.b.w = 0;
-        viewMatrix.c.w = 0;
-        viewMatrix.d.w = 1;
+    //    viewMatrix.a.w = 0;
+    //    viewMatrix.b.w = 0;
+    //    viewMatrix.c.w = 0;
+    //    viewMatrix.d.w = 1;
 
-    }
-    void Camera::setViewMatrix(const Vec3f& position, const Vec3f& direction){
-        right = normalise(cross(direction, Vec3f(0, 1, 0)));
-        up = normalise(cross(right, up));
-        setViewMatrix();
-    }
-    void Camera::setViewMatrix(const Vec3f& position, float pitch1, float yaw1){
-        pitch = pitch1;
-        yaw = yaw1;
-        direction.x = -cos(pitch) * cos(yaw);
-        direction.y = -sin(pitch);
-        direction.z = -cos(pitch) * sin(yaw);
-        direction = normalise(direction);
+    //}
+    //void Camera::setViewMatrix(const Vec3f& position, const Vec3f& direction){
+    //    right = normalise(cross(direction, Vec3f(0, 1, 0)));
+    //    up = normalise(cross(right, up));
+    //    setViewMatrix();
+    //}
+    //void Camera::setViewMatrix(const Vec3f& position, float pitch1, float yaw1){
+    //    pitch = pitch1;
+    //    yaw = yaw1;
+    //    direction.x = -cos(pitch) * cos(yaw);
+    //    direction.y = -sin(pitch);
+    //    direction.z = -cos(pitch) * sin(yaw);
+    //    direction = normalise(direction);
 
-        right = normalise(cross(direction, Vec3f(0, 1, 0)));
-        up = normalise(cross(right, direction));
-        setViewMatrix();
-    }
-    Camera::Camera(){
-        pitch = yaw = 0;
-    }
+    //    right = normalise(cross(direction, Vec3f(0, 1, 0)));
+    //    up = normalise(cross(right, direction));
+    //    setViewMatrix();
+    //}
+    //Camera::Camera(){
+    //    pitch = yaw = 0;
+    //}
 
 };

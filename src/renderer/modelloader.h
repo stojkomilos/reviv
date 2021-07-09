@@ -4,13 +4,13 @@
 #include<fstream> 
 #include<vector>
 #include"core/mat.h"
-#include"core/entity.h"
+#include"scene/entity.h"
 
 struct TripletOfInts
 {
 	int x, y, z;
 };
-class ModelLoader : public SpecificComponent<ModelLoader>
+class ModelLoader
 {
 public:
 	ModelLoader();

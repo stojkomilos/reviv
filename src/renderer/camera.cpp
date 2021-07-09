@@ -1,12 +1,14 @@
 #include "camera.h"
-void Cameraa::setUp(float nearPlane1, float farPlane1, float fov1, float ratio1)
+#include "core/types.h"
+
+void Camera::setUp(float nearPlane1, float farPlane1, float fov1, float ratio1)
 {
     nearPlane = nearPlane1; 
     farPlane = farPlane1;
     fov = fov1;
     ratio = ratio1;
 }
-void Cameraa::recalculateViewMatrix(const PositionComponent& position, const RotationComponent& rotation) // gRenderManager -> recalculateViewMatrix ili static deo ProjectionCamera klase
+void Camera::recalculateViewMatrix(const Vec3f& position, const Rotation& rotation) // gRenderManager -> recalculateViewMatrix ili static deo ProjectionCamera klase
 {
     cout << "==> Recalculating viewMatrix" << endl;
 
@@ -43,7 +45,7 @@ void Cameraa::recalculateViewMatrix(const PositionComponent& position, const Rot
     cout << "Post-Update viewMatrix: ";
     log(viewMatrix);
 }
-void Cameraa::recalculateProjectionMatrix()
+void Camera::recalculateProjectionMatrix()
 {
 
     float L = 2.0f * tan(fov / 2) * nearPlane;

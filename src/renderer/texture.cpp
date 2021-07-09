@@ -1,10 +1,10 @@
 #include "texture.h"
 
-unsigned int Texture2D::getHeight()
+unsigned int Texture2D::getHeight() const
 {
 	return height;
 }
-unsigned int Texture2D::getWidth()
+unsigned int Texture2D::getWidth() const
 {
 	return width;
 }
@@ -52,14 +52,17 @@ void Texture2D::setUp(const std::string& path)
 	stbi_image_free(data);
 
 }
+
 Texture2D::Texture2D()
 {
+
 }
 Texture2D::~Texture2D()
 {
 	glDeleteTextures(1, &ID);
 }
-void Texture2D::bind(unsigned int slot)
+
+void Texture2D::bind(unsigned int slot) const
 {
 	glBindTextureUnit(slot, ID);
 }

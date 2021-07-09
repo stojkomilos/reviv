@@ -3,13 +3,14 @@
 #include<vector>
 
 #include"buffer.h"
-#include"core/entity.h"
 
-class Vao: public SpecificComponent<Vao>
+class Vao
 {
 public:
 	unsigned int ID;
 	unsigned int nrOfTriangles;
+
+
     Vbo vbo;
 	std::vector<Vbo> VertexBuffers;
 	Vao();

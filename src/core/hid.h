@@ -1,10 +1,9 @@
 #pragma once
 
-#include<GLFW/glfw3.h>
-
 #include"core/mat.h"
-#include"core/entity.h"
-#include"core/basic_components.h"
+#include"scene/entity.h"
+#include"scene/components.h"
+#include"scene/scene.h"
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void processInput(GLFWwindow* window);

@@ -73,16 +73,30 @@ namespace mat{
     float clampMin(float minPossibleValue, float n);
     float clampMax(float maxPossibleValue, float n);
 
-    class Camera{
-    public:
-        Vec3f position, right, up, direction;
-        Mat4 viewMatrix;
-        float pitch, yaw;
-        void setViewMatrix();
-        void setViewMatrix(const Vec3f& position, const Vec3f& direction);
-        void setViewMatrix(const Vec3f& position, float pitch1, float yaw1);
-        Camera();
+    //class Camera{
+    //public:
+    //    Vec3f position, right, up, direction;
+    //    Mat4 viewMatrix;
+    //    float pitch, yaw;
+    //    void setViewMatrix();
+    //    void setViewMatrix(const Vec3f& position, const Vec3f& direction);
+    //    void setViewMatrix(const Vec3f& position, float pitch1, float yaw1);
+    //    Camera();
 
+    //};
+
+    class Rotation
+    {
+    public:
+        float pitch, yaw, roll;
+
+        Rotation() = default;
+        Rotation(const Rotation&) = default;
+        Rotation(const Vec3f& initRotation) 
+            : pitch(initRotation.x), yaw(initRotation.y), roll(initRotation.z) {}
+
+    //        operator const Vec3f& () const { return Vec3f(pitch, yaw, roll); }
+    //        operator Vec3f& () { return Vec3f(pitch, yaw, roll); }
     };
 }
 
@@ -91,3 +105,6 @@ using namespace mat;
 void log(const Vec3f& thing);
 void log(const Mat4& thing);
 void log(const Vec2f& thing);
+void log(const Rotation& thing);
+
+extern Mat4 identity;

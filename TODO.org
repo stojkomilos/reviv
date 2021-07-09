@@ -1,59 +1,46 @@
 * Ciljevi
 
-proveri- ako nesto ne radi:
- - sam shader
- - shader material specific uniform
- - shader environment uniform, transform n shit
- - vao
- - opengl errors cherno video
+ukloniti types.h
 
-sutra cilj:
- - _nek se rotira *bas* staniceva faca. Tojest namesti teksture bar malo da rade. Cherno texture game engine video_
- - _material da radi kako treba_
- - clean
-   - RenderManager::startUp();
-   - RenderManager::RenderManager; (cherno singleton video, moj codebase singleton pogledaj, ako singleton uopste treba)
- - glfwInit()
- - ?glInit()?
- - transfer projekta u ecs
+scene sigleton gde stoje sve komponente, i onda ne moram vise da stavim =extern gEntityList...= u svaki fajl. + jos mogu samo scene::CreateEntity()
+https://www.youtube.com/watch?v=GfSzeAcsBb0&t=1224s @18:30 | emplace!! | std::forward.... | T&&...
+
+convenience:
+ - entity.transform (because every entity should have a transform) 
+ - implicit cast operators
+ - convenience operators(for transform)
+ 
+ciljevi:
+ - scene sigleton, entity UUID and string(for debug)
+ - reference system
     - entity class deep copy
     - basic object lifetime
     - virtual destructor
+-----
+ - clean RenderManager::startUp() | cherno serijalizacija? | cherno singleton?
+   - ? glfwInit(), glInit() ?
+ - materijali da rade kako treba (materijali da rade kako treba), efikasno 
+ - /ceo/ chapter https://learnopengl.com/Model-Loading/Assimp
+   
+mozda rename =getComponent()= -> get(), isto i za =has= i =set= nesto mozda?
 
-neki od nedeljnih ciljeva:
- - object lifetime, ownership stuff, raii, reference counting...
-   - https://www.youtube.com/watch?v=sLlGEUO_EGE
-   - writing your own:
-     - scope based pointer - equivalent of std::unique_pointer
-     - reference counting system - equivalent of std::shared_pointer
-     - weight references? (nisam dobro cuo cherno-a vrv)
+class Scene
+{
+    Entity CreateEntity(const std::string& name = std::string()); // *bitan je return*
+}
 
-trenutni cilj:
- - minimum viable product:
-   - lopta koja se krece
-   - kvadrat, svetlo?
-   - basic shading na lopti
-   - kretanje u creative mode, jako basic (posle mozes napravit ko u MC ili kako god)
-posle toga:
- - ovaj /ceo/ chapter: https://learnopengl.com/Model-Loading/Assimp
- - cherno materials video-i, cherno textures video-i
- - cherno event stuff:
-   - event preparation
-   - event
-   - window event
-   - layers
-   -----
-   - key and mouse codes
-   - input polling
-
-jedan =components.h= fajl? (pogledaj hazel) (bolje ipak ne, postane jako komplikovano!!)
-string u =Entity= constructor
- 
-** 
-
-Kako razviti veliki kvalitetan kod?
- - Prvo napravis MVP /(minimum viable product)/, i onda /iteracijama/ poboljsavas kod.
-
+-----
+ciljevi:
+ - Entity* Scene::createEntity(const std::string& name = std::string()); // *bitan je return*
+ - MaterialComponent* entity.get<MaterialComponent>()
+ - entity.transform
+ - entity.clear
+ - MaterialComponent* entity.add<MaterialComponent>(Material(constructor_args)) // *RETURN JE BITAN*
+ - MaterialComponent* entity.emplace<MaterialComponent(contructor_args) //bolje  *RETURN JE BITAN*
+ - bool entity.has<MaterialComponent>
+ - ?entity.name?
+ - ?entity name search?
+-----
 * Renderer
 ** material
 *** 
@@ -117,76 +104,6 @@ jedna moja ideja kako implementirati to "set"-ovanje:
     svaki put kada renderuje treba da set-uje te stvari? ili samo kada se promene pa mozda da skonta preko pointera????
           cherno -> std::unordered_map<std::string, Ref<Shader>> m_Shaders;
  
-** 
-
-https://learnopengl.com/Model-Loading/Assimp -> ona slika dole
-
-Da bi submitovao treba ti:
- - Transform
- - Material
-    - Texture bind
-    - Shader bind
-    - Uniform upload (object and globa/scene)
-            shaderTexture.uploadUniform3f("u_LightPosition", gPointLightPosition);
-            shaderTexture.uploadUniform3f("u_CameraPosition", camera.position);
-            shaderTexture.uploadUniform1i("u_Texture", 1);
- - Vao
---------------
-
-To render you need:
-
-- stanic:
-  - mesh/renderable
-    elementi: 
-      - vertex array
-      - model?
-      - ?shader(bar info koji uzima, mozda?) mozda?
-  - transformation matrix
-  - ?position, scale?, rotation?
-
- * object:
-     - vertex array
-     - transformation matrix of cube
-     - advanced: surface texture thing
-     - shader
- * environment/scene:
-     - camera, projection matrix
-     - advanced: environemnts (lights...)
-
-Submit stuff to queue, and render *only* after its all submited for a /lot/ of opmiziation n shit.
-
-mesh = material + vertex array + transformation + shader ??
-
-https://www.youtube.com/watch?v=akxevYYWd9g
-
-** flow
-
-for(entity list)
- if(entity.has(Mesh) and entity.has(Transform) and entity.isRenderable)
-   gRenderManager.submit(const entity&);
-
-
-ILI:
-------
-
-entity;
-for(entity list)
- if(entity.doRender)
-   gRenderManager.submit(const entity&);
-
-
-//submit(shaderTexture, cubeVao, model);
-//submit(entity.shaderthingIDK, entity.model, entity.model);
-
-* Low prio
-
-- preimenovati VertexArary u Vao
-- preimenovati VetexBuffer u Vbo
-
-low prio:
-    =physicsmanager.setUp= preimenuj u physicsmanager.init(), i tako za sve setup sisteme
-    preimenovati *_manager.[h,cpp] -> tipa *.[h,cpp]
-
 * Compiler
 
 Da moze da se kompajluje bez errora
@@ -202,6 +119,11 @@ cmake-generators
 - static local variable:
    lifetime -> entire program
    scope -> limited to that scope
+
+stvari koje cine static cini mi se:
+ - inicijalizacija se radi samo jednom
+ - program life time
+ - local to that scope
 
 ** =delete =default
 Stackoverflow odgovor: https://stackoverflow.com/a/6502854
@@ -235,9 +157,83 @@ Zavsisi sa koje /strane/ =*= je =const=.
 Cherno kaze: On /licno/ koristi ili =shared pointer= ili =raw pointer=. U praksi ne koristi =unique pointer= jer se oni koriste kada je bitna performansa, a tada /might as well use raw/.
 https://www.youtube.com/watch?v=HkGZ378nArE
 https://www.youtube.com/watch?v=sLlGEUO_EGE
-* Ideje za ecs
+Comment your .h files
+** resursi (knjige, artikli itd)
 
+Three optimizatoin tips for c++ (preporuka od game engine book): https://www.slideshare.net/andreialexandrescu1/
+- game dev -> left handed coordinate system
+
+gang of four - design patterns of OOP (game engine book prepourka)
+** order of class members
+
+moje licno:
+    1. public
+    2. private
+
+    1. typedefs adn enums
+    2. constants
+    3. constructor
+    4. destructor
+    5. static methods
+    6. methods
+    7. static data member
+    8. data member
+
+* Ideje za ecs
+** entt api
+
+- entt::entity entity = m_Registry.create(); //m_Registry $\approx$ scene, entt::entity = uint32_t
+
+- m_Registry.emplace<TransformComponent>(entity); (RADI RETURN)
+- m_Registry.emplace<TransformComponent>(entity, construstor_arguments); //https://www.youtube.com/watch?v=D4hz0wEB978&t=1304s @22:00
+
+napravi =entity.add<TransformComponent>(constructor_args);= ili =EntityManager::add<TransformComponent>(entity, constructor_args)= (drugi je mozda komplikovan)
+
+- m_Registry.remove<TransformComponent>(entity)
+
+- m_Registry.clear()
+
+- m_Registry.get<TransformComponent>(entity)
+
+- if(m_Registry.has<TransformComponent>(entity))
+
+TransformComponent& transform = m_Registry.emplace<TransformComponent>(entity, constructor_args); // *brutalno*
+auto& transform = m_Registry.emplace<TransformComponent>(entity, constructor_args); // *brutalno*
+
+Radi funkciju /onTransformConstruct/ na svakoj konstrukciji transforma.
+    m_Registry.on_construct<TransformComponent>().connect<&onTransformConstruct>();
+    m_Registry.on_destruct...
+    m_Registry.on_destroy...
+    m_Registry.on_update...
+    m_Registry.on_replace...
+            static void onTransformConstruct(entt:registry& registry, entt:entity entity);
+   
+
+*** Prolazenje/iteracija:
+
+auto view = m_Registry.view<TransformComponent>();
+for (auto entity: view)
+{
+    auto& TransformComponent = m_Registry.get<TransformComponent>(entity);
+}
+
+*iteracija kroz grupe*:
+auto group = m_Registry.group<TransformComponent>(entt:get<MeshComponent>);
+for (auto entity : group)
+{
+    auto&[transform, mesh] = group.get<TransformComponent, MeshComponent>(entity); // *C++ 17*
+}
+
+** cherno api
+
+bool entity.hasComponent<TransformComponent>();
+
+auto& squareColor = m_SquareEntity.GetComponent<SpriteRendererComponent>().Color; *RETURN TYPE Je T**
+
+** 
 za basic ecs (malkice bolja verzija mozda ovog mog, ili bar malo vise citka mozda): https://stackoverflow.com/questions/17058701/member-function-called-only-on-initialization-of-first-instance-of-a-class-c
+
+https://github.com/SanderMertens/ecs-faq
 
 *nemoj ga praviti*
 
@@ -265,6 +261,28 @@ Cach-iranje pozicija uniform-ova u shader-u pri kompajlovanju
 
 Koristiti std::array umesto std::vector, zbog heap allocation shita - kaze Cherno. Ili napraviti svoju implementaciju vektora ili array-a
 
+Za voxel based:
+ - frustum culling
+ - occlusion culling
+ - rendering only visible faces
+ - several articles and videos about it, heck there is even an stb library
+ - ?sean's toolbox?
+
 * Long term ideje
 
 camera.renderTarget(Entity)  ->  track-uje neki entity
+
+class SpecificComponent : public Component
+ static getName()
+ static std::string name;
+
+Svaki Component da ima svoj (ne virtualan) id.
+
+In order to render a skeletal mesh, the game engine requires three distinct kinds of data:
+1. the mesh itself,
+2. the skeletal hierarchy (joint names, parent-child relationships and the
+base pose the skeleton was in when it was originally bound to the mesh),
+and
+58 1. Introduction
+3. one or more animation clips, which specify how the joints should move
+over time.

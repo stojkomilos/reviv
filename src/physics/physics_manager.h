@@ -1,7 +1,7 @@
 #pragma once
 
-#include"core/entity.h"
-#include"core/basic_components.h"
+#include"scene/entity.h"
+#include"scene/components.h"
 #include"core/mat.h"
 
 class PhysicsManager

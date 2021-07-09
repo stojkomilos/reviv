@@ -6,20 +6,21 @@
 #define __REVIV_RELEASE__ 0
 #endif
 
-Vao stanicVao;
-Vbo stanicVbo;
+/// -----
+static void error_callback(int error, const char* description)
+{
+    fprintf(stderr, "Error: %s\n", description);
+//    assert(false);
+}
+/// ----
 
-//extern SimulationManager gSimulationManager;
-//extern PhysicsManager gPhysicsManager;
-
-extern std::vector<Entity> gEntityList;
-extern Entity* gpPlayerEntity;
-extern Entity* gpCameraEntity;
-
-extern Mat4 identity;
 extern int gGameLoopCounter;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+
+extern Entity* stanic;
+extern Entity* player;
+
 
 RenderCommand gRenderCommand;
 int RenderManager::startUp(int windowWidth1, int windowHeight1)
@@ -28,10 +29,16 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
 	windowWidth = windowWidth1;
 	windowHeight = windowHeight1;
 
-	glfwInit();
+    glfwSetErrorCallback(error_callback);
+
+	if(!glfwInit())
+    {
+        cout << "ERROR: could not initialize GLFW" << endl;
+        assert(false);
+    }
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	if (__REVIV_RELEASE__)
 	{
@@ -42,17 +49,26 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
 		windowHeight = mode->height;
 		windowWidth = mode->width;
 	}
+
+    cout << "KANCER PRE IME: " << player->entityName << endl;
 	window = glfwCreateWindow(windowWidth, windowHeight, "OpenGL", NULL, NULL);
-	if (!fullscreen)
+
+    if (!window) {
+        std::cout << "ERROR: Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        assert(false);
+        return -1;
+    }	
+
+    cout << "EVO GAA KANCER:" << endl;
+    cout << "KANCER POSLE IME: " << player->entityName << endl;
+
+    cout << "KRAJ IMENA\n";
+    if (!fullscreen)
 	{
-		glfwSetWindowPos(window, -windowWidth - 5, 0);
+	//	glfwSetWindowPos(window, -windowWidth - 5, 0); NE RADI NA WAYLANDS MOZDA NAVODNO
 	}
-	if (window == NULL) {
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return -1;
-		assert(false);
-	}
+
 	glfwMakeContextCurrent(window);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -74,15 +90,13 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
 
     /// -------- MATERIALS ------------------------------------------------------------
 
-	praviMono.setUp("../resources/shaders/jedan.vs", "../resources/shaders/jedan.fs");
-    //Material stanicMaterial(praviMono);
-    gEntityList[2].addComponent<Material>(new Material(praviMono));
+	praviMono.setUp("../resources/shaders/monocolor.vs", "../resources/shaders/monocolor.fs");
+    Shader* textureShader = new Shader; // TODO, memory leak
+	textureShader->setUp("../resources/shaders/texture.vs", "../resources/shaders/texture.fs");
+    auto* stanicMat = stanic->add<MaterialComponent>();
+    *stanicMat = Material(*textureShader);
 
-
-	//shaderTexture.setUp("../resources/shaders/texture.vs", "../resources/shaders/texture.fs");
-	//shaderMonoChroma.setUp("../resources/shaders/mono_chroma.vs", "../resources/shaders/mono_chroma.fs");  
-
-    /// ----------------------------------------------------------------------------
+    /// -----
 	
 	std::vector<BufferElement> tempVboLayout1 = {
 		{ShaderDataType::Float3, "a_Position", false},
@@ -90,13 +104,6 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
 		{ShaderDataType::Float3, "a_Normal",   false},
 	};
 	BufferLayout vboLayout1(tempVboLayout1);
-
-	//sphereVao.setUp();
-	//sphereVao.bind();
-	
-	//sphereVbo.layout = vboLayout1;
-	//sphereVbo.setUp(sphere.pointer, sphere.nrTriangles * 3 * (2 * sizeof(Vec3f) + sizeof(Vec2)), 0);	
-	//sphereVao.addVertexBuffer(sphereVbo);
 
 	assert(sizeof(float) * 3 == sizeof(Vec3f));
 	assert(sizeof(int) * 3 == sizeof(TripletOfInts));
@@ -106,64 +113,32 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
 	std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
 	assert(nrAttributes >= 10); 
 
-	//auto jedan = (*gStanic.getComponent<ModelLoader>()); TODOO
+    ///
+    auto* stanicVao = stanic->add<VaoComponent>();
+    auto* stanicModel = stanic->get<ModelLoaderComponent>();
+    stanicVao->vao.setUp();
+    stanicVao->vao.bind();
 
-
-	//////
-    // Konvertuj ovo u pravi Entity shit TODOO
-	//gStanic.addComponent<Vao>(&stanicVao); // clan vao -> vbo
-	//gStanic.addComponent<Vbo>(&stanicVbo);
-
-	//gStanic.getComponent<Vao>()->setUp();
-	//gStanic.getComponent<Vao>()->bind();
-
-	//gStanic.getComponent<Vbo>()->layout = vboLayout1;
-	//gStanic.getComponent<Vbo>()->setUp((void*)gStanic.getComponent<ModelLoader>()->pointer, gStanic.getComponent<ModelLoader>()->nrTriangles * 3 * (2 * sizeof(Vec3f) + sizeof(Vec2f)), 0);
-	//gStanic.getComponent<Vbo>()->bind();
-	//gStanic.getComponent<Vao>()->addVertexBuffer(*gStanic.getComponent<Vbo>());
-
-    //Vao stanicVao;
-    gEntityList[2].addComponent<Vao>(new Vao);
-    gEntityList[2].getComponent<Vao>()->setUp();
-    gEntityList[2].getComponent<Vao>()->bind();
-
-    gEntityList[2].getComponent<Vao>()->vbo.layout = vboLayout1;
-    gEntityList[2].getComponent<Vao>()->vbo.setUp((void*)gEntityList[2].getComponent<ModelLoader>()->pointer, gEntityList[2].getComponent<ModelLoader>()->nrTriangles * 3 * (2 * sizeof(Vec3f) + sizeof(Vec2f)), 0);
-    gEntityList[2].getComponent<Vao>()->vbo.bind();
-    gEntityList[2].getComponent<Vao>()->addVertexBuffer(gEntityList[2].getComponent<Vao>()->vbo);
-
-	//cubeVao.setUp();
-	//cubeVao.bind();
-	
-	//cubeVbo.layout = vboLayout1;
-	//cubeVbo.setUp((void*)cube.pointer, cube.nrTriangles * 3 * (2 * sizeof(Vec3f) + sizeof(Vec2f)), 0);
-	//cubeVbo.bind();
-	//cubeVao.addVertexBuffer(cubeVbo);
-
-	//////
+    stanicVao->vao.vbo.layout = vboLayout1;
+    stanicVao->vao.vbo.setUp((void*)stanicModel->modelLoader.pointer, stanicModel->modelLoader.nrTriangles * 3 * (2 * sizeof(Vec3f) + sizeof(Vec2f)), 0);
+    stanicVao->vao.vbo.bind();
+    stanicVao->vao.addVertexBuffer(stanic->get<VaoComponent>()->vao.vbo);
+    ///
 
     glDebugMessageCallback(openGlLogMessage, nullptr);
     glEnable(GL_DEBUG_OUTPUT);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS); // enables you too look in the call stack
-    /////
-
-
+   
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	stanicTexture.setUp("../resources/textures/stene.png");
-	beloTexture.setUp("../resources/textures/belo.png");
+    stanicTexture.bind(0);
+	//beloTexture.setUp("../resources/textures/belo.png");
 
-	//---
-	sceneData = new SceneData;
-	
-	gpCameraEntity->getComponent<Cameraa>()->setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(windowWidth)) / ((float)(windowHeight)));
-	gpCameraEntity->getComponent<Cameraa>()->recalculateProjectionMatrix();
-	//camera.setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(windowWidth)) / ((float)(windowHeight)));
-	//camera.recalculateProjectionMatrix();
-
-	///--
+	Scene::getCameraEntity()->get<CameraComponent>()->camera.setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(windowWidth)) / ((float)(windowHeight)));
+	Scene::getCameraEntity()->get<CameraComponent>()->camera.recalculateProjectionMatrix();
 
 	return 0;
 }
@@ -173,9 +148,9 @@ int RenderManager::render()
 	gRenderCommand.setClearColor(Vec4f(0.0f, 0.0f, 0.0f, 0.9f));
 	gRenderCommand.clear();
 
-	beginScene(gpCameraEntity);
+	beginScene();
 
-	for(const Entity& entity : gEntityList)
+	for(const Entity& entity : *Scene::getEntityList())
     {
 		if(entity.valid)
 		{
@@ -183,13 +158,13 @@ int RenderManager::render()
             //cout << "ID Transform: " << Transform::id << endl;
             //cout << "ID Vao: " << Vao::id << endl;
 
-			if(entity.hasComponent<Material>() and entity.hasComponent<Transform>() and entity.hasComponent<Vao>())
+			if(entity.has<MaterialComponent>() and entity.has<TransformComponent>() and entity.has<VaoComponent>())
 			{
-                cout << "Rendering entity: " << entity.name << endl;
+                cout << "Rendering entity: " << entity.entityName << endl;
 				submit(
-					entity.getComponent<Material>(), 
-					*entity.getComponent<Transform>(), 
-					*entity.getComponent<Vao>());
+					(Material*)entity.get<MaterialComponent>(), 
+					*entity.get<TransformComponent>(), 
+					*entity.get<VaoComponent>());
 			}
 		}
 	}
@@ -203,11 +178,31 @@ int RenderManager::render()
 	return 0;
 }
 
+void RenderManager::submit(Material* material, const Mat4& transform, const Vao& vao)
+{
+    // PRE SETA MORA DA SHADER BUDE BOUNDOVAN
+    material->shader.bind();
+
+    material->set("u_Color", Vec4f(1, 0, 0, 1));
+
+    material->set("u_Projection", Scene::getCameraEntity()->get<CameraComponent>()->camera.projectionMatrix);
+
+    material->set("u_View", Scene::getCameraEntity()->get<CameraComponent>()->camera.viewMatrix);
+
+    material->set("u_Model", transform);
+
+    material->set("u_Texture", 0);
+
+    material->bind();
+    // TODOOO -> material uniforme environment specific
+    vao.bind();
+    gRenderCommand.drawArrays(vao);
+}
+
 int RenderManager::shutDown() 
 {
 	
 	delete[] voxelBuffer;
-	delete sceneData;
 
 	glfwTerminate();
 	return 0;
@@ -222,42 +217,23 @@ RenderManager::RenderManager()
 	window = nullptr;
 }
 
-void RenderManager::submit(Material* material, const Transform& transform, const Vao& vao)
+void RenderManager::beginScene()
 {
-    // PRE SETA MORA DA SHADER BUDE BOUNDOVAN
-    material->shader.bind();
+    Camera* camera = &Scene::getCameraEntity()->get<CameraComponent>()->camera;
 
-    material->set("u_Color", Vec4f(1, 0, 0, 1));
-
-    material->set("u_Projection", sceneData->projectionMatrix);
-
-    material->set("u_View", sceneData->viewMatrix);
-
-    material->set("u_Model", transform);
-
-    material->bind();
-    // TODOOO -> material uniforme environment specific
-    vao.bind();
-    gRenderCommand.drawArrays(vao);
-}
-void RenderManager::beginScene(Entity* camera)
-{
-    if(!(camera->hasComponent<Cameraa>() and camera->hasComponent<PositionComponent>() and camera->hasComponent<RotationComponent>()))
+    if(!(Scene::getCameraEntity()->has<CameraComponent>() and Scene::getCameraEntity()->has<PositionComponent>() and Scene::getCameraEntity()->has<RotationComponent>()))
     {
         cout << "ERROR: submitted entity is supposed to be a camera, but does NOT have required components" << endl;
         assert(false);
     }
     else {
-        cout << "Camera entity: " << camera->name << endl;
+        cout << "Camera entity: " << Scene::getCameraEntity()->entityName << endl;
     }
 
-	camera->getComponent<Cameraa>()->recalculateViewMatrix(
-        *camera->getComponent<PositionComponent>(),
-        *camera->getComponent<RotationComponent>());
+	camera->recalculateViewMatrix(
+        *Scene::getCameraEntity()->get<PositionComponent>(),
+        *Scene::getCameraEntity()->get<RotationComponent>());
 
-
-	sceneData->projectionMatrix = camera->getComponent<Cameraa>()->projectionMatrix;
-	sceneData->viewMatrix = camera->getComponent<Cameraa>()->viewMatrix;
 }
 void RenderManager::endScene()
 {

@@ -4,8 +4,6 @@
 #include<unordered_map>
 
 #include"core/mat.h"
-#include"core/entity.h"
-#include"core/basic_components.h"
 #include"shader.h"
 
 enum UniformDataType
@@ -18,7 +16,7 @@ struct MaterialHelpingStruct
     UniformDataType type;
 };
 
-class Material : public SpecificComponent<Material> //TODO: destructor, prodji kroz unordered_map i brisi sve (pise tamo i koji je tip podatka da zna kako da obrise)
+class Material                                      //TODO: destructor, prodji kroz unordered_map i brisi sve (pise tamo i koji je tip podatka da zna kako da obrise)
 {                                                   //TODO: deep copy constructor?
 public:
     Shader shader;
