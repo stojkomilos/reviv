@@ -14,20 +14,20 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++17")
 
 file(GLOB_RECURSE SRC_FILES "src/*.c"
     "src/*.cpp"
-    "dependencies/glad.c"
-    "dependencies/stb_image.cpp")
+    "vendor/glad.c"
+    "vendor/stb_image.cpp")
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/include)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/include)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 target_link_libraries(${PROJECT_NAME} GL wayland-client pthread dl)
-target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/lib/libglfw3.a GL wayland-client pthread dl)
+target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/vendor/lib/libglfw3.a GL wayland-client pthread dl)
 
 # Archive: ===
-#   link_directories(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/lib)
-#   find_library(glfw3_library ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/lib/libglfw3.a REQUIRED)
+#   link_directories(${CMAKE_CURRENT_SOURCE_DIR}/vendor/lib)
+#   find_library(glfw3_library ${CMAKE_CURRENT_SOURCE_DIR}/vendor/lib/libglfw3.a REQUIRED)
 #   find_library(GL_library GL REQUIRED)
 #   find_library(wayland-client_library wayland-client REQUIRED)
 #   find_library(pthread_library pthread REQUIRED)
