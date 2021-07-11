@@ -3,40 +3,35 @@
 
 void Material::bind() const
 {
+    log(*this);
     shader.bind();
 
     MaterialHelpingStruct help;
     std::string typeName;
     for(const auto& [uniformName, help] : map)
     {
-        //cout << "Setting uniform: " << uniformName << " type: " << help.type << " ";
         switch(help.type)
         {
-            case UniformDataType::UniformDataTypeMat4:
+            case ShaderDataType::SdtMat4:
                 shader.uploadUniformMat4(uniformName, *(Mat4*)(help.ptr));
-        //        cout << "Mat4";
                 break;
 
-            case UniformDataType::UniformDataTypeVec3f:
+            case ShaderDataType::SdtFloat3:
                 shader.uploadUniform3f(uniformName, *(Vec3f*)(help.ptr));
-//                cout << "Vec3f";
                 break;
 
-            case UniformDataType::UniformDataTypeVec4f:
+            case ShaderDataType::SdtFloat4:
                 shader.uploadUniform4f(uniformName, *(Vec4f*)(help.ptr));
-//                cout << "Vec4f";
                 break;
 
-            case UniformDataType::UniformDataTypeIntiger1:
+            case ShaderDataType::SdtInt1:
                 shader.uploadUniform1i(uniformName, *(int*)(help.ptr));
-//                cout << "Intiger1";
                 break;
 
             default:
                 std::cout << "ERROR: Specified uniform data type not found";
                 assert(false);
         }
-        //cout << endl;
     }
     shader.bind(); //TODO ovo se mozda moze ukloniti
 }
@@ -44,7 +39,7 @@ void Material::bind() const
 void Material::set(const std::string& uniformName, const Mat4& matrix)
 {
     MaterialHelpingStruct help1;
-    help1.type = UniformDataType::UniformDataTypeMat4;
+    help1.type = ShaderDataType::SdtMat4;
     help1.ptr = new Mat4;
     *(Mat4*)(help1.ptr) = matrix;
     map[uniformName] =  help1;
@@ -53,7 +48,7 @@ void Material::set(const std::string& uniformName, const Mat4& matrix)
 void Material::set(const std::string& uniformName, const Vec3f& a)
 {
     MaterialHelpingStruct help1;
-    help1.type = UniformDataType::UniformDataTypeVec3f;
+    help1.type = ShaderDataType::SdtFloat3;
     help1.ptr = new Vec3f;
     *(Vec3f*)(help1.ptr) = a;
     map[uniformName] =  help1;
@@ -61,7 +56,7 @@ void Material::set(const std::string& uniformName, const Vec3f& a)
 void Material::set(const std::string& uniformName, const Vec4f& a)
 {
     MaterialHelpingStruct help1;
-    help1.type = UniformDataType::UniformDataTypeVec4f;
+    help1.type = ShaderDataType::SdtFloat4;
     help1.ptr = new Vec4f;
     *(Vec4f*)(help1.ptr) = a;
     map[uniformName] =  help1;
@@ -69,28 +64,32 @@ void Material::set(const std::string& uniformName, const Vec4f& a)
 void Material::set(const std::string& uniformName, int a)
 {
     MaterialHelpingStruct help1;
-    help1.type = UniformDataType::UniformDataTypeIntiger1;
+    help1.type = ShaderDataType::SdtInt1;
     help1.ptr = new int;
-    *(int*)(help1.ptr) = a;
+    *(Vec1i*)help1.ptr = a;
     map[uniformName] =  help1;
 }
 
-
-//void Material::set(const std::string& uniformName, const Mat4& matrix) const
-//{
-//    shader.uploadUniformMat4(uniformName, matrix);
-//}
-//void Material::set(const std::string& uniformName, const Vec3f& a) const
-//{
-//    shader.uploadUniformVec3f(uniformName, a);
-//}
-//void Material::set(const std::string& uniformName, const Vec4f& a) const
-//{
-//    shader.uploadUniform4f(name, a);
-//}
-//void Material::set(const std::string& uniformName, int a) const
-//{
-//    shader.uploadUniform1i(name, a);
-//}
-
-// -----
+void log(const Material& material)
+{
+    for(auto [key, value] : material.map)
+    {
+        std::cout << key << " = ";
+        switch(value.type)
+        {
+            case ShaderDataType::SdtFloat1:           log(*(Vec1f*)value.ptr);      break;
+            case ShaderDataType::SdtFloat2:          log(*(Vec2f*)value.ptr);      break;
+            case ShaderDataType::SdtFloat3:          log(*(Vec3f*)value.ptr);     break;
+            case ShaderDataType::SdtFloat4:         log(*(Vec4f*)value.ptr);     break;
+            case ShaderDataType::SdtMat3:            log(*(Mat3*)value.ptr);       break;
+            case ShaderDataType::SdtMat4:            log(*(Mat4*)value.ptr);       break;
+            case ShaderDataType::SdtInt1:             log(*(Vec1i*)value.ptr);       break;
+            case ShaderDataType::SdtInt2:            log(*(Vec2i*)value.ptr);       break;
+            case ShaderDataType::SdtInt3:            log(*(Vec3i*)value.ptr);       break;
+            case ShaderDataType::SdtInt4:            log(*(Vec4i*)value.ptr);       break;
+            case ShaderDataType::SdtBool:            log(*(bool*)value.ptr);       break;
+            default: cout << "ERROR: material data type not defined in log function" << endl; assert(false);
+            cout << endl;
+        }
+    }
+}

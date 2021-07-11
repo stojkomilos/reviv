@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cmake -DGLFW_USE_OSMESA=true -S . -B build/
+cmake -S ../ -B ../build/
 
 # Some cmake flags:
 #   GLFW_USE_OSMESA - Use OSMesa for offscreen context creation

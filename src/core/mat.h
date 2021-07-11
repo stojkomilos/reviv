@@ -13,35 +13,94 @@ using std::cin; using std::cout; using std::endl;
 
 namespace mat{
 
-    class Vec1f{
+    class Vec1f
+    {
     public:
         float x;
-        Vec1f();
+        Vec1f() = default;
         Vec1f(float x);
+        Vec1f(const Vec1f&) = default;
     };
-    class Vec2f{
+
+    class Vec2f
+    {
     public:
         float x, y;
-        Vec2f();
+        Vec2f() = default;
         Vec2f(float x, float y);
+        Vec2f(const Vec2f&) = default;
     };
-    class Vec3f{
+
+    class Vec3f
+    {
     public:
         float x, y, z;
-        Vec3f();
+        Vec3f() = default;
         Vec3f(float x, float y, float z);
+        Vec3f(const Vec3f&) = default;
     };
-    class Vec4f{
+
+    class Vec4f
+    {
     public:
         float x, y, z, w;
-        Vec4f();
+        Vec4f() = default;
         Vec4f(float x, float y, float z, float w);
+        Vec4f(const Vec4f&) = default;
     };
-    class Mat4{
+
+    class Mat3
+    {
+    public:
+        Vec3f a, b, c;
+        Mat3() = default;
+        Mat3(float n);
+        Mat3(const Mat3&) = default;
+    };
+
+    class Mat4
+    {
     public:
         Vec4f a, b, c, d;
-        Mat4();
+        Mat4() = default;
         Mat4(float n);
+        Mat4(const Mat4&) = default;
+    };
+
+    class Vec1i
+    {
+    public:
+        int x;
+        Vec1i() = default;
+        Vec1i(int x);
+        Vec1i(const Vec1i&) = default;
+    };
+
+    class Vec2i
+    {
+    public:
+        int x, y;
+        Vec2i() = default;
+        Vec2i(int x, int y);
+        Vec2i(const Vec2i&) = default;
+    };
+
+    class Vec3i
+    {
+    public:
+        int x, y, z;
+        Vec3i() = default;
+        Vec3i(int x, int y, int z);
+        Vec3i(const Vec3i&) = default;
+    };
+
+    class Vec4i
+    {
+    public:
+        int x, y, z, w;
+        Vec4i() = default;
+        Vec4i(int x, int y, int z, int w);
+        Vec4i(const Vec4i&) = default;
     };
 
     Mat4 translate(Mat4 a, const Vec3f& b);
@@ -102,9 +161,20 @@ namespace mat{
 
 using namespace mat;
 
-void log(const Vec3f& thing);
-void log(const Mat4& thing);
+void log(const Vec1f& thing);
 void log(const Vec2f& thing);
+void log(const Vec3f& thing);
+void log(const Vec4f& thing);
+
+void log(const Vec1i& thing);
+void log(const Vec2i& thing);
+void log(const Vec3i& thing);
+void log(const Vec4i& thing);
+
+void log(const Mat3& thing);
+void log(const Mat4& thing);
+
+void log(const bool& thing);
 void log(const Rotation& thing);
 
 extern Mat4 identity;

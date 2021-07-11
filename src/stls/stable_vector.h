@@ -8,7 +8,6 @@ class StableVectorIterator
 {
 public:
     using ValueType = typename StableVector::ValueType;
-    //using PointerType = typename StableVector::ValueType*;
 
     StableVectorIterator(ValueType* ptr)
         : ptr(ptr)
@@ -163,7 +162,7 @@ namespace stls
     {
         currentSize++;
         assert(currentSize <= capacity);
-        return (*this)[currentSize-1] = T(std::forward<Args>(args)...);
+        return (*this)[currentSize-1] = T(std::forward<Args>(args)...); //TODO: move semantics?
     }
 
     template<class T>

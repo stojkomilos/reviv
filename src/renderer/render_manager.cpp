@@ -60,10 +60,10 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
         return -1;
     }	
 
-    cout << "EVO GAA KANCER:" << endl;
-    cout << "KANCER POSLE IME: " << player->entityName << endl;
+    //cout << "EVO GAA KANCER:" << endl;
+    //cout << "KANCER POSLE IME: " << player->entityName << endl;
 
-    cout << "KRAJ IMENA\n";
+    //cout << "KRAJ IMENA\n";
     if (!fullscreen)
 	{
 		glfwSetWindowPos(window, -windowWidth - 5, 0); //TODO: NE RADI NA WAYLANDS MOZDA NAVODNO
@@ -94,14 +94,17 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
     Shader* textureShader = new Shader; // TODO, memory leak
 	textureShader->setUp("../resources/shaders/texture.vs", "../resources/shaders/texture.fs");
     auto* stanicMat = stanic->add<MaterialComponent>();
-    *stanicMat = Material(*textureShader);
+    //material->
+    //stanicMat->material.set("u_Color", Vec4f(1, 0, 0, 1));
+    *stanicMat = MaterialComponent(Material(*textureShader));
+    stanicMat->material.set("u_Color", Vec4f(1, 0, 0, 1));
 
     /// -----
 	
 	std::vector<BufferElement> tempVboLayout1 = {
-		{ShaderDataType::Float3, "a_Position", false},
-		{ShaderDataType::Float2, "a_TexCoord", false},
-		{ShaderDataType::Float3, "a_Normal",   false},
+		{ShaderDataType::SdtFloat3, "a_Position", false},
+		{ShaderDataType::SdtFloat2, "a_TexCoord", false},
+		{ShaderDataType::SdtFloat3, "a_Normal",   false},
 	};
 	BufferLayout vboLayout1(tempVboLayout1);
 
@@ -150,21 +153,21 @@ int RenderManager::render()
 
 	beginScene();
 
-	for(const Entity& entity : *Scene::getEntityList())
+	for(Entity* pEntity : *Scene::getEntityList())
     {
-		if(entity.valid)
+		if(pEntity->valid)
 		{
             //cout << "ID Material: " << Material::id << endl;
             //cout << "ID Transform: " << Transform::id << endl;
             //cout << "ID Vao: " << Vao::id << endl;
-
-			if(entity.has<MaterialComponent>() and entity.has<TransformComponent>() and entity.has<VaoComponent>())
+			if(pEntity->has<MaterialComponent>() and pEntity->has<TransformComponent>() and pEntity->has<VaoComponent>())
 			{
-                cout << "Rendering entity: " << entity.entityName << endl;
+            //    stanic->get<MaterialComponent>()->material.set("u_Color", Vec4f(1, 0, 0, 1));
+                cout << "Rendering entity: " << pEntity->entityName << endl;
 				submit(
-					(Material*)entity.get<MaterialComponent>(), 
-					*entity.get<TransformComponent>(), 
-					*entity.get<VaoComponent>());
+					&pEntity->get<MaterialComponent>()->material, 
+					pEntity->get<TransformComponent>()->transform, 
+					pEntity->get<VaoComponent>()->vao);
 			}
 		}
 	}
@@ -181,7 +184,7 @@ int RenderManager::render()
 void RenderManager::submit(Material* material, const Mat4& transform, const Vao& vao)
 {
     // PRE SETA MORA DA SHADER BUDE BOUNDOVAN
-    material->shader.bind();
+    //material->shader.bind();
 
     material->set("u_Color", Vec4f(1, 0, 0, 1));
 

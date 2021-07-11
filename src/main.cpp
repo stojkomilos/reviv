@@ -18,29 +18,19 @@ Entity* stanic;
 Entity* player;
 int main(){ 
 			
- //   assert(false);
 	std::cout << "START\n";
-//    assert(false);
- //   return 0;
-//	std::cout << "START\n";
-//	std::cout << "START\n";
-//	std::cout << "START\n";
-//	std::cout << "START\n";
-//	std::cout << "START\n";
-
-//    return 0;
 
     Scene::createEntity("Stanic");
-    cout << "pPlayerPre:" << Scene::getInstance().pPlayerEntity << endl;
+    //cout << "pPlayerPre:" << Scene::getInstance().pPlayerEntity << endl;
 
     player = Scene::createEntity("Player");
     Scene::setPlayerEntity(player);
-    cout << "player->entityName: " << player->entityName << endl;
+    //cout << "player->entityName: " << player->entityName << endl;
 
-    cout << "pPlayerPosle:" << Scene::getInstance().pPlayerEntity << endl;
+    //cout << "pPlayerPosle:" << Scene::getInstance().pPlayerEntity << endl;
     auto* camera = Scene::createEntity("Camera");
     Scene::setCameraEntity(camera);
-    Scene::createEntity("Kurac");
+    //Scene::createEntity("Kurac");
 
 
     stanic = &Scene::getInstance().entityList[0];
@@ -127,7 +117,7 @@ int main(){
 			*/
 		}
 
-        gPhysicsManager.update();
+        gPhysicsManager.update(); //TODO: destruktor radi ovde
 		gRenderManager.render();
 		gGameLoopCounter++;
 

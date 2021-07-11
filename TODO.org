@@ -1,6 +1,19 @@
 * Ciljevi
 
-ukloniti types.h
+
+da komponente budu =stable_vector=, da se zove destruktor svake
+
+range based for loop
+
+TEK KADA SVE RADI:
+    - window apstraction
+    - organizacija, materijali, rename update->onUpdate, startUp->init(), singleton na stvari
+    - log na entity
+    - Material map da bude safe (?opratori, copy construtor?)
+    - move semantics
+    - organizacija fajlova:
+        - ukloniti types.h
+        - namestiti dobar vendor inlcude stuff
 
 scene sigleton gde stoje sve komponente, i onda ne moram vise da stavim =extern gEntityList...= u svaki fajl. + jos mogu samo scene::CreateEntity()
 https://www.youtube.com/watch?v=GfSzeAcsBb0&t=1224s @18:30 | emplace!! | std::forward.... | T&&...

@@ -9,7 +9,7 @@
 
 using ComponentId = unsigned long long;
 
-using namespace std;
+using std::cin; using std::cout; using std::endl;
 
 class Component
 {

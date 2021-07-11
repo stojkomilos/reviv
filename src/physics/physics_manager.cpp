@@ -46,31 +46,31 @@ void PhysicsManager::update()
 {
     PositionComponent* stanicPos = stanic->get<PositionComponent>();
     auto* player = Scene::getPlayerEntity(3);
-    Entity* kurac = &((*Scene::getEntityList())[3]);
+//    Entity* kurac = &((*Scene::getEntityList())[3]);
 
-    cout << "PP ISPIS: " << endl;
-    cout << "NrComponents: player: " <<  Scene::getPlayerEntity(4)->components.size() << " Stanic: " << stanic->components.size() << " Camera:" << Scene::getCameraEntity()->components.size() << " kurac: " << kurac->components.size() << endl;
-    cout << "Names Stanic: " << stanic->entityName << " Camera:" << Scene::getCameraEntity()->entityName << " kurac: " << kurac->entityName << " ";
-    cout << "player: " <<  Scene::getPlayerEntity(5)->entityName << endl;
-    cout << "PP KRaj ispisa: " << endl;
+    //cout << "PP ISPIS: " << endl;
+    //cout << "NrComponents: player: " <<  Scene::getPlayerEntity(4)->components.size() << " Stanic: " << stanic->components.size() << " Camera:" << Scene::getCameraEntity()->components.size() << " kurac: " << kurac->components.size() << endl;
+    //cout << "Names Stanic: " << stanic->entityName << " Camera:" << Scene::getCameraEntity()->entityName << " kurac: " << kurac->entityName << " ";
+    //cout << "player: " <<  Scene::getPlayerEntity(5)->entityName << endl;
+    //cout << "PP KRaj ispisa: " << endl;
 
     auto* playerPos = Scene::getPlayerEntity(6)->get<PositionComponent>();
     *stanicPos = add(*playerPos, Vec3f(5 * sin(glfwGetTime()), 0, 5 * cos(glfwGetTime())));
 
     // ---
-    cout << "Stanic position: ";
-    log(*stanic->get<PositionComponent>());
-    cout << "Player position: ";
-    log(*Scene::getPlayerEntity(7)->get<PositionComponent>());
-    cout << "Player rotation: ";
-    log(*Scene::getPlayerEntity(8)->get<RotationComponent>());
+    //cout << "Stanic position: ";
+    //log(*stanic->get<PositionComponent>());
+    //cout << "Player position: ";
+    //log(*Scene::getPlayerEntity(7)->get<PositionComponent>());
+    //cout << "Player rotation: ";
+    //log(*Scene::getPlayerEntity(8)->get<RotationComponent>());
 
-    cout << "Camera position: ";
-    log(*Scene::getCameraEntity()->get<PositionComponent>());
-    cout << "Camera viewmatrix";
-    log(Scene::getCameraEntity()->get<CameraComponent>()->camera.viewMatrix);
-    cout << "Camera projectionmatrix";
-    log(Scene::getCameraEntity()->get<CameraComponent>()->camera.projectionMatrix);
+    //cout << "Camera position: ";
+    //log(*Scene::getCameraEntity()->get<PositionComponent>());
+    //cout << "Camera viewmatrix";
+    //log(Scene::getCameraEntity()->get<CameraComponent>()->camera.viewMatrix);
+    //cout << "Camera projectionmatrix";
+    //log(Scene::getCameraEntity()->get<CameraComponent>()->camera.projectionMatrix);
     // ---
 
     alignPositionAndRotation(*Scene::getPlayerEntity(9), Scene::getCameraEntity());

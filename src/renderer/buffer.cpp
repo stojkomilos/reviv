@@ -1,19 +1,19 @@
 #include "buffer.h"
 
-static unsigned int ShaderDataTypeSize(ShaderDataType type) {
+unsigned int ShaderDataTypeSize(ShaderDataType type) {
 	switch (type)
 	{
-		case ShaderDataType::Float:			return 4;
-		case ShaderDataType::Float2:		return 4 * 2;
-		case ShaderDataType::Float3:		return 4 * 3;
-		case ShaderDataType::Float4:		return 4 * 4;
-		case ShaderDataType::Mat3:			return 4 * 3 * 3;
-		case ShaderDataType::Mat4:			return 4 * 4 * 4;
-		case ShaderDataType::Int:			return 4;
-		case ShaderDataType::Int2:			return 4 * 2;
-		case ShaderDataType::Int3:			return 4 * 3;
-		case ShaderDataType::Int4:			return 4 * 4;
-		case ShaderDataType::Bool:			return 1;
+		case ShaderDataType::SdtFloat1:			return 4;
+		case ShaderDataType::SdtFloat2:		return 4 * 2;
+		case ShaderDataType::SdtFloat3:		return 4 * 3;
+		case ShaderDataType::SdtFloat4:		return 4 * 4;
+		case ShaderDataType::SdtMat3:			return 4 * 3 * 3;
+		case ShaderDataType::SdtMat4:			return 4 * 4 * 4;
+		case ShaderDataType::SdtInt1:			return 4;
+		case ShaderDataType::SdtInt2:			return 4 * 2;
+		case ShaderDataType::SdtInt3:			return 4 * 3;
+		case ShaderDataType::SdtInt4:			return 4 * 4;
+		case ShaderDataType::SdtBool:			return 1;
 	}
 	std::cout << "ERROR: RENDERER UNKNOWN SHADER DATA TYPE\n";
 	assert(false);
@@ -31,17 +31,17 @@ BufferElement::BufferElement()
 unsigned int BufferElement::getElementCount()
 {
 	switch (type) {
-		case ShaderDataType::Float:			return 1;
-		case ShaderDataType::Float2:		return 2;
-		case ShaderDataType::Float3:		return 3;
-		case ShaderDataType::Float4:		return 4;
-		case ShaderDataType::Mat3:			return 3 * 3;
-		case ShaderDataType::Mat4:			return 4 * 4;
-		case ShaderDataType::Int:			return 1;
-		case ShaderDataType::Int2:			return 2;
-		case ShaderDataType::Int3:			return 3;
-		case ShaderDataType::Int4:			return 4;
-		case ShaderDataType::Bool:			return 1;
+		case ShaderDataType::SdtFloat1:			return 1;
+		case ShaderDataType::SdtFloat2:		return 2;
+		case ShaderDataType::SdtFloat3:		return 3;
+		case ShaderDataType::SdtFloat4:		return 4;
+		case ShaderDataType::SdtMat3:			return 3 * 3;
+		case ShaderDataType::SdtMat4:			return 4 * 4;
+		case ShaderDataType::SdtInt1:			return 1;
+		case ShaderDataType::SdtInt2:			return 2;
+		case ShaderDataType::SdtInt3:			return 3;
+		case ShaderDataType::SdtInt4:			return 4;
+		case ShaderDataType::SdtBool:			return 1;
 	}
 	std::cout << "ERROR: RENDERER UNKNOWN SHADER DATA TYPE\n";
 	assert(false);
@@ -50,17 +50,17 @@ unsigned int BufferElement::getElementCount()
 unsigned int shaderDataTypeToOpenGLBaseType(ShaderDataType type) {
 	switch (type)
 	{
-		case ShaderDataType::Float:			return GL_FLOAT;
-		case ShaderDataType::Float2:		return GL_FLOAT;
-		case ShaderDataType::Float3:		return GL_FLOAT;
-		case ShaderDataType::Float4:		return GL_FLOAT;
-		case ShaderDataType::Mat3:			return GL_FLOAT;
-		case ShaderDataType::Mat4:			return GL_FLOAT;
-		case ShaderDataType::Int:			return GL_INT;
-		case ShaderDataType::Int2:			return GL_INT;
-		case ShaderDataType::Int3:			return GL_INT;
-		case ShaderDataType::Int4:			return GL_INT;
-		case ShaderDataType::Bool:			return GL_BOOL;
+		case ShaderDataType::SdtFloat1:			return GL_FLOAT;
+		case ShaderDataType::SdtFloat2:		return GL_FLOAT;
+		case ShaderDataType::SdtFloat3:		return GL_FLOAT;
+		case ShaderDataType::SdtFloat4:		return GL_FLOAT;
+		case ShaderDataType::SdtMat3:			return GL_FLOAT;
+		case ShaderDataType::SdtMat4:			return GL_FLOAT;
+		case ShaderDataType::SdtInt1:			return GL_INT;
+		case ShaderDataType::SdtInt2:			return GL_INT;
+		case ShaderDataType::SdtInt3:			return GL_INT;
+		case ShaderDataType::SdtInt4:			return GL_INT;
+		case ShaderDataType::SdtBool:			return GL_BOOL;
 	}
 	std::cout << "ERROR: RENDERER UNKNOWN SHADER DATA TYPE\n";
 	assert(false);
