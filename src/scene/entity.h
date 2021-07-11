@@ -107,18 +107,9 @@ ComponentId SpecificComponent<T>::getId() const
 template <class T>
 T* Entity::add()
 {
-    cout << "\nKcompSize1: " << components.size() << endl;
-    auto* result = new T;
-    cout << "\nKcompSize1: " << components.size() << endl;
-    cout << "HERE: ";
-    cout << "\nKcompSize1: " << components.size() << endl;
-    cout << result->getComponentTypeName() << endl;
-    //cout << "ptr=" << " value=" << *result << endl;
-    cout << "\nKcompSize1: " << components.size() << endl;
-    Component* majmun = result;
-    components.push_back(majmun);
-    return (T*)majmun;
-    //log();
+    T* result = new T;
+    components.push_back(result);
+    return result;
 }
 
 template <class T>
@@ -145,7 +136,7 @@ T* Entity::get() const
     int size = components.size();
     for(int i=0; i<size; i++)
     {
-        cout << "i=" << i << " size=" << size << " T::id=" << T::id << endl;
+        //cout << "i=" << i << " size=" << size << " T::id=" << T::id << endl;
         Component* temp = (Component*)components[i];
         //if(((Component*)components[i]).getId() == T::id) // ->
         if(temp->getId() == T::id) // ->

@@ -10,10 +10,10 @@ void Camera::setUp(float nearPlane1, float farPlane1, float fov1, float ratio1)
 }
 void Camera::recalculateViewMatrix(const Vec3f& position, const Rotation& rotation) // gRenderManager -> recalculateViewMatrix ili static deo ProjectionCamera klase
 {
-    cout << "==> Recalculating viewMatrix" << endl;
+//    cout << "==> Recalculating viewMatrix" << endl;
 
-    cout << "Pre-Update viewMatrix: ";
-    log(viewMatrix);
+//    cout << "Pre-Update viewMatrix: ";
+//    log(viewMatrix);
     direction.x = -cos(rotation.pitch) * cos(rotation.yaw);
     direction.y = -sin(rotation.pitch);
     direction.z = -cos(rotation.pitch) * sin(rotation.yaw);
@@ -42,8 +42,8 @@ void Camera::recalculateViewMatrix(const Vec3f& position, const Rotation& rotati
     viewMatrix.c.w = 0;
     viewMatrix.d.w = 1;
 
-    cout << "Post-Update viewMatrix: ";
-    log(viewMatrix);
+//    cout << "Post-Update viewMatrix: ";
+//    log(viewMatrix);
 }
 void Camera::recalculateProjectionMatrix()
 {

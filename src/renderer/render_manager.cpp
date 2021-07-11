@@ -10,7 +10,7 @@
 static void error_callback(int error, const char* description)
 {
     fprintf(stderr, "Error: %s\n", description);
-//    assert(false);
+    assert(false);
 }
 /// ----
 
@@ -66,7 +66,7 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
     cout << "KRAJ IMENA\n";
     if (!fullscreen)
 	{
-	//	glfwSetWindowPos(window, -windowWidth - 5, 0); NE RADI NA WAYLANDS MOZDA NAVODNO
+		glfwSetWindowPos(window, -windowWidth - 5, 0); //TODO: NE RADI NA WAYLANDS MOZDA NAVODNO
 	}
 
 	glfwMakeContextCurrent(window);

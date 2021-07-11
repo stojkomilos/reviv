@@ -4,8 +4,8 @@
 void Entity::log() const
 {
     int size = components.size();
-    cout << entityName << ".log | " << size << " Components: ";
-    cout << endl;
+    //cout << entityName << ".log | " << size << " Components: ";
+    //cout << endl;
 
     for(int i=0; i<size; i++)
     {

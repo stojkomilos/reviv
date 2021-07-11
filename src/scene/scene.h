@@ -1,4 +1,5 @@
 #pragma once
+#include"stls/stable_vector.h"
 
 #include<vector>
 
@@ -7,10 +8,12 @@
 class Scene{ //TODO: delete assignment operator (operator=)
 public:
     Scene(const Scene&) = delete;
+    Scene& operator = (const Scene& other) = delete;
+
     static Entity* createEntity(const std::string& entityName = "NamelessEntity") { return getInstance().iCreateEntity(entityName); }
     static Entity* findEntity(const std::string& entityName) { return getInstance().iFindEntity(entityName); }
     static void logEntity(const std::string& entityName) { return getInstance().iLogEntity(entityName); }
-    static std::vector<Entity>* getEntityList() { return getInstance().iGetEntityList(); }
+    static stls::StableVector<Entity>* getEntityList() { return getInstance().iGetEntityList(); }
 
     static Entity* getCameraEntity() { return getInstance().iGetCameraEntity(); }
     static void setCameraEntity(Entity* pNewCameraEntity) {getInstance().iSetCameraEntity(pNewCameraEntity); }
@@ -18,7 +21,7 @@ public:
     static Entity* getPlayerEntity(int a) { cout << "REQUESTING " << a << endl; return getInstance().iGetPlayerEntity(); }
     static void setPlayerEntity(Entity* pNewPlayerEntity) { return getInstance().iSetPlayerEntity(pNewPlayerEntity); }
     ///
-    std::vector<Entity> entityList;
+    stls::StableVector<Entity> entityList;
 
     Entity* pCameraEntity;
     Entity* pPlayerEntity;
@@ -32,13 +35,14 @@ public:
         return instance;
     }
 private:
-    Scene() = default;
+    Scene() : entityList(50) { }
 
     Entity* iCreateEntity(const std::string& entityName);
     Entity* iFindEntity(const std::string& entityName);
     void iLogEntity(const std::string& entityName);
     std::vector<Entity>* iGetEntityList() const;
-    std::vector<Entity>* iGetEntityList();
+
+    stls::StableVector<Entity>* iGetEntityList();
 
     Entity* iGetCameraEntity();
     void iSetCameraEntity(Entity* pNewCameraEntity);

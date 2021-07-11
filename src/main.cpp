@@ -50,9 +50,9 @@ int main(){
     auto* stanicPos = stanic->get<PositionComponent>();
 
     *stanicPos = Vec3f(3, 3, 3);
-    cout << "EVO POS: ";
-    log(*stanic->get<PositionComponent>());
-    cout << "NOV SIZE: " << stanic->components.size() << endl;
+    //cout << "EVO POS: ";
+    //log(*stanic->get<PositionComponent>());
+    //cout << "NOV SIZE: " << stanic->components.size() << endl;
 
 
     //cout << "NOV SIZE: " << stanic->components.size() << endl;
