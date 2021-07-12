@@ -1,46 +1,34 @@
 #include"entity.h"
 #include"components.h"
 
-void Entity::log() const
+void log(const Entity& entity)
 {
-    int size = components.size();
-    //cout << entityName << ".log | " << size << " Components: ";
-    //cout << endl;
-
-    for(int i=0; i<size; i++)
+    int size = entity.components.size();
+    cout << "Entity " << entity.entityName << "  " << size << " components:-----" << endl;
+    for(auto itComponent = entity.components.begin(); itComponent != entity.components.end(); itComponent++)
     {
-        cout << components[i]->getId() << " ";
+        log(*itComponent);
     }
-    cout << endl;
+    cout << "-------------" << endl;
 }
 
-Component::Component()
+Entity::Entity()
+    : entityName("nameless_entity"), components(15)
 {
-
+    cout << "Constructor entity: " << entityName << endl;
 }
-Component::~Component()
-{
-
-}
-//Entity::Entity()
-//{
-//    components.clear();
-//}
 
 Entity::Entity(const std::string& name)
+    : Entity()
 {
-    cout << "Entity constructor: name: " << name << " nrCom: " << components.size() << endl;
     entityName = name;
-    components.clear();
 }
 
 Entity::~Entity()
 {
-    cout << "DESTRUKT: EntName: " << entityName << " compSize=" << components.size() << endl;
-    cout << "a\n";
-    //for (int i=0; i<components.size(); i++)
-    //for (Component* component : components)
+    cout << "Destructor entity: " << entityName << endl;
+    for(auto itComponent = components.begin(); itComponent != components.end(); itComponent++)
     {
-        //delete components[i];
+        delete (*itComponent);
     }
 }

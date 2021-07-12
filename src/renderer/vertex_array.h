@@ -19,3 +19,5 @@ public:
 	void setUp();
 	void bind() const;
 };
+
+void log(const Vao& vao);

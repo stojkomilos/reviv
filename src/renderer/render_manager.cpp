@@ -7,11 +7,6 @@
 #endif
 
 /// -----
-static void error_callback(int error, const char* description)
-{
-    fprintf(stderr, "Error: %s\n", description);
-    assert(false);
-}
 /// ----
 
 extern int gGameLoopCounter;
@@ -23,70 +18,11 @@ extern Entity* player;
 
 
 RenderCommand gRenderCommand;
-int RenderManager::startUp(int windowWidth1, int windowHeight1)
+int RenderManager::init(int windowWidth1, int windowHeight1)
 {
 
-	windowWidth = windowWidth1;
-	windowHeight = windowHeight1;
-
-    glfwSetErrorCallback(error_callback);
-
-	if(!glfwInit())
-    {
-        cout << "ERROR: could not initialize GLFW" << endl;
-        assert(false);
-    }
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	if (__REVIV_RELEASE__)
-	{
-		fullscreen = true;
-	}
-	if(fullscreen){
-		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-		windowHeight = mode->height;
-		windowWidth = mode->width;
-	}
-
-    cout << "KANCER PRE IME: " << player->entityName << endl;
-	window = glfwCreateWindow(windowWidth, windowHeight, "OpenGL", NULL, NULL);
-
-    if (!window) {
-        std::cout << "ERROR: Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        assert(false);
-        return -1;
-    }	
-
-    //cout << "EVO GAA KANCER:" << endl;
-    //cout << "KANCER POSLE IME: " << player->entityName << endl;
-
-    //cout << "KRAJ IMENA\n";
-    if (!fullscreen)
-	{
-		glfwSetWindowPos(window, -windowWidth - 5, 0); //TODO: NE RADI NA WAYLANDS MOZDA NAVODNO
-	}
-
-	glfwMakeContextCurrent(window);
-
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		assert(false);
-		return -1;
-	}
-	
-	std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
-	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
-	std::cout << "Version: " << glGetString(GL_VERSION) << std::endl;
-
-	glViewport(0, 0, windowWidth, windowHeight);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE); ///pale se sticky mouse 
-	//glfwSetCursorPosCallback(window, mouse_callback); TODOOO
+    window.init();
+    //gRenderCommand().init();
 
     /// -------- MATERIALS ------------------------------------------------------------
 
@@ -128,13 +64,6 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
     stanicVao->vao.addVertexBuffer(stanic->get<VaoComponent>()->vao.vbo);
     ///
 
-    glDebugMessageCallback(openGlLogMessage, nullptr);
-    glEnable(GL_DEBUG_OUTPUT);
-    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS); // enables you too look in the call stack
-   
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	stanicTexture.setUp("../resources/textures/stene.png");
     stanicTexture.bind(0);
@@ -146,35 +75,28 @@ int RenderManager::startUp(int windowWidth1, int windowHeight1)
 	return 0;
 }
 
-int RenderManager::render()
+void RenderManager::render()
 {
 	gRenderCommand.setClearColor(Vec4f(0.0f, 0.0f, 0.0f, 0.9f));
 	gRenderCommand.clear();
 
 	beginScene();
 
-	for(Entity* pEntity : *Scene::getEntityList())
+    for(auto itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
     {
-		if(pEntity->valid)
+		if(itEntity->valid)
 		{
-            //cout << "ID Material: " << Material::id << endl;
-            //cout << "ID Transform: " << Transform::id << endl;
-            //cout << "ID Vao: " << Vao::id << endl;
-			if(pEntity->has<MaterialComponent>() and pEntity->has<TransformComponent>() and pEntity->has<VaoComponent>())
+			if(itEntity->has<MaterialComponent>() and itEntity->has<TransformComponent>() and itEntity->has<VaoComponent>())
 			{
             //    stanic->get<MaterialComponent>()->material.set("u_Color", Vec4f(1, 0, 0, 1));
-                cout << "Rendering entity: " << pEntity->entityName << endl;
+                cout << "Rendering entity: " << itEntity->entityName << endl;
 				submit(
-					&pEntity->get<MaterialComponent>()->material, 
-					pEntity->get<TransformComponent>()->transform, 
-					pEntity->get<VaoComponent>()->vao);
+					&itEntity->get<MaterialComponent>()->material, 
+					itEntity->get<TransformComponent>()->transform, 
+					itEntity->get<VaoComponent>()->vao);
 			}
 		}
 	}
-
-
-	glfwSwapBuffers(window); // abstract mozda informacija ima u cherno video-ima: game engine window
-	glfwPollEvents();
 
 	endScene();
 	
@@ -202,12 +124,11 @@ void RenderManager::submit(Material* material, const Mat4& transform, const Vao&
     gRenderCommand.drawArrays(vao);
 }
 
-int RenderManager::shutDown() 
+int RenderManager::shutdown() 
 {
 	
 	delete[] voxelBuffer;
 
-	glfwTerminate();
 	return 0;
 }
 
@@ -241,33 +162,4 @@ void RenderManager::beginScene()
 void RenderManager::endScene()
 {
 
-}
-void RenderManager::openGlLogMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParams)
-{
-    cout << endl;
-    switch(severity)
-    {
-        case GL_DEBUG_SEVERITY_HIGH:
-            cout << "[OpenGL Debug HIGH] " << message << endl;
-            assert(false);
-            break;
-
-        case GL_DEBUG_SEVERITY_MEDIUM:
-            cout << "[OpenGL Debug MEDIUM] " << message << endl;
-            assert(false);
-            break;
-
-        case GL_DEBUG_SEVERITY_LOW:
-            cout << "[OpenGL Debug LOW] " << message << endl;
-            assert(false);
-            break;
-
-        case GL_DEBUG_SEVERITY_NOTIFICATION:
-            cout << "[OpenGL Debug NOTIFICATION] " << message << endl;
-            break;
-
-        default:
-            cout << "ERROR: opengl returned unknown debug error SEVERITY" << endl;
-            assert(false);
-    }
 }

@@ -22,3 +22,5 @@ public:
 	float leftPlane, rightPlane, bottomPlane, topPlane, nearPlane, farPlane;
 	float ratio, fov;
 };
+
+void log(const Camera& camera);

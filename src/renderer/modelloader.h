@@ -20,3 +20,5 @@ public:
 	size_t bufferSize;
 	int nrTriangles, nrVertices;
 };
+
+void log(const ModelLoader& modelLoader);

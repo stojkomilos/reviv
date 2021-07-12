@@ -1,19 +1,17 @@
 * Ciljevi
 
+glfw stuff:
+ - double time = glfwGetTime();
+ - q -> power off
+ - is pressed and stuff, pogledaj cherno video
+ - viewport stuff
 
-da komponente budu =stable_vector=, da se zove destruktor svake
+- window apstraction
+- camera noclip flying controler (ubaciti u physics sistem)
+    - organizacija, singleton, materijali, rename update->onUpdate, init->init(), singleton na stvari
+    - sandbox, .dll and stuff
+- Material map da bude safe (?opratori, copy construtor?)
 
-range based for loop
-
-TEK KADA SVE RADI:
-    - window apstraction
-    - organizacija, materijali, rename update->onUpdate, startUp->init(), singleton na stvari
-    - log na entity
-    - Material map da bude safe (?opratori, copy construtor?)
-    - move semantics
-    - organizacija fajlova:
-        - ukloniti types.h
-        - namestiti dobar vendor inlcude stuff
 
 scene sigleton gde stoje sve komponente, i onda ne moram vise da stavim =extern gEntityList...= u svaki fajl. + jos mogu samo scene::CreateEntity()
 https://www.youtube.com/watch?v=GfSzeAcsBb0&t=1224s @18:30 | emplace!! | std::forward.... | T&&...
@@ -30,7 +28,7 @@ ciljevi:
     - basic object lifetime
     - virtual destructor
 -----
- - clean RenderManager::startUp() | cherno serijalizacija? | cherno singleton?
+ - clean RenderManager::init() | cherno serijalizacija? | cherno singleton?
    - ? glfwInit(), glInit() ?
  - materijali da rade kako treba (materijali da rade kako treba), efikasno 
  - /ceo/ chapter https://learnopengl.com/Model-Loading/Assimp
@@ -299,3 +297,7 @@ and
 58 1. Introduction
 3. one or more animation clips, which specify how the joints should move
 over time.
+
+* Resursi
+https://antongerdelan.net/opengl/
+https://open.gl/

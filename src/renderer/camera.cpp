@@ -1,5 +1,12 @@
 #include "camera.h"
-#include "core/types.h"
+
+void log(const Camera& camera)
+{
+    cout << "viewMatrix: " << endl;
+    log(camera.viewMatrix);
+    cout << "projectionMatrix: " << endl;
+    log(camera.projectionMatrix);
+}
 
 void Camera::setUp(float nearPlane1, float farPlane1, float fov1, float ratio1)
 {

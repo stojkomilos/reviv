@@ -6,6 +6,8 @@
 #include"renderer/modelloader.h"
 #include"renderer/vertex_array.h"
 #include"renderer/material.h" //GLFW
+#include"core/mat.h"
+
 
 class PositionComponent : public SpecificComponent<PositionComponent>
 {
@@ -20,6 +22,8 @@ public:
 
     operator const Vec3f& () const { return position; }
     operator Vec3f& () { return position; }
+    void log() const override { cout << componentTypeName << endl; ::log(position);
+    }
 };
 
 class RotationComponent : public SpecificComponent<RotationComponent>
@@ -35,6 +39,7 @@ public:
 
     operator const Rotation& () const { return rotation; }
     operator Rotation& () { return rotation; }
+    void log() const override { cout << componentTypeName << endl; ::log(rotation); }
 };
 
 class CameraComponent : public SpecificComponent<CameraComponent>
@@ -49,7 +54,7 @@ public:
 
     operator const Camera& () const { return camera; }
     operator Camera& () { return camera; }
-
+    void log() const override { cout << componentTypeName << endl; ::log(camera); }
 };
 
 class TransformComponent : public SpecificComponent<TransformComponent>
@@ -64,7 +69,7 @@ public:
 
     operator const Mat4& () const { return transform; }
     operator Mat4& () { return transform; }
-
+    void log() const override { cout << componentTypeName << endl; ::log(transform); }
 };
 
 class ModelLoaderComponent : public SpecificComponent<ModelLoaderComponent>
@@ -79,6 +84,7 @@ public:
 
     operator const ModelLoader& () const { return modelLoader; }
     operator ModelLoader& () { return modelLoader; }
+    void log() const override { cout << componentTypeName << endl; ::log(modelLoader); }
 };
 
 class MaterialComponent : public SpecificComponent<MaterialComponent>
@@ -93,6 +99,7 @@ public:
 
     operator const Material& () const { return material; }
     operator Material& () { return material; }
+    void log() const override { cout << componentTypeName << endl; ::log(material); }
 };
 
 class VaoComponent : public SpecificComponent<VaoComponent>
@@ -107,6 +114,7 @@ public:
 
     operator const Vao& () const { return vao; }
     operator Vao& () { return vao; }
+    void log() const override { cout << componentTypeName << endl; ::log(vao); }
 };
 
 /*

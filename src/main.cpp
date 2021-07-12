@@ -60,7 +60,7 @@ int main(){
     cout << "NOV SIZE: " << stanic->components.size() << endl;
     //*stanicTrans = Mat4();
 
-    log(*stanic->get<TransformComponent>());
+    //log(*stanic->get<TransformComponent>());
 
     auto stanicModel = stanic->add<ModelLoaderComponent>();
     stanicModel->modelLoader.LoadModel("../resources/models/cube.obj");
@@ -76,7 +76,7 @@ int main(){
     auto* cameraRot = Scene::getCameraEntity()->add<RotationComponent>();
 
 
-	if (gRenderManager.startUp(1280, 720) == -1) {
+	if (gRenderManager.init(1280, 720) == -1) {
 		return -1;
 	}
 
@@ -85,7 +85,8 @@ int main(){
 
 	gRenderManager.renderHitbox = false;
 
-	while(!glfwWindowShouldClose(gRenderManager.window)){
+	while(true)
+    {
 
 		processInput(gRenderManager.window);
 
@@ -123,10 +124,6 @@ int main(){
 
 	}
 	
-	gRenderManager.shutDown();
+	gRenderManager.shutdown();
 	return 0;
-}
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-	glViewport(0, 0, width, height);
 }

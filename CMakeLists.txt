@@ -14,15 +14,16 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++17")
 
 file(GLOB_RECURSE SRC_FILES "src/*.c"
     "src/*.cpp"
-    "vendor/glad.c"
-    "vendor/stb_image.cpp")
+    "vendor/Glad/src/glad.c"
+    "vendor/stb_image/stb_image.cpp")
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/GLFW)
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/include)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/GLFW/include)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/Glad/include)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/stb_image)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 target_link_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/GLFW/src)
@@ -30,6 +31,9 @@ target_link_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendo
 target_link_libraries(${PROJECT_NAME} GL pthread dl)
 target_link_libraries(${PROJECT_NAME} wayland-client)
 target_link_libraries(${PROJECT_NAME} glfw)
+
+add_compile_definitions(RV_DEBUG 1)
+add_compile_definitions(RV_RELEASE 0)
 
 # Archive: ===
 #   link_directories(${CMAKE_CURRENT_SOURCE_DIR}/vendor/lib)

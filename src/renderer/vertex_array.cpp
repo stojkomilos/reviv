@@ -1,5 +1,11 @@
 #include "vertex_array.h"
 
+using std::cin; using std::cout; using std::endl;
+void log(const Vao& vao)
+{
+    cout << "Vao log() NOT DEFINED" << endl;
+}
+
 Vao::Vao() : nrOfTriangles(0)
 {
 }

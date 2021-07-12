@@ -1,7 +1,6 @@
 #include "mat.h"
 
-Mat4 identity(1); // TODO, const?
-
+const Mat4 identity(1);
 
 void log(const bool& thing)
 {

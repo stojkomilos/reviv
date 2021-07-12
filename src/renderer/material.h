@@ -17,8 +17,8 @@ struct MaterialHelpingStruct
         switch(type)
         {
             case(ShaderDataType::SdtInt1):
-                ptr = new Vec1i;
-                *(Vec1i*)ptr = *(Vec1i*)other.ptr;
+                ptr = new Vec1i;        // TODOOO destruktor za ovo i stvari oko ovoga
+                *(Vec1i*)ptr = *(Vec1i*)other.ptr; // TODO staviti ovu funkciju u neki .cpp fajl ili tako nesto
                 break;
             case(ShaderDataType::SdtFloat3):
                 ptr = new Vec3f;

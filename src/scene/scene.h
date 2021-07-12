@@ -5,10 +5,11 @@
 
 #include"entity.h"
 
-class Scene{ //TODO: delete assignment operator (operator=)
+class Scene{
 public:
     Scene(const Scene&) = delete;
-    Scene& operator = (const Scene& other) = delete;
+    ~Scene() = default;
+    Scene& operator=(const Scene& other) = delete;
 
     static Entity* createEntity(const std::string& entityName = "NamelessEntity") { return getInstance().iCreateEntity(entityName); }
     static Entity* findEntity(const std::string& entityName) { return getInstance().iFindEntity(entityName); }
@@ -29,7 +30,7 @@ public:
     bool doesPlayerEntityExist = false;
     bool doesCameraEntityExist = false;
 
-    static Scene& getInstance() //nzm dal moze u private
+    static Scene& getInstance()
     {
         static Scene instance;
         return instance;

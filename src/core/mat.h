@@ -3,12 +3,6 @@
 #include<iostream>
 #include<cmath>
 
-// NOVO TODO: stavi da log metoda bude van strukture, mozda cak i van namespace-a
-// NOVO TODO: optimizovanje koriscenjem "initializer list" i copy construtor. takodje, const refererence za mat::add, itd
-// NOVO TODO: operatori da se koriste: add, multiply, ==, etc...
-// NOVO TODO: operator >> da se koristi za cout
-// NOVO TODO: kapitalizacija SVIH klasa i struktura ovde i pretvori ih odma sve i u klase
-
 using std::cin; using std::cout; using std::endl;
 
 namespace mat{
@@ -161,6 +155,8 @@ namespace mat{
 
 using namespace mat;
 
+extern const Mat4 identity;
+
 void log(const Vec1f& thing);
 void log(const Vec2f& thing);
 void log(const Vec3f& thing);
@@ -176,5 +172,3 @@ void log(const Mat4& thing);
 
 void log(const bool& thing);
 void log(const Rotation& thing);
-
-extern Mat4 identity;

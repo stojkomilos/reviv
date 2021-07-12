@@ -8,6 +8,13 @@
 #include<vector>
 #include<cassert>
 
+using std::cin; using std::cout; using std::endl;
+
+void log(const ModelLoader& modelLoader)
+{
+    cout << "ModelLoader log() NOT DEFINED" << endl;
+}
+
 ModelLoader::ModelLoader() {
 	nrTriangles = nrVertices = 0;
 	

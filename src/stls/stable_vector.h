@@ -1,7 +1,10 @@
+#pragma once
+
 #include<assert.h>
 #include<iostream>
-using std::cin; using std::cout; using std::endl;
+#include<new>
 
+using std::cin; using std::cout; using std::endl;
 
 template<class StableVector>
 class StableVectorIterator
@@ -14,10 +17,11 @@ public:
     {
     }
 
-    StableVectorIterator& operator++()
+    StableVectorIterator operator++(int)
     {
+        StableVectorIterator result = *this;
         ptr++;
-        return *this;
+        return result;
     }
 
     bool operator==(const StableVectorIterator& other) const
@@ -35,44 +39,14 @@ public:
         return *ptr;
     }
 
-/*
-    StableVector& operator--()
-    {
-        ptr--
-        return *this;
-    }
-
-    ValueType& operator[](int index)
-    {
-        return *(ptr + index);
-    }
-
     ValueType* operator->()
     {
         return ptr;
     }
 
-    ValueType* operator*()
-    {
-        return *ptr;
-    }
-
-    bool operator==(const StableVectorIterator& other) const
-    {
-        return ptr == other.ptr;
-    }
-
-    bool operator==(const StableVectorIterator& other) const
-    {
-        return !(*this == other)
-    }
-    */
-
 private:
     ValueType* ptr;
 };
-
-
 
 namespace stls
 {
@@ -97,13 +71,13 @@ namespace stls
         template<class ...Args>
         T& emplaceBack(Args&&... args);
 
-        unsigned int size();
+        unsigned int size() const;
 
-        Iterator begin()
+        Iterator begin() const
         {
             return Iterator((T*)ptr);
         }
-        Iterator end()
+        Iterator end() const
         {
             return Iterator((T*)ptr + currentSize); //TODO, da li ovo valja?
         }
@@ -112,6 +86,8 @@ namespace stls
         unsigned int capacity;
         unsigned int currentSize;
         void* ptr;
+//        Iterator m_begin;
+//        Iterator m_end;
     };
 
 }
@@ -123,7 +99,7 @@ namespace stls
     StableVector<T>::StableVector(unsigned int capacity)
         : capacity(capacity)
     {
-        ptr = new T[capacity];
+        ptr = new T[capacity]();
     }
 
     template<class T>
@@ -135,7 +111,6 @@ namespace stls
     template<class T>
     T& StableVector<T>::operator [] (int index)
     {
-        //cout << "NON-const index=" << index << endl;
         assert(index < currentSize and index >= 0);
         return *((T*)ptr + index);
     }
@@ -143,7 +118,6 @@ namespace stls
     template<class T>
     const T& StableVector<T>::operator [] (int index) const
     {
-        cout << "const index=" << index << endl;
         assert(index < currentSize and index >= 0);
         return *((T*)ptr + index);
     }
@@ -162,11 +136,12 @@ namespace stls
     {
         currentSize++;
         assert(currentSize <= capacity);
-        return (*this)[currentSize-1] = T(std::forward<Args>(args)...); //TODO: move semantics?
+        new(&(*this)[currentSize-1]) T(std::forward<Args>(args)...); // NOTE: does not require a "delete", because this is "placement new"
+        return (*this)[currentSize-1];
     }
 
     template<class T>
-    unsigned int StableVector<T>::size()
+    unsigned int StableVector<T>::size() const
     {
         return currentSize;
     }

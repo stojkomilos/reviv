@@ -39,7 +39,7 @@ void Material::bind() const
 void Material::set(const std::string& uniformName, const Mat4& matrix)
 {
     MaterialHelpingStruct help1;
-    help1.type = ShaderDataType::SdtMat4;
+    help1.type = ShaderDataType::SdtMat4; //TODOO destruktor za ovo i stvari oko ovoga
     help1.ptr = new Mat4;
     *(Mat4*)(help1.ptr) = matrix;
     map[uniformName] =  help1;
