@@ -17,6 +17,7 @@ using std::cin; using std::cout; using std::endl;
 Entity* stanic;
 Entity* player;
 
+/*
 int main(){ 
 
     std::cout << "START\n";
@@ -75,3 +76,4 @@ int main(){
 
     return 0;
 }
+*/

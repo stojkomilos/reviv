@@ -1,16 +1,34 @@
 * Ciljevi
 
 danas todo:
- - material debug
- - da renderuje crvenu stanic teksturu
  - timestep
  - input (q - power off)
- - glfw compile:
-   - disable documentation compilation
-   - wayland
  - singleton stuff, rename update->onUpdate   startUp->init, cameraStartup -> init
- - .dll, sandbox and stuff
+
+ - project stuff
+    - glfw compile:
+        - disable documentation compilation
+        - wayland
+    - staviti =build= folder u .gitignore
+    - naci prave kompajler flag-ove, i warnings fix
+
  - memory safe, material and other stuff
+
+project:
+  - support only 64bit
+  - debug and release
+  - reviv: as static library
+  - binary output:
+    ${solution-dir}/bin/${configuration}-${platform}/${project-name}/                | mozda ${solution-dir}/bin/${configuration}-${platform}/     (svi projekti na isto mesto) (isto i za intermediate binaries)
+    ${solution-dir}/bin-int/${configuration}-${platform}/${project-name}/
+  - project order:
+    1. sandbox
+    2. reviv
+  - add reference to sandbox: reviv (mozda automatski vec radi cmake?)
+  u sandbox:
+    - sandboxapp.cpp?
+    - #include<reviv.h> (staviti include path ../reviv/src/)
+    
 
 napravi shallow copy za material, koristi ga na mestima gde vidis da se triger-uje breakpoint za copy construktor? i assignmnet operator.
 

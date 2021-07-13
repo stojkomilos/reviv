@@ -1,7 +1,5 @@
 #include "render_command.h"
 
-#include "core/core.h"
-
 void RenderCommand::drawArrays(const Vao& object) {
 	glDrawArrays(GL_TRIANGLES, 0, object.nrOfTriangles * 3);
 }
