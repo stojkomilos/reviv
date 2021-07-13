@@ -1,4 +1,5 @@
-#include "camera.h"
+#include"camera.h"
+#include"scene/scene.h"
 
 void log(const Camera& camera)
 {
@@ -17,6 +18,12 @@ void Camera::setUp(float nearPlane1, float farPlane1, float fov1, float ratio1)
 }
 void Camera::recalculateViewMatrix(const Vec3f& position, const Rotation& rotation) // gRenderManager -> recalculateViewMatrix ili static deo ProjectionCamera klase
 {
+    //cout << "-----------------------u funkciji: position: ";
+    //log(position);
+    //cout << " rotation: ";
+    //log(rotation);
+    //cout << endl;
+
     direction.x = -cos(rotation.pitch) * cos(rotation.yaw);
     direction.y = -sin(rotation.pitch);
     direction.z = -cos(rotation.pitch) * sin(rotation.yaw);
@@ -44,6 +51,11 @@ void Camera::recalculateViewMatrix(const Vec3f& position, const Rotation& rotati
     viewMatrix.b.w = 0;
     viewMatrix.c.w = 0;
     viewMatrix.d.w = 1;
+
+
+    //cout << "viewmatrix:" << endl;
+    //log(viewMatrix);
+    //cout << "-----------------------";
 
 }
 void Camera::recalculateProjectionMatrix()

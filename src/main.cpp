@@ -18,8 +18,8 @@ Entity* stanic;
 Entity* player;
 
 int main(){ 
-			
-	std::cout << "START\n";
+
+    std::cout << "START\n";
 
     stanic = Scene::createEntity("Stanic");
 
@@ -30,55 +30,48 @@ int main(){
     Scene::setCameraEntity(camera);
 
     stanic->add<PositionComponent>();
-    auto* stanicPos = stanic->get<PositionComponent>();
+    auto* stanicPos = &stanic->get<PositionComponent>()->position;
 
     *stanicPos = Vec3f(3, 3, 3);
 
-    auto* stanicTrans = stanic->add<TransformComponent>();
+    auto* stanicTrans = &stanic->add<TransformComponent>()->transform;
     cout << "NOV SIZE: " << stanic->components.size() << endl;
 
-    auto stanicModel = stanic->add<ModelLoaderComponent>();
-    stanicModel->modelLoader.LoadModel("../resources/models/cube.obj");
+    auto* stanicModel = &stanic->add<ModelLoaderComponent>()->modelLoader;
+    stanicModel->LoadModel("../resources/models/cube.obj");
 
-    auto* playerPos = Scene::getPlayerEntity()->add<PositionComponent>();
+    auto* playerPos = &Scene::getPlayerEntity()->add<PositionComponent>()->position;
     *playerPos = PositionComponent(Vec3f(1, 1, 1));
-    auto* playerRot = Scene::getPlayerEntity()->add<RotationComponent>();
+    auto* playerRot = &Scene::getPlayerEntity()->add<RotationComponent>()->rotation;
     *playerRot = RotationComponent(Vec3f(0, 0, 0));
 
-    auto* cameraCamera = Scene::getCameraEntity()->add<CameraComponent>();
-    auto* cameraPos = Scene::getCameraEntity()->add<PositionComponent>();
-    auto* cameraRot = Scene::getCameraEntity()->add<RotationComponent>();
+    auto* cameraCamera = &Scene::getCameraEntity()->add<CameraComponent>()->camera;
+    auto* cameraPos = &Scene::getCameraEntity()->add<PositionComponent>()->position;
+    auto* cameraRot = &Scene::getCameraEntity()->add<RotationComponent>()->rotation;
 
 
+    float time0 = (float)glfwGetTime();
+    auto timeEnd = std::chrono::high_resolution_clock::now();
 
-	float time0 = (float)glfwGetTime();
-	auto timeEnd = std::chrono::high_resolution_clock::now();
-
-	gRenderManager.renderHitbox = false;
+    gRenderManager.renderHitbox = false;
 
     gWindow.init();
     gRenderManager.init();
 
-	while(true)
+    while(true)
     {
 
-		//processInput(gRenderManager.window.pWindow); // TODO: apstraktuj ulaz
+        //processInput(gRenderManager.window.pWindow); // TODO: apstraktuj ulaz
 
         gPhysicsManager.update();
-		gRenderManager.render();
+        gRenderManager.render();
         gWindow.onUpdate();
 
-        if(gGameLoopCounter % 1000 == 0)
-            log(*stanic);
-        //log( (*Scene::getEntityList())[0] );
-        //logSpecificUniform(stanic->get<MaterialComponent>()->material, "u_Model");
-        //log(stanic->get<PositionComponent>()->position);
+        gGameLoopCounter++;
 
-		gGameLoopCounter++;
+    }
 
-	}
+    gRenderManager.shutdown();
 
-	gRenderManager.shutdown();
-
-	return 0;
+    return 0;
 }

@@ -58,8 +58,7 @@ void Material::set(const std::string& uniformName, const Vec4f& a)
     help1.type = ShaderDataType::SdtFloat4;
     help1.ptr = new Vec4f;
     *(Vec4f*)(help1.ptr) = a;
-    map[uniformName].ptr = new Vec4f;
-    map[uniformName].type = ShaderDataType::SdtFloat4;
+    map[uniformName] = help1;
 }
 void Material::set(const std::string& uniformName, int a)
 {

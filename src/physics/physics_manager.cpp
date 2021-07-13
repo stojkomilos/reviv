@@ -6,6 +6,20 @@
 
 extern Entity* stanic;
 
+void PhysicsManager::update()
+{
+
+    auto* stanicPos = &stanic->get<PositionComponent>()->position;
+    auto* player = Scene::getPlayerEntity();
+
+    auto* playerPos = &Scene::getPlayerEntity()->get<PositionComponent>()->position;
+    *stanicPos = add(*playerPos, Vec3f(5 * sin(glfwGetTime()), 0, 5 * cos(glfwGetTime())));
+
+    alignPositionAndRotation(*Scene::getPlayerEntity(), Scene::getCameraEntity());
+
+    updateTransforms();
+}
+
 void PhysicsManager::updateTransforms() // updates the transforms of all the entities according to the positions and stuff
 {
     for(auto itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
@@ -13,7 +27,7 @@ void PhysicsManager::updateTransforms() // updates the transforms of all the ent
         if(itEntity->has<TransformComponent>() and itEntity->has<PositionComponent>())
         {
             //cout << "Updating tranform for entity: " << itEntity->entityName << endl;
-            *itEntity->get<TransformComponent>() = translate(identity, *itEntity->get<PositionComponent>());
+            itEntity->get<TransformComponent>()->transform = translate(identity, itEntity->get<PositionComponent>()->position);
         }
     }
 }
@@ -26,24 +40,11 @@ void PhysicsManager::alignPositionAndRotation(const Entity& parent, Entity* chil
         and child->has<PositionComponent>()
         and child->has<RotationComponent>()); 
 
-    auto parentPosition = parent.get<PositionComponent>();
-    auto parentRotation = parent.get<RotationComponent>();
-    auto childPosition = child->get<PositionComponent>();
-    auto childRotation = child->get<RotationComponent>();
+    auto* parentPosition = &parent.get<PositionComponent>()->position;
+    auto* parentRotation = &parent.get<RotationComponent>()->rotation;
+    auto* pChildPosition = &child->get<PositionComponent>()->position;
+    auto* pChildRotation = &child->get<RotationComponent>()->rotation;
 
-    childPosition = parentPosition;
-    childRotation = parentRotation;
-}
-
-void PhysicsManager::update()
-{
-    PositionComponent* stanicPos = stanic->get<PositionComponent>();
-    auto* player = Scene::getPlayerEntity();
-
-    auto* playerPos = Scene::getPlayerEntity()->get<PositionComponent>();
-    *stanicPos = add(*playerPos, Vec3f(5 * sin(glfwGetTime()), 0, 5 * cos(glfwGetTime())));
-
-    alignPositionAndRotation(*Scene::getPlayerEntity(), Scene::getCameraEntity());
-
-    updateTransforms();
+    *pChildPosition = *parentPosition;
+    *pChildRotation = *parentRotation;
 }

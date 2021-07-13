@@ -2,9 +2,6 @@
 
 Entity* Scene::iCreateEntity(const std::string& entityName)
 {
-    //Entity da(entityName);
-    //cout << "da_size: " << da.components.size() << " da_strSize: " << da.entityName.size() << endl;
-    cout << "asdf";
     entityList.emplaceBack(entityName);
     return &entityList[entityList.size()-1];
 }

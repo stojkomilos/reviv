@@ -9,6 +9,32 @@ extern Entity* player;
 
 
 RenderCommand gRenderCommand;
+
+void RenderManager::render()
+{
+	gRenderCommand.setClearColor(Vec4f(0.1f, 0.0f, 0.0f, 0.8f));
+	gRenderCommand.clear();
+
+	beginScene();
+
+    for(auto itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
+    {
+		if(itEntity->valid)
+		{
+			if(itEntity->has<MaterialComponent>() and itEntity->has<TransformComponent>() and itEntity->has<VaoComponent>())
+			{
+                //cout << "Rendering entity: " << itEntity->entityName << endl;
+    			submit(
+    				&itEntity->get<MaterialComponent>()->material, 
+    				itEntity->get<TransformComponent>()->transform, 
+    				itEntity->get<VaoComponent>()->vao);
+    		}
+    	}
+    }
+
+    endScene();
+}
+
 void RenderManager::init()
 {
     gRenderCommand.init();
@@ -18,7 +44,7 @@ void RenderManager::init()
 	praviMono.setUp("../resources/shaders/monocolor.vs", "../resources/shaders/monocolor.fs");
     Shader* textureShader = new Shader; // TODO, memory leak
 	textureShader->setUp("../resources/shaders/texture.vs", "../resources/shaders/texture.fs");
-    auto* stanicMat = stanic->add<MaterialComponent>();
+    auto* stanicMat = &stanic->add<MaterialComponent>()->material;
     *stanicMat = MaterialComponent(Material(*textureShader));
 
     /// -----
@@ -39,15 +65,15 @@ void RenderManager::init()
 	assert(nrAttributes >= 10); 
 
     ///
-    auto* stanicVao = stanic->add<VaoComponent>();
-    auto* stanicModel = stanic->get<ModelLoaderComponent>();
-    stanicVao->vao.setUp();
-    stanicVao->vao.bind();
+    auto* stanicVao = &stanic->add<VaoComponent>()->vao;
+    auto* stanicModel = &stanic->get<ModelLoaderComponent>()->modelLoader;
+    stanicVao->setUp();
+    stanicVao->bind();
 
-    stanicVao->vao.vbo.layout = vboLayout1;
-    stanicVao->vao.vbo.setUp((void*)stanicModel->modelLoader.pointer, stanicModel->modelLoader.nrTriangles * 3 * (2 * sizeof(Vec3f) + sizeof(Vec2f)), 0);
-    stanicVao->vao.vbo.bind();
-    stanicVao->vao.addVertexBuffer(stanic->get<VaoComponent>()->vao.vbo);
+    stanicVao->vbo.layout = vboLayout1;
+    stanicVao->vbo.setUp((void*)stanicModel->pointer, stanicModel->nrTriangles * 3 * (2 * sizeof(Vec3f) + sizeof(Vec2f)), 0);
+    stanicVao->vbo.bind();
+    stanicVao->addVertexBuffer(stanic->get<VaoComponent>()->vao.vbo);
     ///
 
 	stanicTexture.setUp("../resources/textures/stene.png");
@@ -59,31 +85,6 @@ void RenderManager::init()
 	Scene::getCameraEntity()->get<CameraComponent>()->camera.recalculateProjectionMatrix();
 }
 
-void RenderManager::render()
-{
-	gRenderCommand.setClearColor(Vec4f(0.1f, 0.0f, 0.0f, 0.8f));
-	gRenderCommand.clear();
-
-	beginScene();
-
-    for(auto itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
-    {
-		if(itEntity->valid)
-		{
-			if(itEntity->has<MaterialComponent>() and itEntity->has<TransformComponent>() and itEntity->has<VaoComponent>())
-			{
-            //    stanic->get<MaterialComponent>()->material.set("u_Color", Vec4f(1, 0, 0, 1));
-                //cout << "Rendering entity: " << itEntity->entityName << endl;
-    			submit(
-    				&itEntity->get<MaterialComponent>()->material, 
-    				itEntity->get<TransformComponent>()->transform, 
-    				itEntity->get<VaoComponent>()->vao);
-    		}
-    	}
-    }
-
-    endScene();
-}
 
 void RenderManager::submit(Material* material, const Mat4& transform, const Vao& vao)
 {
@@ -121,10 +122,11 @@ void RenderManager::beginScene()
         and Scene::getCameraEntity()->has<RotationComponent>());
 
     camera->recalculateViewMatrix(
-        *Scene::getCameraEntity()->get<PositionComponent>(),
-        *Scene::getCameraEntity()->get<RotationComponent>());
+        Scene::getCameraEntity()->get<PositionComponent>()->position,
+        Scene::getCameraEntity()->get<RotationComponent>()->rotation);
 
 }
+
 void RenderManager::endScene()
 {
 
