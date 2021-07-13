@@ -3,7 +3,7 @@
 
 void Material::bind() const
 {
-    shader.bind();
+    //shader.bind();
 
     MaterialHelpingStruct help;
     std::string typeName;
@@ -83,12 +83,12 @@ void logSpecificUniform(const Material& material, const std::string& uniformName
     auto fromMap = material.map.find(uniformName);
     if(fromMap == material.map.end())
     {
-        cout << uniformName << ": NOT DEFINED" << endl;
+        cout << uniformName << ": UNIFORM NOT DEFINED" << endl;
         return;
     }
     MaterialHelpingStruct value = fromMap->second;
 
-    cout << uniformName << " = ";
+    cout << uniformName << ": " << endl;
     switch(value.type)
     {
         case ShaderDataType::SdtFloat1:           log(*(Vec1f*)value.ptr);      break;

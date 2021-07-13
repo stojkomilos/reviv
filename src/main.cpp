@@ -4,6 +4,7 @@ using namespace mat;
 
 RenderManager gRenderManager;
 PhysicsManager gPhysicsManager;
+Window gWindow;
 
 ModelLoader sphere;
 ModelLoader cube;
@@ -49,12 +50,14 @@ int main(){
     auto* cameraRot = Scene::getCameraEntity()->add<RotationComponent>();
 
 
-    gRenderManager.init();
 
 	float time0 = (float)glfwGetTime();
 	auto timeEnd = std::chrono::high_resolution_clock::now();
 
 	gRenderManager.renderHitbox = false;
+
+    gWindow.init();
+    gRenderManager.init();
 
 	while(true)
     {
@@ -63,6 +66,7 @@ int main(){
 
         gPhysicsManager.update();
 		gRenderManager.render();
+        gWindow.onUpdate();
 
         if(gGameLoopCounter % 1000 == 0)
             log(*stanic);
@@ -73,7 +77,7 @@ int main(){
 		gGameLoopCounter++;
 
 	}
-	
+
 	gRenderManager.shutdown();
 
 	return 0;

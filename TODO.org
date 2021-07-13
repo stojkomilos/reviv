@@ -8,7 +8,7 @@ danas todo:
  - glfw compile:
    - disable documentation compilation
    - wayland
- - singleton stuff, rename update->onUpdate   startUp->init
+ - singleton stuff, rename update->onUpdate   startUp->init, cameraStartup -> init
  - .dll, sandbox and stuff
  - memory safe, material and other stuff
 

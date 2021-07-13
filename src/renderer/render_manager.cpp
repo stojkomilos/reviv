@@ -11,8 +11,7 @@ extern Entity* player;
 RenderCommand gRenderCommand;
 void RenderManager::init()
 {
-
-    window.init();
+    gRenderCommand.init();
 
     /// -------- MATERIALS ------------------------------------------------------------
 
@@ -20,10 +19,7 @@ void RenderManager::init()
     Shader* textureShader = new Shader; // TODO, memory leak
 	textureShader->setUp("../resources/shaders/texture.vs", "../resources/shaders/texture.fs");
     auto* stanicMat = stanic->add<MaterialComponent>();
-    //material->
-    //stanicMat->material.set("u_Color", Vec4f(1, 0, 0, 1));
     *stanicMat = MaterialComponent(Material(*textureShader));
-    stanicMat->material.set("u_Color", Vec4f(1, 0, 0, 1));
 
     /// -----
 	
@@ -54,20 +50,18 @@ void RenderManager::init()
     stanicVao->vao.addVertexBuffer(stanic->get<VaoComponent>()->vao.vbo);
     ///
 
-    gRenderCommand.init();
-
-
 	stanicTexture.setUp("../resources/textures/stene.png");
     stanicTexture.bind(0);
 	//beloTexture.setUp("../resources/textures/belo.png");
 
-	Scene::getCameraEntity()->get<CameraComponent>()->camera.setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(window.getWidth())) / ((float)(window.getHeight())));
+	//Scene::getCameraEntity()->get<CameraComponent>()->camera.setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(window.getWidth())) / ((float)(window.getHeight())));
+	Scene::getCameraEntity()->get<CameraComponent>()->camera.setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(16.0/9.0)));
 	Scene::getCameraEntity()->get<CameraComponent>()->camera.recalculateProjectionMatrix();
 }
 
 void RenderManager::render()
 {
-	gRenderCommand.setClearColor(Vec4f(0.0f, 0.0f, 0.0f, 0.9f));
+	gRenderCommand.setClearColor(Vec4f(0.1f, 0.0f, 0.0f, 0.8f));
 	gRenderCommand.clear();
 
 	beginScene();
@@ -80,23 +74,23 @@ void RenderManager::render()
 			{
             //    stanic->get<MaterialComponent>()->material.set("u_Color", Vec4f(1, 0, 0, 1));
                 //cout << "Rendering entity: " << itEntity->entityName << endl;
-				submit(
-					&itEntity->get<MaterialComponent>()->material, 
-					itEntity->get<TransformComponent>()->transform, 
-					itEntity->get<VaoComponent>()->vao);
-			}
-		}
-	}
+    			submit(
+    				&itEntity->get<MaterialComponent>()->material, 
+    				itEntity->get<TransformComponent>()->transform, 
+    				itEntity->get<VaoComponent>()->vao);
+    		}
+    	}
+    }
 
-	endScene();
+    endScene();
 }
 
 void RenderManager::submit(Material* material, const Mat4& transform, const Vao& vao)
 {
     // PRE SETA MORA DA SHADER BUDE BOUNDOVAN
-    //material->shader.bind();
+    material->shader.bind();
 
-    material->set("u_Color", Vec4f(1, 0, 0, 1));
+    material->set("u_Color", Vec4f(0, 0, 1, 1));
 
     material->set("u_Projection", Scene::getCameraEntity()->get<CameraComponent>()->camera.projectionMatrix);
 
@@ -108,6 +102,7 @@ void RenderManager::submit(Material* material, const Mat4& transform, const Vao&
 
     material->bind();
     // TODOOO -> material uniforme environment specific
+
     vao.bind();
     gRenderCommand.drawArrays(vao);
 }
@@ -125,7 +120,7 @@ void RenderManager::beginScene()
         and Scene::getCameraEntity()->has<PositionComponent>()
         and Scene::getCameraEntity()->has<RotationComponent>());
 
-	camera->recalculateViewMatrix(
+    camera->recalculateViewMatrix(
         *Scene::getCameraEntity()->get<PositionComponent>(),
         *Scene::getCameraEntity()->get<RotationComponent>());
 

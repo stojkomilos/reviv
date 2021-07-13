@@ -7,7 +7,7 @@ static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-static void error_callback(int error, const char* description) ///TODO: samo paste
+static void error_callback(int error, const char* description)
 {
     fprintf(stderr, "Error: %s\n", description);
     assert(false);
