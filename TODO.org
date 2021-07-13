@@ -1,15 +1,20 @@
 * Ciljevi
 
-glfw stuff:
- - double time = glfwGetTime();
- - q -> power off
- - is pressed and stuff, pogledaj cherno video
- - viewport stuff
+danas todo:
+ - material debug
+ - da renderuje crvenu stanic teksturu
+ - timestep
+ - input (q - power off)
+ - glfw compile:
+   - disable documentation compilation
+   - wayland
+ - singleton stuff, rename update->onUpdate   startUp->init
+ - .dll, sandbox and stuff
+ - memory safe, material and other stuff
 
-- window apstraction
+napravi shallow copy za material, koristi ga na mestima gde vidis da se triger-uje breakpoint za copy construktor? i assignmnet operator.
+
 - camera noclip flying controler (ubaciti u physics sistem)
-    - organizacija, singleton, materijali, rename update->onUpdate, init->init(), singleton na stvari
-    - sandbox, .dll and stuff
 - Material map da bude safe (?opratori, copy construtor?)
 
 
@@ -28,7 +33,7 @@ ciljevi:
     - basic object lifetime
     - virtual destructor
 -----
- - clean RenderManager::init() | cherno serijalizacija? | cherno singleton?
+ - clean RenderManager::startUp() | cherno serijalizacija? | cherno singleton?
    - ? glfwInit(), glInit() ?
  - materijali da rade kako treba (materijali da rade kako treba), efikasno 
  - /ceo/ chapter https://learnopengl.com/Model-Loading/Assimp

@@ -19,6 +19,8 @@ public:
     void init(bool enableVSync = false, bool isFullScreen = false, unsigned int windowWidth = 1600, unsigned int windowHeight = 900, const std::string& windowTitle = "Reviv");
     void shutdown();
     void onUpdate();
+    unsigned int getWidth();
+    unsigned int getHeight();
     void setVSync(bool isEnabled);
     bool getVSync();
     GLFWwindow* pWindow;

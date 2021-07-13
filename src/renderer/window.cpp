@@ -53,6 +53,16 @@ bool Window::getVSync()
     return m_VSync;
 }
 
+unsigned int Window::getWidth()
+{
+    return m_Width;
+}
+
+unsigned int Window::getHeight()
+{
+    return m_Height;
+}
+
 void Window::init(bool enableVSync, bool isFullscreen, unsigned int windowWidth, unsigned int windowHeight, const std::string& windowTitle)
 {
     m_Width = windowWidth;

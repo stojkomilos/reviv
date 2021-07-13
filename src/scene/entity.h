@@ -24,8 +24,6 @@ protected:
     static inline unsigned int m_GenIdCounter = 0;
 };
 
-void log(const Component& component);
-
 class Entity
 {
 public:
@@ -48,6 +46,9 @@ public:
     bool valid = true;
 private:
 };
+
+void log(const Component& component);
+void log(const Entity& entity);
 
 template <class T>
 class SpecificComponent : public Component

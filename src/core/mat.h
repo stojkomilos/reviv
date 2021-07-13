@@ -170,5 +170,5 @@ void log(const Vec4i& thing);
 void log(const Mat3& thing);
 void log(const Mat4& thing);
 
-void log(const bool& thing);
+//void log(const bool& thing);
 void log(const Rotation& thing);

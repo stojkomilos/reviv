@@ -2,6 +2,7 @@
 
 const Mat4 identity(1);
 
+/*
 void log(const bool& thing)
 {
     if(thing == true)
@@ -14,6 +15,7 @@ void log(const bool& thing)
     }
     cout << endl;
 }
+*/
 
 void log(const Rotation& thing)
 {

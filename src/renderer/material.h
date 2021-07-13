@@ -40,6 +40,10 @@ struct MaterialHelpingStruct
     }
 
     MaterialHelpingStruct& operator=(const MaterialHelpingStruct& other) = default;
+    //MaterialHelpingStruct& operator=(const MaterialHelpingStruct& other)
+    //{
+    //    assert(false);
+    //}
 
     bool operator==(const MaterialHelpingStruct& other) const
     {
@@ -79,3 +83,4 @@ public:
 };
 
 void log(const Material& material);
+void logSpecificUniform(const Material& material, const std::string& uniformName);

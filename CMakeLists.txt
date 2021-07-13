@@ -29,11 +29,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/sr
 target_link_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/GLFW/src)
 
 target_link_libraries(${PROJECT_NAME} GL pthread dl)
-target_link_libraries(${PROJECT_NAME} wayland-client)
+#target_link_libraries(${PROJECT_NAME} wayland-client)
 target_link_libraries(${PROJECT_NAME} glfw)
 
-add_compile_definitions(RV_DEBUG 1)
-add_compile_definitions(RV_RELEASE 0)
+add_compile_definitions(RV_DEBUG=1)
+add_compile_definitions(RV_RELEASE=0)
 
 # Archive: ===
 #   link_directories(${CMAKE_CURRENT_SOURCE_DIR}/vendor/lib)

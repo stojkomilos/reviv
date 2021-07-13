@@ -18,8 +18,7 @@ public:
 
     static Entity* getCameraEntity() { return getInstance().iGetCameraEntity(); }
     static void setCameraEntity(Entity* pNewCameraEntity) {getInstance().iSetCameraEntity(pNewCameraEntity); }
-    static Entity* getPlayerEntity() {cout << "RETARDDDDDD\n"; return nullptr; }
-    static Entity* getPlayerEntity(int a) { cout << "REQUESTING " << a << endl; return getInstance().iGetPlayerEntity(); }
+    static Entity* getPlayerEntity() { return getInstance().iGetPlayerEntity(); }
     static void setPlayerEntity(Entity* pNewPlayerEntity) { return getInstance().iSetPlayerEntity(pNewPlayerEntity); }
     ///
     stls::StableVector<Entity> entityList;

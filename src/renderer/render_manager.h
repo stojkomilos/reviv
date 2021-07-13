@@ -12,29 +12,32 @@
 
 class RenderManager {
 public:
-	RenderManager();
+    RenderManager() = default;
+    ~RenderManager() = default;
+    
+    void init();
+    void render();
+    void shutdown();
+    
+    void submit(Material* material, const Mat4& transform, const Vao& vao);
+    
+    void beginScene();
+    void endScene();
 
-	int init(int windowWidth1, int windowHeight1); ///npr, 800x600, 1920x1080
-	void render();
-	void shutdown();
-	Window window;
-	float renderDistance = 1000;
-
+    Window window;
+    
+    float renderDistance = 1000;
+    
+    bool renderHitbox;
+    float* voxelBuffer;
+    size_t sizeOfVoxelBuffer;
+    bool fullscreen = false;
+    
     Shader praviMono;
-	bool renderHitbox;
-	float* voxelBuffer;
-	size_t sizeOfVoxelBuffer;
-	bool fullscreen = false;
-
-	void submit(Material* material, const Mat4& transform, const Vao& vao);
-
-	void beginScene();
-	void endScene();
-
-	Texture2D stanicTexture;
-	Texture2D beloTexture;
-
-	int nrOfValidCubes;
+    Texture2D stanicTexture;
+    Texture2D beloTexture;
+    
+    int nrOfValidCubes;
 
 private:
 };

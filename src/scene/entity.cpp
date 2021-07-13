@@ -1,13 +1,18 @@
 #include"entity.h"
 #include"components.h"
 
+void log(const Component& component)
+{
+    component.log();
+}
+
 void log(const Entity& entity)
 {
     int size = entity.components.size();
     cout << "Entity " << entity.entityName << "  " << size << " components:-----" << endl;
     for(auto itComponent = entity.components.begin(); itComponent != entity.components.end(); itComponent++)
     {
-        log(*itComponent);
+        log(**itComponent);
     }
     cout << "-------------" << endl;
 }
