@@ -1,5 +1,4 @@
 #include"entity.h"
-#include"components.h"
 
 void log(const Component& component)
 {

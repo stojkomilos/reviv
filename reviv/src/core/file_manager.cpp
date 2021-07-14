@@ -1,7 +1,5 @@
 #include"file_manager.h"
 
-//extern PhysicsManager gPhysicsManager;
-//extern MemoryManager gMemoryManager;
 
 //int FileManager::setUpWorld() {
 //	FILE* world = fopen("save/world.ini", "r");   ///format world.ini glasi: prva tri broja su intigeri i oni su dimenzije sveta, cetvrti ukupan broj kocaka terena na mapi, svi ostali brojevi posle ta 3,(ima ih jos x * y * z) su vrednosti kocaka na mestu i,j,k(x,y,z nije u world space-u, prvo se konvertuje)

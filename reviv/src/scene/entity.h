@@ -32,8 +32,11 @@ public:
     ~Entity();
     void print() const;
 
-    template <class T>
-    T* add();
+    template <class T, class... Args>
+    T* add(Args&&... args);
+
+    //template<class T, class ...Args>
+    //T* emplace(Args&... args);
 
     template <class T>
     bool has() const;
@@ -95,12 +98,12 @@ ComponentId SpecificComponent<T>::getId() const
     return id;
 }
 
-template <class T>
-T* Entity::add()
+template <class T, class... Args>
+T* Entity::add(Args&&... args)
 {
-    T* result = new T;
+    Component* result = new T(std::forward<Args>(args)...);
     components.pushBack(result);
-    return result;
+    return (T*)result;
 }
 
 template <class T>

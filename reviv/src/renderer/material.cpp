@@ -12,19 +12,19 @@ void Material::bind() const
         switch(help.type)
         {
             case ShaderDataType::SdtMat4:
-                shader.uploadUniformMat4(uniformName, *(Mat4*)(help.ptr));
+                pShader->uploadUniformMat4(uniformName, *(Mat4*)(help.ptr));
                 break;
 
             case ShaderDataType::SdtFloat3:
-                shader.uploadUniform3f(uniformName, *(Vec3f*)(help.ptr));
+                pShader->uploadUniform3f(uniformName, *(Vec3f*)(help.ptr));
                 break;
 
             case ShaderDataType::SdtFloat4:
-                shader.uploadUniform4f(uniformName, *(Vec4f*)(help.ptr));
+                pShader->uploadUniform4f(uniformName, *(Vec4f*)(help.ptr));
                 break;
 
             case ShaderDataType::SdtInt1:
-                shader.uploadUniform1i(uniformName, *(int*)(help.ptr));
+                pShader->uploadUniform1i(uniformName, *(int*)(help.ptr));
                 break;
 
             default:
@@ -32,7 +32,7 @@ void Material::bind() const
                 assert(false);
         }
     }
-    shader.bind(); //TODO ovo se mozda moze ukloniti
+    pShader->bind(); //TODO ovo se mozda moze ukloniti
 }
 
 void Material::set(const std::string& uniformName, const Mat4& matrix)

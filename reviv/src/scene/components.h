@@ -3,7 +3,7 @@
 #include"entity.h"
 
 #include"renderer/camera.h"
-#include"renderer/modelloader.h"
+#include"renderer/model.h"
 #include"renderer/vertex_array.h"
 #include"renderer/material.h" //GLFW
 #include"core/mat.h"
@@ -14,11 +14,14 @@ class PositionComponent : public SpecificComponent<PositionComponent>
 public:
     Vec3f position;
 
+    template<class ...Args>
+    PositionComponent(Args&&... args) : position(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("PositionComponent"); }
+
     virtual ~PositionComponent() = default;
-    PositionComponent() { static bool isFirstInit = runOnFirstInit("PositionComponent"); }
     PositionComponent(const PositionComponent&) = default;
     PositionComponent(const Vec3f& initPosition)
         : PositionComponent() { position = initPosition; }
+
 
     operator const Vec3f& () const { return position; }
     operator Vec3f& () { return position; }
@@ -30,6 +33,9 @@ class RotationComponent : public SpecificComponent<RotationComponent>
 {
 public:
     Rotation rotation;
+
+    template<class ...Args>
+    RotationComponent(Args&&... args) : rotation(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("RotationComponent"); }
 
     virtual ~RotationComponent() = default;
     RotationComponent() { static bool isFirstInit = runOnFirstInit("RotationComponent"); }
@@ -47,7 +53,9 @@ class CameraComponent : public SpecificComponent<CameraComponent>
 public:
     Camera camera;
 
-    CameraComponent() { static bool isFirstInit = runOnFirstInit("CameraComponent"); }
+    template<class ...Args>
+    CameraComponent(Args&&... args) : camera(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("CameraComponent"); }
+
     CameraComponent(const CameraComponent&) = default;
     CameraComponent(const Camera& initCamera)
         : CameraComponent() { camera = initCamera; }
@@ -62,7 +70,9 @@ class TransformComponent : public SpecificComponent<TransformComponent>
 public:
     Mat4 transform;
 
-    TransformComponent() { static bool isFirstInit = runOnFirstInit("TransformComponent"); }
+    template<class ...Args>
+    TransformComponent(Args&&... args) : transform(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("TransformComponent"); }
+
     TransformComponent(const TransformComponent&) = default;
     TransformComponent(const Mat4& initMat4)
         : TransformComponent() { transform = initMat4; }
@@ -72,19 +82,21 @@ public:
     void log() const override { cout << componentTypeName << endl; ::log(transform); }
 };
 
-class ModelLoaderComponent : public SpecificComponent<ModelLoaderComponent>
+class ModelComponent : public SpecificComponent<ModelComponent>
 {
 public:
-    ModelLoader modelLoader;
+    Model Model;
 
-    ModelLoaderComponent() { static bool isFirstInit = runOnFirstInit("ModelLoaderComponent"); }
-    ModelLoaderComponent(const ModelLoaderComponent&) = default;
-    ModelLoaderComponent(const ModelLoader& initModelLoader)
-        : ModelLoaderComponent() { modelLoader = initModelLoader; }
+    template<class ...Args>
+    ModelComponent(Args&&... args) : Model(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("ModelComponent"); }
 
-    operator const ModelLoader& () const { return modelLoader; }
-    operator ModelLoader& () { return modelLoader; }
-    void log() const override { cout << componentTypeName << endl; ::log(modelLoader); }
+    ModelComponent(const ModelComponent&) = default;
+    ModelComponent(const Model& initModel)
+        : ModelComponent() { Model = initModel; }
+
+    operator const Model& () const { return Model; }
+    operator Model& () { return Model; }
+    void log() const override { cout << componentTypeName << endl; ::log(Model); }
 };
 
 class MaterialComponent : public SpecificComponent<MaterialComponent>
@@ -92,7 +104,9 @@ class MaterialComponent : public SpecificComponent<MaterialComponent>
 public:
     Material material;
 
-    MaterialComponent() { static bool isFirstInit = runOnFirstInit("MaterialComponent"); }
+    template<class ...Args>
+    MaterialComponent(Args&&... args) : material(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("ModelComponent"); }
+
     MaterialComponent(const MaterialComponent&) = default;
     MaterialComponent(const Material& initMaterial)
         : MaterialComponent() { material = initMaterial; }
@@ -107,7 +121,9 @@ class VaoComponent : public SpecificComponent<VaoComponent>
 public:
     Vao vao;
 
-    VaoComponent() { static bool isFirstInit = runOnFirstInit("VaoComponent"); }
+    template<class ...Args>
+    VaoComponent(Args&&... args) : vao(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("ModelComponent"); }
+
     VaoComponent(const VaoComponent&) = default;
     VaoComponent(const Vao& initVao)
         : VaoComponent() { vao = initVao; }

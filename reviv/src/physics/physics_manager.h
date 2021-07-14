@@ -7,7 +7,24 @@
 class PhysicsManager
 {
 public:
+    ~PhysicsManager() = default;
+    PhysicsManager(const PhysicsManager&) = delete;
+    PhysicsManager& operator=(const PhysicsManager&) = delete;
+
+    static void init() { getInstance()->iInit(); }
+    static void onUpdate() { getInstance()->iOnUpdate(); }
+
+    static PhysicsManager* getInstance()
+    {
+        static PhysicsManager instance;
+        return &instance;
+    }
+
+private:
+    PhysicsManager() = default;
+    void iInit();
+    void iOnUpdate();
+
     void updateTransforms();
     void alignPositionAndRotation(const Entity& parentEntity, Entity* childEntity);
-    void update();
 };

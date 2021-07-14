@@ -3,7 +3,7 @@
 Shader::Shader() { 
     ID = 0;
 };
-void Shader::setUp(const char* vertexPath, const char* fragmentPath) { //, const char* geometryPath = nullptr)
+void Shader::init(const char* vertexPath, const char* fragmentPath) { //, const char* geometryPath = nullptr)
 
     std::string vertexCode;
     std::string fragmentCode;
@@ -38,10 +38,13 @@ void Shader::setUp(const char* vertexPath, const char* fragmentPath) { //, const
             gShaderFile.close();
         }*/
     }
-    catch (std::ifstream::failure e) {
+
+    catch (std::ifstream::failure e)
+    {
         std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
         assert(false);
     }
+
     const char* vShaderCode = vertexCode.c_str();
     const char* fShaderCode = fragmentCode.c_str();
 

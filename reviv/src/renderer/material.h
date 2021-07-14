@@ -66,20 +66,21 @@ struct MaterialHelpingStruct
 
 class Material                                      //TODO: destructor, prodji kroz unordered_map i brisi sve (pise tamo i koji je tip podatka da zna kako da obrise)
 {                                                   //TODO: deep copy constructor?
-public:
-    Shader shader;
-    std::string name;
-    std::unordered_map <std::string, MaterialHelpingStruct> map;
+public:                                             //TODO: destruktor, ima dosta, jer imam mapu sa new stvarima, treba pozvati "delete" svakog key-a
     Material() = default;
     Material(const Material&) = default;
-    Material(const Shader& shader)
-        : shader(shader) {}
-    //TODO: destruktor, ima dosta, jer imam mapu sa new stvarima, treba pozvati "delete" svakog key-a
+    Material(Shader* pShader)
+        : pShader(pShader) {}
+
     void bind() const;
     void set(const std::string& uniformName, const Mat4& matrix);
     void set(const std::string& uniformName, const Vec3f& a);
     void set(const std::string& uniformName, const Vec4f& a);
     void set(const std::string& uniformName, int a);
+
+    Shader* pShader = nullptr;
+    std::string name;
+    std::unordered_map <std::string, MaterialHelpingStruct> map;
 };
 
 void log(const Material& material);

@@ -25,12 +25,10 @@ struct BufferElement
 	unsigned int shaderDataTypeToOpenGLBaseType(ShaderDataType type);
 };
 
-
-
 class BufferLayout
 {
 public:
-	BufferLayout();
+	BufferLayout() = default;
 	BufferLayout(std::vector<BufferElement> elements);
 	void calculateOffsetsAndStride();
 	std::vector<BufferElement> elements;
@@ -41,11 +39,11 @@ public:
 class Vbo
 {
 public:
-	Vbo();
+	Vbo() = default;
 	~Vbo();
 	void bind();
 	void unbind();
-	void setUp(void* vertices, unsigned int size, unsigned char typeOfDraw1);
+	void init(void* vertices, unsigned int size, unsigned char typeOfDraw1);
 	unsigned int ID;
 	int typeOfDraw;
 	unsigned int count;

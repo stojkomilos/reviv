@@ -1,40 +1,38 @@
 * Ciljevi
 
+misli na kojima sam stao:
+ - __ucitavanje modela, VAO__, nzm kako cu tretirati cinjenicu sa 2 konstruktora za =Vao=, vrv cu samo uzeti jedan, i posle napraviti da bude sve fino i lepo
+
 danas todo:
  - timestep
  - input (q - power off)
  - singleton stuff, rename update->onUpdate   startUp->init, cameraStartup -> init
-
- - project stuff
-    - glfw compile:
-        - disable documentation compilation
-        - wayland
-    - staviti =build= folder u .gitignore
-    - naci prave kompajler flag-ove, i warnings fix
+ - model stuff:
+   - uklnoniti Model komponentu. Ujediniti? Namestiti da radi kako treba
+   - staviti u startup
 
  - memory safe, material and other stuff
 
 project:
-  - support only 64bit
   - debug and release
-  - reviv: as static library
   - binary output:
     ${solution-dir}/bin/${configuration}-${platform}/${project-name}/                | mozda ${solution-dir}/bin/${configuration}-${platform}/     (svi projekti na isto mesto) (isto i za intermediate binaries)
     ${solution-dir}/bin-int/${configuration}-${platform}/${project-name}/
-  - project order:
-    1. sandbox
-    2. reviv
-  - add reference to sandbox: reviv (mozda automatski vec radi cmake?)
-  u sandbox:
-    - sandboxapp.cpp?
-    - #include<reviv.h> (staviti include path ../reviv/src/)
-    
+    (mozda outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}")
+  - glfw
+    1. disable documentation
+    2. wayland
+  - compiler flags, warnings
+
+spreciti emacs da stvara .#TODO.org
 
 napravi shallow copy za material, koristi ga na mestima gde vidis da se triger-uje breakpoint za copy construktor? i assignmnet operator.
 
 - camera noclip flying controler (ubaciti u physics sistem)
+- camera da pravi novi projection matrix svaki novi frame, zbog resize i tako to
 - Material map da bude safe (?opratori, copy construtor?)
 
+PROCI KROZ SVE TODO KOMENTARE
 
 scene sigleton gde stoje sve komponente, i onda ne moram vise da stavim =extern gEntityList...= u svaki fajl. + jos mogu samo scene::CreateEntity()
 https://www.youtube.com/watch?v=GfSzeAcsBb0&t=1224s @18:30 | emplace!! | std::forward.... | T&&...

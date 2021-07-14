@@ -1,19 +1,13 @@
 #include"render_manager.h"
 
 extern int gGameLoopCounter;
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void framebuffer_size_callback(GLFWwindow* window, int width, int height); //TODO:
+void mouse_callback(GLFWwindow* window, double xpos, double ypos); // TODO:
 
-extern Entity* stanic;
-extern Entity* player;
-
-
-RenderCommand gRenderCommand;
-
-void RenderManager::render()
+void RenderManager::iOnUpdate()
 {
-	gRenderCommand.setClearColor(Vec4f(0.1f, 0.0f, 0.0f, 0.8f));
-	gRenderCommand.clear();
+    RenderCommand::setClearColor(Vec4f(0.1f, 0.0f, 0.0f, 0.8f));
+	RenderCommand::clear();
 
 	beginScene();
 
@@ -35,80 +29,61 @@ void RenderManager::render()
     endScene();
 }
 
-void RenderManager::init()
+void RenderManager::iInit()
 {
-    gRenderCommand.init();
+    RenderCommand::init();
 
     /// -------- MATERIALS ------------------------------------------------------------
-
-	praviMono.setUp("../resources/shaders/monocolor.vs", "../resources/shaders/monocolor.fs");
-    Shader* textureShader = new Shader; // TODO, memory leak
-	textureShader->setUp("../resources/shaders/texture.vs", "../resources/shaders/texture.fs");
-    auto* stanicMat = &stanic->add<MaterialComponent>()->material;
-    *stanicMat = MaterialComponent(Material(*textureShader));
+    
 
     /// -----
-	
-	std::vector<BufferElement> tempVboLayout1 = {
-		{ShaderDataType::SdtFloat3, "a_Position", false},
-		{ShaderDataType::SdtFloat2, "a_TexCoord", false},
-		{ShaderDataType::SdtFloat3, "a_Normal",   false},
-	};
-	BufferLayout vboLayout1(tempVboLayout1);
 
-	assert(sizeof(float) * 3 == sizeof(Vec3f));
-	assert(sizeof(int) * 3 == sizeof(TripletOfInts));
-
-	int nrAttributes;											 //samo jedna provere dal ima otprilike dovoljno atrib pointera
-	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
-	std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
-	assert(nrAttributes >= 10); 
 
     ///
-    auto* stanicVao = &stanic->add<VaoComponent>()->vao;
-    auto* stanicModel = &stanic->get<ModelLoaderComponent>()->modelLoader;
-    stanicVao->setUp();
-    stanicVao->bind();
+    //auto* stanicVao = &stanic->add<VaoComponent>()->vao;
+    //auto* stanicModel = &stanic->get<ModelComponent>()->Model;
+    //stanicVao->setUp();
+    //stanicVao->bind();
 
-    stanicVao->vbo.layout = vboLayout1;
-    stanicVao->vbo.setUp((void*)stanicModel->pointer, stanicModel->nrTriangles * 3 * (2 * sizeof(Vec3f) + sizeof(Vec2f)), 0);
-    stanicVao->vbo.bind();
-    stanicVao->addVertexBuffer(stanic->get<VaoComponent>()->vao.vbo);
+    //stanicVao->vbo.layout = vboLayout1;
+    //stanicVao->vbo.setUp((void*)stanicModel->pointer, stanicModel->nrTriangles * 3 * (2 * sizeof(Vec3f) + sizeof(Vec2f)), 0);
+    //stanicVao->vbo.bind();
+    //stanicVao->addVertexBuffer(stanic->get<VaoComponent>()->vao.vbo);
     ///
 
-	stanicTexture.setUp("../resources/textures/stene.png");
-    stanicTexture.bind(0);
-	//beloTexture.setUp("../resources/textures/belo.png");
+    modelCube.init("../../sandbox/assets/models/cube.obj");
+    shaderTexture.init("../../sandbox/assets/shaders/texture.vs", "../../sandbox/assets/shaders/texture.fs");
+    //shaderMonochroma.init("../sandbox/assets/shaders/monochroma.vs", "../sandbox/assets/shaders/monochroma.fs");
 
-	//Scene::getCameraEntity()->get<CameraComponent>()->camera.setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(window.getWidth())) / ((float)(window.getHeight())));
-	Scene::getCameraEntity()->get<CameraComponent>()->camera.setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(16.0/9.0)));
-	Scene::getCameraEntity()->get<CameraComponent>()->camera.recalculateProjectionMatrix();
+    //Scene::getCameraEntity()->get<CameraComponent>()->camera.setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(window.getWidth())) / ((float)(window.getHeight())));
+    Scene::getCameraEntity()->get<CameraComponent>()->camera.setUp(0.1f, renderDistance, 60.0f / 180.0f * 2.0f * 3.14f, ((float)(16.0/9.0)));
+    Scene::getCameraEntity()->get<CameraComponent>()->camera.recalculateProjectionMatrix();
 }
 
 
-void RenderManager::submit(Material* material, const Mat4& transform, const Vao& vao)
+void RenderManager::submit(Material* pMaterial, const Mat4& transform, const Vao& vao)
 {
     // PRE SETA MORA DA SHADER BUDE BOUNDOVAN
-    material->shader.bind();
+    pMaterial->pShader->bind();
 
-    material->set("u_Color", Vec4f(0, 0, 1, 1));
+    pMaterial->set("u_Color", Vec4f(0, 0, 1, 1));
 
-    material->set("u_Projection", Scene::getCameraEntity()->get<CameraComponent>()->camera.projectionMatrix);
+    pMaterial->set("u_Projection", Scene::getCameraEntity()->get<CameraComponent>()->camera.projectionMatrix);
 
-    material->set("u_View", Scene::getCameraEntity()->get<CameraComponent>()->camera.viewMatrix);
+    pMaterial->set("u_View", Scene::getCameraEntity()->get<CameraComponent>()->camera.viewMatrix);
 
-    material->set("u_Model", transform);
+    pMaterial->set("u_Model", transform);
 
-    material->set("u_Texture", 0);
+    pMaterial->set("u_Texture", 0);
 
-    material->bind();
+    pMaterial->bind();
     // TODOOO -> material uniforme environment specific
 
     vao.bind();
-    gRenderCommand.drawArrays(vao);
+    RenderCommand::drawArrays(vao);
 }
 
-void RenderManager::shutdown() 
+void RenderManager::iShutdown() 
 {
 	delete[] voxelBuffer;
 }

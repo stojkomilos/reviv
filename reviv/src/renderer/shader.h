@@ -19,7 +19,7 @@ class Shader{
 public:
     Shader();
     unsigned int ID;
-    void setUp(const char* vertexPath, const char* fragmentPath); ///, const char* geometryPath
+    void init(const char* vertexPath, const char* fragmentPath); ///, const char* geometryPath
     void bind() const;
 
     void uploadUniformMat4(const std::string& name, const Mat4& matrix) const;

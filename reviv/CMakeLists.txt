@@ -14,7 +14,7 @@ file(GLOB_RECURSE SRC_FILES "src/*.c"
     "vendor/Glad/src/glad.c"
     "vendor/stb_image/stb_image.cpp")
 
-add_library(reviv ${SRC_FILES})
+add_library(reviv STATIC ${SRC_FILES})
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/GLFW)
 
@@ -23,12 +23,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/ve
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/stb_image)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-# TODO: da li mi ovo ispod treba?
-target_link_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/GLFW/src)
-
-target_link_libraries(${PROJECT_NAME} GL pthread dl)
+target_link_libraries(${PROJECT_NAME} PRIVATE GL pthread dl)
 #target_link_libraries(${PROJECT_NAME} wayland-client)
-target_link_libraries(${PROJECT_NAME} glfw)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
 
 add_compile_definitions(RV_DEBUG=1)
 add_compile_definitions(RV_RELEASE=0)

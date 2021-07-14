@@ -12,20 +12,20 @@
 
 class RenderManager {
 public:
-    RenderManager() = default;
     ~RenderManager() = default;
+    RenderManager(const RenderManager&) = delete;
+    RenderManager& operator=(const RenderManager&) = delete;
     
-    void init();
-    void render();
-    void shutdown();
+    static void init() { getInstance()->iInit(); }
+    static void onUpdate() { getInstance()->iOnUpdate(); }
+    static void shutdown() { getInstance()->iShutdown(); }
     
-    void submit(Material* material, const Mat4& transform, const Vao& vao);
-    
-    void beginScene();
-    void endScene();
-
-    Window window;
-    
+    static RenderManager* getInstance()
+    {
+        static RenderManager instance;
+        return &instance;
+    }
+    // TODO: obrisi sve do private
     float renderDistance = 1000;
     
     bool renderHitbox;
@@ -38,6 +38,23 @@ public:
     Texture2D beloTexture;
     
     int nrOfValidCubes;
+    ///
+
+    Shader shaderTexture;
+    Shader shaderMonochroma;
+
+    Model modelCube;
+    Model modelSphere;
+    Model modelGun;
 
 private:
+    RenderManager() = default;
+
+    void iInit();
+    void iOnUpdate();
+    void iShutdown();
+
+    void submit(Material* pMaterial, const Mat4& transform, const Vao& vao);
+    void beginScene();
+    void endScene();
 };

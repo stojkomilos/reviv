@@ -13,7 +13,7 @@ Entity* Scene::iFindEntity(const std::string& entityName)
 
 void Scene::iLogEntity(const std::string& entityName)
 {
- assert(false);
+    assert(false);
 }
 
 stls::StableVector<Entity>* Scene::iGetEntityList() //TODO: return const pointer?
@@ -30,7 +30,7 @@ Entity* Scene::iGetCameraEntity()
     } 
     return pCameraEntity; 
 }
-void Scene::iSetCameraEntity(Entity* pNewCameraEntity)
+Entity* Scene::iSetCameraEntity(Entity* pNewCameraEntity)
 {
     if(doesCameraEntityExist)
     {
@@ -38,20 +38,20 @@ void Scene::iSetCameraEntity(Entity* pNewCameraEntity)
     }  
     pCameraEntity = pNewCameraEntity;
     doesCameraEntityExist = true; 
+
+    return pCameraEntity;
 }
 
 Entity* Scene::iGetPlayerEntity()
 { 
-
-//    assert(false);
     if(!doesPlayerEntityExist)
     {
-        cout << "ERROOOOOOOOOOOOOOOOOOOOOOOR" << endl; //TODO ocisti ove komentare, i nepotrban ispis
-//        assert(false); 
+        assert(false); 
     } 
     return pPlayerEntity; 
 }
-void Scene::iSetPlayerEntity(Entity* pNewPlayerEntity)
+
+Entity* Scene::iSetPlayerEntity(Entity* pNewPlayerEntity)
 {
     if(doesPlayerEntityExist)
     {
@@ -59,4 +59,6 @@ void Scene::iSetPlayerEntity(Entity* pNewPlayerEntity)
     }  
     pPlayerEntity = pNewPlayerEntity;
     doesPlayerEntityExist = true; 
+
+    return pPlayerEntity;
 }

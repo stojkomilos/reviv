@@ -7,20 +7,26 @@
 
 class Scene{
 public:
-    Scene(const Scene&) = delete;
     ~Scene() = default;
+    Scene(const Scene&) = delete;
     Scene& operator=(const Scene& other) = delete;
 
-    static Entity* createEntity(const std::string& entityName = "NamelessEntity") { return getInstance().iCreateEntity(entityName); }
-    static Entity* findEntity(const std::string& entityName) { return getInstance().iFindEntity(entityName); }
-    static void logEntity(const std::string& entityName) { return getInstance().iLogEntity(entityName); }
-    static stls::StableVector<Entity>* getEntityList() { return getInstance().iGetEntityList(); }
+    static Entity* createEntity(const std::string& entityName = "NamelessEntity") { return getInstance()->iCreateEntity(entityName); }
+    static Entity* findEntity(const std::string& entityName) { return getInstance()->iFindEntity(entityName); }
+    static void logEntity(const std::string& entityName) { return getInstance()->iLogEntity(entityName); }
+    static stls::StableVector<Entity>* getEntityList() { return getInstance()->iGetEntityList(); }
 
-    static Entity* getCameraEntity() { return getInstance().iGetCameraEntity(); }
-    static void setCameraEntity(Entity* pNewCameraEntity) {getInstance().iSetCameraEntity(pNewCameraEntity); }
-    static Entity* getPlayerEntity() { return getInstance().iGetPlayerEntity(); }
-    static void setPlayerEntity(Entity* pNewPlayerEntity) { return getInstance().iSetPlayerEntity(pNewPlayerEntity); }
-    ///
+    static Entity* getCameraEntity() { return getInstance()->iGetCameraEntity(); }
+    static Entity* setCameraEntity(Entity* pNewCameraEntity) { return getInstance()->iSetCameraEntity(pNewCameraEntity); }
+    static Entity* getPlayerEntity() { return getInstance()->iGetPlayerEntity(); }
+    static Entity* setPlayerEntity(Entity* pNewPlayerEntity) { return getInstance()->iSetPlayerEntity(pNewPlayerEntity); }
+
+    static Scene* getInstance()
+    {
+        static Scene instance;
+        return &instance;
+    }
+
     stls::StableVector<Entity> entityList;
 
     Entity* pCameraEntity;
@@ -29,11 +35,6 @@ public:
     bool doesPlayerEntityExist = false;
     bool doesCameraEntityExist = false;
 
-    static Scene& getInstance()
-    {
-        static Scene instance;
-        return instance;
-    }
 private:
     Scene() : entityList(50) { }
 
@@ -45,8 +46,8 @@ private:
     stls::StableVector<Entity>* iGetEntityList();
 
     Entity* iGetCameraEntity();
-    void iSetCameraEntity(Entity* pNewCameraEntity);
+    Entity* iSetCameraEntity(Entity* pNewCameraEntity);
 
     Entity* iGetPlayerEntity();
-    void iSetPlayerEntity(Entity* pNewPlayerEntity);
+    Entity* iSetPlayerEntity(Entity* pNewPlayerEntity);
 };

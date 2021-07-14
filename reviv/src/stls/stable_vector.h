@@ -60,8 +60,8 @@ namespace stls
         StableVector(unsigned int capacity);
 
         StableVector() = delete;
-        StableVector(const StableVector&) = delete;
-        StableVector& operator = (const StableVector &t) = delete;
+        StableVector(const StableVector&) = default; //TODO: delete
+        StableVector& operator=(const StableVector &t) = default; //TODO: delete
         ~StableVector();
         T& operator [] (int index);
         const T& operator [] (int index) const;
@@ -69,7 +69,7 @@ namespace stls
         void pushBack(const T& element);
 
         template<class ...Args>
-        T& emplaceBack(Args&&... args);
+        void emplaceBack(Args&&... args);
 
         unsigned int size() const;
 
@@ -82,9 +82,10 @@ namespace stls
             return Iterator((T*)ptr + currentSize); //TODO, da li ovo valja?
         }
 
+    unsigned int capacity;
+    unsigned int currentSize;
+
     private:
-        unsigned int capacity;
-        unsigned int currentSize;
         void* ptr;
 //        Iterator m_begin;
 //        Iterator m_end;
@@ -97,7 +98,7 @@ namespace stls
 
     template<class T>
     StableVector<T>::StableVector(unsigned int capacity)
-        : capacity(capacity)
+        : capacity(capacity), currentSize(0)
     {
         ptr = new T[capacity]();
     }
@@ -130,15 +131,19 @@ namespace stls
         (*this)[currentSize-1] = element;
     }
 
-    template<class T>
-    template<class ...Args>
-    T& StableVector<T>::emplaceBack(Args&&... args)
+    template <class T>
+    template <class... Args>
+    void StableVector<T>::emplaceBack(Args&&... args)
     {
         currentSize++;
         assert(currentSize <= capacity);
-        new(&(*this)[currentSize-1]) T(std::forward<Args>(args)...); // NOTE: does not require a "delete", because this is "placement new"
-        return (*this)[currentSize-1];
+        new((T*)(&(*this)[currentSize-1])) T(std::forward<Args>(args)...);
+        //*(T*)(&(*this)[currentSize-1])(std::forward<Args>(args)...);
+
+
+    //    new(&(*this)[currentSize-1]) T(std::forward<Args>(args)...); // NOTE: does not require a "delete", because this is "placement new"
     }
+
 
     template<class T>
     unsigned int StableVector<T>::size() const

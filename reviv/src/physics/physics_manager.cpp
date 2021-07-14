@@ -4,20 +4,25 @@
 #include"scene/scene.h"
 #include"scene/components.h"
 
-extern Entity* stanic;
+//extern Entity* stanic;
 
-void PhysicsManager::update()
+void PhysicsManager::iOnUpdate()
 {
 
-    auto* stanicPos = &stanic->get<PositionComponent>()->position;
-    auto* player = Scene::getPlayerEntity();
+    //auto* stanicPos = &stanic->get<PositionComponent>()->position;
+    //auto* player = Scene::getPlayerEntity();
 
-    auto* playerPos = &Scene::getPlayerEntity()->get<PositionComponent>()->position;
-    *stanicPos = add(*playerPos, Vec3f(5 * sin(glfwGetTime()), 0, 5 * cos(glfwGetTime())));
+    //auto* playerPos = &Scene::getPlayerEntity()->get<PositionComponent>()->position;
+    //*stanicPos = add(*playerPos, Vec3f(5 * sin(glfwGetTime()), 0, 5 * cos(glfwGetTime())));
 
     alignPositionAndRotation(*Scene::getPlayerEntity(), Scene::getCameraEntity());
 
     updateTransforms();
+}
+
+void PhysicsManager::iInit()
+{
+
 }
 
 void PhysicsManager::updateTransforms() // updates the transforms of all the entities according to the positions and stuff

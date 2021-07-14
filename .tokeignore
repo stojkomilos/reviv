@@ -1,0 +1,10 @@
+reviv/vendor/
+sandbox/vendor/
+vendor/
+
+sandbox/assets/textures/
+sandbox/assets/models/
+
+LICENSE
+TODO.org
+README.org

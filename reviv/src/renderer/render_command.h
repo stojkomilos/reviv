@@ -6,9 +6,26 @@
 class RenderCommand
 {
 public:
-    void init();
+    ~RenderCommand() = default;
+    RenderCommand(const RenderCommand&) = delete;
+    RenderCommand& operator=(const RenderCommand&) = delete;
 
-	void drawArrays(const Vao& object);
-	void setClearColor(Vec4f color);
-	void clear();
+    static void init() { getInstance()->iInit(); }
+    static void setClearColor(const Vec4f& color) { getInstance()->iSetClearColor(color); }
+    static void clear() { getInstance()->iClear(); }
+    static void drawArrays(const Vao& object) { getInstance()->iDrawArrays(object); }
+
+    static RenderCommand* getInstance()
+    {
+        static RenderCommand instance;
+        return &instance;
+    }
+
+private:
+    RenderCommand() = default;
+
+    void iInit();
+    void iDrawArrays(const Vao& object);
+    void iSetClearColor(const Vec4f& color);
+    void iClear();
 };
