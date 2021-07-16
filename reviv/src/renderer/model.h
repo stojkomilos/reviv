@@ -13,7 +13,7 @@ struct TripletOfInts
 class Model
 {
 public:
-    Model();
+    Model() = default;
     ~Model();
     bool init(const char* path);
     char* pointer;

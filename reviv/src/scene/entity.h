@@ -35,9 +35,6 @@ public:
     template <class T, class... Args>
     T* add(Args&&... args);
 
-    //template<class T, class ...Args>
-    //T* emplace(Args&... args);
-
     template <class T>
     bool has() const;
 

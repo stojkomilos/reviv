@@ -9,21 +9,12 @@ void log(const Camera& camera)
     log(camera.projectionMatrix);
 }
 
-void Camera::setUp(float nearPlane1, float farPlane1, float fov1, float ratio1)
-{
-    nearPlane = nearPlane1; 
-    farPlane = farPlane1;
-    fov = fov1;
-    ratio = ratio1;
-}
-void Camera::recalculateViewMatrix(const Vec3f& position, const Rotation& rotation) // gRenderManager -> recalculateViewMatrix ili static deo ProjectionCamera klase
-{
-    //cout << "-----------------------u funkciji: position: ";
-    //log(position);
-    //cout << " rotation: ";
-    //log(rotation);
-    //cout << endl;
+Camera::Camera(float nearPlane, float farPlane, float fov)
+    : nearPlane(nearPlane), farPlane(farPlane), fov(fov)
+{ }
 
+void Camera::recalculateViewMatrix(const Vec3f& position, const Rotation& rotation)
+{
     direction.x = -cos(rotation.pitch) * cos(rotation.yaw);
     direction.y = -sin(rotation.pitch);
     direction.z = -cos(rotation.pitch) * sin(rotation.yaw);
@@ -52,14 +43,11 @@ void Camera::recalculateViewMatrix(const Vec3f& position, const Rotation& rotati
     viewMatrix.c.w = 0;
     viewMatrix.d.w = 1;
 
-
-    //cout << "viewmatrix:" << endl;
-    //log(viewMatrix);
-    //cout << "-----------------------";
-
 }
-void Camera::recalculateProjectionMatrix()
+
+void Camera::recalculateProjectionMatrix(const WindowData& windowData)
 {
+    ratio = (float)windowData.width / (float)windowData.height;
 
     float L = 2.0f * tan(fov / 2) * nearPlane;
 

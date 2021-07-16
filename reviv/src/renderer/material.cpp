@@ -3,7 +3,7 @@
 
 void Material::bind() const
 {
-    //shader.bind();
+    pShader->bind();
 
     MaterialHelpingStruct help;
     std::string typeName;
@@ -32,7 +32,7 @@ void Material::bind() const
                 assert(false);
         }
     }
-    pShader->bind(); //TODO ovo se mozda moze ukloniti
+    //pShader->bind(); //TODO ovo se mozda moze ukloniti
 }
 
 void Material::set(const std::string& uniformName, const Mat4& matrix)

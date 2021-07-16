@@ -8,6 +8,15 @@
 
 using std::cin; using std::cout; using std::endl;
 
+struct WindowData
+{
+    std::string title;
+    unsigned int width;
+    unsigned int height;
+    bool vSync;
+    bool isFullscreen;
+};
+
 class Window
 {
 public:
@@ -16,19 +25,15 @@ public:
     Window(const Window&) = delete;
     Window& operator=(const Window&) = delete;
 
-    void init(bool enableVSync = false, bool isFullScreen = false, unsigned int windowWidth = 1600, unsigned int windowHeight = 900, const std::string& windowTitle = "Reviv");
+    void init(bool enableVSync, bool isFullScreen, unsigned int windowWidth, unsigned int windowHeight, const std::string& windowTitle);
     void shutdown();
     void onUpdate();
-    unsigned int getWidth();
-    unsigned int getHeight();
+    unsigned int getWidth() const;
+    unsigned int getHeight() const;
     void setVSync(bool isEnabled);
     bool getVSync();
-    GLFWwindow* pWindow;
 
+    GLFWwindow* pWindow;
+    WindowData m_Data;
 private:
-    unsigned int m_Width;
-    unsigned int m_Height;
-    std::string m_Title;
-    bool m_VSync;
-    bool m_IsFullscreen;
 };

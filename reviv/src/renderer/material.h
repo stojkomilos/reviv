@@ -70,7 +70,7 @@ public:                                             //TODO: destruktor, ima dost
     Material() = default;
     Material(const Material&) = default;
     Material(Shader* pShader)
-        : pShader(pShader) {}
+        : pShader(pShader) { map.clear(); name.clear(); cout << "asdf"; }
 
     void bind() const;
     void set(const std::string& uniformName, const Mat4& matrix);

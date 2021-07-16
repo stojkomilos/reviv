@@ -1,4 +1,7 @@
 #include<iostream>
+
+#include"application.h"
+
 using std::cin; using std::cout; using std::endl;
 
 extern Application* createApplication();

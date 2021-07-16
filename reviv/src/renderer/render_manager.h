@@ -9,6 +9,7 @@
 #include"scene/scene.h"
 
 #include"renderer/material.h"
+#include"renderer/window.h"
 
 class RenderManager {
 public:
@@ -16,8 +17,8 @@ public:
     RenderManager(const RenderManager&) = delete;
     RenderManager& operator=(const RenderManager&) = delete;
     
-    static void init() { getInstance()->iInit(); }
-    static void onUpdate() { getInstance()->iOnUpdate(); }
+    static void init(const WindowData& windowData) { getInstance()->iInit(windowData); }
+    static void onUpdate(const WindowData& windowData) { getInstance()->iOnUpdate(windowData); }
     static void shutdown() { getInstance()->iShutdown(); }
     
     static RenderManager* getInstance()
@@ -39,22 +40,14 @@ public:
     
     int nrOfValidCubes;
     ///
-
-    Shader shaderTexture;
-    Shader shaderMonochroma;
-
-    Model modelCube;
-    Model modelSphere;
-    Model modelGun;
-
 private:
     RenderManager() = default;
 
-    void iInit();
-    void iOnUpdate();
+    void iInit(const WindowData& windowData);
+    void iOnUpdate(const WindowData& windowData);
     void iShutdown();
 
     void submit(Material* pMaterial, const Mat4& transform, const Vao& vao);
-    void beginScene();
+    void beginScene(const WindowData& windowData);
     void endScene();
 };

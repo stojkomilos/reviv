@@ -6,8 +6,12 @@
 #include"renderer/model.h"
 #include"core/memory_manager.h"
 #include"core/file_manager.h"
-#include"core/hid.h"
+
 #include"physics/physics_manager.h"
+#include"core/time.h"
+
+#include"core/input.h"
+#include"core/keycodes.h"
 
 #include"core/application.h"
 

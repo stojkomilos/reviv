@@ -56,17 +56,17 @@ unsigned int shaderDataTypeToOpenGLBaseType(ShaderDataType type)
 {
     switch (type)
     {
-        case ShaderDataType::SdtFloat1:			return GL_FLOAT;
-        case ShaderDataType::SdtFloat2:		return GL_FLOAT;
-        case ShaderDataType::SdtFloat3:		return GL_FLOAT;
-        case ShaderDataType::SdtFloat4:		return GL_FLOAT;
-        case ShaderDataType::SdtMat3:			return GL_FLOAT;
-        case ShaderDataType::SdtMat4:			return GL_FLOAT;
-        case ShaderDataType::SdtInt1:			return GL_INT;
-        case ShaderDataType::SdtInt2:			return GL_INT;
-        case ShaderDataType::SdtInt3:			return GL_INT;
-        case ShaderDataType::SdtInt4:			return GL_INT;
-        case ShaderDataType::SdtBool:			return GL_BOOL;
+        case ShaderDataType::SdtFloat1:	    return GL_FLOAT;
+        case ShaderDataType::SdtFloat2:     return GL_FLOAT;
+        case ShaderDataType::SdtFloat3:	    return GL_FLOAT;
+        case ShaderDataType::SdtFloat4:	    return GL_FLOAT;
+        case ShaderDataType::SdtMat3:       return GL_FLOAT;
+        case ShaderDataType::SdtMat4:       return GL_FLOAT;
+        case ShaderDataType::SdtInt1:       return GL_INT;
+        case ShaderDataType::SdtInt2:       return GL_INT;
+        case ShaderDataType::SdtInt3:       return GL_INT;
+        case ShaderDataType::SdtInt4:       return GL_INT;
+        case ShaderDataType::SdtBool:       return GL_BOOL;
     }
     std::cout << "ERROR: RENDERER UNKNOWN SHADER DATA TYPE\n";
     assert(false);

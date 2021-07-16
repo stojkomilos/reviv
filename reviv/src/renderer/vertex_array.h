@@ -9,10 +9,11 @@
 class Vao
 {
 public:
-    Vao(const std::string& modelPath) { init(modelPath); }
-    Vao(Model* pModel) : pModel(pModel) {}
+    //Vao(const std::string& modelPath) { init(modelPath); }
+    Vao() = default;
+    Vao(const std::string& modelPath);
+    ~Vao();
 
-    void init(const std::string& modelPath);
     void bind() const;
 
     Vbo vbo;
@@ -21,7 +22,6 @@ public:
     unsigned int nrOfTriangles;
 
     void addVertexBuffer(Vbo& vertexBuffer);
-    //std::vector<Vbo> VertexBuffers;
 };
 
 void log(const Vao& vao);

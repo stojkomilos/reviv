@@ -2,23 +2,23 @@
 
 #include"core/mat.h"
 #include"scene/entity.h"
+#include"renderer/window.h"
 
 class Camera
 {
 public:
 	Camera() = default;
+	Camera(float nearPlane, float farPlane, float fov);
 	Camera(const Camera&) = default;
 
-	void setUp(float nearPlane, float farPlane, float fov, float ratio); // TODO: staviti ovo u constructor
-	void alignWithEntity(const Entity& entity);
-
     void recalculateViewMatrix(const Vec3f& position, const Rotation& rotation); // gRenderManager -> recalculateViewMatrix ili static deo ProjectionCamera klase
-	void recalculateProjectionMatrix();
+	void recalculateProjectionMatrix(const WindowData& windowData);
 
 	Vec3f right, up, direction;
 
 	Mat4 viewMatrix, projectionMatrix;
 
+    float renderDistance = 1000;
 	float leftPlane, rightPlane, bottomPlane, topPlane, nearPlane, farPlane;
 	float ratio, fov;
 };

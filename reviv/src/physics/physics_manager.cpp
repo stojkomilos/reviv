@@ -9,12 +9,6 @@
 void PhysicsManager::iOnUpdate()
 {
 
-    //auto* stanicPos = &stanic->get<PositionComponent>()->position;
-    //auto* player = Scene::getPlayerEntity();
-
-    //auto* playerPos = &Scene::getPlayerEntity()->get<PositionComponent>()->position;
-    //*stanicPos = add(*playerPos, Vec3f(5 * sin(glfwGetTime()), 0, 5 * cos(glfwGetTime())));
-
     alignPositionAndRotation(*Scene::getPlayerEntity(), Scene::getCameraEntity());
 
     updateTransforms();

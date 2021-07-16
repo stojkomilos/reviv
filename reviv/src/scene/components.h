@@ -85,18 +85,18 @@ public:
 class ModelComponent : public SpecificComponent<ModelComponent>
 {
 public:
-    Model Model;
+    Model model;
 
     template<class ...Args>
-    ModelComponent(Args&&... args) : Model(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("ModelComponent"); }
+    ModelComponent(Args&&... args) : model(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("ModelComponent"); }
 
     ModelComponent(const ModelComponent&) = default;
     ModelComponent(const Model& initModel)
-        : ModelComponent() { Model = initModel; }
+        : ModelComponent() { model = initModel; }
 
-    operator const Model& () const { return Model; }
-    operator Model& () { return Model; }
-    void log() const override { cout << componentTypeName << endl; ::log(Model); }
+    operator const Model& () const { return model; }
+    operator Model& () { return model; }
+    void log() const override { cout << componentTypeName << endl; ::log(model); }
 };
 
 class MaterialComponent : public SpecificComponent<MaterialComponent>
