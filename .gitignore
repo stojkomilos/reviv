@@ -5,7 +5,7 @@
 *.slo
 *.lo
 *.o
-*.obj
+#*.obj - used for 3d (or 2d) models
 
 # Precompiled Headers
 *.gch
@@ -57,14 +57,7 @@ _deps
 # Local History for Visual Studio Code
 .history/
 
-
-
-build/**
-!build/build.sh
-!build/radi.sh
-!build/clean.sh
-
-.vscode/
+build/
 
 ltximg/
 **/ltximg/
