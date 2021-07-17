@@ -32,10 +32,9 @@ public:
     void initAfterEngine() override
     {
         shaderTexture.init      ("assets/shaders/texture.vs", "assets/shaders/texture.fs");
-        //shaderMonochroma.init("../../sandbox/assets/shaders/monochroma.vs", "../../sandbox/assets/shaders/monochroma.fs");
         shaderMonochroma.init("assets/shaders/monochroma.vs", "assets/shaders/monochroma.fs");
 
-        stanic->add<VaoComponent>("assets/models/cube.obj");
+        stanic->add<VaoComponent>("assets/models/sphere.obj");
         stanic->add<MaterialComponent>(&shaderMonochroma);
     }
 
@@ -52,8 +51,6 @@ public:
         stanicMaterial->set("u_View", Scene::getCameraEntity()->get<CameraComponent>()->camera.viewMatrix);
         stanicMaterial->set("u_Model", stanic->get<TransformComponent>()->transform);
 
-        //log(*stanic);
-        cout << "dt=" << Time::getDelta() * 1000 << endl;
     }
 
 };

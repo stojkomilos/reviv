@@ -1,62 +1,50 @@
 * Ciljevi
 
-SUTRA:
-https://www.youtube.com/watch?v=YbgH7yat-Jo
-
-Vidi jel mozes nekako da default bude =Debug= mode (za vscode itd) a kad neko installira da mora da specify-uje =Release= mode.
-Vidi da li se sve stavlja u dobar /build/bin/<release,debug>-linux/ fajl.
-Glfw flags idk da li valja
 Compiler flags, idealno u root cmake fajlu samo
 Defines u reviv cmake fajlu
-
-project todo:
-  working out of source
-  copy assets
-  readme.org
 
 For users: (proveri sve ofc)
  - cd build
  - cmake ../ -DCMAKE_BUILD_TYPE=Release
  - cmake --build .
-  
+
 
 todo:
- 1. basic event
- 2. use events for noclip first person camera controller
- 3. merge to main/master branch
+    project todo:
+        cmake:
+            - use flags from cmake/
+            - check flags for Release and Debug
+            - check user instruction from readme.org
+            - check if release works
+            - check if it works on windows 10 (release and debug)
+        other:
+            - merge reviv2 test to main/master
+            - merge? reviv2 and reviv
+    1. basic event
+    2. use events for noclip first person camera controller
+    3. merge to main/master branch
 
- 1. model loading library load
- 2. material->setTexture("uniformName", int)
- 3. material clean
- 4. proci kroz sve =TODO= komentare u kodu
- 5. dodati warning flags, i fixovati ih
-    - release i debug flags
-    - omoguciti kompilaciju na windows 10 (visual studio)
- - package-uj program da radi za korisnike, asset folder da bude pored binary fajla
- - spojiti reviv i reviv2, build instruction
+    1. model loading library load
+    2. material->setTexture("uniformName", int)
+    3. material clean
+    4. proci kroz sve =TODO= komentare u kodu
+    5. dodati warning flags, i fixovati ih
+        - release i debug flags
+        - omoguciti kompilaciju na windows 10 (visual studio)
+    - package-uj program da radi za korisnike, asset folder da bude pored binary fajla
+    - spojiti reviv i reviv2, build instruction
 
 debug stuff ideje:
     - entity copy const., constructor, assignment operator
     - component copy const., constructor, assignment operator
     - napravi shallow copy za material, koristi ga na mestima gde vidis da se triger-uje breakpoint za copy construktor? i assignmnet operator.
 
-project user build goal:
- - git clone...
- - make CMAKE_BUILD_TYPE=Release
- - sudo make install
-    
 project:
   - debug and release
   - binary output:
     ${solution-dir}/bin/${configuration}-${platform}/${project-name}/                | mozda ${solution-dir}/bin/${configuration}-${platform}/     (svi projekti na isto mesto) (isto i za intermediate binaries)
     ${solution-dir}/bin-int/${configuration}-${platform}/${project-name}/
     (mozda outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}")
-
-    build/sway/sway
-    ogre:
-        cmake --build . --config Release
-        cmake --build . --config Release --target install
-        build out of tree, manually
 
   - glfw
     1. disable documentation

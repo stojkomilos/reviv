@@ -15,9 +15,8 @@ unsigned int ShaderDataTypeSize(ShaderDataType type)
         case ShaderDataType::SdtInt3:			return 4 * 3;
         case ShaderDataType::SdtInt4:			return 4 * 4;
         case ShaderDataType::SdtBool:			return 1;
+        default: std::cout << "ERROR: RENDERER UNKNOWN SHADER DATA TYPE\n"; assert(false); break;
     }
-    std::cout << "ERROR: RENDERER UNKNOWN SHADER DATA TYPE\n";
-    assert(false);
     return 0;
 }
 

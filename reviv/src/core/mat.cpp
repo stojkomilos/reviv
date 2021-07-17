@@ -156,7 +156,7 @@ namespace mat{
     Mat4 perspective(float close, float far, float fov, float R)
     {
         Mat4 p(0);
-        float L = 2.0f * tan(fov / 2) * close;
+        float L = 2.0f * (float)tan(fov / 2) * close;
 
         float H = L / R;
 

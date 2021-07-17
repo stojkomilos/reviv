@@ -10,7 +10,7 @@ static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 static void GlfwErrorCallback(int error, const char* description)
 {
     fprintf(stderr, "Glfw Error: %s\n", description);
-    assert(false);
+    assert(description != "Wayland: The Platform does not support setting the input focus" and description != "Wayland: focusing a window requires user interaction"); // Common, maybe unavoidable erros on wayland, glfw still works even when they occur
 }
 
 void Window::onUpdate()

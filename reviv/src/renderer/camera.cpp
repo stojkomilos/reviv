@@ -49,7 +49,7 @@ void Camera::recalculateProjectionMatrix(const WindowData& windowData)
 {
     ratio = (float)windowData.width / (float)windowData.height;
 
-    float L = 2.0f * tan(fov / 2) * nearPlane;
+    float L = 2.0f * (float)tan(fov / 2) * nearPlane;
 
     float H = L / ratio;
 

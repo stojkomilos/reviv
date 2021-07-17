@@ -18,3 +18,5 @@
 If you're using /Wayland/ on /Linux/, it should automatically get detected and compile =glfw= for Wayland.
 
 =Visual Studio= is probably /not/ fully supported.
+
+The executable is now in =bin/Release-OS= directory. You can delete the static library files.
