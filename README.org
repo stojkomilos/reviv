@@ -1,10 +1,20 @@
-# reviv2
-reviv2
+* Building from source
 
+** Dependencies:
 
-glfw:
-    Compile for =wayland=
-    You will also need the extra-cmake-modules-git
-    "cmake -DGLFW_USE_WAYLAND=ON ../glfw"
+- =cmake=
+- all the =glfw= dependencies (see [[here][https://www.glfw.org/docs/latest/compile.html]])
 
-    potencijalno arch linux paketi: /glfw/ /glfw-wayland/ /glfw-doc/
+** Instructions
+ 
+#+begin_src bash
+  git clone --recursive https://github.com/infernotnt/reviv2
+  mkdir build
+  cd build
+  cmake ../reviv2 -DCMAKE_BUILD_TYPE=Release
+  cmake --build .
+#+end_src
+
+If you're using /Wayland/ on /Linux/, it should automatically get detected and compile =glfw= for Wayland.
+
+=Visual Studio= is probably /not/ fully supported.
