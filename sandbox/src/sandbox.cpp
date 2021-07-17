@@ -31,11 +31,11 @@ public:
 
     void initAfterEngine() override
     {
-        shaderTexture.init      ("../../sandbox/assets/shaders/texture.vs", "../../sandbox/assets/shaders/texture.fs");
+        shaderTexture.init      ("assets/shaders/texture.vs", "assets/shaders/texture.fs");
         //shaderMonochroma.init("../../sandbox/assets/shaders/monochroma.vs", "../../sandbox/assets/shaders/monochroma.fs");
-        shaderMonochroma.init("../../sandbox/assets/shaders/monochroma.vs", "../../sandbox/assets/shaders/monochroma.fs");
+        shaderMonochroma.init("assets/shaders/monochroma.vs", "assets/shaders/monochroma.fs");
 
-        stanic->add<VaoComponent>("../../sandbox/assets/models/cube.obj");
+        stanic->add<VaoComponent>("assets/models/cube.obj");
         stanic->add<MaterialComponent>(&shaderMonochroma);
     }
 
