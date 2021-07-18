@@ -29,7 +29,7 @@ Vec2f Input::iGetMousePosition()
 void Input::iUseRawMouseMotion() // Usefull for 3D fps camera controllers. Disabled mouse acceleration and scaling from the desktop
 {                                           // Requirements: disabled cursor
 
-    assert(glfwRawMouseMotionSupported()); // ERROR: raw mouse motion not supported, maybe you didn't disable the cursor beforehand?
+    RV_ASSERT(glfwRawMouseMotionSupported(), "raw mouse motion not supported, maybe you didn't disable the cursor beforehand?");
     glfwSetInputMode(Application::getInstance()->getWindow()->pWindow, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 }
 
@@ -61,7 +61,7 @@ void Input::iOnEvent(Event* event)
             onEventMouseMoved(event);
             break;
         default:
-            assert(false); // ERROR: event type not recognized
+            RV_ASSERT(false, "event type not recognized");
     }
 }
 

@@ -8,12 +8,12 @@ Entity* Scene::iCreateEntity(const std::string& entityName)
 
 Entity* Scene::iFindEntity(const std::string& entityName)
 {
- assert(false);
+    RV_ASSERT(false, "");
 }
 
 void Scene::iLogEntity(const std::string& entityName)
 {
-    assert(false);
+    RV_ASSERT(false, "");
 }
 
 stls::StableVector<Entity>* Scene::iGetEntityList() //TODO: return const pointer?
@@ -24,18 +24,12 @@ stls::StableVector<Entity>* Scene::iGetEntityList() //TODO: return const pointer
 
 Entity* Scene::iGetCameraEntity()
 { 
-    if(!doesCameraEntityExist)
-    {
-        assert(false); 
-    } 
+    RV_ASSERT(doesCameraEntityExist, "trying to get camera, but it dosn't exist");
     return pCameraEntity; 
 }
 Entity* Scene::iSetCameraEntity(Entity* pNewCameraEntity)
 {
-    if(doesCameraEntityExist)
-    {
-        assert(false); 
-    }  
+    RV_ASSERT(!doesCameraEntityExist, "Setting camra, but it alreadye exists");
     pCameraEntity = pNewCameraEntity;
     doesCameraEntityExist = true; 
 
@@ -44,19 +38,13 @@ Entity* Scene::iSetCameraEntity(Entity* pNewCameraEntity)
 
 Entity* Scene::iGetPlayerEntity()
 { 
-    if(!doesPlayerEntityExist)
-    {
-        assert(false); 
-    } 
+    RV_ASSERT(doesPlayerEntityExist, "Trying to get player, but it does not exist");
     return pPlayerEntity; 
 }
 
 Entity* Scene::iSetPlayerEntity(Entity* pNewPlayerEntity)
 {
-    if(doesPlayerEntityExist)
-    {
-        assert(false); 
-    }  
+    RV_ASSERT(!doesPlayerEntityExist, "trying to set player, but it already exists")
     pPlayerEntity = pNewPlayerEntity;
     doesPlayerEntityExist = true; 
 

@@ -5,24 +5,6 @@
 mozda se treba resiti =include= u cpp fajlovima?
 
 glad? vrv ne
-
-iostream
-string
-vector
-assert.h
-new
-unordered_map
-fstream
-sstream
-stdio.h
-stdlib.h
-string.h
-memory
-cstddef
-stdlib.h
-
-BIT(x)
-
 RV_CORE_ASSERT i replace svih assert() (cherno log video)
 RV_CORE_ERROR , kao assert(false) valjda
 

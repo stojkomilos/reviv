@@ -1,6 +1,6 @@
 #pragma once
 
-#include<memory>
+#include"rv_pch.hpp"
 
 template<typename T>
 using Scope = std::unique_ptr<T>;
@@ -18,9 +18,7 @@ class Ref
 
 
 /*
-#include<cstddef>
-#include<iostream>
-#include<assert.h>
+#include"rv_pch.hpp"
 
 class MemoryManager {
 public:

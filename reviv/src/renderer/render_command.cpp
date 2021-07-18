@@ -20,8 +20,7 @@ void RenderCommand::iClear()
 void RenderCommand::iInit()
 {
 
-//#if RV_DEBUG //TODO:
-#if 1
+#if RV_DEBUG
     glDebugMessageCallback(logMessageCallback, nullptr);
     glEnable(GL_DEBUG_OUTPUT);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS); // enables you too look in the call stack
@@ -40,18 +39,15 @@ void logMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, 
     switch(severity)
     {
         case GL_DEBUG_SEVERITY_HIGH:
-            cout << "[OpenGL Debug HIGH] " << message << endl;
-            assert(false);
+            RV_ASSERT(false, "[OpenGL Debug HIGH]");
             break;
 
         case GL_DEBUG_SEVERITY_MEDIUM:
-            cout << "[OpenGL Debug MEDIUM] " << message << endl;
-            assert(false);
+            RV_ASSERT(false, "[OpenGL Debug MEDIUM]");
             break;
 
         case GL_DEBUG_SEVERITY_LOW:
-            cout << "[OpenGL Debug LOW] " << message << endl;
-            assert(false);
+            RV_ASSERT(false, "[OpenGL Debug LOW]");
             break;
 
         case GL_DEBUG_SEVERITY_NOTIFICATION:
@@ -59,7 +55,7 @@ void logMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, 
             break;
 
         default:
-            cout << "ERROR: opengl returned unknown debug error SEVERITY" << endl;
-            assert(false);
+            RV_ASSERT(false, "ERROR: opengl returned unknown debug error SEVERITY");
+            break;
     }
 }

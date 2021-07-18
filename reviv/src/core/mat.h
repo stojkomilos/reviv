@@ -1,7 +1,6 @@
 #pragma once
 
-#include<iostream>
-#include<cmath>
+#include"rv_pch.hpp"
 
 using std::cin; using std::cout; using std::endl;
 

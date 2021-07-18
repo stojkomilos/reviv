@@ -2,10 +2,7 @@
 
 #include<glad/glad.h>
 
-#include<vector>
-#include<string>
-#include<iostream>
-#include<assert.h>
+#include"rv_pch.hpp"
 
 enum class ShaderDataType
 {

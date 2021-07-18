@@ -1,7 +1,5 @@
 #include<reviv.h>
 
-#include<iostream>
-
 Entity *player, *camera, *stanic;
 
 Shader shaderTexture, shaderMonochroma;
@@ -41,9 +39,10 @@ public:
 
     void onUpdate() override
     {
-        //cout << "sandbox onUpdate()" << endl;
+        bool a = false;
+        //RV_ASSERT(a, "Well this is just plain wrong you fukcing udiaitadsf;")
 
-        //stanic->get<PositionComponent>()->position = Vec3f(sin(Time::getTimeInSeconds()), 0, cos(Time::getTimeInSeconds()));
+        //stanic->get<PositionComponent>()->position = Vec3f(sin(Time::getTime()), 0, cos(Time::getTime()));
 
         if(Time::isOneSecond()){
             cout << "FPS: " << 1 / Time::getDelta() << endl;

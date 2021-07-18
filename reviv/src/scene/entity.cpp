@@ -19,7 +19,7 @@ void log(const Entity& entity)
 Entity::Entity()
     : entityName("nameless_entity"), components(15)
 {
-    cout << "Constructor entity: " << entityName << endl;
+    //cout << "Constructor entity: " << entityName << endl;
 }
 
 Entity::Entity(const std::string& name)
@@ -30,7 +30,7 @@ Entity::Entity(const std::string& name)
 
 Entity::~Entity()
 {
-    cout << "Destructor entity: " << entityName << endl;
+    //cout << "Destructor entity: " << entityName << endl;
     for(auto itComponent = components.begin(); itComponent != components.end(); itComponent++)
     {
         delete (*itComponent);

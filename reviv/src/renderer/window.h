@@ -3,8 +3,7 @@
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
 
-#include<string>
-#include<iostream>
+#include"rv_pch.hpp"
 
 #include"events/event.h"
 
@@ -15,10 +14,9 @@ struct WindowData
     std::string title;
     unsigned int width;
     unsigned int height;
+    unsigned int refreshRate;
     bool vSync;
     bool isFullscreen;
-
-    void(*eventCallback)(Event*);
 };
 
 class Window

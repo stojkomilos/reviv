@@ -15,7 +15,7 @@ unsigned int ShaderDataTypeSize(ShaderDataType type)
         case ShaderDataType::SdtInt3:			return 4 * 3;
         case ShaderDataType::SdtInt4:			return 4 * 4;
         case ShaderDataType::SdtBool:			return 1;
-        default: std::cout << "ERROR: RENDERER UNKNOWN SHADER DATA TYPE\n"; assert(false); break;
+        default: RV_ASSERT(false, "ERROR: RENDERER UNKNOWN SHADER DATA TYPE"); break;
     }
     return 0;
 }
@@ -46,8 +46,7 @@ unsigned int BufferElement::getElementCount()
         case ShaderDataType::SdtInt4:			return 4;
         case ShaderDataType::SdtBool:			return 1;
     }
-    std::cout << "ERROR: RENDERER UNKNOWN SHADER DATA TYPE\n";
-    assert(false);
+    RV_ASSERT(false, "ERROR: RENDERER UNKNOWN SHADER DATA TYPE");
     return 0;
 }
 
@@ -67,8 +66,7 @@ unsigned int shaderDataTypeToOpenGLBaseType(ShaderDataType type)
         case ShaderDataType::SdtInt4:       return GL_INT;
         case ShaderDataType::SdtBool:       return GL_BOOL;
     }
-    std::cout << "ERROR: RENDERER UNKNOWN SHADER DATA TYPE\n";
-    assert(false);
+    RV_ASSERT(false, "ERROR: RENDERER UNKNOWN SHADER DATA TYPE");
     return 0;
 }
 
@@ -103,8 +101,8 @@ void Vbo::init(void* vertices, unsigned int size, unsigned char typeOfDraw1)
 {	
 
     const int INT_MAX = 2147483646; //quick change
-    assert(GL_STATIC_DRAW < INT_MAX - 1 and GL_STATIC_DRAW > -INT_MAX + 1);
-    assert(GL_DYNAMIC_DRAW < INT_MAX - 1 and GL_DYNAMIC_DRAW > -INT_MAX + 1);
+    RV_ASSERT(GL_STATIC_DRAW < INT_MAX - 1 and GL_STATIC_DRAW > -INT_MAX + 1, "");
+    RV_ASSERT(GL_DYNAMIC_DRAW < INT_MAX - 1 and GL_DYNAMIC_DRAW > -INT_MAX + 1, "");
     if (typeOfDraw1 == 0) {
         typeOfDraw = GL_STATIC_DRAW;
     }
@@ -112,8 +110,7 @@ void Vbo::init(void* vertices, unsigned int size, unsigned char typeOfDraw1)
         typeOfDraw = GL_DYNAMIC_DRAW;
     }
     else {
-        std::cout << "ERROR RENDERER: DRAW TYPE UNKOWN";
-        assert(false);
+        RV_ASSERT(false, "ERROR RENDERER: Draw type unknown");
     }
     count = size / layout.stride; ///prvo stavi layout vbo, pa onda setUp
     glGenBuffers(1, &ID);

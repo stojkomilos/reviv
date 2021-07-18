@@ -1,12 +1,6 @@
 #pragma once
 
-#include<cstdio>
-#include<stdio.h>
-#include<iostream>
-#include<string>
-#include<cassert>
-#include<fstream>
-#include<sstream>
+#include"rv_pch.hpp"
 
 //#include"physics/physics_manager.h"
 

@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.18)
+
 project(sandbox)
 
 file(GLOB_RECURSE SRC_FILES "src/*.cpp")
@@ -12,7 +14,6 @@ add_custom_command(
         COMMENT "=====> Copying application assets, from: ${CMAKE_CURRENT_SOURCE_DIR}/assets/ to: ${MY_EXECUTABLE_OUTPUT_DIRECTORY}/assets")
 
 #file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${MY_EXECUTABLE_OUTPUT_DIRECTORY}/)
-
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../reviv/src/)

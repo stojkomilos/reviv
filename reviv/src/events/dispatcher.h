@@ -20,7 +20,7 @@ public:
                 Input::onEvent(event);
                 break;
             default:
-                assert(false); // Event type not supported by the event dispatcher
+                RV_ASSERT(false, "Event type not supported by the event dispatcher");
         }
 
     }

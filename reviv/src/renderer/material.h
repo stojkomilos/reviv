@@ -1,7 +1,6 @@
 #pragma once
 
-#include<string>
-#include<unordered_map>
+#include"rv_pch.hpp"
 
 #include"core/mat.h"
 #include"shader.h"
@@ -47,14 +46,14 @@ struct MaterialHelpingStruct
 
     bool operator==(const MaterialHelpingStruct& other) const
     {
-        assert(false);
+        RV_ASSERT(false, "")
         //return this->type == other.type and this->ptr == other.ptr;
         return (this->type == other.type and this->ptr == other.ptr);
     }
 
     bool operator!=(const MaterialHelpingStruct& other) const
     {
-        assert(false);
+        RV_ASSERT(false, "")
         return !(*this == other);
     }
 
@@ -70,7 +69,7 @@ public:                                             //TODO: destruktor, ima dost
     Material() = default;
     Material(const Material&) = default;
     Material(Shader* pShader)
-        : pShader(pShader) { map.clear(); name.clear(); cout << "asdf"; }
+        : pShader(pShader) { map.clear(); name.clear(); }
 
     void bind() const;
     void set(const std::string& uniformName, const Mat4& matrix);

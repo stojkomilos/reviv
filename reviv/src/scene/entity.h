@@ -1,9 +1,6 @@
 #pragma once
 
-#include<vector>
-#include<string>
-#include<iostream>
-#include<assert.h>
+#include"rv_pch.hpp"
 
 #include"stls/stable_vector.h"
 #include"core/mat.h"
@@ -84,7 +81,7 @@ ComponentId SpecificComponent<T>::generateNewComponentId()
 {
     ComponentId result = 1 << m_GenIdCounter;
     m_GenIdCounter++;
-    assert(m_GenIdCounter < 63); // ERROR: reaching the end of possible number of unique component types\n | possible solution: change ComponentId to be a larger unsigned type
+    RV_ASSERT(m_GenIdCounter < 63, "reaching the end of possible number of unique component types\n | possible solution: change ComponentId to be a larger unsigned type");
 
     return result;
 }
@@ -128,16 +125,12 @@ T* Entity::get() const
         Component* temp = (Component*)components[i];
         if(temp->getId() == T::id)
         {
-            assert(result == nullptr); // ERROR: Requested component that has multiple instances in one entity
+            RV_ASSERT(result == nullptr, "Requested component that has multiple instances in one entity");
             result = (T*)components[i];
         }
     }
 
-    if(result == nullptr)
-    {
-        cout << "ERROR, nije nasao" << endl;
-        assert(false);
-    }
+    RV_ASSERT(result != nullptr, "not found");
 
     return result;
 }

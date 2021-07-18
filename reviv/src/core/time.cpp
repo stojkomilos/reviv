@@ -21,7 +21,7 @@ bool Time::iIsOneSecond()
     return m_OneSecond;
 }
 
-float Time::iGetTimeInSeconds()
+float Time::igetTime()
 {
     return time;
 }

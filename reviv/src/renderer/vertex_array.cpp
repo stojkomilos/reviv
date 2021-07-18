@@ -21,12 +21,12 @@ Vao::Vao(const std::string& modelPath)
     };
     BufferLayout vboLayout1(tempVboLayout1);
 
-    assert(sizeof(float) * 3 == sizeof(Vec3f));
-    assert(sizeof(int) * 3 == sizeof(TripletOfInts));
+    RV_ASSERT(sizeof(float) * 3 == sizeof(Vec3f), "");
+    RV_ASSERT(sizeof(int) * 3 == sizeof(TripletOfInts), "");
 
     int nrAttributes;											 //samo jedna provere dal ima otprilike dovoljno atrib pointera
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
-    assert(nrAttributes >= 10); 
+    RV_ASSERT((nrAttributes >= 10), ""); 
 
     //bind(); //TODO: nepotrebna komanda? svakako bind-ujem malo ranije
 

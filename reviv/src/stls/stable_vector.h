@@ -1,8 +1,6 @@
 #pragma once
 
-#include<assert.h>
-#include<iostream>
-#include<new>
+#include"rv_pch.hpp"
 
 using std::cin; using std::cout; using std::endl;
 

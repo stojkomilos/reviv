@@ -8,7 +8,7 @@ Application* Application::s_Instance(nullptr);
 Application::Application(const std::string& applicationName /* = "Reviv App" */ )
     : applicationName(applicationName)
 {
-    assert(s_Instance == nullptr); // ERROR: can't have more than 1 application
+    RV_ASSERT(s_Instance == nullptr, "Can't have more than 1 application");
 
     s_Instance = this;
 }
@@ -24,27 +24,13 @@ void Application::iOnEvent(Event* event)
             onEventWindowResize(event);
             break;
         default:
-            assert(false); // ERROR: event type not recognized by Application class
+            RV_ASSERT(false, "event type not recognized by Application class");
     }
-}
-
-void Application::onEventWindowClose(Event* event)
-{
-    assert(event->m_Type == EventType::EventTypeWindowClose and event->getName() == "EventWindowClose");
-    EventWindowClose* eventWindowClose = (EventWindowClose*)event;
-
-    m_IsRunning = false;
-}
-
-void Application::onEventWindowResize(Event* event)
-{
-    assert(event->m_Type == EventType::EventTypeWindowResize and event->getName() == "EventWindowResize");
-    EventWindowResize* eventWindowResize = (EventWindowResize*)event;
 }
 
 void Application::initEngine()
 {
-    window.init(true, false, 1600, 900, applicationName);              // window.init() must go before RenderManager::init()
+    window.init(true, !RV_DEBUG, 1600, 900, applicationName);              // window.init() must go before RenderManager::init()
 
     Input::disableCursor();        // For the first person 3d camera controller
     Input::useRawMouseMotion();
@@ -79,4 +65,18 @@ void Application::run()
 Window* Application::getWindow()
 {
     return &window;
+}
+
+void Application::onEventWindowClose(Event* event)
+{
+    RV_ASSERT(event->m_Type == EventType::EventTypeWindowClose and event->getName() == "EventWindowClose", "Incorrect event type");
+    EventWindowClose* eventWindowClose = (EventWindowClose*)event;
+
+    m_IsRunning = false;
+}
+
+void Application::onEventWindowResize(Event* event)
+{
+    RV_ASSERT(event->m_Type == EventType::EventTypeWindowResize and event->getName() == "EventWindowResize", "Incorrect event type");
+    EventWindowResize* eventWindowResize = (EventWindowResize*)event;
 }

@@ -14,8 +14,7 @@ void Texture2D::setUp(const std::string& path)
 	stbi_uc* data = stbi_load(path.c_str(), &width1, &height1, &channels1, 0);
 	stbi_set_flip_vertically_on_load(1);
 	if (!data) {
-		std::cout << "ERROR TEXTURE FAILED TO LOAD: " << path << std::endl;
-		assert(false);
+        RV_ASSERT(false, "ERROR TEXTURE FAILED TO LOAD: " << path);
 	}
 	else {
 		std::cout << "Loaded texture " << path << std::endl;
@@ -36,8 +35,7 @@ void Texture2D::setUp(const std::string& path)
 	}
 	if (!(internalFormat & dataFormat))
 	{
-		std::cout << "ERROR Texture format not supported\n";
-		assert(false);
+        RV_ASSERT(false, "ERROR Texture format not supported");
 	}
 
 

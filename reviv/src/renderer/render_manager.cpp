@@ -50,9 +50,10 @@ void RenderManager::beginScene(const WindowData& windowData)
 {
     Camera* camera = &Scene::getCameraEntity()->get<CameraComponent>()->camera;
 
-    assert(Scene::getCameraEntity()->has<CameraComponent>() // ERROR: submitted entity is supposed to be a camera, but does NOT have required components
+    RV_ASSERT(Scene::getCameraEntity()->has<CameraComponent>()
         and Scene::getCameraEntity()->has<PositionComponent>()
-        and Scene::getCameraEntity()->has<RotationComponent>());
+        and Scene::getCameraEntity()->has<RotationComponent>(),
+        "submitted entity is supposed to be a camera, but does NOT have required components");
 
     camera->recalculateViewMatrix(
         Scene::getCameraEntity()->get<PositionComponent>()->position,

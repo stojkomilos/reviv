@@ -1,10 +1,6 @@
 #pragma once
 
-#include<string>
-#include<fstream>
-#include<sstream>
-#include<iostream>
-#include<assert.h>
+#include"rv_pch.hpp"
 
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>

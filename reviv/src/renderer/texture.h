@@ -3,9 +3,7 @@
 #include<glad/glad.h>
 #include<stb_image.h>
 
-#include<string>
-#include<assert.h>
-#include<iostream>
+#include"rv_pch.hpp"
 
 class Texture
 {

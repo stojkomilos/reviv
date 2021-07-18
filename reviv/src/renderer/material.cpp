@@ -1,5 +1,4 @@
 #include"material.h"
-#include<iostream>
 
 void Material::bind() const
 {
@@ -28,8 +27,7 @@ void Material::bind() const
                 break;
 
             default:
-                std::cout << "ERROR: Specified uniform data type not found";
-                assert(false);
+                RV_ASSERT(false, "ERROR: Specified uniform data type not found");
         }
     }
     //pShader->bind(); //TODO ovo se mozda moze ukloniti
@@ -101,7 +99,7 @@ void logSpecificUniform(const Material& material, const std::string& uniformName
         case ShaderDataType::SdtInt3:            log(*(Vec3i*)value.ptr);       break;
         case ShaderDataType::SdtInt4:            log(*(Vec4i*)value.ptr);       break;
         case ShaderDataType::SdtBool:            log(*(bool*)value.ptr);       break;
-        default: cout << "ERROR: material data type not defined in log function" << endl; assert(false);
+        default: RV_ASSERT(false, "ERROR: material data type not defined in log function");
     }
     cout << endl;
 }

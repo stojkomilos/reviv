@@ -1,12 +1,10 @@
 #include"model.h"
 
+#include"rv_pch.hpp"
+
 #define _CRT_SECURE_NO_WARNINGS
 
 // Novo TODO: reformisati Model klasu, tako da nema svaka instanca .Load funciju. Mozda nek to bude neka globna funkcija, mozda metoda Render_manager-a, mozda samo static metoda kod Model-a? idk
-
-#include<ctime>
-#include<vector>
-#include<assert.h>
 
 using std::cin; using std::cout; using std::endl;
 
@@ -23,7 +21,7 @@ Model::~Model()
 bool Model::init(const char* path)
 { 
     std::cout << "Start reading of model " << path << std::endl;
-    clock_t clock = std::clock();
+    float clock = Time::getTime();
 
     std::vector<Vec3f> vVertices;
     std::vector<Vec2f> vTextures;
@@ -168,7 +166,7 @@ bool Model::init(const char* path)
     nrVertices = vVertices.size();
     nrTriangles = vVertexIndices.size(); ///vertex buffer layout, cherno ima dobar video, meni su svi trenutno zajedno a ne po jednom vertexu sto mozda ne valja za cash ili tako nesto
 
-    std::cout << "End of reading model " << path << std::endl << "#triangles " << nrTriangles << " #vertices " << nrVertices << std::endl << "Time: " << (std::clock() - clock) / (CLOCKS_PER_SEC * 1.0f) << " Data size " << nrTriangles * sizeof(Vec3f) / 1024.f << "KB\n";
+    std::cout << "End of reading model " << path << std::endl << "#triangles " << nrTriangles << " #vertices " << nrVertices << std::endl << "Time: " << Time::getTime() - clock << "s" << " Data size " << nrTriangles * sizeof(Vec3f) / 1024.f << "KB\n";
 
     vVertices.clear();
 

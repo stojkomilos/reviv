@@ -1,6 +1,6 @@
 #pragma once
 
-#include<iostream>
+#include"rv_pch.hpp"
 
 #include<GLFW/glfw3.h>
 
@@ -10,7 +10,7 @@ class Time
 {
 public:
     static void onUpdate() { getInstance()->iOnUpdate(); }
-    static float getTimeInSeconds() { return getInstance()->iGetTimeInSeconds(); }
+    static float getTime() { return getInstance()->igetTime(); }
     static float getDelta() { return getInstance()->iGetDelta(); } // returns time in dt in seconds
     static float isOneSecond() { return getInstance()->iIsOneSecond(); }
 
@@ -23,7 +23,7 @@ public:
 private:
     void iOnUpdate();
     float iGetDelta();
-    float iGetTimeInSeconds();
+    float igetTime();
     bool iIsOneSecond();
 
     bool m_OneSecond = false;
