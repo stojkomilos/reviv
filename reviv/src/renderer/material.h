@@ -49,7 +49,7 @@ struct MaterialHelpingStruct
     {
         assert(false);
         //return this->type == other.type and this->ptr == other.ptr;
-        return this->type == other.type and this->ptr == other.ptr;
+        return (this->type == other.type and this->ptr == other.ptr);
     }
 
     bool operator!=(const MaterialHelpingStruct& other) const

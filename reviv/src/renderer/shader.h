@@ -11,9 +11,6 @@
 
 #include"core/mat.h"
 
-bool GLLogCall();
-void GLClearError();
-
 class Shader{
 
 public:

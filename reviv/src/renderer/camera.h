@@ -14,6 +14,8 @@ public:
     void recalculateViewMatrix(const Vec3f& position, const Rotation& rotation); // gRenderManager -> recalculateViewMatrix ili static deo ProjectionCamera klase
 	void recalculateProjectionMatrix(const WindowData& windowData);
 
+    void onEventMouseMoved(Event* event);
+
 	Vec3f right, up, direction;
 
 	Mat4 viewMatrix, projectionMatrix;

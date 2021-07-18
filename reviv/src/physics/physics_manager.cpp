@@ -25,8 +25,15 @@ void PhysicsManager::updateTransforms() // updates the transforms of all the ent
     {
         if(itEntity->has<TransformComponent>() and itEntity->has<PositionComponent>())
         {
+            auto* pTransform = &itEntity->get<TransformComponent>()->transform;
             //cout << "Updating tranform for entity: " << itEntity->entityName << endl;
-            itEntity->get<TransformComponent>()->transform = translate(identity, itEntity->get<PositionComponent>()->position);
+            *pTransform = translate(identity, itEntity->get<PositionComponent>()->position);
+
+            if(itEntity->has<RotationComponent>())
+            {
+                //*pTransform = rotate(*pTransform, itEntity->get<RotationComponent>());
+                *pTransform = rotateX(*pTransform, 3.14/2);
+            }
         }
     }
 }

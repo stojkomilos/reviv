@@ -1,5 +1,3 @@
-#include<GLFW/glfw3.h>
-
 #include"time.h"
 
 void Time::iOnUpdate()
@@ -9,12 +7,18 @@ void Time::iOnUpdate()
     time = currentTime;
 
     static float fpsTimer = currentTime;
-    if(currentTime - fpsTimer > 1) // print the FPS every second
+    if(currentTime - fpsTimer > 1)
     {
-        cout << "FPS: " << 1 / getDelta() << endl;
         fpsTimer = currentTime;
+        m_OneSecond = true;
     }
+    else m_OneSecond = false;
 
+}
+
+bool Time::iIsOneSecond()
+{
+    return m_OneSecond;
 }
 
 float Time::iGetTimeInSeconds()

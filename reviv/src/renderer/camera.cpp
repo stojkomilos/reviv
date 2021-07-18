@@ -15,10 +15,7 @@ Camera::Camera(float nearPlane, float farPlane, float fov)
 
 void Camera::recalculateViewMatrix(const Vec3f& position, const Rotation& rotation)
 {
-    direction.x = -cos(rotation.pitch) * cos(rotation.yaw);
-    direction.y = -sin(rotation.pitch);
-    direction.z = -cos(rotation.pitch) * sin(rotation.yaw);
-    direction = normalise(direction);
+    direction = getDirectionFromRotation(rotation);
 
     right = normalise(cross(direction, Vec3f(0, 1, 0)));
     up = normalise(cross(right, direction));

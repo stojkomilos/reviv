@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(reviv)
+project(reviv CXX)
 
 set(GLFW_BUILD_DOCS "OFF")
 set(GLFW_BUILD_EXAMPLES "OFF")
@@ -19,6 +19,8 @@ file(GLOB_RECURSE SRC_FILES "src/*.c"
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/GLFW)
 
 add_library(reviv STATIC ${SRC_FILES})
+
+target_precompile_headers(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/rv_pch.hpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/GLFW/include)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/Glad/include)

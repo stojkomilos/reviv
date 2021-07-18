@@ -1,24 +1,29 @@
 #include<assert.h>
 
 #include"window.h"
+#include"events/dispatcher.h"
+
+#include<cstring>
+
+//#include"core/input.h" //TODO: ukloni ovo kada ubacis event system
 
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height) //TODO
 { 
-	glViewport(0, 0, width, height);
+    glViewport(0, 0, width, height);
 }
 
 static void GlfwErrorCallback(int error, const char* description)
 {
     fprintf(stderr, "Glfw Error: %s\n", description);
-    assert(description != "Wayland: The Platform does not support setting the input focus" and description != "Wayland: focusing a window requires user interaction"); // Common, maybe unavoidable erros on wayland, glfw still works even when they occur
+
+    // Common, maybe unavoidable erros on wayland, glfw still works even when they occur
+    assert(strncmp(description, "Wayland: The platform does not support setting the input focus", 10) or strncmp(description, "Wayland: focusing a window requires user interaction", 10));
 }
 
 void Window::onUpdate()
 {
-    if(glfwWindowShouldClose(pWindow))
-    {
-        shutdown();
-    }
+    if(Input::isKeyPressed(RV_KEY_Q))
+        Application::getInstance()->m_IsRunning = false;
 
     glfwSwapBuffers(pWindow);
     glfwPollEvents();
@@ -28,11 +33,6 @@ void Window::shutdown()
 {
     glfwDestroyWindow(pWindow);
     glfwTerminate();
-}
-
-Window::~Window()
-{
-    shutdown();
 }
 
 void Window::setVSync(bool isEnabled)
@@ -65,89 +65,28 @@ unsigned int Window::getHeight() const
 
 static void sizeCallback(GLFWwindow* pWindow, int width, int height)
 {
-    //assert(false);
-    WindowData* data = (WindowData*)glfwGetWindowUserPointer(pWindow);
-
-    data->width = width;
-    data->height = height;
-
-    //WindowResizeEvent event(width, height);
-    //data->eventCallback(event);
-
-    cout << "RESIZE width: " << width << " height: " << height << endl;
+    EventWindowResize event(width, height);
+    EventDispatcher::dispatch(&event);
 }
 
 static void closeCallback(GLFWwindow* pWindow)
 {
-    //assert(false);
-
-    WindowData *data = (WindowData*)glfwGetWindowUserPointer(pWindow);
-
-    //WindowCloseEvent event;
-    //data->eventCallback(event);
-
-    cout << "CLOSE callback" << endl;
-}
-
-static void keyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mods)
-{
-    //assert(false);
-    WindowData* data = (WindowData*)glfwGetWindowUserPointer(pWindow);
-
-    cout << "KEY callback" << endl;
-
-    switch(action)
-    {
-        case GLFW_PRESS:
-        {
-            cout << "Press" << endl;
-            //KeyPressedEvent event(key, 0);
-            //data->eventCallback(event);
-            break;
-        }
-        case GLFW_RELEASE:
-        {
-            cout << "Release" << endl;
-            //KeyReleasedEvent event(key);
-            //data->eventCallback(event);
-            break;
-        }
-        case GLFW_REPEAT:
-        {
-            cout << "Repeat" << endl;
-            //KeyReleasedEvent event(key, 1);
-            //data->eventCallback(event);
-            break;
-        }
-        default:
-        {
-            assert(false); // ERROR: glfw event not recognized
-        }
-    }
-}
-
-static void mouseButtonCallback(GLFWwindow* pWindow, int button, int action, int modes)
-{
-    WindowData* data = (WindowData*)glfwGetWindowUserPointer(pWindow);
-    cout << "Mouse button" << endl;
-
-}
-
-static void scrollCallback(GLFWwindow* pWindow, double xOffset, double yOffset)
-{
-    WindowData* data = (WindowData*)glfwGetWindowUserPointer(pWindow);
-    cout << "Scroll" << endl;
+    EventWindowClose event;
+    EventDispatcher::dispatch(&event);
 }
 
 static void cursorPosCallback(GLFWwindow* pWindow, double xPosition, double yPosition)
 {
-    WindowData* data = (WindowData*)glfwGetWindowUserPointer(pWindow);
-    cout << "Cursor pos callback, x: " << xPosition << " y: " << yPosition << endl;
+    //WindowData* data = (WindowData*)glfwGetWindowUserPointer(pWindow);
+    EventMouseMoved event(Vec2f(xPosition, yPosition));
+    EventDispatcher::dispatch(&event);
+    //cout << "Cursor pos callback, x: " << xPosition << " y: " << yPosition << endl;
 
 }
 
 void Window::init(bool enableVSync, bool isFullscreen, unsigned int windowWidth, unsigned int windowHeight, const std::string& windowTitle)
 {
+
     m_Data.title = windowTitle;
     m_Data.width = windowWidth;
     m_Data.height = windowHeight;
@@ -209,14 +148,17 @@ void Window::init(bool enableVSync, bool isFullscreen, unsigned int windowWidth,
 
     setVSync(enableVSync);
 
+    ///m_Data.m_EventCallback = eventCallbackFunction;
+
     glfwSetWindowUserPointer(pWindow, &m_Data);
 
     glfwSetWindowSizeCallback(pWindow, sizeCallback);
     glfwSetWindowCloseCallback(pWindow, closeCallback);
-    glfwSetKeyCallback(pWindow, keyCallback);
-    glfwSetMouseButtonCallback(pWindow, mouseButtonCallback);
-    glfwSetScrollCallback(pWindow, scrollCallback);
+    //glfwSetKeyCallback(pWindow, keyCallback);
+    //glfwSetMouseButtonCallback(pWindow, mouseButtonCallback);
+    //glfwSetScrollCallback(pWindow, scrollCallback);
     glfwSetCursorPosCallback(pWindow, cursorPosCallback);
+    //glfwSetCursorEnterCallback(pWindow, cursorEnterCallback);
 }
 
 static void openGlLogMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParams)

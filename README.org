@@ -3,7 +3,7 @@
 ** Dependencies:
 
 - =cmake=
-- all the =glfw= dependencies (see [[here][https://www.glfw.org/docs/latest/compile.html]])
+- all the =glfw= dependencies (see [[https://www.glfw.org/docs/latest/compile.html][here]])
 
 ** Instructions
  
@@ -15,8 +15,8 @@
   cmake --build .
 #+end_src
 
-If you're using /Wayland/ on /Linux/, it should automatically get detected and compile =glfw= for Wayland.
+If you're using /Wayland/ on /Linux/, it should automatically get detected and =glfw= will compile for Wayland.
 
 =Visual Studio= is probably /not/ fully supported.
 
-The executable is now in =bin/Release-OS= directory. You can delete the static library files.
+After building, the executable is in =bin/Release-OS= directory. You can delete the static library files.

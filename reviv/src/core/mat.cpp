@@ -104,6 +104,17 @@ namespace mat{
         a.x = b.y = c.z = d.w = n;
     }
 
+    Vec3f operator*(const Vec3f& thing, const float& scalar)
+    {
+        Vec3f result(thing.x * scalar, thing.y * scalar, thing.z * scalar);
+        return result;
+    }
+    
+    Vec3f operator*(const float& scalar, const Vec3f& thing)
+    {
+        return thing * scalar;
+    }
+
     Mat4 translate(Mat4 a, const Vec3f& b)
     {
         a.d.x += b.x;
@@ -180,6 +191,17 @@ namespace mat{
         rez.w = a.a.w * b.x + a.b.w * b.y + a.c.w * b.z + a.d.w * b.w;
 
         return rez;
+    }
+
+    Vec3f getDirectionFromRotation(const Rotation& rotation)
+    {
+        Vec3f direction;
+        direction.x = -cos(rotation.pitch) * cos(rotation.yaw);
+        direction.y = -sin(rotation.pitch);
+        direction.z = -cos(rotation.pitch) * sin(rotation.yaw);
+        direction = normalise(direction);
+
+        return -direction;
     }
 
     float module(const Vec3f& a)

@@ -3,7 +3,7 @@
 /*
 #include<stdlib.h>
 #include<cmath>
-#include<cassert>
+#include<assert.h>
 
 #include"core/mat.h"
 #include"physics/physics_manager.h"

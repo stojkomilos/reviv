@@ -9,8 +9,10 @@ target_compile_features(project_options INTERFACE cxx_std_17)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wpedantic -Wnull-dereference -Wdouble-promotion -Wformat=2 -g")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wpedantic -Wnull-dereference -Wdouble-promotion -Wformat=2 -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 # -Wshadow -Wunused -Wold-style-cast -Wconversion -Wsign-conversion 
+# -E -> stop after preprocessor runs
 
 #add_library(project_warnings INTERFACE)
 #include(cmake/CompilerWarnings.cmake)

@@ -6,7 +6,7 @@
 
 #include<ctime>
 #include<vector>
-#include<cassert>
+#include<assert.h>
 
 using std::cin; using std::cout; using std::endl;
 
