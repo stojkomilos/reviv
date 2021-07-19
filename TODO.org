@@ -1,43 +1,18 @@
 * Ciljevi
 
-** precompiled header
-
-mozda se treba resiti =include= u cpp fajlovima?
-
-glad? vrv ne
-RV_CORE_ASSERT i replace svih assert() (cherno log video)
-RV_CORE_ERROR , kao assert(false) valjda
-
-RV_ASSERT
-RV_ERROR
-
-
-glViewport thing in renderCommand
-
 ** other
 
 order: input->update->display
 
-plan za sutra:
-    1. events fast as fuck minimal?
-       core.h BIT(x)
-       precompiled header
-    2. camera controller 
-    3. assimp fast as fuck
-    4. fix warnings?
-    5. compile on windows 10
-    .. merge stuff
+plan za danas:
+    1. assimp fast as fuck
+    2. compiler shit
+       - clean warnings
+       - work on windows 10
+       - flags
+    3. merge stuff
     6. other clean, TODO clean
  
-Compiler flags, idealno u root cmake fajlu samo
-Defines u reviv cmake fajlu
-
-For users: (proveri sve ofc)
- - cd build
- - cmake ../ -DCMAKE_BUILD_TYPE=Release
- - cmake --build .
-
-
 todo:
     project todo:
         cmake:
@@ -107,6 +82,10 @@ Callback function : onEvent(const Event& event)
 
 * Renderer
 ** mesh
+
+https://learnopengl.com: A single mesh is the minimal representation of what we need to draw an object in OpenGL (vertex data, indices, and material properties). A model (usually) consists of several meshes.
+
+
 
 Material sadrzi samo:
     - Shader
