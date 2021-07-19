@@ -82,22 +82,22 @@ public:
     void log() const override { cout << componentTypeName << endl; ::log(transform); }
 };
 
-class ModelComponent : public SpecificComponent<ModelComponent>
-{
-public:
-    Model model;
-
-    template<class ...Args>
-    ModelComponent(Args&&... args) : model(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("ModelComponent"); }
-
-    ModelComponent(const ModelComponent&) = default;
-    ModelComponent(const Model& initModel)
-        : ModelComponent() { model = initModel; }
-
-    operator const Model& () const { return model; }
-    operator Model& () { return model; }
-    void log() const override { cout << componentTypeName << endl; ::log(model); }
-};
+//class ModelComponent : public SpecificComponent<ModelComponent>
+//{
+//public:
+//    Model model;
+//
+//    template<class ...Args>
+//    ModelComponent(Args&&... args) : model(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("ModelComponent"); }
+//
+//    ModelComponent(const ModelComponent&) = default;
+//    ModelComponent(const Model& initModel)
+//        : ModelComponent() { model = initModel; }
+//
+//    operator const Model& () const { return model; }
+//    operator Model& () { return model; }
+//    void log() const override { cout << componentTypeName << endl; ::log(model); }
+//};
 
 class MaterialComponent : public SpecificComponent<MaterialComponent>
 {

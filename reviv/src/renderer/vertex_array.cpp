@@ -9,6 +9,7 @@ void log(const Vao& vao)
 
 Vao::Vao(const std::string& modelPath)
 {
+    /*
 	glGenVertexArrays(1, &ID);
 	glBindVertexArray(ID);
 
@@ -40,36 +41,40 @@ Vao::Vao(const std::string& modelPath)
 
     addVertexBuffer(vbo);
 
+*/
 }
     //stanicTexture.setUp("../resources/textures/stene.png");
     //stanicTexture.bind(0);
     //beloTexture.setUp("../resources/textures/belo.png");
 
 
-Vao::~Vao()
-{
-	std::cout << "TODO: dodaj destruktor za vao---\n";
-}
+//Vao::~Vao()
+//{
+//	std::cout << "TODO: dodaj destruktor za vao---\n";
+//}
+
 void Vao::bind() const
 {
-	glBindVertexArray(ID);
+//	glBindVertexArray(ID);
 }
 
 
-void Vao::addVertexBuffer(Vbo& vertexBuffer)
-{
-    for (int i = 0; i < vertexBuffer.layout.elements.size(); i++)
-    {
-        glVertexAttribPointer(i,
-            vertexBuffer.layout.elements[i].getElementCount(),
-            shaderDataTypeToOpenGLBaseType(vertexBuffer.layout.elements[i].type),
-            vertexBuffer.layout.elements[i].normalized,
-            vertexBuffer.layout.stride,
-            (void*)vertexBuffer.layout.elements[i].offset);
-
-        glEnableVertexAttribArray(i);
-    }
-
-    nrOfTriangles = vertexBuffer.count; // works ONLY if you have one Vbo per one Vao
-
-}
+//
+//
+//void Vao::addVertexBuffer(Vbo& vertexBuffer)
+//{
+//    for (int i = 0; i < vertexBuffer.layout.elements.size(); i++)
+//    {
+//        glVertexAttribPointer(i,
+//            vertexBuffer.layout.elements[i].getElementCount(),
+//            shaderDataTypeToOpenGLBaseType(vertexBuffer.layout.elements[i].type),
+//            vertexBuffer.layout.elements[i].normalized,
+//            vertexBuffer.layout.stride,
+//            (void*)vertexBuffer.layout.elements[i].offset);
+//
+//        glEnableVertexAttribArray(i);
+//    }
+//
+//    nrOfTriangles = vertexBuffer.count; // works ONLY if you have one Vbo per one Vao
+//
+//}

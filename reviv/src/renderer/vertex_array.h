@@ -12,16 +12,16 @@ public:
     //Vao(const std::string& modelPath) { init(modelPath); }
     Vao() = default;
     Vao(const std::string& modelPath);
-    ~Vao();
+   // ~Vao();
 
     void bind() const;
 
-    Vbo vbo;
-    Model* pModel;
-    unsigned int ID;
+   // Vbo vbo;
+   // Model* pModel;
+   // unsigned int ID;
     unsigned int nrOfTriangles;
 
-    void addVertexBuffer(Vbo& vertexBuffer);
+   // void addVertexBuffer(Vbo& vertexBuffer);
 };
 
 void log(const Vao& vao);

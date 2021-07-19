@@ -1,7 +1,20 @@
-#include"model.h"
-
 #include"rv_pch.hpp"
 
+#include"model.h"
+
+Model::Model(const std::string& filePath)
+    : meshes(10) //TODO: ne moze ovako fiksno na pocetku
+{
+    Assimp::Importer importer;
+    const aiScene *scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
+
+    // TODO: dodaj flags:   aiProcess_GenNormals
+    //                      aiProcess_SplitLargeMeshes
+    //                      aiProcess_OptimizeMeshes
+}
+
+
+/*
 #define _CRT_SECURE_NO_WARNINGS
 
 // Novo TODO: reformisati Model klasu, tako da nema svaka instanca .Load funciju. Mozda nek to bude neka globna funkcija, mozda metoda Render_manager-a, mozda samo static metoda kod Model-a? idk
@@ -172,3 +185,4 @@ bool Model::init(const char* path)
 
     return true;
 }
+*/

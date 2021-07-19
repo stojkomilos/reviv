@@ -1,7 +1,5 @@
 * Ciljevi
 
-** other
-
 order: input->update->display
 
 plan za danas:
