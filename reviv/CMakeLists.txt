@@ -2,13 +2,18 @@ cmake_minimum_required(VERSION 3.18)
 
 project(reviv)
 
-set(GLFW_BUILD_DOCS "OFF")
-set(GLFW_BUILD_EXAMPLES "OFF")
-set(GLFW_BUILD_TESTS "OFF")
+#set(GLFW_BUILD_DOCS OFF CACHE BOOL "Glfw: build docs" FORCE)
+#set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "Glfw: build examples" FORCE)
+#set(GLFW_BUILD_TESTS OFF OFF CACHE BOOL "Glfw: build tests" FORCE)
 
-set(BUILD_SHARED_LIBS "OFF")
-set(ASSIMP_INSTALL "OFF")
-set(ASSIMP_BUILD_TESTS "OFF")
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "Glfw: build docs" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "Glfw: build examples" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "Glfw: build tests" FORCE)
+
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shard libs" FORCE)
+set(ASSIMP_INSTALL OFF CACHE BOOL "Assimp: build install" FORCE)
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "Assimp: build tests" FORCE)
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "Assimp: Build command line tool, (Probably, idk)" FORCE)
 
 if(DEFINED ENV{WAYLAND_DISPLAY})
     message(STATUS "====> WAYLAND DETECTED, COMPILING GLFW FOR WAYLAND")

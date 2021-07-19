@@ -12,7 +12,7 @@
   mkdir build
   cd build
   cmake ../reviv2 -DCMAKE_BUILD_TYPE=Release
-  cmake --build .
+  cmake --build . -j3
 #+end_src
 
 If you're using /Wayland/ on /Linux/, it should automatically get detected and =glfw= will compile for Wayland.
