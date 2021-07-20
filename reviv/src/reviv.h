@@ -14,6 +14,8 @@
 
 #include"core/application.h"
 #include"core/base.h"
+#include"renderer/model_loader.h"
+#include"renderer/model.h"
 
 // ------Entry point-----------------------------------------------
 #include"core/entry_point.h"

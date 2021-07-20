@@ -4,24 +4,25 @@
 
 #include"buffer.h"
 #include"core/mat.h"
-#include"renderer/model.h"
 
-class Vao
+class Vao // VertexArrayObject
 {
 public:
-    //Vao(const std::string& modelPath) { init(modelPath); }
     Vao() = default;
-    Vao(const std::string& modelPath);
-   // ~Vao();
+    ~Vao();
+
+    void init();
+    void load(unsigned int verticesSize, Vertex* pVertices, unsigned int indicesSize, unsigned int* pIndices);
 
     void bind() const;
+    void unbind() const;
 
-   // Vbo vbo;
-   // Model* pModel;
-   // unsigned int ID;
-    unsigned int nrOfTriangles;
+    GLuint id;
 
-   // void addVertexBuffer(Vbo& vertexBuffer);
+    void addVbo(const Vbo& vbo);
+    void addEbo(const Ebo& ebo);
+    std::vector<Vbo> vertexBuffers;
+    std::vector<Ebo> elementBuffers;
 };
 
 void log(const Vao& vao);

@@ -2,8 +2,11 @@
 
 order: input->update->display
 
+vbo layout stavi u vbo
 plan za danas:
     1. assimp fast as fuck
+       - material, pogledaj njegov i moj i uzmi najbolje
+       - deal with environment sheat
     2. compiler shit
        - clean warnings
        - work on windows 10
@@ -79,7 +82,31 @@ Window has function pointer to the callback function in application
 Callback function : onEvent(const Event& event)
 
 * Renderer
+** Model
+
+class Model
+{
+Loader* loader;
+std::vector<Material*> pMaterials;
+std::vector<Mesh*> pMeshes;
+}
+
+Material:
+ Shader*
+ unordered_map
+
+custom code?: pMaterial[i].map["u_diffuseSpecular"]=loader->getMaterial(i, ....) (vidi learnopengl.com/.../model -> Material(chapter)
+
 ** mesh
+
+** vao
+
+Vao poseduje:
+ - vbo
+ - ebo
+ - vbo layout
+
+Mozes imati vise buffer-a po jednom vao, ali se to retko radi
 
 https://learnopengl.com: A single mesh is the minimal representation of what we need to draw an object in OpenGL (vertex data, indices, and material properties). A model (usually) consists of several meshes.
 

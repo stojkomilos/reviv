@@ -1,8 +1,9 @@
 #include<reviv.h>
 
 Entity *player, *camera, *stanic;
-
 Shader shaderTexture, shaderMonochroma;
+ModelLoader modelLoaderBackpack;
+Material materialBasic;
 
 class Sandbox : public Application
 {
@@ -22,9 +23,9 @@ public:
         player->add<RotationComponent>(Vec3f(0, 0, 0));
 
         stanic = Scene::createEntity("Stanic");
-        stanic->add<PositionComponent>(3, 0, 0);
+        stanic->add<PositionComponent>(1, 0, 0);
         stanic->add<TransformComponent>();
-        stanic->add<RotationComponent>();
+        stanic->add<RotationComponent>(Vec3f(0, 0, 0));
 
     }
 
@@ -33,15 +34,21 @@ public:
         shaderTexture.init      ("assets/shaders/texture.vs", "assets/shaders/texture.fs");
         shaderMonochroma.init("assets/shaders/monochroma.vs", "assets/shaders/monochroma.fs");
 
-        stanic->add<VaoComponent>("assets/models/weapon.obj");
-        stanic->add<MaterialComponent>(&shaderMonochroma);
+        //stanic->add<VaoComponent>("assets/models/weapon.obj");
+        materialBasic.setShader(&shaderMonochroma);
+
+        //stanic->add<MaterialComponent>(&shaderMonochroma);
+        //stanic->add<ModelComponent>("assets/models/weapon.obj");
+
+        modelLoaderBackpack.load("assets/models/backpack/backpack.obj");
+        //modelLoaderBackpack.load("assets/models/weapon.obj");
+        //modelLoaderBackpack.load("assets/models/sphere.obj");
+
+        stanic->add<ModelComponent>(&modelLoaderBackpack, &materialBasic);
     }
 
     void onUpdate() override
     {
-        bool a = false;
-        //RV_ASSERT(a, "Well this is just plain wrong you fukcing udiaitadsf;")
-
         //stanic->get<PositionComponent>()->position = Vec3f(sin(Time::getTime()), 0, cos(Time::getTime()));
 
         if(Time::isOneSecond()){
@@ -50,14 +57,23 @@ public:
             log(Scene::getPlayerEntity()->get<PositionComponent>()->position);
         }
 
+        auto* stanicModel = &stanic->get<ModelComponent>()->model;
 
-        auto* stanicMaterial = &stanic->get<MaterialComponent>()->material;
-        stanicMaterial->pShader->bind();
-        stanicMaterial->set("u_Color", Vec4f(0, 0, 1, 1));
-        stanicMaterial->set("u_Projection", Scene::getCameraEntity()->get<CameraComponent>()->camera.projectionMatrix);
-        stanicMaterial->set("u_View", Scene::getCameraEntity()->get<CameraComponent>()->camera.viewMatrix);
-        stanicMaterial->set("u_Model", stanic->get<TransformComponent>()->transform);
+        //auto* stanicMaterial = &stanic->get<MaterialComponent>()->material;
+        materialBasic.pShader->bind();
+        materialBasic.set("u_Color", Vec4f(0, 0, 1, 1));
+        materialBasic.set("u_Projection", Scene::getCameraEntity()->get<CameraComponent>()->camera.projectionMatrix);
+        materialBasic.set("u_View", Scene::getCameraEntity()->get<CameraComponent>()->camera.viewMatrix);
 
+        materialBasic.set("u_Model", stanic->get<TransformComponent>()->transform);
+        //log(*stanicModel);
+        log(stanic->get<ModelComponent>()->model);
+
+        //materialBasic.set("u_Model", translate(identity, stanic->get<PositionComponent>()->position));
+
+        //stanicTexture.setUp("../resources/textures/stene.png");
+        //stanicTexture.bind(0);
+        //beloTexture.setUp("../resources/textures/belo.png");
     }
 
 };

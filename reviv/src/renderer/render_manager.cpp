@@ -9,17 +9,23 @@ void RenderManager::iOnUpdate(const WindowData& windowData)
 
     for(auto itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
     {
-    	if(itEntity->valid)
-    	{
-    		if(itEntity->has<MaterialComponent>() and itEntity->has<TransformComponent>() and itEntity->has<VaoComponent>())
-    		{
-                //cout << "Rendering entity: " << itEntity->entityName << endl;
-    			submit(
-    				&itEntity->get<MaterialComponent>()->material, 
-    				itEntity->get<TransformComponent>()->transform, 
-    				itEntity->get<VaoComponent>()->vao);
-    		}
-    	}
+        if(itEntity->valid)
+        {
+            //if(itEntity->has<MaterialComponent>() and itEntity->has<TransformComponent>() and itEntity->has<ModelComponent>())
+            if(itEntity->has<ModelComponent>() and itEntity->has<TransformComponent>())
+            {
+                cout << "Rendering entity: " << itEntity->entityName << endl;
+
+                submit(itEntity->get<ModelComponent>()->model,
+                    itEntity->get<TransformComponent>()->transform);
+
+                //submit(
+                //    &itEntity->get<MaterialComponent>()->material, 
+                //    itEntity->get<TransformComponent>()->transform, 
+                //    itEntity->get<ModelComponent>()->model);
+
+            }
+        }
     }
 
     endScene();
@@ -34,12 +40,30 @@ void RenderManager::iInit(const WindowData& windowData)
     cameraEntity->get<CameraComponent>()->camera.recalculateProjectionMatrix(windowData);
 }
 
-void RenderManager::submit(Material* pMaterial, const Mat4& transform, const Vao& vao)
+void RenderManager::submit(const Model& model, const Mat4& transform)
+{
+    RV_ASSERT(model.pMaterials.size() == model.pMeshes.size(), "");
+    for(int i=0; i<model.pMeshes.size(); i++)
+    {
+        model.pMaterials[i]->bind();
+        model.pMeshes[i]->vao.bind();
+
+        cout << "Stanic material: ";
+        log(*model.pMaterials[i]);
+
+        RenderCommand::drawElements(*model.pMeshes[i]);
+        //RenderCommand::drawArrays(*model.pMeshes[i]);
+    }
+}
+/*
+void RenderManager::submit(Material* pMaterial, const Mat4& transform, const Model& model)
 {
     pMaterial->bind();
-    vao.bind();
-    RenderCommand::drawArrays(vao);
+    //vao.bind();
+    //RenderCommand::drawArrays(vao); //TODO:?? a mozda i da samo model.draw?, idk
+    model.draw();
 }
+*/
 
 void RenderManager::iShutdown() 
 {

@@ -2,6 +2,7 @@
 
 #include"vertex_array.h"
 #include"core/mat.h"
+#include"renderer/mesh.h"
 
 class RenderCommand
 {
@@ -13,7 +14,8 @@ public:
     static void init() { getInstance()->iInit(); }
     static void setClearColor(const Vec4f& color) { getInstance()->iSetClearColor(color); }
     static void clear() { getInstance()->iClear(); }
-    static void drawArrays(const Vao& object) { getInstance()->iDrawArrays(object); }
+    static void drawArrays(const Mesh& mesh) { getInstance()->iDrawArrays(mesh); }
+    static void drawElements(const Mesh& mesh) { getInstance()->iDrawElements(mesh); }
 
     static RenderCommand* getInstance()
     {
@@ -25,7 +27,8 @@ private:
     RenderCommand() = default;
 
     void iInit();
-    void iDrawArrays(const Vao& object);
+    void iDrawArrays(const Mesh& mesh);
+    void iDrawElements(const Mesh& mesh);
     void iSetClearColor(const Vec4f& color);
     void iClear();
 };

@@ -26,12 +26,7 @@ BufferElement::BufferElement(ShaderDataType type, std::string name, bool normali
 
 }
 
-BufferElement::BufferElement()
-{
-
-}
-
-unsigned int BufferElement::getElementCount()
+unsigned int BufferElement::getElementCount() const
 {
     switch (type) {
         case ShaderDataType::SdtFloat1:			return 1;
@@ -70,50 +65,52 @@ unsigned int shaderDataTypeToOpenGLBaseType(ShaderDataType type)
     return 0;
 }
 
-BufferLayout::BufferLayout(std::vector<BufferElement> elements)
-	: elements(elements), stride(0)
+void BufferLayout::init()
 {
-	calculateOffsetsAndStride();
-}
-
-void BufferLayout::calculateOffsetsAndStride()
-{
-	unsigned int offset = 0;
-	for (int i = 0; i < elements.size(); i++)
-	{
-		elements[i].offset = offset;
-		offset += elements[i].size;
-		stride += elements[i].size;
-	}
+    RV_ASSERT(elements.size() != 0, "");
+    unsigned int offset = 0;
+    stride = 0;
+    for (int i = 0; i < elements.size(); i++)
+    {
+        elements[i].offset = offset;
+        offset += elements[i].size;
+        stride += elements[i].size;
+    }
 };
 
-Vbo::~Vbo()
+BufferLayout::BufferLayout(std::vector<BufferElement> inLayout)
 {
-	std::cout << "dodaj destruktor koji valja za VertexBuffer, obican, scope based nece radit, reference counting?, dynamicaly alocated?\n";
+    for(int i=0; i < inLayout.size(); i++)
+    {
+        elements.push_back(inLayout[i]);
+    }
 }
 
-void Vbo::bind()
+
+GBufferObject::~GBufferObject()
 {
-	glBindBuffer(GL_ARRAY_BUFFER, ID);
+    glDeleteBuffers(1, &id);
 }
 
-void Vbo::init(void* vertices, unsigned int size, unsigned char typeOfDraw1)
-{	
+void GBufferObject::init()
+{
+    glGenBuffers(1, &id);
+}
 
-    const int INT_MAX = 2147483646; //quick change
-    RV_ASSERT(GL_STATIC_DRAW < INT_MAX - 1 and GL_STATIC_DRAW > -INT_MAX + 1, "");
-    RV_ASSERT(GL_DYNAMIC_DRAW < INT_MAX - 1 and GL_DYNAMIC_DRAW > -INT_MAX + 1, "");
-    if (typeOfDraw1 == 0) {
-        typeOfDraw = GL_STATIC_DRAW;
-    }
-    else if (typeOfDraw1 == 1) {
-        typeOfDraw = GL_DYNAMIC_DRAW;
-    }
-    else {
-        RV_ASSERT(false, "ERROR RENDERER: Draw type unknown");
-    }
-    count = size / layout.stride; ///prvo stavi layout vbo, pa onda setUp
-    glGenBuffers(1, &ID);
-    glBindBuffer(GL_ARRAY_BUFFER, ID);
-    glBufferData(GL_ARRAY_BUFFER, size, vertices, typeOfDraw);
+void GBufferObject::bind() const
+{
+    cout << "bufferType: " << bufferType << endl;
+    glBindBuffer(bufferType, id);
+}
+
+void GBufferObject::unbind() const
+{
+    glBindBuffer(bufferType, 0);
+}
+
+
+void GBufferObject::load(void* pData, unsigned int size)
+{
+    glBindBuffer(bufferType, id);
+    glBufferData(bufferType, size, pData, GL_STATIC_DRAW);
 }

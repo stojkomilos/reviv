@@ -3,6 +3,14 @@
 #include<glad/glad.h>
 
 #include"rv_pch.hpp"
+#include"core/mat.h"
+
+struct Vertex
+{
+    Vec3f position;
+    Vec3f normal;
+    Vec2f texCoords;
+};
 
 enum class ShaderDataType
 {
@@ -11,40 +19,58 @@ enum class ShaderDataType
 
 struct BufferElement 
 {
-	BufferElement(ShaderDataType type, std::string name, bool normalized);
-	BufferElement();
-	std::string name;
-	ShaderDataType type;
-	unsigned int size;
-	unsigned int offset;
-	bool normalized;
-	unsigned int getElementCount();
-	unsigned int shaderDataTypeToOpenGLBaseType(ShaderDataType type);
+    BufferElement() = delete;
+    BufferElement(ShaderDataType type, std::string name, bool normalized);
+
+    unsigned int getElementCount() const;
+    unsigned int shaderDataTypeToOpenGLBaseType(ShaderDataType type);
+
+    std::string name;
+    ShaderDataType type;
+    unsigned int size;
+    unsigned int offset;
+    bool normalized;
 };
 
 class BufferLayout
 {
 public:
-	BufferLayout() = default;
-	BufferLayout(std::vector<BufferElement> elements);
-	void calculateOffsetsAndStride();
-	std::vector<BufferElement> elements;
-	unsigned int stride;
+    BufferLayout() = default;
+    BufferLayout(std::vector<BufferElement> inLayout);
+    void init();
+    std::vector<BufferElement> elements;
+    unsigned int stride;
 };
 
-
-class Vbo
+class GBufferObject
 {
 public:
-	Vbo() = default;
-	~Vbo();
-	void bind();
-	void unbind();
-	void init(void* vertices, unsigned int size, unsigned char typeOfDraw1);
-	unsigned int ID;
-	int typeOfDraw;
-	unsigned int count;
-	BufferLayout layout;
+    GBufferObject() = delete;
+    virtual ~GBufferObject();
+    void bind() const;
+    void unbind() const;
+    void init();
+    void load(void* pData, unsigned int size);
+
+    GLenum bufferType;
+    GLuint id;
+
+protected:
+    GBufferObject(int bufferType)
+        : bufferType(bufferType) { RV_ASSERT(bufferType == GL_ARRAY_BUFFER or bufferType == GL_ELEMENT_ARRAY_BUFFER, "buffer type not recognized"); }
+};
+
+class Vbo : public GBufferObject // VertexBufferObject
+{
+public:
+    Vbo() : GBufferObject(GL_ARRAY_BUFFER) {}
+    BufferLayout layout;
+};
+
+class Ebo : public GBufferObject // ElementBufferObject
+{
+public:
+    Ebo() : GBufferObject(GL_ELEMENT_ARRAY_BUFFER) {}
 };
 
 unsigned int shaderDataTypeToOpenGLBaseType(ShaderDataType type);

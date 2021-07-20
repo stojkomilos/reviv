@@ -1,5 +1,10 @@
 #include"material.h"
 
+void Material::setShader(Shader* inShader)
+{
+    pShader = inShader;
+}
+
 void Material::bind() const
 {
     pShader->bind();

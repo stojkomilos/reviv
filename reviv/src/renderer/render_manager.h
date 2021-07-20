@@ -47,7 +47,9 @@ private:
     void iOnUpdate(const WindowData& windowData);
     void iShutdown();
 
-    void submit(Material* pMaterial, const Mat4& transform, const Vao& vao);
+    //void submit(const Model& model, const Mat4& transform, Material* pMaterial);
+    void submit(const Model& model, const Mat4& transform);
+
     void beginScene(const WindowData& windowData);
     void endScene();
 };

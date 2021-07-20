@@ -137,9 +137,9 @@ void Window::init(bool enableVSync, bool isFullscreen, unsigned int windowWidth,
         RV_ASSERT(false, "Failed to initialize GLAD");
     }
 
-    cout << "Vendor: " << glGetString(GL_VENDOR) << endl;
-    cout << "Renderer: " << glGetString(GL_RENDERER) << endl;
-    cout << "Version: " << glGetString(GL_VERSION) << endl;
+    //cout << "Vendor: " << glGetString(GL_VENDOR) << endl;
+    //cout << "Renderer: " << glGetString(GL_RENDERER) << endl;
+    //cout << "Version: " << glGetString(GL_VERSION) << endl;
 
     glfwSetFramebufferSizeCallback(pWindow, framebuffer_size_callback);
 
