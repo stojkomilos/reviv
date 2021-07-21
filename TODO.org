@@ -2,7 +2,8 @@
 
 order: input->update->display
 
-delete extern shit
+vidi event system
+
 
 vbo layout stavi u vbo
 plan za danas:

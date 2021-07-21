@@ -26,14 +26,14 @@ void ModelLoader::load(const std::string& filePath)
 
 void ModelLoader::processNode(aiNode* node)
 {
-    for(int i=0; i < node->mNumMeshes; i++)
+    for(unsigned int i=0; i < node->mNumMeshes; i++)
     {
         meshes.emplaceBack();
         //m_Scene->mNumMeshes
         addMesh(m_Scene->mMeshes[node->mMeshes[i]], &meshes[meshes.size() - 1]);
         //loadMaterial(m_Scene->mMeshes[node->mMeshes[i]]); TODO:
     }
-    for(int i=0; i < node->mNumChildren; i++)
+    for(unsigned int i=0; i < node->mNumChildren; i++)
     {
         processNode(node->mChildren[i]);
     }
@@ -46,7 +46,7 @@ void ModelLoader::addMesh(aiMesh* loaderMesh, Mesh* pMesh)
     pMesh->m_Vertices.reserve(loaderMesh->mNumVertices);
 
     int nIndices = 0;
-    for(int i=0; i < loaderMesh->mNumFaces; i++)
+    for(unsigned int i=0; i < loaderMesh->mNumFaces; i++)
     {
         aiFace face = loaderMesh->mFaces[i];
         nIndices += face.mNumIndices;
@@ -54,7 +54,7 @@ void ModelLoader::addMesh(aiMesh* loaderMesh, Mesh* pMesh)
 
     pMesh->m_Indices.reserve(nIndices);
 
-    for(int i=0; i < loaderMesh->mNumVertices; i++)
+    for(unsigned int i=0; i < loaderMesh->mNumVertices; i++)
     {
         vertex.position.x = loaderMesh->mVertices[i].x;
         vertex.position.y = loaderMesh->mVertices[i].y;
@@ -77,10 +77,10 @@ void ModelLoader::addMesh(aiMesh* loaderMesh, Mesh* pMesh)
         pMesh->m_Vertices.pushBack(vertex);
     }
 
-    for(int i=0; i < loaderMesh->mNumFaces; i++)
+    for(unsigned int i=0; i < loaderMesh->mNumFaces; i++)
     {
         aiFace face = loaderMesh->mFaces[i];
-        for(int j=0; j<face.mNumIndices; j++)
+        for(unsigned int j=0; j<face.mNumIndices; j++)
         {
             pMesh->m_Indices.pushBack(face.mIndices[j]);
         }

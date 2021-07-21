@@ -86,7 +86,6 @@ BufferLayout::BufferLayout(stls::StableVector<BufferElement> inLayout)
     }
 }
 
-
 GBufferObject::~GBufferObject()
 {
     glDeleteBuffers(1, &id);

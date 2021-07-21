@@ -45,7 +45,11 @@ void RenderManager::submit(const Model& model, const Mat4& transform)
     RV_ASSERT(model.pMaterials.size() == model.pMeshes.size(), "");
     for(int i=0; i<model.pMeshes.size(); i++)
     {
+        //TODO: set environment uniforms
+        model.pMaterials[i]->bindShader();
+        model.pMaterials[i]->set("m_Model", transform);
         model.pMaterials[i]->bind();
+
         model.pMeshes[i]->vao.bind();
 
         cout << "Stanic material: ";

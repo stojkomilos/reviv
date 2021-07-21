@@ -16,7 +16,7 @@ public:
     Event() = delete;
     Event(const Event&) = delete;
     Event& operator=(const Event&) = delete;
-    ~Event() = default;
+    virtual ~Event() = default;
 
     virtual std::string getName() = 0;
 
@@ -34,6 +34,8 @@ public:
     EventWindowClose()
         :   Event(EventTypeWindowClose)
     {}
+    virtual ~EventWindowClose() = default;
+
     virtual std::string getName() override { return "EventWindowClose"; }
 };
 
@@ -43,6 +45,8 @@ public:
     EventWindowResize(int width, int height)
         :   Event(EventTypeWindowResize), m_Width(width), m_Height(height)
     {}
+    virtual ~EventWindowResize() = default;
+
     int m_Width;
     int m_Height;
 

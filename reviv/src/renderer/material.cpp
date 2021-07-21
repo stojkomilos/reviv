@@ -2,8 +2,15 @@
 
 void Material::setShader(Shader* inShader)
 {
+    RV_ASSERT(pShader == nullptr, "");
     pShader = inShader;
 }
+void Material::bindShader()
+{
+    RV_ASSERT(pShader != nullptr, "");
+    pShader->bind();
+}
+
 
 void Material::bind() const
 {

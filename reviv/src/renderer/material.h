@@ -72,6 +72,7 @@ public:                                             //TODO: destruktor, ima dost
         : pShader(pShader) { map.clear(); name.clear(); }
 
     void setShader(Shader* inShader);
+    void bindShader();
     void bind() const;
     void set(const std::string& uniformName, const Mat4& matrix);
     void set(const std::string& uniformName, const Vec3f& a);

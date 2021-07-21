@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.18)
 
 project(reviv)
 
-#set(GLFW_BUILD_DOCS OFF CACHE BOOL "Glfw: build docs" FORCE)
-#set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "Glfw: build examples" FORCE)
-#set(GLFW_BUILD_TESTS OFF OFF CACHE BOOL "Glfw: build tests" FORCE)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 
 # Glfw settings
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "Glfw: build docs" FORCE)
@@ -24,13 +24,22 @@ if(DEFINED ENV{WAYLAND_DISPLAY})
 endif()
 
 # Add all the translation units to the project
-file(GLOB_RECURSE SRC_FILES "src/*.c"
-    "src/*.cpp"
+file(GLOB_RECURSE SRC_FILES_ALL "src/*.cpp"
     "vendor/Glad/src/glad.c"
     "vendor/stb_image/stb_image.cpp")
 
+file(GLOB_RECURSE SRC_FILES_DEPENDENCIES
+    "vendor/Glad/src/glad.c"
+    "vendor/stb_image/stb_image.cpp")
+set_source_files_properties(SRC_FILES_DEPENDENCIES PROPERTIES COMPILE_FLAGS -Wno-Wall -Wno-Wextra -Wno-Wdouble-promotion )
+
 # When compiling this project, compile it as a static library
-add_library(reviv STATIC ${SRC_FILES})
+add_library(reviv STATIC ${SRC_FILES_ALL})
+
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Wall -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wpedantic -Wnull-dereference -Wdouble-promotion -Wformat=2 -g")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wpedantic -Wnull-dereference -Wdouble-promotion -Wformat=2 -g")
+# -Wshadow -Wunused -Wold-style-cast -Wconversion -Wsign-conversion 
+# -E -> stop after preprocessor runs
 
 # Add other cmake projects to this one
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/GLFW)
