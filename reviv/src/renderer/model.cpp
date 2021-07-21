@@ -19,9 +19,12 @@ Model::Model(ModelLoader* pModelLoader, Material* pMaterial)
 
     m_ModelLoader = pModelLoader;
 
+    pMeshes.reserve(pModelLoader->meshes.size());
+    pMaterials.reserve(pModelLoader->meshes.size());
+
     for(int i=0; i < pModelLoader->meshes.size(); i++)
     {
-        pMeshes.push_back(&pModelLoader->meshes[i]);
-        pMaterials.push_back(pMaterial);
+        pMeshes.pushBack(&pModelLoader->meshes[i]);
+        pMaterials.pushBack(pMaterial);
     }
 }

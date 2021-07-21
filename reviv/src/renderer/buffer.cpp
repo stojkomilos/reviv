@@ -78,11 +78,11 @@ void BufferLayout::init()
     }
 };
 
-BufferLayout::BufferLayout(std::vector<BufferElement> inLayout)
+BufferLayout::BufferLayout(stls::StableVector<BufferElement> inLayout)
 {
     for(int i=0; i < inLayout.size(); i++)
     {
-        elements.push_back(inLayout[i]);
+        elements.pushBack(inLayout[i]);
     }
 }
 
@@ -111,6 +111,8 @@ void GBufferObject::unbind() const
 
 void GBufferObject::load(void* pData, unsigned int size)
 {
-    glBindBuffer(bufferType, id);
+    //glBindBuffer(bufferType, id);
+    RV_ASSERT(pParentVao != nullptr, "For safety, can't load data into buffer if it does not belong to a Vao object");
+    cout << "loading size: " << size << "pointer: " << pData << endl;
     glBufferData(bufferType, size, pData, GL_STATIC_DRAW);
 }

@@ -1,8 +1,5 @@
 #include "render_command.h"
 
-extern void* gData1;
-extern void* gData2;
-
 void logMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParams);
 
 void RenderCommand::iDrawArrays(const Mesh& mesh)
@@ -19,16 +16,15 @@ void RenderCommand::iDrawElements(const Mesh& mesh)
         //cout << "i: " << i << "ind: " << mesh.m_Indices[i] << endl;
     }
 
-    auto* jedan = (std::vector<Vertex>*) gData1;
-    auto* dva = (std::vector<unsigned int>*) gData2;
+    //cout << "INDICES:-----------" << endl;
+    //for(int i=0; i<((std::vector<unsigned int>*) gVektor2)->size(); i++)
+    //{
+    //    //if(i % 100 == 0)
+    //        cout << *((unsigned int*) gVertex2 + i) << endl;
+    //        RV_ASSERT(*((unsigned int*) gVertex2 + i) < ((std::vector<unsigned int>*) gVektor2)->size(), "fuck");
+    //}
 
-    for(int i=0; i < jedan->size(); i++)
-        log((*jedan)[i]);
-    for(int i=0; i < dva->size(); i++)
-        log((*dva)[i]);
-    cout << "adsf" << endl;
-
-    glDrawElements(GL_TRIANGLES, mesh.m_Indices.size(), GL_UNSIGNED_INT, (void*)0);
+    glDrawElements(GL_TRIANGLES, mesh.m_Indices.size(), GL_UNSIGNED_INT, 0);
 
 }
 

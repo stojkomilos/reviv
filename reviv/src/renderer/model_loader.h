@@ -22,7 +22,7 @@ public:
 
     const aiScene* m_Scene;
 
-    std::vector<Mesh> meshes;
+    stls::StableVector<Mesh> meshes;
 
     bool isLoaded = false;
 };

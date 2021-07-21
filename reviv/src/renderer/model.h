@@ -4,6 +4,8 @@
 #include"material.h"
 #include"model_loader.h"
 
+#include"stls/stable_vector.h"
+
 class Model
 {
 public:
@@ -12,8 +14,8 @@ public:
 
     ModelLoader* m_ModelLoader;
 
-    std::vector<Mesh*> pMeshes;
-    std::vector<Material*> pMaterials;
+    stls::StableVector<Mesh*> pMeshes;
+    stls::StableVector<Material*> pMaterials;
 };
 
 void log(const Model& model);

@@ -14,9 +14,15 @@ class Mesh
 {
 public:
     Mesh() = default;
+    ~Mesh() = default;
+    Mesh(const Mesh&) = default; //TODO: obrisati
 
-    std::vector<Vertex> m_Vertices;
-    std::vector<unsigned int> m_Indices;
+    Mesh(Mesh&&) = default;
+
+    Mesh& operator=(const Mesh&) = delete;
+
+    stls::StableVector<Vertex> m_Vertices;
+    stls::StableVector<unsigned int> m_Indices;
     Vao vao;
 };
 

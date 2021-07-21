@@ -19,7 +19,7 @@ enum class ShaderDataType
 
 struct BufferElement 
 {
-    BufferElement() = delete;
+    BufferElement() = default;
     BufferElement(ShaderDataType type, std::string name, bool normalized);
 
     unsigned int getElementCount() const;
@@ -36,17 +36,23 @@ class BufferLayout
 {
 public:
     BufferLayout() = default;
-    BufferLayout(std::vector<BufferElement> inLayout);
+    BufferLayout(stls::StableVector<BufferElement> inLayout);
     void init();
-    std::vector<BufferElement> elements;
-    unsigned int stride;
+    stls::StableVector<BufferElement> elements;
+    int stride = -1;
 };
+
+class Vao;
 
 class GBufferObject
 {
 public:
-    GBufferObject() = delete;
+    GBufferObject() = default; //TODO: delete
+    GBufferObject(const GBufferObject&) = default; //TODO: delete
     virtual ~GBufferObject();
+
+    GBufferObject& operator=(const GBufferObject&) = default; //TODO: delete
+
     void bind() const;
     void unbind() const;
     void init();
@@ -54,6 +60,8 @@ public:
 
     GLenum bufferType;
     GLuint id;
+
+    Vao* pParentVao = nullptr;
 
 protected:
     GBufferObject(int bufferType)

@@ -8,7 +8,7 @@
 class Vao // VertexArrayObject
 {
 public:
-    Vao() = default;
+    Vao() : vertexBuffers(1), elementBuffers(1) {}
     ~Vao();
 
     void init();
@@ -19,10 +19,10 @@ public:
 
     GLuint id;
 
-    void addVbo(const Vbo& vbo);
-    void addEbo(const Ebo& ebo);
-    std::vector<Vbo> vertexBuffers;
-    std::vector<Ebo> elementBuffers;
+    void addVbo(const stls::StableVector<BufferElement>& inLayout);
+    void addEbo();
+    stls::StableVector<Vbo> vertexBuffers;
+    stls::StableVector<Ebo> elementBuffers;
 };
 
 void log(const Vao& vao);

@@ -12,10 +12,9 @@ void Vao::init()
     glGenVertexArrays(1, &id);
 }
 
-
 Vao::~Vao()
 {
-    glDeleteBuffers(1, &id);
+    glDeleteVertexArrays(1, &id);
 }
 
 void Vao::bind() const
@@ -28,21 +27,23 @@ void Vao::unbind() const
     glBindVertexArray(0);
 }
 
-
-void Vao::addVbo(const Vbo& vbo)
+void Vao::addVbo(const stls::StableVector<BufferElement>& inLayout)
 {
-    glBindVertexArray(id);
+    //glBindVertexArray(id);
 
-    vertexBuffers.push_back(vbo);
-
+    vertexBuffers.emplaceBack();
     Vbo* pVbo = &vertexBuffers[vertexBuffers.size()-1];
+    pVbo->layout.elements = inLayout;
+    pVbo->layout.init();
+    pVbo->pParentVao = this;
+
+    pVbo->init();
     pVbo->bind();
 
-    RV_ASSERT(pVbo->layout.elements.size() != 0, "layout not added to the vbo")
+    RV_ASSERT(pVbo->layout.elements.size() != 0, "invalid layout")
 
     for (int i = 0; i < pVbo->layout.elements.size(); i++)
     {
-        //void* a = (void*)pVbo->layout.elements[i].offset;
         glVertexAttribPointer(i,
             pVbo->layout.elements[i].getElementCount(),
             shaderDataTypeToOpenGLBaseType(pVbo->layout.elements[i].type),
@@ -54,9 +55,11 @@ void Vao::addVbo(const Vbo& vbo)
     }
 }
 
-void Vao::addEbo(const Ebo& ebo)
+void Vao::addEbo()
 {
-    glBindVertexArray(id);
-    elementBuffers.push_back(ebo);
-    elementBuffers[elementBuffers.size()-1].bind();
+    //glBindVertexArray(id);
+    elementBuffers.emplaceBack();
+    Ebo* pEbo = &elementBuffers[elementBuffers.size() - 1];
+    pEbo->pParentVao = this;
+    pEbo->init();
 }

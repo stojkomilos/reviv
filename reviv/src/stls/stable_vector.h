@@ -15,6 +15,12 @@ public:
     {
     }
 
+    StableVectorIterator operator++()
+    {
+        ptr++;
+        return *this;
+    }
+
     StableVectorIterator operator++(int)
     {
         StableVectorIterator result = *this;
@@ -55,12 +61,13 @@ namespace stls
         using ValueType = T;
         using Iterator = StableVectorIterator<StableVector<T>>;
 
+        StableVector();
         StableVector(unsigned int capacity);
-
-        StableVector() = delete;
-        StableVector(const StableVector&) = default; //TODO: delete
-        StableVector& operator=(const StableVector &t) = default; //TODO: delete
+        StableVector(std::vector<T> inVector);
+        StableVector(const StableVector&) = delete; //TODO: delete
         ~StableVector();
+
+        StableVector& operator=(const StableVector &other);
         T& operator [] (int index);
         const T& operator [] (int index) const;
         
@@ -70,6 +77,8 @@ namespace stls
         void emplaceBack(Args&&... args);
 
         unsigned int size() const;
+        void reserve(unsigned int size);
+        T& back();
 
         Iterator begin() const
         {
@@ -80,11 +89,11 @@ namespace stls
             return Iterator((T*)ptr + currentSize); //TODO, da li ovo valja?
         }
 
-    unsigned int capacity;
+    unsigned int capacity=0;
     unsigned int currentSize;
 
     private:
-        void* ptr;
+        void* ptr = nullptr;
 //        Iterator m_begin;
 //        Iterator m_end;
     };
@@ -93,12 +102,31 @@ namespace stls
 
 namespace stls
 {
+    template<class T>
+    StableVector<T>::StableVector()
+        : capacity(0), currentSize(0)
+    { }
 
     template<class T>
     StableVector<T>::StableVector(unsigned int capacity)
         : capacity(capacity), currentSize(0)
     {
         ptr = new T[capacity]();
+    }
+
+    template<class T>
+    StableVector<T>::StableVector(std::vector<T> inVector)
+    {
+        cout << "vekSize: " << inVector.size() << endl;
+        
+        reserve(inVector.capacity());
+        currentSize = inVector.size();
+
+        cout << "currentSize: " << currentSize << " capacity: " << capacity << endl;
+        for(int i=0; i<inVector.size(); i++)
+        {
+            (*this)[i] = inVector[i];
+        }
     }
 
     template<class T>
@@ -119,6 +147,19 @@ namespace stls
     {
         assert(index < currentSize and index >= 0);
         return *((T*)ptr + index);
+    }
+
+    template<class T>
+    StableVector<T>& StableVector<T>::operator=(const StableVector &other)
+    {
+        assert(this->capacity == 0 and this->ptr == nullptr);
+        this->reserve(other.capacity); 
+        this->currentSize = other.currentSize;
+
+        for(int i=0; i < other.size(); i++)
+        {
+            (*this)[i] = other[i];
+        }
     }
 
     template<class T>
@@ -147,5 +188,19 @@ namespace stls
     unsigned int StableVector<T>::size() const
     {
         return currentSize;
+    }
+
+    template<class T>
+    void StableVector<T>::reserve(unsigned int size)
+    {
+        assert(capacity == 0 and ptr == nullptr); // reserve can be used only once on StableVector
+        capacity = size;
+        ptr = new T[capacity]();
+    }
+
+    template<class T>
+    T& StableVector<T>::back()
+    {
+        return (*this)[currentSize - 1];
     }
 }

@@ -23,3 +23,5 @@
 #include<cmath>
 
 #include"core/base.h"
+
+#include"stls/stable_vector.h"

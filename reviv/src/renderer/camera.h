@@ -20,7 +20,7 @@ public:
 
 	Mat4 viewMatrix, projectionMatrix;
 
-    float renderDistance = 1000;
+    float renderDistance = 10000;
 	float leftPlane, rightPlane, bottomPlane, topPlane, nearPlane, farPlane;
 	float ratio, fov;
 };

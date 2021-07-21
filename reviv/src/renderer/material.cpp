@@ -35,7 +35,7 @@ void Material::bind() const
                 RV_ASSERT(false, "ERROR: Specified uniform data type not found");
         }
     }
-    //pShader->bind(); //TODO ovo se mozda moze ukloniti
+    pShader->bind(); //TODO ovo se mozda moze ukloniti
 }
 
 void Material::set(const std::string& uniformName, const Mat4& matrix)

@@ -2,6 +2,8 @@
 
 order: input->update->display
 
+delete extern shit
+
 vbo layout stavi u vbo
 plan za danas:
     1. assimp fast as fuck
