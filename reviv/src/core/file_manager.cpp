@@ -15,7 +15,7 @@
 //		gPhysicsManager.numberOfTerrainCubesOnStart = gPhysicsManager.numberOfTerrainCubesCurrently = n;
 //		gPhysicsManager.worldIsLoadedFromFile = true;
 //		gPhysicsManager.kocke = new Entity[gPhysicsManager.numberOfTerrainCubesCurrently + 10]; ///td: - 1
-//		assert(gPhysicsManager.mapSizeX % 2 == 0 and gPhysicsManager.mapSizeZ % 2 == 0);
+//		assert(gPhysicsManager.mapSizeX % 2 == 0 && gPhysicsManager.mapSizeZ % 2 == 0);
 //		assert(gPhysicsManager.mapSizeX == gPhysicsManager.mapSizeZ);
 //
 //		gPhysicsManager.blockMap.setUp(x, y, z);

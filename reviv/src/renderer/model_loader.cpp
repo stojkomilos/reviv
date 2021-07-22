@@ -12,7 +12,7 @@ void ModelLoader::load(const std::string& filePath)
     //                      aiProcess_SplitLargeMeshes
     //                      aiProcess_OptimizeMeshes
 
-    RV_ASSERT(m_Scene and !(m_Scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) and m_Scene->mRootNode, "assimp error (wrong file name?)");
+    RV_ASSERT(m_Scene && !(m_Scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) && m_Scene->mRootNode, "assimp error (wrong file name?)");
 
     std::string directory = filePath.substr(0, filePath.find_last_of('/'));
 
@@ -116,9 +116,9 @@ void Mesh::init()
     vao.unbind(); //TODO: da li ovo treba?
 
     RV_ASSERT(sizeof(Vertex) == 32, "");
-    RV_ASSERT(sizeof(char) == 1 and CHAR_BIT == 8, "something is very wrong");
-    RV_ASSERT(GL_STATIC_DRAW < INT_MAX and GL_STATIC_DRAW > INT_MIN, "");
-    RV_ASSERT(GL_DYNAMIC_DRAW < INT_MAX and GL_DYNAMIC_DRAW > INT_MIN, "");
+    RV_ASSERT(sizeof(char) == 1 && CHAR_BIT == 8, "something is very wrong");
+    RV_ASSERT(GL_STATIC_DRAW < INT_MAX && GL_STATIC_DRAW > INT_MIN, "");
+    RV_ASSERT(GL_DYNAMIC_DRAW < INT_MAX && GL_DYNAMIC_DRAW > INT_MIN, "");
     RV_ASSERT(sizeof(float) * 3 == sizeof(Vec3f), "");
 
 }

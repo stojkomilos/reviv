@@ -10,7 +10,7 @@ void Input::iOnUpdate()
 bool Input::iIsKeyPressed(int keycode)
 {
     unsigned char status = glfwGetKey(Application::getInstance()->getWindow()->pWindow, keycode);
-    return status == GLFW_PRESS or status == GLFW_REPEAT;
+    return status == GLFW_PRESS || status == GLFW_REPEAT;
 }
 
 bool Input::iIsMouseButtonPressed(int mousecode)
@@ -26,7 +26,7 @@ Vec2f Input::iGetMousePosition()
     return { (float)x, (float)y };
 }
 
-void Input::iUseRawMouseMotion() // Usefull for 3D fps camera controllers. Disabled mouse acceleration and scaling from the desktop
+void Input::iUseRawMouseMotion() // Usefull for 3D fps camera controllers. Disabled mouse acceleration && scaling from the desktop
 {                                           // Requirements: disabled cursor
 
     RV_ASSERT(glfwRawMouseMotionSupported(), "raw mouse motion not supported, maybe you didn't disable the cursor beforehand?");
@@ -45,7 +45,7 @@ void Input::iHideCursor()
 
 void Input::iUseNormalCursor()
 {
-    glfwSetInputMode(Application::getInstance()->getWindow()->pWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL); // Reverts the effects of GLFW_CURSOR_DISABLED and GLFW_CURSOR_HIDDEN
+    glfwSetInputMode(Application::getInstance()->getWindow()->pWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL); // Reverts the effects of GLFW_CURSOR_DISABLED && GLFW_CURSOR_HIDDEN
 }
 
 Vec2f Input::iGetCursorPosition()
@@ -119,7 +119,7 @@ void Input::doPlayerControllerPolling()
     if(isKeyPressed(RV_KEY_A))
         moveDirection += -rightDirection;
 
-    if(isKeyPressed(RV_KEY_W) or isKeyPressed(RV_KEY_A) or isKeyPressed(RV_KEY_S) or isKeyPressed(RV_KEY_D))
+    if(isKeyPressed(RV_KEY_W) || isKeyPressed(RV_KEY_A) || isKeyPressed(RV_KEY_S) || isKeyPressed(RV_KEY_D))
     {
         *playerPos += normalise(moveDirection) * speed * Time::getDelta();
     }

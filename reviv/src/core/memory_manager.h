@@ -69,7 +69,7 @@ T* MemoryManager::Array2D<T>::adr(size_t a, size_t b) {
 
 template <typename T>
 int MemoryManager::Array2D<T>::index(size_t a, size_t b) {
-	if (a >= height or b >= width) {
+	if (a >= height || b >= width) {
 		assert(false);
 		std::cout << "ERROR IN HEAP 2D INT ARRAY\n";
 	}
@@ -116,7 +116,7 @@ T* MemoryManager::Array3D<T>::adr(size_t a, size_t b, size_t c) {
 
 template<typename T>
 int MemoryManager::Array3D<T>::index(size_t a, size_t b, size_t c) {
-	if (a >= depth or b >= height or c >= width) {
+	if (a >= depth || b >= height || c >= width) {
 		assert(false);
 		std::cout << "ERROR IN HEAP 2D INT ARRAY\n";
 	}

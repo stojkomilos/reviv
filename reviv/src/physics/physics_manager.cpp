@@ -19,11 +19,11 @@ void PhysicsManager::iInit()
 
 }
 
-void PhysicsManager::updateTransforms() // updates the transforms of all the entities according to the positions and stuff
+void PhysicsManager::updateTransforms() // updates the transforms of all the entities according to the positions && stuff
 {
     for(auto itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
     {
-        if(itEntity->has<TransformComponent>() and itEntity->has<PositionComponent>())
+        if(itEntity->has<TransformComponent>() && itEntity->has<PositionComponent>())
         {
             auto* pTransform = &itEntity->get<TransformComponent>()->transform;
             //cout << "Updating tranform for entity: " << itEntity->entityName << endl;
@@ -42,9 +42,9 @@ void PhysicsManager::alignPositionAndRotation(const Entity& parent, Entity* chil
 {
 
     assert(parent.has<PositionComponent>() // ERROR: Required components are not present in entity\n
-        and parent.has<RotationComponent>()
-        and child->has<PositionComponent>()
-        and child->has<RotationComponent>()); 
+        && parent.has<RotationComponent>()
+        && child->has<PositionComponent>()
+        && child->has<RotationComponent>()); 
 
     auto* parentPosition = &parent.get<PositionComponent>()->position;
     auto* parentRotation = &parent.get<RotationComponent>()->rotation;

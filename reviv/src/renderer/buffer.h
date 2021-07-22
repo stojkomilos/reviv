@@ -65,7 +65,7 @@ public:
 
 protected:
     GBufferObject(int bufferType)
-        : bufferType(bufferType) { RV_ASSERT(bufferType == GL_ARRAY_BUFFER or bufferType == GL_ELEMENT_ARRAY_BUFFER, "buffer type not recognized"); }
+        : bufferType(bufferType) { RV_ASSERT(bufferType == GL_ARRAY_BUFFER || bufferType == GL_ELEMENT_ARRAY_BUFFER, "buffer type not recognized"); }
 };
 
 class Vbo : public GBufferObject // VertexBufferObject

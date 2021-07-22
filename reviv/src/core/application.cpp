@@ -69,11 +69,11 @@ Window* Application::getWindow()
 
 void Application::onEventWindowClose(Event* event)
 {
-    RV_ASSERT(event->m_Type == EventType::EventTypeWindowClose and event->getName() == "EventWindowClose", "Incorrect event type");
+    RV_ASSERT(event->m_Type == EventType::EventTypeWindowClose && event->getName() == "EventWindowClose", "Incorrect event type");
     m_IsRunning = false;
 }
 
 void Application::onEventWindowResize(Event* event)
 {
-    RV_ASSERT(event->m_Type == EventType::EventTypeWindowResize and event->getName() == "EventWindowResize", "Incorrect event type");
+    RV_ASSERT(event->m_Type == EventType::EventTypeWindowResize && event->getName() == "EventWindowResize", "Incorrect event type");
 }

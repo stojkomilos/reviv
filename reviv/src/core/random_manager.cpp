@@ -17,7 +17,7 @@ void RandomManager::setUpPerlin(int perlinMapSize) {
 	
 	for (int i = 0; i < sizeOfPerlinMap; i++) {
 		for (int j = 0; j < sizeOfPerlinMap; j++) {
-			assert(i < 10000 and j < 10000);///perlin map size trenutno ide do 10000, ali se moze povecati
+			assert(i < 10000 && j < 10000);///perlin map size trenutno ide do 10000, ali se moze povecati
 			float angle = rand() / (RAND_MAX * 0.5f) * 2.f * 3.14f;
 			gridGradient.adr(i, j)->x = cos(angle);
 			gridGradient.adr(i, j)->y = sin(angle);
@@ -40,7 +40,7 @@ float RandomManager::lerp(float a, float b, float weightA) {
 }
 float RandomManager::perlin(Vec2f position) {
 
-	if (position.x - 1.01f > sizeOfPerlinMap or position.y - 1.01f > sizeOfPerlinMap) {
+	if (position.x - 1.01f > sizeOfPerlinMap || position.y - 1.01f > sizeOfPerlinMap) {
 		std::cout << "ERROR: WORLD TRIED TO GENERATE OUTSIDE OF THE PERLIN MAP ";
 		position.log(" ");
 		return 0;

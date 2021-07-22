@@ -11,8 +11,8 @@ void RenderManager::iOnUpdate(const WindowData& windowData)
     {
         if(itEntity->valid)
         {
-            //if(itEntity->has<MaterialComponent>() and itEntity->has<TransformComponent>() and itEntity->has<ModelComponent>())
-            if(itEntity->has<ModelComponent>() and itEntity->has<TransformComponent>())
+            //if(itEntity->has<MaterialComponent>() && itEntity->has<TransformComponent>() && itEntity->has<ModelComponent>())
+            if(itEntity->has<ModelComponent>() && itEntity->has<TransformComponent>())
             {
                 cout << "Rendering entity: " << itEntity->entityName << endl;
 
@@ -66,8 +66,8 @@ void RenderManager::beginScene(const WindowData& windowData)
     Camera* camera = &Scene::getCameraEntity()->get<CameraComponent>()->camera;
 
     RV_ASSERT(Scene::getCameraEntity()->has<CameraComponent>()
-        and Scene::getCameraEntity()->has<PositionComponent>()
-        and Scene::getCameraEntity()->has<RotationComponent>(),
+        && Scene::getCameraEntity()->has<PositionComponent>()
+        && Scene::getCameraEntity()->has<RotationComponent>(),
         "submitted entity is supposed to be a camera, but does NOT have required components");
 
     camera->recalculateViewMatrix(

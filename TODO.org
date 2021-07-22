@@ -7,6 +7,8 @@ link time optimization?
 merge onaj standard settings sa obicnim?
 cross compile?
 
+ygdrassil msvc compile flags and general settings
+
 flags to try: -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl
 
 obrisi onaj ./cmake folder mozda? cross compile

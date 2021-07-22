@@ -138,21 +138,21 @@ namespace stls
     template<class T>
     T& StableVector<T>::operator [] (int index)
     {
-        assert(index < currentSize and index >= 0);
+        assert(index < currentSize && index >= 0);
         return *((T*)ptr + index);
     }
 
     template<class T>
     const T& StableVector<T>::operator [] (int index) const
     {
-        assert(index < currentSize and index >= 0);
+        assert(index < currentSize && index >= 0);
         return *((T*)ptr + index);
     }
 
     template<class T>
     StableVector<T>& StableVector<T>::operator=(const StableVector &other)
     {
-        assert(this->capacity == 0 and this->ptr == nullptr);
+        assert(this->capacity == 0 && this->ptr == nullptr);
         this->reserve(other.capacity); 
         this->currentSize = other.currentSize;
 
@@ -195,7 +195,7 @@ namespace stls
     template<class T>
     void StableVector<T>::reserve(unsigned int size)
     {
-        assert(capacity == 0 and ptr == nullptr); // reserve can be used only once on StableVector
+        assert(capacity == 0 && ptr == nullptr); // reserve can be used only once on StableVector
         capacity = size;
         ptr = new T[capacity]();
     }
