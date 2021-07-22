@@ -2,7 +2,16 @@
 
 order: input->update->display
 
-vidi event system
+windows MSVC specific stuff
+link time optimization?
+merge onaj standard settings sa obicnim?
+cross compile?
+
+flags to try: -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl
+
+obrisi onaj ./cmake folder mozda? cross compile
+
+detect PLATFORM and include based on that
 
 -g
 
