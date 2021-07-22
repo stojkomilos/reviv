@@ -42,7 +42,7 @@ add_library(reviv STATIC ${SRC_FILES_ALL})
 #set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Wall -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wnull-dereference -Wdouble-promotion -Wformat=2 -g")
 
 if(MSVC)
-    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-W4 -permissive")
+    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "/W4 /permissive-")
 else()
     set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Wall -g -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wno-unused-variable -Wno-unused-parameter -Wnull-dereference -Wformat=2")
 endif()
@@ -69,7 +69,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/ve
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # Link libraries
-target_link_libraries(${PROJECT_NAME} PRIVATE GL pthread dl)
+if(UNIX AND NOT APPLE) # Detects: linux, BSD, solaris, minix
+    target_link_libraries(${PROJECT_NAME} PRIVATE GL pthread dl)
+elseif(WIN32) # Detects: Windows
+    target_link_libraries(${PROJECT_NAME} PRIVATE opengl32)
+endif()
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw assimp)
 
 # Set defines depending on wheather this is a debug or release build

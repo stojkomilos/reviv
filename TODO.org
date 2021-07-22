@@ -13,6 +13,17 @@ obrisi onaj ./cmake folder mozda? cross compile
 
 detect PLATFORM and include based on that
 
+wind:
+ - visual studio starting directory
+ - and && or ||
+ - compile flags
+ - link libraries
+   - opengl32
+   - iskljuci pthread, dl(mozda??)
+ - dodaj komentar u cmake za ostale potencijalne linux librarije
+
+proveri da li call-ujem: rendercommand::clear
+
 -g
 
 vbo layout stavi u vbo

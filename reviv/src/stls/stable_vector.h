@@ -160,6 +160,8 @@ namespace stls
         {
             (*this)[i] = other[i];
         }
+
+        return *this;
     }
 
     template<class T>

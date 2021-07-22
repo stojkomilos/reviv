@@ -33,6 +33,8 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG   "${MY_EXECUTABLE_OUTPUT_DIRECTORY}" C
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE   "${MY_EXECUTABLE_OUTPUT_DIRECTORY}" CACHE PATH "Directory of the output executable" FORCE)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE   "${MY_EXECUTABLE_OUTPUT_DIRECTORY}" CACHE PATH "Directory of the output executable" FORCE)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE   "${MY_EXECUTABLE_OUTPUT_DIRECTORY}" CACHE PATH "Directory of the output executable" FORCE)
+
+set(VS_DEBUGGER_WORKING_DIRECTORY "${MY_EXECUTABLE_OUTPUT_DIRECTORY})
 # ---<
 
 # Enable link time optimization if it's Release mode (must be before "add_library" or "add_executable")
