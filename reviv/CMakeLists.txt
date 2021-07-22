@@ -31,7 +31,7 @@ file(GLOB_RECURSE SRC_FILES_ALL "src/*.cpp"
 file(GLOB_RECURSE SRC_FILES_DEPENDENCIES
     "vendor/Glad/src/glad.c"
     "vendor/stb_image/stb_image.cpp")
-set_source_files_properties(${SRC_FILES_DEPENDENCIES} PROPERTIES COMPILE_FLAGS -Wno-all -g -Wno-extra -Wno-overloaded-virtual -Wno-unused-variable -Wno-unused-parameter -Wno-null-dereference -Wno-format=2)
+#set_source_files_properties(${SRC_FILES_DEPENDENCIES} PROPERTIES COMPILE_FLAGS -Wno-all -g -Wno-extra -Wno-unused-variable -Wno-unused-parameter -Wno-null-dereference -Wno-format=2)
 
 
 #set_source_files_properties(SRC_FILES_DEPENDENCIES PROPERTIES COMPILE_FLAGS -Wno-Wall -Wno-Wextra -Wno-Wdouble-promotion )
