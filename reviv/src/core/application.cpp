@@ -70,7 +70,6 @@ Window* Application::getWindow()
 void Application::onEventWindowClose(Event* event)
 {
     RV_ASSERT(event->m_Type == EventType::EventTypeWindowClose and event->getName() == "EventWindowClose", "Incorrect event type");
-
     m_IsRunning = false;
 }
 

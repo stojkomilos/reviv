@@ -5,25 +5,10 @@ void logMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, 
 void RenderCommand::iDrawArrays(const Mesh& mesh)
 {
     glDrawArrays(GL_TRIANGLES, 0, mesh.m_Vertices.size());
-    //RV_ASSERT(false, "");
 }
 
 void RenderCommand::iDrawElements(const Mesh& mesh)
 {
-    //cout << "Size: " << mesh.m_Indices.size() << endl;
-    for(int i=0; i < mesh.m_Indices.size(); i++)
-    {
-        //cout << "i: " << i << "ind: " << mesh.m_Indices[i] << endl;
-    }
-
-    //cout << "INDICES:-----------" << endl;
-    //for(int i=0; i<((std::vector<unsigned int>*) gVektor2)->size(); i++)
-    //{
-    //    //if(i % 100 == 0)
-    //        cout << *((unsigned int*) gVertex2 + i) << endl;
-    //        RV_ASSERT(*((unsigned int*) gVertex2 + i) < ((std::vector<unsigned int>*) gVektor2)->size(), "fuck");
-    //}
-
     glDrawElements(GL_TRIANGLES, mesh.m_Indices.size(), GL_UNSIGNED_INT, 0);
 
 }
@@ -46,6 +31,8 @@ void RenderCommand::iInit()
     glEnable(GL_DEBUG_OUTPUT);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS); // enables you too look in the call stack
     //cout << "Running in DEBUG mode" << endl;
+    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
+
 #endif
    
     glEnable(GL_DEPTH_TEST);
@@ -61,6 +48,12 @@ void RenderCommand::iInit()
 void logMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParams)
 {
     cout << endl;
+
+    //(void)source; //supressing -Wunused-parameter
+    //(void)type;
+    //(void)id;
+    //(void)length;
+    //(void)userParams;
 
     switch(severity)
     {

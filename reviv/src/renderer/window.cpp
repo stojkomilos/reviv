@@ -2,9 +2,12 @@
 
 #include"window.h"
 #include"events/dispatcher.h"
+#include"events/event.h"
 
-static void framebuffer_size_callback(GLFWwindow* window, int width, int height) //TODO
+static void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 { 
+    (void)window; // supressing -Wunused-parameter
+
     glViewport(0, 0, width, height);
 }
 
@@ -18,7 +21,10 @@ static void GlfwErrorCallback(int error, const char* description)
 void Window::onUpdate()
 {
     if(Input::isKeyPressed(RV_KEY_Q))
-        Application::getInstance()->m_IsRunning = false;
+    {
+        EventWindowClose event;
+        EventDispatcher::dispatch(&event);
+    }
 
     glfwSwapBuffers(pWindow);
     glfwPollEvents();
@@ -72,11 +78,8 @@ static void closeCallback(GLFWwindow* pWindow)
 
 static void cursorPosCallback(GLFWwindow* pWindow, double xPosition, double yPosition)
 {
-    //WindowData* data = (WindowData*)glfwGetWindowUserPointer(pWindow);
     EventMouseMoved event(Vec2f(xPosition, yPosition));
     EventDispatcher::dispatch(&event);
-    //cout << "Cursor pos callback, x: " << xPosition << " y: " << yPosition << endl;
-
 }
 
 void Window::init(bool enableVSync, bool isFullscreen, unsigned int windowWidth, unsigned int windowHeight, const std::string& windowTitle)
@@ -141,7 +144,7 @@ void Window::init(bool enableVSync, bool isFullscreen, unsigned int windowWidth,
     //cout << "Renderer: " << glGetString(GL_RENDERER) << endl;
     //cout << "Version: " << glGetString(GL_VERSION) << endl;
 
-    glfwSetFramebufferSizeCallback(pWindow, framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(pWindow, framebufferSizeCallback);
 
     //glfwSetInputMode(pWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     //glfwSetInputMode(pWindow, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);

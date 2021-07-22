@@ -2,11 +2,6 @@
 
 using std::cin; using std::cout; using std::endl;
 
-void log(const Vao& vao)
-{
-    RV_ASSERT(false, "not defined");
-}
-
 void Vao::init()
 {
     glGenVertexArrays(1, &id);
@@ -42,14 +37,14 @@ void Vao::addVbo(const stls::StableVector<BufferElement>& inLayout)
 
     RV_ASSERT(pVbo->layout.elements.size() != 0, "invalid layout")
 
-    for (int i = 0; i < pVbo->layout.elements.size(); i++)
+    for (unsigned int i = 0; i < pVbo->layout.elements.size(); i++)
     {
         glVertexAttribPointer(i,
             pVbo->layout.elements[i].getElementCount(),
             shaderDataTypeToOpenGLBaseType(pVbo->layout.elements[i].type),
             pVbo->layout.elements[i].normalized,
             pVbo->layout.stride,
-            (void*)pVbo->layout.elements[i].offset);
+            pVbo->layout.elements[i].offset);
 
         glEnableVertexAttribArray(i);
     }

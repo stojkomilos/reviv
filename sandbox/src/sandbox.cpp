@@ -54,7 +54,7 @@ public:
         if(Time::isOneSecond()){
             cout << "FPS: " << 1 / Time::getDelta() << endl;
             cout << "Position: ";
-            log(Scene::getPlayerEntity()->get<PositionComponent>()->position);
+            //log(Scene::getPlayerEntity()->get<PositionComponent>()->position);
         }
 
         auto* stanicModel = &stanic->get<ModelComponent>()->model;
@@ -67,7 +67,7 @@ public:
 
         materialBasic.set("u_Model", stanic->get<TransformComponent>()->transform);
         //log(*stanicModel);
-        log(stanic->get<ModelComponent>()->model);
+        //log(stanic->get<ModelComponent>()->model);
 
         //materialBasic.set("u_Model", translate(identity, stanic->get<PositionComponent>()->position));
 

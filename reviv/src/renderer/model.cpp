@@ -22,7 +22,7 @@ Model::Model(ModelLoader* pModelLoader, Material* pMaterial)
     pMeshes.reserve(pModelLoader->meshes.size());
     pMaterials.reserve(pModelLoader->meshes.size());
 
-    for(int i=0; i < pModelLoader->meshes.size(); i++)
+    for(unsigned int i=0; i < pModelLoader->meshes.size(); i++)
     {
         pMeshes.pushBack(&pModelLoader->meshes[i]);
         pMaterials.pushBack(pMaterial);

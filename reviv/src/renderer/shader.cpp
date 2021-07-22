@@ -39,7 +39,7 @@ void Shader::init(const char* vertexPath, const char* fragmentPath) { //, const 
         }*/
     }
 
-    catch (std::ifstream::failure e)
+    catch (const std::ifstream::failure& e)
     {
         RV_ASSERT(false, "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ");
     }

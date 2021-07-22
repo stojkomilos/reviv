@@ -43,7 +43,7 @@ void RenderManager::iInit(const WindowData& windowData)
 void RenderManager::submit(const Model& model, const Mat4& transform)
 {
     RV_ASSERT(model.pMaterials.size() == model.pMeshes.size(), "");
-    for(int i=0; i<model.pMeshes.size(); i++)
+    for(unsigned int i=0; i<model.pMeshes.size(); i++)
     {
         //TODO: set environment uniforms
         model.pMaterials[i]->bindShader();
@@ -52,22 +52,9 @@ void RenderManager::submit(const Model& model, const Mat4& transform)
 
         model.pMeshes[i]->vao.bind();
 
-        cout << "Stanic material: ";
-        log(*model.pMaterials[i]);
-
         RenderCommand::drawElements(*model.pMeshes[i]);
-        //RenderCommand::drawArrays(*model.pMeshes[i]);
     }
 }
-/*
-void RenderManager::submit(Material* pMaterial, const Mat4& transform, const Model& model)
-{
-    pMaterial->bind();
-    //vao.bind();
-    //RenderCommand::drawArrays(vao); //TODO:?? a mozda i da samo model.draw?, idk
-    model.draw();
-}
-*/
 
 void RenderManager::iShutdown() 
 {

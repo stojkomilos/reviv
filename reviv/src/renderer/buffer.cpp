@@ -40,6 +40,7 @@ unsigned int BufferElement::getElementCount() const
         case ShaderDataType::SdtInt3:			return 3;
         case ShaderDataType::SdtInt4:			return 4;
         case ShaderDataType::SdtBool:			return 1;
+        default: RV_ASSERT(false, ""); break;
     }
     RV_ASSERT(false, "ERROR: RENDERER UNKNOWN SHADER DATA TYPE");
     return 0;
@@ -60,6 +61,7 @@ unsigned int shaderDataTypeToOpenGLBaseType(ShaderDataType type)
         case ShaderDataType::SdtInt3:       return GL_INT;
         case ShaderDataType::SdtInt4:       return GL_INT;
         case ShaderDataType::SdtBool:       return GL_BOOL;
+        default: RV_ASSERT(false, ""); break;
     }
     RV_ASSERT(false, "ERROR: RENDERER UNKNOWN SHADER DATA TYPE");
     return 0;
@@ -68,9 +70,9 @@ unsigned int shaderDataTypeToOpenGLBaseType(ShaderDataType type)
 void BufferLayout::init()
 {
     RV_ASSERT(elements.size() != 0, "");
-    unsigned int offset = 0;
+    char* offset = 0;
     stride = 0;
-    for (int i = 0; i < elements.size(); i++)
+    for (unsigned int i = 0; i < elements.size(); i++)
     {
         elements[i].offset = offset;
         offset += elements[i].size;
@@ -80,7 +82,7 @@ void BufferLayout::init()
 
 BufferLayout::BufferLayout(stls::StableVector<BufferElement> inLayout)
 {
-    for(int i=0; i < inLayout.size(); i++)
+    for(unsigned int i=0; i < inLayout.size(); i++)
     {
         elements.pushBack(inLayout[i]);
     }

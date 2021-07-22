@@ -17,10 +17,10 @@ void log(const Entity& entity)
 }
 
 Entity::Entity()
-    : entityName("nameless_entity"), components(15)
+    : components(15), entityName("nameless_entity")
 {
-    //cout << "Constructor entity: " << entityName << endl;
 }
+
 
 Entity::Entity(const std::string& name)
     : Entity()

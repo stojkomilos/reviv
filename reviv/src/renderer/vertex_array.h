@@ -24,5 +24,3 @@ public:
     stls::StableVector<Vbo> vertexBuffers;
     stls::StableVector<Ebo> elementBuffers;
 };
-
-void log(const Vao& vao);

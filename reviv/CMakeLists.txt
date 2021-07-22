@@ -36,8 +36,9 @@ set_source_files_properties(SRC_FILES_DEPENDENCIES PROPERTIES COMPILE_FLAGS -Wno
 # When compiling this project, compile it as a static library
 add_library(reviv STATIC ${SRC_FILES_ALL})
 
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Wall -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wpedantic -Wnull-dereference -Wdouble-promotion -Wformat=2 -g")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wpedantic -Wnull-dereference -Wdouble-promotion -Wformat=2 -g")
+#set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Wall -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wpedantic -Wnull-dereference -Wdouble-promotion -Wformat=2 -g")
+
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Wall -g -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wno-unused-variable -Wno-unused-parameter -Wpedantic -Wnull-dereference -Wformat=2")
 # -Wshadow -Wunused -Wold-style-cast -Wconversion -Wsign-conversion 
 # -E -> stop after preprocessor runs
 

@@ -4,6 +4,7 @@ order: input->update->display
 
 vidi event system
 
+-g
 
 vbo layout stavi u vbo
 plan za danas:
