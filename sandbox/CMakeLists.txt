@@ -10,8 +10,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # -E -> stop after preprocessor runs
 #set_target_properties(${PROJECT-NAME} PROPERTIES COMPILE_FLAGS "-Wall -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wpedantic -Wnull-dereference -Wdouble-promotion -Wformat=2 -g")
 
-
-
 file(GLOB_RECURSE SRC_FILES "src/*.cpp")
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 

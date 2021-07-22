@@ -41,7 +41,12 @@ add_library(reviv STATIC ${SRC_FILES_ALL})
 
 #set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Wall -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wnull-dereference -Wdouble-promotion -Wformat=2 -g")
 
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Wall -g -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wno-unused-variable -Wno-unused-parameter -Wnull-dereference -Wformat=2")
+if(MSVC)
+    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "W4")
+else()
+    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Wall -g -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wno-unused-variable -Wno-unused-parameter -Wnull-dereference -Wformat=2")
+endif()
+
 # -Wshadow -Wunused -Wold-style-cast -Wconversion -Wsign-conversion 
 # -E -> stop after preprocessor runs
 
@@ -79,5 +84,3 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
 else()
     message(FATAL_ERROR "========> ERROR: CMAKE_BUILD_TYPE is not recognized. Should be either \"Release\" or \"Debug\"!!!")
 endif()
-
-#target_precompile_headers(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/rv_pch.hpp)
