@@ -41,7 +41,8 @@ public:
         //stanic->add<ModelComponent>("assets/models/weapon.obj");
 
         //modelLoaderBackpack.load("assets/models/backpack/backpack.obj");
-        modelLoaderBackpack.load("assets/models/Human/human.obj");
+        //modelLoaderBackpack.load("assets/models/Human/human.obj");
+        modelLoaderBackpack.load("assets/models/weapon.obj");
         //modelLoaderBackpack.load("assets/models/weapon.obj");
 
         stanic->add<ModelComponent>(&modelLoaderBackpack, &materialBasic);
