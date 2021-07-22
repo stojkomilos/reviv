@@ -9,6 +9,7 @@ Entity* Scene::iCreateEntity(const std::string& entityName)
 Entity* Scene::iFindEntity(const std::string& entityName)
 {
     RV_ASSERT(false, "");
+    return nullptr;
 }
 
 void Scene::iLogEntity(const std::string& entityName)

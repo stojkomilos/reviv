@@ -31,7 +31,7 @@ public:
 
     void initAfterEngine() override
     {
-        shaderTexture.init      ("assets/shaders/texture.vs", "assets/shaders/texture.fs");
+        //shaderTexture.init      ("assets/shaders/texture.vs", "assets/shaders/texture.fs");
         shaderMonochroma.init("assets/shaders/monochroma.vs", "assets/shaders/monochroma.fs");
 
         //stanic->add<VaoComponent>("assets/models/weapon.obj");

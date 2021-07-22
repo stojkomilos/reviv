@@ -33,19 +33,16 @@ file(GLOB_RECURSE SRC_FILES_DEPENDENCIES
     "vendor/stb_image/stb_image.cpp")
 #set_source_files_properties(${SRC_FILES_DEPENDENCIES} PROPERTIES COMPILE_FLAGS -Wno-all -g -Wno-extra -Wno-unused-variable -Wno-unused-parameter -Wno-null-dereference -Wno-format=2)
 
-
-#set_source_files_properties(SRC_FILES_DEPENDENCIES PROPERTIES COMPILE_FLAGS -Wno-Wall -Wno-Wextra -Wno-Wdouble-promotion )
-
 # When compiling this project, compile it as a static library
 add_library(reviv STATIC ${SRC_FILES_ALL})
 
 #set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Wall -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wnull-dereference -Wdouble-promotion -Wformat=2 -g")
 
 if(MSVC)
-    #set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "/W4 /permissive-")
-    target_compile_options(${PROJECT_NAME} PRIVATE "/W4")
+    target_compile_options(${PROJECT_NAME} PRIVATE "/W4" "/MP")
 else()
-    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Wall -g -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wno-unused-variable -Wno-unused-parameter -Wnull-dereference -Wformat=2")
+    target_compile_options(${PROJECT_NAME} PRIVATE "-Wall" "-g" "-Wextra" "-Wnon-virtual-dtor" "-Woverloaded-virtual" "-Wno-unused-variable" "-Wno-unused-parameter" "-Wnull-dereference" "-Wformat=2")
+    #set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Wall -g -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wno-unused-variable -Wno-unused-parameter -Wnull-dereference -Wformat=2")
 endif()
 
 # -Wshadow -Wunused -Wold-style-cast -Wconversion -Wsign-conversion 
@@ -69,9 +66,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/ve
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/stb_image)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-# Link libraries
+# Link libraries based on OS
 if(UNIX AND NOT APPLE) # Detects: linux, BSD, solaris, minix
-    target_link_libraries(${PROJECT_NAME} PRIVATE GL pthread dl)
+    target_link_libraries(${PROJECT_NAME} PRIVATE GL pthread dl) # Other libraries that might be necessary for Linux: -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl
 elseif(WIN32) # Detects: Windows
     target_link_libraries(${PROJECT_NAME} PRIVATE opengl32)
 endif()

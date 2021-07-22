@@ -103,12 +103,11 @@ void Window::init(bool enableVSync, bool isFullscreen, unsigned int windowWidth,
         RV_ASSERT(false, "reviv currently does not support creating multiple windows");
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // TODO: vidi sta ovo radi, i da li moze da se upali na wayland
-
-
     const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+#ifdef RV_DEBUG
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+#endif
 
     glfwWindowHint(GLFW_RED_BITS, mode->redBits);
     glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
