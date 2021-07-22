@@ -31,7 +31,7 @@ file(GLOB_RECURSE SRC_FILES_ALL "src/*.cpp"
 file(GLOB_RECURSE SRC_FILES_DEPENDENCIES
     "vendor/Glad/src/glad.c"
     "vendor/stb_image/stb_image.cpp")
-set_source_files_properties(SRC_FILES_DEPENDENCIES PROPERTIES COMPILE_FLAGS -Wno-Wall -Wno-Wextra -Wno-Wdouble-promotion )
+set_source_files_properties(SRC_FILES_DEPENDENCIES PROPERTIES COMPILE_FLAGS -Wno-all -g -Wno-extra -Wno-non-virtual-dtor -Wno-overloaded-virtual -Wno-unused-variable -Wno-unused-parameter -Wno-pedantic -Wno-null-dereference -Wno-format=2)
 
 # When compiling this project, compile it as a static library
 add_library(reviv STATIC ${SRC_FILES_ALL})
@@ -54,7 +54,7 @@ set_source_files_properties("vendor/Glad/src/glad.c" PROPERTIES SKIP_PRECOMPILE_
 
 # The include directories
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp/include)
-target_include_directories(assimp PUBLIC ${ASSIMP_INCLUDE_DIRS}) # Stupid assimp doing things it's own way (https://stackoverflow.com/questions/60261675/assimp-config-h-not-found-its-in-the-folder-though)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_config_h) # Stupid assimp doing things it's own way (https://stackoverflow.com/questions/60261675/assimp-config-h-not-found-its-in-the-folder-though)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/GLFW/include)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/Glad/include)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/stb_image)
