@@ -44,6 +44,10 @@ struct MaterialHelpingStruct
     //    assert(false);
     //}
 
+    MaterialHelpingStruct() : ptr(nullptr) {}
+    void* ptr;
+    ShaderDataType type;
+
     bool operator==(const MaterialHelpingStruct& other) const
     {
         RV_ASSERT(false, "")
@@ -56,10 +60,6 @@ struct MaterialHelpingStruct
         RV_ASSERT(false, "")
         return !(*this == other);
     }
-
-    MaterialHelpingStruct() : ptr(nullptr) {}
-    void* ptr;
-    ShaderDataType type;
 
 };
 
