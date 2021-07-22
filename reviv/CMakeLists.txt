@@ -42,7 +42,7 @@ add_library(reviv STATIC ${SRC_FILES_ALL})
 #set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Wall -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wnull-dereference -Wdouble-promotion -Wformat=2 -g")
 
 if(MSVC)
-    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "W4")
+    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-W4 -permissive")
 else()
     set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Wall -g -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wno-unused-variable -Wno-unused-parameter -Wnull-dereference -Wformat=2")
 endif()
