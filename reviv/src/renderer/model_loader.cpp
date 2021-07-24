@@ -5,14 +5,14 @@ void ModelLoader::load(const std::string& filePath)
     m_FilePath = filePath;
 
     Assimp::Importer importer;
-   // m_Scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_SplitLargeMeshes | aiProcess_OptimizeMeshes); TODO
-    m_Scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
+    m_Scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_SplitLargeMeshes | aiProcess_OptimizeMeshes); //TODO
+    //m_Scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
 
     // additional flags:    aiProcess_GenNormals
     //                      aiProcess_SplitLargeMeshes
     //                      aiProcess_OptimizeMeshes
 
-    RV_ASSERT(m_Scene && !(m_Scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) && m_Scene->mRootNode, "assimp error (wrong file name?)");
+    RV_ASSERT(m_Scene && !(m_Scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) && m_Scene->mRootNode, "assimp error (invalid file?, wrong file name?)");
 
     std::string directory = filePath.substr(0, filePath.find_last_of('/'));
 
@@ -71,7 +71,9 @@ void ModelLoader::addMesh(aiMesh* loaderMesh, Mesh* pMesh)
         }
         else 
         {
-            RV_ASSERT(false, "");
+            vertex.texCoords.x = 0;
+            vertex.texCoords.y = 0; //TODO:
+            //RV_ASSERT(false, "");
         }
 
         pMesh->m_Vertices.pushBack(vertex);
@@ -103,6 +105,8 @@ void ModelLoader::addMesh(aiMesh* loaderMesh, Mesh* pMesh)
     pMesh->vao.addEbo();
     pMesh->vao.elementBuffers[0].bind(); //TODO: useless?
     pMesh->vao.elementBuffers[0].load(&(pMesh->m_Indices[0]), pMesh->m_Indices.size() * sizeof(unsigned int));
+
+    pMesh->vao.unbind();
 }
 
 

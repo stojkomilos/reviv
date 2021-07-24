@@ -9,7 +9,7 @@
 class Model
 {
 public:
-    Model() = delete;
+    Model() = default;
     Model(ModelLoader* pModelLoader, Material* pMaterial);
 
     ModelLoader* m_ModelLoader;

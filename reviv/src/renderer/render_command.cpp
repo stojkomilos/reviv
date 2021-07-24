@@ -31,11 +31,12 @@ void RenderCommand::iInit()
     glEnable(GL_DEBUG_OUTPUT);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS); // enables you too look in the call stack
     //cout << "Running in DEBUG mode" << endl;
-    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
+    //glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
 
 #endif
    
     glEnable(GL_DEPTH_TEST);
+    //glDepthFunc(GL_LESS);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -47,14 +48,6 @@ void RenderCommand::iInit()
 
 void logMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParams)
 {
-    cout << endl;
-
-    //(void)source; //supressing -Wunused-parameter
-    //(void)type;
-    //(void)id;
-    //(void)length;
-    //(void)userParams;
-
     switch(severity)
     {
         case GL_DEBUG_SEVERITY_HIGH:
@@ -70,7 +63,7 @@ void logMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, 
             break;
 
         case GL_DEBUG_SEVERITY_NOTIFICATION:
-            cout << "[OpenGL Debug NOTIFICATION] " << message << endl;
+            //cout << "[OpenGL Debug NOTIFICATION] " << message << endl;
             break;
 
         default:

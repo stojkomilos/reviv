@@ -117,12 +117,9 @@ namespace stls
     template<class T>
     StableVector<T>::StableVector(std::vector<T> inVector)
     {
-        cout << "vekSize: " << inVector.size() << endl;
-        
         reserve(inVector.capacity());
         currentSize = inVector.size();
 
-        cout << "currentSize: " << currentSize << " capacity: " << capacity << endl;
         for(int i=0; i<inVector.size(); i++)
         {
             (*this)[i] = inVector[i];

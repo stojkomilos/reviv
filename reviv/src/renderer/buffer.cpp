@@ -100,7 +100,6 @@ void GBufferObject::init()
 
 void GBufferObject::bind() const
 {
-    cout << "bufferType: " << bufferType << endl;
     glBindBuffer(bufferType, id);
 }
 
@@ -112,8 +111,7 @@ void GBufferObject::unbind() const
 
 void GBufferObject::load(void* pData, unsigned int size)
 {
-    //glBindBuffer(bufferType, id);
+    glBindBuffer(bufferType, id);
     RV_ASSERT(pParentVao != nullptr, "For safety, can't load data into buffer if it does not belong to a Vao object");
-    cout << "loading size: " << size << "pointer: " << pData << endl;
     glBufferData(bufferType, size, pData, GL_STATIC_DRAW);
 }

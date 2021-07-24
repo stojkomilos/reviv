@@ -66,6 +66,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/ve
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/stb_image)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
+# set Visual Studio working directory to the location of the binary file
+set(VS_DEBUGGER_WORKING_DIRECTORY "${MY_EXECUTABLE_OUTPUT_DIRECTORY}")
+
 # Link libraries based on OS
 if(UNIX AND NOT APPLE) # Detects: linux, BSD, solaris, minix
     target_link_libraries(${PROJECT_NAME} PRIVATE GL pthread dl) # Other libraries that might be necessary for Linux: -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl

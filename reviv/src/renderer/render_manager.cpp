@@ -2,7 +2,7 @@
 
 void RenderManager::iOnUpdate(const WindowData& windowData)
 {
-    RenderCommand::setClearColor(Vec4f(0.1f, 0.0f, 0.0f, 0.8f));
+    RenderCommand::setClearColor(Vec4f(100.f, 10.f, 80.f, 256.f) / 256.f);
     RenderCommand::clear();
 
     beginScene(windowData); // Update camera stuff
@@ -14,7 +14,7 @@ void RenderManager::iOnUpdate(const WindowData& windowData)
             //if(itEntity->has<MaterialComponent>() && itEntity->has<TransformComponent>() && itEntity->has<ModelComponent>())
             if(itEntity->has<ModelComponent>() && itEntity->has<TransformComponent>())
             {
-                cout << "Rendering entity: " << itEntity->entityName << endl;
+                //cout << "Rendering entity: " << itEntity->entityName << endl;
 
                 submit(itEntity->get<ModelComponent>()->model,
                     itEntity->get<TransformComponent>()->transform);
@@ -47,7 +47,7 @@ void RenderManager::submit(const Model& model, const Mat4& transform)
     {
         //TODO: set environment uniforms
         model.pMaterials[i]->bindShader();
-        model.pMaterials[i]->set("m_Model", transform);
+        model.pMaterials[i]->set("u_Model", transform);
         model.pMaterials[i]->bind();
 
         model.pMeshes[i]->vao.bind();

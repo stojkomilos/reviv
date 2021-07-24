@@ -29,3 +29,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..
 target_link_libraries(${PROJECT_NAME} reviv)
 
 #install(TARGETS ${PROJECT_NAME} DESTINATION bin) # Should be last command
+
+set(VS_STARTUP_PROJECT "${PROJECT_NAME}")
+set(VS_DEBUGGER_WORKING_DIRECTORY "${MY_EXECUTABLE_OUTPUT_DIRECTORY}")

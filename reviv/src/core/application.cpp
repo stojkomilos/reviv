@@ -30,6 +30,21 @@ void Application::iOnEvent(Event* event)
 
 void Application::initEngine()
 {
+    RV_ASSERT(sizeof(char) == 1, "");
+    RV_ASSERT(sizeof(unsigned char) == 1, "");
+
+    RV_ASSERT(sizeof(int) == 4, "");
+    RV_ASSERT(sizeof(unsigned int) == 4, "");
+
+    RV_ASSERT(sizeof(long long) == 8, "");
+    RV_ASSERT(sizeof(unsigned long long) == 8, "");
+
+    RV_ASSERT(sizeof(float) == 4, "");
+    RV_ASSERT(sizeof(double) == 8, "");
+    RV_ASSERT(sizeof(bool) == 1, "");
+
+    cout << "Initializing Reviv engine" << endl;
+
     window.init(true, !RV_DEBUG, 1600, 900, applicationName);              // window.init() must go before RenderManager::init()
 
     Input::disableCursor();        // For the first person 3d camera controller
@@ -76,4 +91,7 @@ void Application::onEventWindowClose(Event* event)
 void Application::onEventWindowResize(Event* event)
 {
     RV_ASSERT(event->m_Type == EventType::EventTypeWindowResize && event->getName() == "EventWindowResize", "Incorrect event type");
+    EventWindowResize* ev = (EventWindowResize*)event;
+    window.m_Data.width = ev->m_Width;
+    window.m_Data.height = ev->m_Height;
 }

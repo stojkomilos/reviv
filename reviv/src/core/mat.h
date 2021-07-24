@@ -31,6 +31,10 @@ namespace mat{
         Vec3f() = default;
         Vec3f(float x, float y, float z);
         Vec3f(const Vec3f&) = default;
+        Vec3f operator-(const Vec3f other)
+        {
+            return {x - other.x, y - other.y, z - other.z};
+        }
         Vec3f operator-() const //TODO: da vraca mozda reference, ne znam, mozda move semantics
         {
             Vec3f result(-x, -y, -z);
@@ -50,9 +54,6 @@ namespace mat{
             return result;
         }
     };
-
-    Vec3f operator*(const Vec3f& thing, const float& scalar);
-    Vec3f operator*(const float& scalar, const Vec3f& thing);
 
     class Vec4f
     {
@@ -117,13 +118,16 @@ namespace mat{
         Vec4i(const Vec4i&) = default;
     };
 
+    Vec3f operator*(const Vec3f& thing, const float& scalar);
+    Vec3f operator*(const float& scalar, const Vec3f& thing);
+    Vec4f operator/(const Vec4f& thing, const float& scalar);
+    Vec4f operator/(const float& scalar, const Vec4f& thing);
+
     Mat4 translate(Mat4 a, const Vec3f& b);
     Mat4 scale(Mat4 a, const Vec3f& b);
     Mat4 rotateX(Mat4 a, float theta);
     Mat4 rotateY(Mat4 a, float theta);
     Mat4 rotateZ(Mat4 a, float theta);
-
-    Mat4 perspective(float close, float far, float fov, float R);
 
     Vec4f multiply(const Mat4& a, const Vec4f& b);
 
@@ -140,11 +144,11 @@ namespace mat{
     Vec3f add(const Vec3f& a, const Vec3f& b);
     Vec3f subtract(const Vec3f& a, const Vec3f& b);
     Vec2f subtract(const Vec2f& a, const Vec2f& b);
-    int sgn(int n);
-    int sgn(float n);
-    float clampTwoSide(float minPossibleValue, float maxPossibleValue, float n);
-    float clampMin(float minPossibleValue, float n);
-    float clampMax(float maxPossibleValue, float n);
+    //int sgn(int n);
+    //int sgn(float n);
+    //float clampTwoSide(float minPossibleValue, float maxPossibleValue, float n);
+    //float clampMin(float minPossibleValue, float n);
+    //float clampMax(float maxPossibleValue, float n);
 
     class Rotation
     {
@@ -158,6 +162,8 @@ namespace mat{
     };
 
     Vec3f getDirectionFromRotation(const Rotation& rotation);
+    float degreesToRadians(float angleInDegrees);
+    float radiansToDegrees(float angleInRadians);
 
 }
 

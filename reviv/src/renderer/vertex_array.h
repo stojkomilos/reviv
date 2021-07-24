@@ -12,7 +12,6 @@ public:
     ~Vao();
 
     void init();
-    void load(unsigned int verticesSize, Vertex* pVertices, unsigned int indicesSize, unsigned int* pIndices);
 
     void bind() const;
     void unbind() const;

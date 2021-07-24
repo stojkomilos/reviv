@@ -2,9 +2,11 @@
 
 const Mat4 identity(1);
 
-/*
+
 void log(const bool& thing)
 {
+    RV_ASSERT(false, "Error: using this overloaded function log means that something went wrong");
+
     if(thing == true)
     {
         cout << "true";
@@ -15,7 +17,7 @@ void log(const bool& thing)
     }
     cout << endl;
 }
-*/
+
 
 void log(const Rotation& thing)
 {
@@ -115,6 +117,16 @@ namespace mat{
         return thing * scalar;
     }
 
+    Vec4f operator/(const Vec4f& thing, const float& scalar)
+    {
+        return {thing.x/scalar, thing.y/scalar, thing.z/scalar, thing.w/scalar};
+    }
+
+    Vec4f operator/(const float& scalar, const Vec4f& thing)
+    {
+        return thing / scalar;
+    }
+
     Mat4 translate(Mat4 a, const Vec3f& b)
     {
         a.d.x += b.x;
@@ -164,23 +176,6 @@ namespace mat{
         return a;
     }
 
-    Mat4 perspective(float close, float far, float fov, float R)
-    {
-        Mat4 p(0);
-        float L = 2.0f * (float)tan(fov / 2) * close;
-
-        float H = L / R;
-
-        p.a.x = close * 2.0f / L;                   
-        p.b.y = close * 2.0f / H;                   
-        p.c.z = -(far + close) / (far - close);        
-        p.d.z = 2.0f * far * close / (close - far); 
-
-        p.c.w = -1;
-
-        return p;
-    }
-
     Vec4f multiply(const Mat4& a, const Vec4f& b)
     {
         //std::cout << "BBB";
@@ -196,12 +191,11 @@ namespace mat{
     Vec3f getDirectionFromRotation(const Rotation& rotation)
     {
         Vec3f direction;
-        direction.x = -cos(rotation.pitch) * cos(rotation.yaw);
-        direction.y = -sin(rotation.pitch);
-        direction.z = -cos(rotation.pitch) * sin(rotation.yaw);
-        direction = normalise(direction);
+        direction.x = cos(rotation.pitch) * cos(rotation.yaw);
+        direction.y = cos(rotation.pitch) * sin(rotation.yaw);
+        direction.z = sin(rotation.pitch);
 
-        return -direction;
+        return direction;
     }
 
     float module(const Vec3f& a)
@@ -255,7 +249,7 @@ namespace mat{
     {
         Vec3f rez;
         rez.x = a.y * b.z - a.z * b.y;
-        rez.y = -(a.x * b.z - a.z * b.x);
+        rez.y = a.z * b.x - a.x * b.z;
         rez.z = a.x * b.y - a.y * b.x;
         return rez;
     }
@@ -340,4 +334,12 @@ namespace mat{
         else return n;
     }
 
+    float degreesToRadians(float angleInDegrees)
+    {
+        return angleInDegrees * 3.14f / 180.f;
+    }
+    float radiansToDegrees(float angleInRadians)
+    {
+        return angleInRadians / 3.14f * 180.f;
+    }
 };

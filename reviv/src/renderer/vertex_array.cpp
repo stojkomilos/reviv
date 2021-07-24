@@ -24,7 +24,7 @@ void Vao::unbind() const
 
 void Vao::addVbo(const stls::StableVector<BufferElement>& inLayout)
 {
-    //glBindVertexArray(id);
+    glBindVertexArray(id);
 
     vertexBuffers.emplaceBack();
     Vbo* pVbo = &vertexBuffers[vertexBuffers.size()-1];
@@ -52,7 +52,7 @@ void Vao::addVbo(const stls::StableVector<BufferElement>& inLayout)
 
 void Vao::addEbo()
 {
-    //glBindVertexArray(id);
+    glBindVertexArray(id);
     elementBuffers.emplaceBack();
     Ebo* pEbo = &elementBuffers[elementBuffers.size() - 1];
     pEbo->pParentVao = this;

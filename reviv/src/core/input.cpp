@@ -76,20 +76,20 @@ void Input::doPlayerControllerOnEventMouseMoved(Event* event)
 {
     float sensitivity = 0.005;
 
-    static Vec2f oldPosition = ((EventMouseMoved*)event)->m_Position;
-    Vec2f delta = subtract(((EventMouseMoved*)event)->m_Position, oldPosition);
-    oldPosition = ((EventMouseMoved*)event)->m_Position;
+    static Vec2f oldMousePosition = ((EventMouseMoved*)event)->m_Position;
+    Vec2f deltaMouse = subtract(((EventMouseMoved*)event)->m_Position, oldMousePosition);
+    oldMousePosition = ((EventMouseMoved*)event)->m_Position;
 
-    Scene::getPlayerEntity()->get<RotationComponent>()->rotation.yaw -= delta.x * sensitivity;
-    Scene::getPlayerEntity()->get<RotationComponent>()->rotation.pitch -= delta.y * sensitivity;
+    Scene::getPlayerEntity()->get<RotationComponent>()->rotation.yaw -= deltaMouse.x * sensitivity;
+    Scene::getPlayerEntity()->get<RotationComponent>()->rotation.pitch -= deltaMouse.y * sensitivity;
 
-    if (Scene::getPlayerEntity()->get<RotationComponent>()->rotation.pitch >= 1.55f)
+    if (Scene::getPlayerEntity()->get<RotationComponent>()->rotation.pitch >= degreesToRadians(90))
     {
-        Scene::getPlayerEntity()->get<RotationComponent>()->rotation.pitch = 1.55f;
+        Scene::getPlayerEntity()->get<RotationComponent>()->rotation.pitch = degreesToRadians(90);
     }
-    else if (Scene::getPlayerEntity()->get<RotationComponent>()->rotation.pitch <= -1.55f)
+    else if (Scene::getPlayerEntity()->get<RotationComponent>()->rotation.pitch <= degreesToRadians(-90))
     {
-        Scene::getPlayerEntity()->get<RotationComponent>()->rotation.pitch = -1.55f;
+        Scene::getPlayerEntity()->get<RotationComponent>()->rotation.pitch = degreesToRadians(-90);
     }
 }
 
@@ -97,8 +97,8 @@ void Input::doPlayerControllerPolling()
 {
     auto* player = Scene::getPlayerEntity();
     
-    float speed = 1000;
-    float verticalSpeed = 1000;
+    float speed = 1;
+    float verticalSpeed = 1;
 
     auto* playerPos = &player->get<PositionComponent>()->position;
     Vec3f moveDirection(0, 0, 0);
@@ -111,7 +111,7 @@ void Input::doPlayerControllerPolling()
         moveDirection = -aimDirection;
 
     Vec3f rightDirection;
-    rightDirection = cross(aimDirection, Vec3f(0, 1, 0));
+    rightDirection = cross(aimDirection, Vec3f(0, 0, 1));
 
     if(isKeyPressed(RV_KEY_D))
         moveDirection += rightDirection;
@@ -119,23 +119,32 @@ void Input::doPlayerControllerPolling()
     if(isKeyPressed(RV_KEY_A))
         moveDirection += -rightDirection;
 
+    Vec3f hDelta = normalise(moveDirection) * speed * Time::getDelta();
+
     if(isKeyPressed(RV_KEY_W) || isKeyPressed(RV_KEY_A) || isKeyPressed(RV_KEY_S) || isKeyPressed(RV_KEY_D))
     {
-        *playerPos += normalise(moveDirection) * speed * Time::getDelta();
+        *playerPos += hDelta;
     }
 
     Vec3f verticalDelta(0,0,0);
     if(isKeyPressed(RV_KEY_SPACE))
-        verticalDelta = verticalSpeed * Vec3f(0, 1, 0) * Time::getDelta();
+        verticalDelta = verticalSpeed * Vec3f(0, 0, 1) * Time::getDelta();
 
     if(isKeyPressed(RV_KEY_LEFT_SHIFT))
-        verticalDelta = -verticalSpeed * Vec3f(0, 1, 0) * Time::getDelta();
+        verticalDelta = -verticalSpeed * Vec3f(0, 0, 1) * Time::getDelta();
     *playerPos += verticalDelta;
 
     if(Time::isOneSecond())
     {
-        cout << "Vertical: ";
-        log(verticalDelta);
+        //cout << "Vertical: ";
+        //log(verticalDelta);
+
+        //cout << "hDelta: ";
+        //log(hDelta);
+
+        //cout << "direction: ";
+        //log(aimDirection);
+
     }
     
 }

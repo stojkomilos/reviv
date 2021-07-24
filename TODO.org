@@ -2,6 +2,15 @@
 
 order: input->update->display
 
+bagovi:
+ - providan background color
+ - glfw crash thing
+ - windows 10 not working
+ - player becomes nan
+
+vscode:
+ - disable (or set low-prio) searching on files from vendor
+
 windows MSVC specific stuff
 link time optimization?
 merge onaj standard settings sa obicnim?

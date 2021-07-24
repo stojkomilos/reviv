@@ -7,22 +7,23 @@
 class Camera
 {
 public:
-	Camera() = default;
-	Camera(float nearPlane, float farPlane, float fov);
-	Camera(const Camera&) = default;
+    Camera() = default;
+    Camera(const Camera&) = default;
+    Camera(float renderDistance, float nearRenderDistance, float horizontalFov);
 
     void recalculateViewMatrix(const Vec3f& position, const Rotation& rotation); // gRenderManager -> recalculateViewMatrix ili static deo ProjectionCamera klase
-	void recalculateProjectionMatrix(const WindowData& windowData);
+    void recalculateProjectionMatrix(const WindowData& windowData);
 
     void onEventMouseMoved(Event* event);
 
-	Vec3f right, up, direction;
+    Vec3f right, up, direction;
 
-	Mat4 viewMatrix, projectionMatrix;
+    Mat4 viewMatrix, projectionMatrix;
 
-    float renderDistance = 10000;
-	float leftPlane, rightPlane, bottomPlane, topPlane, nearPlane, farPlane;
-	float ratio, fov;
+    float renderDistance = 10000.f;
+    float nearRenderDistance = 0.1f; //TODO, bolje vrednosti, z fighting? FOV=\aprrox 90-100
+    float ratio;
+    float m_HorizontalFov, m_VerticalFov;
 };
 
 void log(const Camera& camera);
