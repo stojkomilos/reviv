@@ -1,16 +1,24 @@
 #include"material.h"
 
+Material::~Material()
+{
+    for(const auto& [uniformName, help] : map)
+    {
+        delete help.ptr; // -Wdelete-incomplete: "warning: deleting 'void* const' is undefined" TODO:
+    }
+}
+
 void Material::setShader(Shader* inShader)
 {
     RV_ASSERT(pShader == nullptr, "");
     pShader = inShader;
 }
+
 void Material::bindShader()
 {
     RV_ASSERT(pShader != nullptr, "");
     pShader->bind();
 }
-
 
 void Material::bind() const
 {

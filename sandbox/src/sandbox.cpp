@@ -1,9 +1,10 @@
 #include<reviv.h>
 
-Entity *player, *camera, *stanic;
-Shader shaderTexture, shaderMonochroma;
-ModelLoader modelLoaderBackpack;
-Material materialBasic;
+Entity *player, *camera, *stanic, *light, *platform;
+
+Shader shaderPhong, shaderMonochroma;
+Material materialPhong, materialLight;
+ModelLoader modelLoaderBackpack, modelLoaderCube;
 
 Material materialNov;
 Shader shaderNov;
@@ -11,6 +12,8 @@ Entity* nov;
 ModelLoader modelLoaderNov;
 Model modelNov;
 
+Model* stanicModel;
+Material* stanicMaterial;
 
 class Sandbox : public Application
 {
@@ -21,40 +24,55 @@ public:
         camera = Scene::setCameraEntity(Scene::createEntity("Camera"));
         player = Scene::setPlayerEntity(Scene::createEntity("Player"));
 
-        camera->add<PositionComponent>();
-        camera->add<RotationComponent>();
         camera->add<CameraComponent>(0.001f, 1000.f, degreesToRadians(100.f));
 
-        player->add<PositionComponent>(0, 0, 0);
-        player->add<RotationComponent>(Vec3f(0, 0, 0));
-
         stanic = Scene::createEntity("Stanic");
-        stanic->add<PositionComponent>(1, 0, 0);
-        stanic->add<TransformComponent>();
-        stanic->add<RotationComponent>(Vec3f(0, 0, 0));
+        stanic->get<TransformComponent>()->position = {1, 0, 2};
 
+        light = Scene::createEntity("Light");
+        light->get<TransformComponent>()->scale = {0.1f, 0.1f, 0.1f};
+
+        platform = Scene::createEntity("Platform");
+        platform->get<TransformComponent>()->scale = {7, 14, 0.4};
+        platform->get<TransformComponent>()->position = {0, 0, -0.4};
     }
 
     void initAfterEngine() override
     {
         shaderMonochroma.init("assets/shaders/monochroma.vs", "assets/shaders/monochroma.fs");
+        shaderPhong.init("assets/shaders/phong.vs", "assets/shaders/phong.fs");
         shaderNov.init("assets/shaders/novvs.txt", "assets/shaders/novfs.txt");
 
-        materialBasic.setShader(&shaderMonochroma);
+        materialPhong.setShader(&shaderPhong);
         materialNov.setShader(&shaderNov);
-      
-        modelLoaderBackpack.load("assets/models/backpack/backpack.obj");
-        stanic->add<ModelComponent>(&modelLoaderBackpack, &materialBasic);
+        materialLight.setShader(&shaderMonochroma);
 
+        modelLoaderBackpack.load("assets/models/backpack/backpack.obj");
+        modelLoaderCube.load("assets/models/cube.obj");
         modelLoaderNov.load("assets/models/nov.obj");
+
         modelNov = Model(&modelLoaderNov, &materialNov);
+
+        stanic->add<ModelComponent>(&modelLoaderBackpack, &materialPhong);
+        light->add<ModelComponent>(&modelLoaderCube, &materialLight);
+        platform->add<ModelComponent>(&modelLoaderCube);
+
+        Material* platformMaterial = platform->get<ModelComponent>()->model.addMaterial(shaderPhong);
+        platformMaterial->set("u_Color", Vec3f(0.8f, 0.8f, 0.8f));
+
+        stanicModel = &stanic->get<ModelComponent>()->model;
+        stanicMaterial = stanicModel->pMaterials[0];
+        stanicMaterial->set("u_Color", Vec3f(0.8, 0.2, 0.9));
+
+        materialLight.set("u_Color", Vec3f(1, 1, 1));
     }
 
     void onUpdate() override
     {
-        //stanic->get<PositionComponent>()->position = Vec3f(sin(Time::getTime()), 0, cos(Time::getTime()));
+        //light->get<TransformComponent>()->position = Vec3f(sin(Time::getTime() * 5) * 5, cos(Time::getTime() * 5) * 5, 5 + sin(Time::getTime() / 2));
+        light->get<TransformComponent>()->position = Vec3f(sin(Time::getTime() * 2) * 2, cos(Time::getTime() * 2) * 2, 2 + sin(Time::getTime() / 2));
 
-        if(std::isnan(player->get<PositionComponent>()->position.x))
+        if(std::isnan(player->get<TransformComponent>()->position.x))
         {
             RV_ASSERT(false, "");
         }
@@ -62,20 +80,13 @@ public:
         if(Time::isOneSecond()){
             cout << "FPS: " << 1 / Time::getDelta() << endl;
             cout << "Position: ";
-            log(Scene::getPlayerEntity()->get<PositionComponent>()->position);
+            log(Scene::getPlayerEntity()->get<TransformComponent>()->position);
             cout << "Rotation: ";
-            log(Scene::getPlayerEntity()->get<RotationComponent>()->rotation);
-
+            log(Scene::getPlayerEntity()->get<TransformComponent>()->rotation);
         }
 
-        auto* stanicModel = &stanic->get<ModelComponent>()->model;
-
-        materialBasic.pShader->bind();
-        materialBasic.set("u_Color", Vec4f(0, 0, 1, 1));
-        materialBasic.set("u_Projection", Scene::getCameraEntity()->get<CameraComponent>()->camera.projectionMatrix);
-        materialBasic.set("u_View", Scene::getCameraEntity()->get<CameraComponent>()->camera.viewMatrix);
-
-        materialBasic.set("u_Model", stanic->get<TransformComponent>()->transform);
+        //stanicMaterial->set("u_LightPosition", light->get<TransformComponent>()->position);
+        platform->get<ModelComponent>()->model.pMaterials[0]->set("u_LightPosition", light->get<TransformComponent>()->position);
 
         //materialNov.bind();
         //modelNov.pMeshes[0]->vao.bind();

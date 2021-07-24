@@ -11,8 +11,11 @@ class Model
 public:
     Model() = default;
     Model(ModelLoader* pModelLoader, Material* pMaterial);
+    Model(ModelLoader* pModelLoader);
 
     ModelLoader* m_ModelLoader;
+
+    Material* addMaterial(const Shader& shader);
 
     stls::StableVector<Mesh*> pMeshes;
     stls::StableVector<Material*> pMaterials;

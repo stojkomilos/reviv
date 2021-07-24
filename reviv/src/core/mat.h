@@ -35,10 +35,9 @@ namespace mat{
         {
             return {x - other.x, y - other.y, z - other.z};
         }
-        Vec3f operator-() const //TODO: da vraca mozda reference, ne znam, mozda move semantics
+        Vec3f operator-() const
         {
-            Vec3f result(-x, -y, -z);
-            return result; //TODO: return {-x, -y, -z}, mozda ovo moze
+            return {-x, -y, -z};
         }
         Vec3f& operator+=(const Vec3f& other)
         {
@@ -50,8 +49,7 @@ namespace mat{
         }
         Vec3f operator/(float scalar) const
         {
-            Vec3f result(x / scalar, y / scalar, z / scalar);
-            return result;
+            return {x / scalar, y / scalar, z / scalar};
         }
     };
 

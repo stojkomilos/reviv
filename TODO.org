@@ -2,103 +2,44 @@
 
 order: input->update->display
 
-bagovi:
- - providan background color
- - glfw crash thing
- - windows 10 not working
- - player becomes nan
+shallow work:
+ - dll assimp
+ - copy shit
+
+clean:
+ - git "merge" with main, reviv1
+ - gitlc? models
+ - .dll za assimp?
+ - asset manager, bolje dodavanje shadera, materiala, meshova, transforma...
+ - assets copy: u debug: assets kao parametar, u release: kopiraj u cmake
+ - environment stuff?
+
+texture, i backpack sa njima
+distance lighting
+pretty shaders
+textures in materials
+skybox
+zfightings probaj sam pa onda(http://www.songho.ca/opengl/gl_projectionmatrix.html)
+scale i normalizacija
 
 vscode:
  - disable (or set low-prio) searching on files from vendor
 
-windows MSVC specific stuff
-link time optimization?
-merge onaj standard settings sa obicnim?
-cross compile?
-
-ygdrassil msvc compile flags and general settings
-
-flags to try: -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl
-
-obrisi onaj ./cmake folder mozda? cross compile
-
-detect PLATFORM and include based on that
-
-wind:
- - visual studio starting directory
- - and && or ||
- - compile flags
- - link libraries
-   - opengl32
-   - iskljuci pthread, dl(mozda??)
- - dodaj komentar u cmake za ostale potencijalne linux librarije
-
-proveri da li call-ujem: rendercommand::clear
-
--g
-
-vbo layout stavi u vbo
-plan za danas:
-    1. assimp fast as fuck
-       - material, pogledaj njegov i moj i uzmi najbolje
-       - deal with environment sheat
-    2. compiler shit
-       - clean warnings
-       - work on windows 10
-       - flags
-    3. merge stuff
-    6. other clean, TODO clean
- 
-todo:
-    project todo:
-        cmake:
-            - use flags from cmake/
-            - check flags for Release and Debug
-            - check user instruction from readme.org
-            - check if release works
-            - check if it works on windows 10 (release and debug)
-        other:
-            - merge reviv2 test to main/master
-            - merge? reviv2 and reviv
-    1. basic event
-    2. use events for noclip first person camera controller
-    3. merge to main/master branch
-
-    1. model loading library load
-    2. material->setTexture("uniformName", int)
-    3. material clean
-    4. proci kroz sve =TODO= komentare u kodu
-    5. dodati warning flags, i fixovati ih
-        - release i debug flags
-        - omoguciti kompilaciju na windows 10 (visual studio)
-    - package-uj program da radi za korisnike, asset folder da bude pored binary fajla
-    - spojiti reviv i reviv2, build instruction
-
-debug stuff ideje:
-    - entity copy const., constructor, assignment operator
-    - component copy const., constructor, assignment operator
-    - napravi shallow copy za material, koristi ga na mestima gde vidis da se triger-uje breakpoint za copy construktor? i assignmnet operator.
-
-project:
-  - debug and release
-  - binary output:
-    ${solution-dir}/bin/${configuration}-${platform}/${project-name}/                | mozda ${solution-dir}/bin/${configuration}-${platform}/     (svi projekti na isto mesto) (isto i za intermediate binaries)
-    ${solution-dir}/bin-int/${configuration}-${platform}/${project-name}/
-    (mozda outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}")
-
-
-- camera noclip flying controler (ubaciti u physics sistem)
-- camera da pravi novi projection matrix svaki novi frame, zbog resize i tako to
-- Material map da bude safe (?opratori, copy construtor?)
-
-- physics i render engine:
-    - timestep
-    - user input
+crash:
+ - glfw crash thing
+ - windows 10 not working
+ - player becomes nan
 
 long term:
     - full scripting system
     - imgui, imguizmo.... full cherno style thing
     - layers
+
+organizacija:
+ - m_thing, m_Thing, pThing
+ - iteratori kako valja
+ - const * gde treba
+ - red include-ova (ima na stack overflow)
       
 * Window, event, input
 

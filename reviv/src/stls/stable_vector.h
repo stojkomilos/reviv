@@ -64,7 +64,7 @@ namespace stls
         StableVector();
         StableVector(unsigned int capacity);
         StableVector(std::vector<T> inVector);
-        StableVector(const StableVector&) = delete; //TODO: delete
+        StableVector(const StableVector&) = delete;
         ~StableVector();
 
         StableVector& operator=(const StableVector &other);
@@ -86,7 +86,7 @@ namespace stls
         }
         Iterator end() const
         {
-            return Iterator((T*)ptr + currentSize); //TODO, da li ovo valja?
+            return Iterator((T*)ptr + currentSize);
         }
 
     unsigned int capacity=0;

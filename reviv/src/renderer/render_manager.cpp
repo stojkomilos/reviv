@@ -11,23 +11,14 @@ void RenderManager::iOnUpdate(const WindowData& windowData)
     {
         if(itEntity->valid)
         {
-            //if(itEntity->has<MaterialComponent>() && itEntity->has<TransformComponent>() && itEntity->has<ModelComponent>())
             if(itEntity->has<ModelComponent>() && itEntity->has<TransformComponent>())
             {
                 //cout << "Rendering entity: " << itEntity->entityName << endl;
-
                 submit(itEntity->get<ModelComponent>()->model,
-                    itEntity->get<TransformComponent>()->transform);
-
-                //submit(
-                //    &itEntity->get<MaterialComponent>()->material, 
-                //    itEntity->get<TransformComponent>()->transform, 
-                //    itEntity->get<ModelComponent>()->model);
-
+                    itEntity->get<TransformComponent>()->getTransform());
             }
         }
     }
-
     endScene();
 }
 
@@ -36,7 +27,7 @@ void RenderManager::iInit(const WindowData& windowData)
     RenderCommand::init();
 
     auto* cameraEntity = Scene::getCameraEntity();
-    cameraEntity->get<CameraComponent>()->camera.recalculateViewMatrix(cameraEntity->get<PositionComponent>()->position, cameraEntity->get<RotationComponent>()->rotation);
+    cameraEntity->get<CameraComponent>()->camera.recalculateViewMatrix(cameraEntity->get<TransformComponent>()->position, cameraEntity->get<TransformComponent>()->rotation);
     cameraEntity->get<CameraComponent>()->camera.recalculateProjectionMatrix(windowData);
 }
 
@@ -45,9 +36,10 @@ void RenderManager::submit(const Model& model, const Mat4& transform)
     RV_ASSERT(model.pMaterials.size() == model.pMeshes.size(), "");
     for(unsigned int i=0; i<model.pMeshes.size(); i++)
     {
-        //TODO: set environment uniforms
-        model.pMaterials[i]->bindShader();
         model.pMaterials[i]->set("u_Model", transform);
+        model.pMaterials[i]->set("u_View", Scene::getCameraEntity()->get<CameraComponent>()->camera.viewMatrix);
+        model.pMaterials[i]->set("u_Projection", Scene::getCameraEntity()->get<CameraComponent>()->camera.projectionMatrix);
+
         model.pMaterials[i]->bind();
 
         model.pMeshes[i]->vao.bind();
@@ -58,7 +50,6 @@ void RenderManager::submit(const Model& model, const Mat4& transform)
 
 void RenderManager::iShutdown() 
 {
-	delete[] voxelBuffer;
 }
 
 void RenderManager::beginScene(const WindowData& windowData)
@@ -66,13 +57,12 @@ void RenderManager::beginScene(const WindowData& windowData)
     Camera* camera = &Scene::getCameraEntity()->get<CameraComponent>()->camera;
 
     RV_ASSERT(Scene::getCameraEntity()->has<CameraComponent>()
-        && Scene::getCameraEntity()->has<PositionComponent>()
-        && Scene::getCameraEntity()->has<RotationComponent>(),
+        && Scene::getCameraEntity()->has<TransformComponent>(),
         "submitted entity is supposed to be a camera, but does NOT have required components");
 
     camera->recalculateViewMatrix(
-        Scene::getCameraEntity()->get<PositionComponent>()->position,
-        Scene::getCameraEntity()->get<RotationComponent>()->rotation);
+        Scene::getCameraEntity()->get<TransformComponent>()->position,
+        Scene::getCameraEntity()->get<TransformComponent>()->rotation);
 
     camera->recalculateProjectionMatrix(windowData);
 

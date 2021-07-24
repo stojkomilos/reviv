@@ -3,7 +3,9 @@
 Entity* Scene::iCreateEntity(const std::string& entityName)
 {
     entityList.emplaceBack(entityName);
-    return &entityList[entityList.size()-1];
+    Entity* pEntity = &entityList[entityList.size()-1];
+    pEntity->add<TransformComponent>();
+    return pEntity;
 }
 
 Entity* Scene::iFindEntity(const std::string& entityName)
@@ -17,7 +19,7 @@ void Scene::iLogEntity(const std::string& entityName)
     RV_ASSERT(false, "");
 }
 
-stls::StableVector<Entity>* Scene::iGetEntityList() //TODO: return const pointer?
+stls::StableVector<Entity>* Scene::iGetEntityList()
 {
     return &entityList;
 }

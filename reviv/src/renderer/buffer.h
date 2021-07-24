@@ -47,11 +47,11 @@ class Vao;
 class GBufferObject
 {
 public:
-    GBufferObject() = default; //TODO: delete
-    GBufferObject(const GBufferObject&) = default; //TODO: delete
+    GBufferObject() = delete;
+    GBufferObject(const GBufferObject&) = delete;
     virtual ~GBufferObject();
 
-    GBufferObject& operator=(const GBufferObject&) = default; //TODO: delete
+    GBufferObject& operator=(const GBufferObject&) = delete;
 
     void bind() const;
     void unbind() const;

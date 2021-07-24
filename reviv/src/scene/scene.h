@@ -4,6 +4,7 @@
 #include<vector>
 
 #include"entity.h"
+#include"components.h"
 
 class Scene{
 public:

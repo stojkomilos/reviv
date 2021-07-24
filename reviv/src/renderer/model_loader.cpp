@@ -5,7 +5,7 @@ void ModelLoader::load(const std::string& filePath)
     m_FilePath = filePath;
 
     Assimp::Importer importer;
-    m_Scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_SplitLargeMeshes | aiProcess_OptimizeMeshes); //TODO
+    m_Scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_SplitLargeMeshes | aiProcess_OptimizeMeshes);
     //m_Scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
 
     // additional flags:    aiProcess_GenNormals
@@ -29,9 +29,7 @@ void ModelLoader::processNode(aiNode* node)
     for(unsigned int i=0; i < node->mNumMeshes; i++)
     {
         meshes.emplaceBack();
-        //m_Scene->mNumMeshes
         addMesh(m_Scene->mMeshes[node->mMeshes[i]], &meshes[meshes.size() - 1]);
-        //loadMaterial(m_Scene->mMeshes[node->mMeshes[i]]); TODO:
     }
     for(unsigned int i=0; i < node->mNumChildren; i++)
     {
@@ -108,42 +106,3 @@ void ModelLoader::addMesh(aiMesh* loaderMesh, Mesh* pMesh)
 
     pMesh->vao.unbind();
 }
-
-
-/*
-void Mesh::init()
-{
-    vao.init();
-    vao.bind();
-    vao.load(m_Vertices.size() * sizeof(Vertex), &m_Vertices[0]);
-
-    vao.unbind(); //TODO: da li ovo treba?
-
-    RV_ASSERT(sizeof(Vertex) == 32, "");
-    RV_ASSERT(sizeof(char) == 1 && CHAR_BIT == 8, "something is very wrong");
-    RV_ASSERT(GL_STATIC_DRAW < INT_MAX && GL_STATIC_DRAW > INT_MIN, "");
-    RV_ASSERT(GL_DYNAMIC_DRAW < INT_MAX && GL_DYNAMIC_DRAW > INT_MIN, "");
-    RV_ASSERT(sizeof(float) * 3 == sizeof(Vec3f), "");
-
-}
-
-
-
-void Mesh::load(aiMesh* mesh, const aiScene* scene)
-{
-   
-
-    if(mesh->mMaterialIndex >= 0)
-    {
-        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-        std::vector<Texture> diffuesMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-        texutres.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-        vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-        textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-        /////
-    }
-
-
-}
-
-*/

@@ -25,6 +25,5 @@ private:
     void iInit();
     void iOnUpdate();
 
-    void updateTransforms();
     void alignPositionAndRotation(const Entity& parentEntity, Entity* childEntity);
 };

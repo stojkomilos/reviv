@@ -13,6 +13,9 @@ class Component
 {
 public:
     virtual ~Component() = default;
+    Component(const Component&) = default;
+    Component& operator=(const Component&) = default;
+
     virtual ComponentId getId() const = 0;
     virtual std::string getComponentTypeName() const = 0;
     virtual void log() const = 0;
@@ -27,6 +30,10 @@ public:
     Entity();
     Entity(const std::string& name);
     ~Entity();
+
+    Entity(const Entity&) = delete; // can be implemented
+    Entity& operator=(const Entity&) = delete; // can be implemented
+
     void print() const;
 
     template <class T, class... Args>
@@ -98,6 +105,14 @@ T* Entity::add(Args&&... args)
     Component* result = new T(std::forward<Args>(args)...);
     components.pushBack(result);
     return (T*)result;
+
+#if RV_DEBUG
+    for(unsigned int i=0; i<components.size(); i++)
+        if(((T*)components[i])->getId() == T::id)
+        {
+            RV_ASSERT(false, "One entity can't have more than 1 of the same component type");
+        }
+#endif
 }
 
 template <class T>

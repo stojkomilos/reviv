@@ -15,7 +15,7 @@ class Mesh
 public:
     Mesh() = default;
     ~Mesh() = default;
-    Mesh(const Mesh&) = default; //TODO: obrisati
+    Mesh(const Mesh&) = delete;
 
     Mesh(Mesh&&) = default;
 

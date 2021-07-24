@@ -26,20 +26,7 @@ public:
         static RenderManager instance;
         return &instance;
     }
-    // TODO: obrisi sve do private
-    float renderDistance = 1000;
-    
-    bool renderHitbox;
-    float* voxelBuffer;
-    size_t sizeOfVoxelBuffer;
-    bool fullscreen = false;
-    
-    Shader praviMono;
-    Texture2D stanicTexture;
-    Texture2D beloTexture;
-    
-    int nrOfValidCubes;
-    ///
+
 private:
     RenderManager() = default;
 
@@ -47,7 +34,6 @@ private:
     void iOnUpdate(const WindowData& windowData);
     void iShutdown();
 
-    //void submit(const Model& model, const Mat4& transform, Material* pMaterial);
     void submit(const Model& model, const Mat4& transform);
 
     void beginScene(const WindowData& windowData);

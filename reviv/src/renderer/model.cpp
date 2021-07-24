@@ -11,6 +11,13 @@ void log(const Model& model)
         cout << "Mesh: " << endl;
         log(*it);
     }
+
+    cout << "pMaterials.size(): " << model.pMaterials.size() << endl;
+    for(auto it : model.pMaterials)
+    {
+        cout << "Material: " << endl;
+        log(*it);
+    }
 }
 
 Model::Model(ModelLoader* pModelLoader, Material* pMaterial)
@@ -27,4 +34,28 @@ Model::Model(ModelLoader* pModelLoader, Material* pMaterial)
         pMeshes.pushBack(&pModelLoader->meshes[i]);
         pMaterials.pushBack(pMaterial);
     }
+}
+
+Model::Model(ModelLoader* pModelLoader)
+{
+    RV_ASSERT(pModelLoader->isLoaded, "");
+
+    m_ModelLoader = pModelLoader;
+    pMeshes.reserve(pModelLoader->meshes.size());
+    pMaterials.reserve(5);
+
+    for(unsigned int i=0; i < pModelLoader->meshes.size(); i++)
+    {
+        pMeshes.pushBack(&pModelLoader->meshes[i]);
+    }
+}
+
+Material* Model::addMaterial(const Shader& shader)
+{
+    RV_ASSERT(pMeshes.size() == 1 and pMaterials.size() == 0, ""); // can be implemented, but be careful
+
+    Material* pMaterial = new Material(&shader);
+    pMaterials.pushBack(pMaterial);
+
+    return pMaterial;
 }

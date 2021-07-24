@@ -11,7 +11,7 @@ public:
     Camera(const Camera&) = default;
     Camera(float renderDistance, float nearRenderDistance, float horizontalFov);
 
-    void recalculateViewMatrix(const Vec3f& position, const Rotation& rotation); // gRenderManager -> recalculateViewMatrix ili static deo ProjectionCamera klase
+    void recalculateViewMatrix(const Vec3f& position, const Rotation& rotation);
     void recalculateProjectionMatrix(const WindowData& windowData);
 
     void onEventMouseMoved(Event* event);
