@@ -52,7 +52,7 @@ Model::Model(ModelLoader* pModelLoader)
 
 Material* Model::addMaterial(const Shader& shader)
 {
-    RV_ASSERT(pMeshes.size() == 1 and pMaterials.size() == 0, ""); // can be implemented, but be careful
+    RV_ASSERT(pMeshes.size() == 1 && pMaterials.size() == 0, ""); // can be implemented, but be careful
 
     Material* pMaterial = new Material(&shader);
     pMaterials.pushBack(pMaterial);
