@@ -13,6 +13,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..
 
 target_link_libraries(${PROJECT_NAME} reviv)
 
+# Handles the asset files. On release it just copies them over. On debug it creates a symlink on Linux, and on Windows it changes the Visual Studio working directory to the source assets. (copies just like in release if it's Debug but neither Linux nor Visual Studio)
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     # Copies the assets folder from sandbox to the directory of the output executable (there might be faster solutions that copy and when the asset files change, and not every time like it does right now)
     add_custom_command(
@@ -24,9 +25,9 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
     )
 elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
     if(MSVC)
-        # Sets Visual Studio working directory to the directory of the executable
+        # Sets Visual Studio working directory to the directory of the executable for accessing the asset files
         set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/assets/")
-    elseif(UNIX AND NOT APPLE) # Creates a symlink on Linux
+    elseif(UNIX AND NOT APPLE) # Creates a symlink on Linux for the asset files
         set(MY_ASSETS_LINK_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/assets")
         set(MY_ASSETS_LINK_DESTINATION "${MY_EXECUTABLE_OUTPUT_DIRECTORY}/assets")
         add_custom_command(
