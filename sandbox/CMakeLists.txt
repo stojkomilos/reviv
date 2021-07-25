@@ -28,8 +28,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..
 
 target_link_libraries(${PROJECT_NAME} reviv)
 
-if(MSVC)
-    set_target_properties(${PROJECT_NAME} PROPERTIES VS_STARTUP_PROJECT "${PROJECT_NAME}")
+if(MSVC) # Sets Visual Studio working directory to the directory of the executable
     set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${MY_EXECUTABLE_OUTPUT_DIRECTORY}")
 endif()
 #install(TARGETS ${PROJECT_NAME} DESTINATION bin) # Should be last command

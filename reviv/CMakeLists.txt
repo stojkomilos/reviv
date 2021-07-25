@@ -89,3 +89,7 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
 else()
     message(FATAL_ERROR "========> ERROR: CMAKE_BUILD_TYPE is not recognized. Should be either \"Release\" or \"Debug\"!!!")
 endif()
+
+if(MSVC) # Sets Visual Studio working directory to the directory of the executable
+    set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${MY_EXECUTABLE_OUTPUT_DIRECTORY}")
+endif()
