@@ -6,12 +6,6 @@ Shader shaderPhong, shaderMonochroma;
 Material materialPhong, materialLight;
 ModelLoader modelLoaderBackpack, modelLoaderCube;
 
-Material materialNov;
-Shader shaderNov;
-Entity* nov;
-ModelLoader modelLoaderNov;
-Model modelNov;
-
 Model* stanicModel;
 Material* stanicMaterial;
 
@@ -41,17 +35,12 @@ public:
     {
         shaderMonochroma.init("assets/shaders/monochroma.vs", "assets/shaders/monochroma.fs");
         shaderPhong.init("assets/shaders/phong.vs", "assets/shaders/phong.fs");
-        shaderNov.init("assets/shaders/novvs.txt", "assets/shaders/novfs.txt");
 
         materialPhong.setShader(&shaderPhong);
-        materialNov.setShader(&shaderNov);
         materialLight.setShader(&shaderMonochroma);
 
         modelLoaderBackpack.load("assets/models/backpack/backpack.obj");
         modelLoaderCube.load("assets/models/cube.obj");
-        modelLoaderNov.load("assets/models/nov.obj");
-
-        modelNov = Model(&modelLoaderNov, &materialNov);
 
         stanic->add<ModelComponent>(&modelLoaderBackpack, &materialPhong);
         light->add<ModelComponent>(&modelLoaderCube, &materialLight);
@@ -87,10 +76,6 @@ public:
 
         //stanicMaterial->set("u_LightPosition", light->get<TransformComponent>()->position);
         platform->get<ModelComponent>()->model.pMaterials[0]->set("u_LightPosition", light->get<TransformComponent>()->position);
-
-        //materialNov.bind();
-        //modelNov.pMeshes[0]->vao.bind();
-        //glDrawElements(GL_TRIANGLES, modelNov.pMeshes[0]->m_Indices.size(), GL_UNSIGNED_INT, 0);
 
         //stanicTexture.setUp("../resources/textures/stene.png");
         //stanicTexture.bind(0);
