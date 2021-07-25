@@ -5,18 +5,27 @@
 - =cmake=
 - all the =glfw= dependencies (see [[https://www.glfw.org/docs/latest/compile.html][here]])
 
-** Instructions
+* Build Instructions
+
+Dependencies:
+ - =cmake=
+ - all the =glfw= dependencies (see [[https://www.glfw.org/docs/latest/compile.html][here]])
+
+Download with: =git clone --recursive https://github.com/infernotnt/reviv2=
  
+** Windows
+
+Just run scripts/Build-Release-Windows.bat and you're done.
+
+** Linux
+
 #+begin_src bash
-  git clone --recursive https://github.com/infernotnt/reviv2
   mkdir build
   cd build
   cmake ../reviv2 -DCMAKE_BUILD_TYPE=Release
-  cmake --build . -j3
+  cmake --build . -j4
 #+end_src
 
 If you're using /Wayland/ on /Linux/, it should automatically get detected and =glfw= will compile for Wayland.
 
-=Visual Studio= is probably /not/ fully supported.
-
-After building, the executable is in =bin/Release-OS= directory. You can delete the static library files.
+After building, the executable is in =bin/Release-OS= directory. You can delete the static library files. You only need the executable and the =assets= folder.
