@@ -4,7 +4,7 @@ Material::~Material()
 {
     for(const auto& [uniformName, help] : map)
     {
-        delete help.ptr; // -Wdelete-incomplete: "warning: deleting 'void* const' is undefined" TODO:
+        //delete help.ptr; //TODO: -Wdelete-incomplete: "warning: deleting 'void* const' is undefined" TODO:
     }
 }
 
