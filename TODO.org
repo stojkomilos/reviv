@@ -2,9 +2,15 @@
 
 order: input->update->display
 
+sutra:
+ - asset stuff for opengl shader development speeeed
+ - pretty shaders speedrun
+   
 shallow work:
  - dll assimp
  - copy shit
+
+procitaj: https://learnopengl.com/In-Practice/Debugging
 
 clean:
  - git "merge" with main, reviv1
