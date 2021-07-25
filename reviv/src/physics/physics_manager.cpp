@@ -18,7 +18,7 @@ void PhysicsManager::iInit()
 
 void PhysicsManager::alignPositionAndRotation(const Entity& parent, Entity* child)
 {
-    RV_ASSERT(parent.has<TransformComponent>() and child->has<TransformComponent>(), "there is no transform, it is required")
+    RV_ASSERT(parent.has<TransformComponent>() && child->has<TransformComponent>(), "there is no transform, it is required")
 
     *child->get<TransformComponent>() = *parent.get<TransformComponent>();
 }
