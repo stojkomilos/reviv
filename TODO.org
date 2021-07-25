@@ -3,12 +3,22 @@
 order: input->update->display
 
 sutra:
- - asset stuff for opengl shader development speeeed
- - pretty shaders speedrun
-   
+    - textures and stuff on backpack and textures in general
+    - /ne/ jos environment apstraction (skroz)
+    - normals transformation
+    - quaternion?
+
+smoother mouse:
+ - manji sensitivity
+ - double for position?
+ - pogledaj kako racunas mozda moze bolje da se preser-vuje
+
 shallow work:
  - dll assimp
- - copy shit
+
+math:
+ - normals move: http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
+ - quaterinions
 
 procitaj: https://learnopengl.com/In-Practice/Debugging
 
@@ -64,6 +74,17 @@ Window has function pointer to the callback function in application
 Callback function : onEvent(const Event& event)
 
 * Renderer
+** Shader, light, environment
+
+Entity-ji imaju light component. ?Dalje se sami namestaju shader-i u begin scene? a mozda i u material.configEnvironemnt(environment& environment)
+
+submit:
+ entity.meterial.bind();
+ entity.environment.bind();
+ entity.vao.bind();
+ drawElements()
+
+
 ** Model
 
 class Model

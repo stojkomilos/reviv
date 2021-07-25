@@ -33,7 +33,10 @@ void RenderManager::iInit(const WindowData& windowData)
 
 void RenderManager::submit(const Model& model, const Mat4& transform)
 {
+    RV_ASSERT(model.pMeshes.size() > 0 && model.pMaterials.size() > 0, "");
     RV_ASSERT(model.pMaterials.size() == model.pMeshes.size(), "");
+    //RV_ASSERT(model.pMaterials.size() == model.pMeshes.size() || model.pMaterials.size() == 1, ""); // every mesh should have an equivalent material, OR there is just 1 material for every mesh
+
     for(unsigned int i=0; i<model.pMeshes.size(); i++)
     {
         model.pMaterials[i]->set("u_Model", transform);

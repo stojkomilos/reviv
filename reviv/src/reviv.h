@@ -1,5 +1,7 @@
 #pragma once
 
+#include"renderer/texture.h"
+
 #include "scene/scene.h"
 
 #include"renderer/render_manager.h"
@@ -16,6 +18,7 @@
 #include"core/base.h"
 #include"renderer/model_loader.h"
 #include"renderer/model.h"
+#include"scene/asset_manager.h"
 
 // ------Entry point-----------------------------------------------
 #include"core/entry_point.h"

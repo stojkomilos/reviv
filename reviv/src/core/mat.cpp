@@ -2,10 +2,11 @@
 
 const Mat4 identity(1);
 
+#define MAT_EPSILON 0.0001f
 
 void log(const bool& thing)
 {
-    RV_ASSERT(false, "Error: using this overloaded function log means that something went wrong");
+    assert(false); // Error: using this overloaded function log means that something went wrong
 
     if(thing == true)
     {
@@ -200,12 +201,12 @@ namespace mat{
 
     float module(const Vec3f& a)
     {
-        return sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
+        return sqrt(a.x * a.x + a.y * a.y + a.z * a.z + MAT_EPSILON);
     }
 
     float module(const Vec2f& a)
     {
-        return sqrt(a.x * a.x + a.y * a.y);
+        return sqrt(a.x * a.x + a.y * a.y + MAT_EPSILON);
     }
 
     float dot(const Vec3f& a, const Vec3f& b)
@@ -234,6 +235,7 @@ namespace mat{
         a.x /= b;
         a.y /= b;
         a.z /= b;
+
         return a;
     }
 
@@ -242,6 +244,7 @@ namespace mat{
         float b = module(a);
         a.x /= b;
         a.y /= b;
+
         return a;
     }
 

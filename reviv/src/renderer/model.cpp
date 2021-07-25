@@ -50,7 +50,16 @@ Model::Model(ModelLoader* pModelLoader)
     }
 }
 
-Material* Model::addMaterial(const Shader& shader)
+Material* Model::addMaterial(Material* pMaterial)
+{
+    RV_ASSERT(pMeshes.size() == 1 && pMaterials.size() == 0, ""); // can be implemented, but be careful
+
+    pMaterials.pushBack(pMaterial);
+
+    return pMaterial;
+}
+
+Material* Model::addMaterialFromShader(const Shader& shader)
 {
     RV_ASSERT(pMeshes.size() == 1 && pMaterials.size() == 0, ""); // can be implemented, but be careful
 

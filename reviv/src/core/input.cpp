@@ -97,10 +97,10 @@ void Input::doPlayerControllerPolling()
 {
     auto* player = Scene::getPlayerEntity();
     
-    float speed = 1;
-    float verticalSpeed = 1;
+    float speed = 6;
+    float verticalSpeed = 6;
 
-    auto* playerPos = &player->get<TransformComponent>()->position;
+    Vec3f* playerPos = &player->get<TransformComponent>()->position;
     Vec3f moveDirection(0, 0, 0);
     Vec3f aimDirection = getDirectionFromRotation(player->get<TransformComponent>()->rotation);
 

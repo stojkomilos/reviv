@@ -1,8 +1,10 @@
-#include"shader.h"
+#include "shader.h"
 
-Shader::Shader() { 
-    ID = 0;
+Shader::Shader()
+{ 
+    id = 0;
 };
+
 void Shader::init(const char* vertexPath, const char* fragmentPath) { //, const char* geometryPath = nullptr)
 
     std::string vertexCode;
@@ -68,13 +70,13 @@ void Shader::init(const char* vertexPath, const char* fragmentPath) { //, const 
         checkCompileErrors(geometry, "GEOMETRY");
     }*/
 
-    ID = glCreateProgram();
-    glAttachShader(ID, vertex);
-    glAttachShader(ID, fragment);
+    id = glCreateProgram();
+    glAttachShader(id, vertex);
+    glAttachShader(id, fragment);
     //if (geometryPath != nullptr)
-    //    glAttachShader(ID, geometry);
-    glLinkProgram(ID);
-    checkCompileErrors(ID, "PROGRAM");
+    //    glAttachShader(id, geometry);
+    glLinkProgram(id);
+    checkCompileErrors(id, "PROGRAM");
 
     glDeleteShader(vertex);
     glDeleteShader(fragment);
@@ -83,7 +85,7 @@ void Shader::init(const char* vertexPath, const char* fragmentPath) { //, const 
 }
 void Shader::bind() const
 {
-    glUseProgram(ID);
+    glUseProgram(id);
 }
 
 void Shader::checkCompileErrors(GLuint shader, std::string type) {
@@ -105,26 +107,39 @@ void Shader::checkCompileErrors(GLuint shader, std::string type) {
     }
 }
 
+int Shader::getUniformLocation(const std::string& uniformName) const
+{
+    int location = glGetUniformLocation(id, uniformName.c_str());
+    RV_ASSERT(location != -1, "Retreiving the uniform location failed: This function returns -1 if name does not correspond to an active uniform variable in program, if name starts with the reserved prefix 'gl_', or if name is associated with an atomic counter or a named uniform block. See: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glGetUniformLocation.xhtml");
+    return location;
+}
+
 void Shader::uploadUniformMat4(const std::string& name, const Mat4& matrix) const
 {
-    unsigned int location = glGetUniformLocation(ID, name.c_str());
+    int location = getUniformLocation(name);
     glUniformMatrix4fv(location, 1, GL_FALSE, (float*)&matrix);
 }
 
 void Shader::uploadUniform3f(const std::string& name, const Vec3f& a) const
 {
-    unsigned int loc = glGetUniformLocation(ID, name.c_str());
-    glUniform3f(loc, a.x, a.y, a.z);
+    int location = getUniformLocation(name);
+    glUniform3f(location, a.x, a.y, a.z);
 }
 
 void Shader::uploadUniform4f(const std::string& name, const Vec4f& a) const
 {
-    unsigned int loc = glGetUniformLocation(ID, name.c_str());
-    glUniform4f(loc, a.x, a.y, a.z, a.w);
+    int location = getUniformLocation(name);
+    glUniform4f(location, a.x, a.y, a.z, a.w);
 }
 
 void Shader::uploadUniform1i(const std::string& name, int a) const
 {
-    unsigned int loc = glGetUniformLocation(ID, name.c_str());
-    glUniform1i(loc, a);
+    int location = getUniformLocation(name);
+    glUniform1i(location, a);
+}
+
+void Shader::uploadUniform1f(const std::string& name, float a) const
+{
+    int location = getUniformLocation(name);
+    glUniform1f(location, a);
 }

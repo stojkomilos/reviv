@@ -22,6 +22,7 @@ void Material::bindShader()
 
 void Material::bind() const
 {
+    RV_ASSERT(pShader != nullptr, "shader not set");
     pShader->bind();
 
     MaterialHelpingStruct help;
@@ -35,6 +36,10 @@ void Material::bind() const
                 pShader->uploadUniformMat4(uniformName, *(Mat4*)(help.ptr));
                 //cout << "material uniform: " << uniformName;
                 //log(*(Mat4*)(help.ptr));
+                break;
+
+            case ShaderDataType::SdtFloat1:
+                pShader->uploadUniform1f(uniformName, *(float*)(help.ptr));
                 break;
 
             case ShaderDataType::SdtFloat3:
@@ -75,6 +80,8 @@ void Material::set(const std::string& uniformName, const Mat4& mat4)
 
 void Material::set(const std::string& uniformName, const Vec3f& vec3f)
 {
+    RV_ASSERT(pShader != nullptr, "shader not set");
+
     auto it = map.find(uniformName);
     if(it == map.end())
     {
@@ -90,6 +97,8 @@ void Material::set(const std::string& uniformName, const Vec3f& vec3f)
 
 void Material::set(const std::string& uniformName, const Vec4f& vec4f)
 {
+    RV_ASSERT(pShader != nullptr, "shader not set");
+
     auto it = map.find(uniformName);
     if(it == map.end())
     {
@@ -105,6 +114,8 @@ void Material::set(const std::string& uniformName, const Vec4f& vec4f)
 
 void Material::set(const std::string& uniformName, int n)
 {
+    RV_ASSERT(pShader != nullptr, "shader not set");
+
     auto it = map.find(uniformName);
     if(it == map.end())
     {
@@ -117,6 +128,29 @@ void Material::set(const std::string& uniformName, int n)
         RV_ASSERT(it->second.type == ShaderDataType::SdtInt1, "");
         *(int*)it->second.ptr = n;
     }
+}
+
+void Material::set(const std::string& uniformName, float n)
+{
+    RV_ASSERT(pShader != nullptr, "shader not set");
+
+    auto it = map.find(uniformName);
+    if(it == map.end())
+    {
+        MaterialHelpingStruct* foo = &map[uniformName];
+        foo->ptr = new float;
+        *(float*)foo->ptr = n;
+        foo->type = ShaderDataType::SdtFloat1;
+    }
+    else {
+        RV_ASSERT(it->second.type == ShaderDataType::SdtFloat1, "");
+        *(float*)it->second.ptr = n;
+    }
+}
+
+void Material::set(const std::string& uniformName, double n)
+{
+    RV_ASSERT(false, "seting doubles is disabled (for safety)");
 }
 
 void log(const Material& material)

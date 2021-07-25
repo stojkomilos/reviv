@@ -1,13 +1,14 @@
 #include<reviv.h>
 
-Entity *player, *camera, *stanic, *light, *platform;
+Entity *player, *camera, *stanic, *light, *platform, *sphere, *cube;
+Entity* map;
 
-Shader shaderPhong, shaderMonochroma;
-Material materialPhong, materialLight;
-ModelLoader modelLoaderBackpack, modelLoaderCube;
+ModelLoader modelLoaderBackpack, modelLoaderMap;
+Material materialStanic;
 
-Model* stanicModel;
-Material* stanicMaterial;
+//Texture textureCube;
+
+bool useMap = false;
 
 class Sandbox : public Application
 {
@@ -16,50 +17,65 @@ public:
     void initBeforeEngine() override
     {
         camera = Scene::setCameraEntity(Scene::createEntity("Camera"));
-        player = Scene::setPlayerEntity(Scene::createEntity("Player"));
-
         camera->add<CameraComponent>(0.001f, 1000.f, degreesToRadians(100.f));
+
+        player = Scene::setPlayerEntity(Scene::createEntity("Player"));
+        player->get<TransformComponent>()->position = {0, 0, 2};
+
+        if(useMap)
+        {
+            map = Scene::createEntity("Sponza");
+            map->get<TransformComponent>()->scale = {0.005f, 0.005f, 0.005f};
+        }
 
         stanic = Scene::createEntity("Stanic");
         stanic->get<TransformComponent>()->position = {1, 0, 2};
 
         light = Scene::createEntity("Light");
-        light->get<TransformComponent>()->scale = {0.1f, 0.1f, 0.1f};
+        light->get<TransformComponent>()->scale = {0.2f, 0.2f, 0.2f};
 
         platform = Scene::createEntity("Platform");
         platform->get<TransformComponent>()->scale = {7, 14, 0.4};
         platform->get<TransformComponent>()->position = {0, 0, -0.4};
+
+        sphere = Scene::createEntity("Sphere");
+        sphere->get<TransformComponent>()->position = {1, 2, 1};
+        sphere->get<TransformComponent>()->scale = {0.3f, 0.3f, 0.3f};
+
+        cube = Scene::createEntity("Cube");
+        cube->get<TransformComponent>()->position = {3, 2, 1.5};
+        cube->get<TransformComponent>()->scale = {0.3f, 0.3f, 0.3f};
+
+        materialStanic.setShader(&AssetManager::get()->shaderPhong);
     }
 
     void initAfterEngine() override
     {
-        shaderMonochroma.init("assets/shaders/monochroma.vs", "assets/shaders/monochroma.fs");
-        shaderPhong.init("assets/shaders/phong.vs", "assets/shaders/phong.fs");
-
-        materialPhong.setShader(&shaderPhong);
-        materialLight.setShader(&shaderMonochroma);
-
         modelLoaderBackpack.load("assets/models/backpack/backpack.obj");
-        modelLoaderCube.load("assets/models/cube.obj");
+        if(useMap) modelLoaderMap.load("assets/sponza/scene.gltf");
 
-        stanic->add<ModelComponent>(&modelLoaderBackpack, &materialPhong);
-        light->add<ModelComponent>(&modelLoaderCube, &materialLight);
-        platform->add<ModelComponent>(&modelLoaderCube);
+        auto* pPointLight = light->add<PointLightComponent>();
+        pPointLight->light.ambient = Vec3f(1.0f, 1.0f, 1.0f)
+        pPointLight->light.diffuse = Vec3f(0.2, 0.2, 0.2);
+        pPointLight->light.specular = Vec3f(0.5, 0.5, 0.5);
 
-        Material* platformMaterial = platform->get<ModelComponent>()->model.addMaterial(shaderPhong);
-        platformMaterial->set("u_Color", Vec3f(0.8f, 0.8f, 0.8f));
+        light->add<ModelComponent>          (&AssetManager::get()->modelLoaderSphere);
+        stanic->add<ModelComponent>         (&modelLoaderBackpack,                      &AssetManager::get()->materialEmerald);
+        platform->add<ModelComponent>       (&AssetManager::get()->modelLoaderCube,     &AssetManager::get()->materialGold);
+        sphere->add<ModelComponent>         (&AssetManager::get()->modelLoaderSphere,   &AssetManager::get()->materialRuby);
+        cube->add<ModelComponent>           (&AssetManager::get()->modelLoaderCube,     &AssetManager::get()->materialObsidian);
+        if(useMap) map->add<ModelComponent> (&modelLoaderMap, &AssetManager::get()->materialTurquoise);
 
-        stanicModel = &stanic->get<ModelComponent>()->model;
-        stanicMaterial = stanicModel->pMaterials[0];
-        stanicMaterial->set("u_Color", Vec3f(0.8, 0.2, 0.9));
+        light->get<ModelComponent>()->model.addMaterialFromShader(AssetManager::get()->shaderMonochroma);
+        light->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec3f(1, 1, 1));
 
-        materialLight.set("u_Color", Vec3f(1, 1, 1));
+        //textureCube.init("assets/textures/container.png");
     }
 
     void onUpdate() override
     {
-        //light->get<TransformComponent>()->position = Vec3f(sin(Time::getTime() * 5) * 5, cos(Time::getTime() * 5) * 5, 5 + sin(Time::getTime() / 2));
-        light->get<TransformComponent>()->position = Vec3f(sin(Time::getTime() * 2) * 2, cos(Time::getTime() * 2) * 2, 2 + sin(Time::getTime() / 2));
+        //light->get<TransformComponent>()->position = Vec3f(sin(Time::getTime() / 2) * 2, cos(Time::getTime() / 2) * 2, 2 + sin(Time::getTime() / 5));
+        light->get<TransformComponent>()->position = Vec3f(sin(Time::getTime() / 100) * 2, cos(Time::getTime() / 100) * 2, 2 + sin(Time::getTime() / 5));
 
         if(std::isnan(player->get<TransformComponent>()->position.x))
         {
@@ -74,8 +90,37 @@ public:
             log(Scene::getPlayerEntity()->get<TransformComponent>()->rotation);
         }
 
-        //stanicMaterial->set("u_LightPosition", light->get<TransformComponent>()->position);
-        platform->get<ModelComponent>()->model.pMaterials[0]->set("u_LightPosition", light->get<TransformComponent>()->position);
+        ///// -------
+        //platform->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.position", light->get<TransformComponent>()->position);
+        //stanic->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.position", light->get<TransformComponent>()->position);
+        //sphere->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.position", light->get<TransformComponent>()->position);
+        //cube->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.position", light->get<TransformComponent>()->position);
+        //if(useMap) map->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.position", light->get<TransformComponent>()->position);
+
+        //platform->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.ambient", Vec3f(0.2, 0.2, 0.2));
+        //stanic->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.ambient", Vec3f(0.2f, 0.2f, 0.2f));
+        //sphere->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.ambient", Vec3f(0.2f, 0.2f, 0.2f));
+        //cube->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.ambient", Vec3f(0.2f, 0.2f, 0.2f));
+        //if(useMap) map->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.ambient", Vec3f(0.2f, 0.2f, 0.2f));
+
+        //platform->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.diffuse", Vec3f(0.5, 0.5, 0.5));
+        //stanic->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.diffuse", Vec3f(0.5, 0.5, 0.5));
+        //sphere->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.diffuse", Vec3f(0.5, 0.5, 0.5));
+        //cube->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.diffuse", Vec3f(0.5, 0.5, 0.5));
+        //if(useMap) map->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.diffuse", Vec3f(0.5, 0.5, 0.5));
+
+        //platform->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.specular", Vec3f(1.0f, 1.0f, 1.0f));
+        //stanic->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.specular", Vec3f(1.0f, 1.0f, 1.0f));
+        //sphere->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.specular", Vec3f(1.0f, 1.0f, 1.0f));
+        //cube->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.specular", Vec3f(1.0f, 1.0f, 1.0f));
+        //if(useMap) map->get<ModelComponent>()->model.pMaterials[0]->set("u_Light.specular", Vec3f(1.0f, 1.0f, 1.0f));
+        ///// -------
+
+        platform->get<ModelComponent>()->model.pMaterials[0]->set("u_ViewPosition", player->get<TransformComponent>()->position);
+        stanic->get<ModelComponent>()->model.pMaterials[0]->set("u_ViewPosition", player->get<TransformComponent>()->position);
+        sphere->get<ModelComponent>()->model.pMaterials[0]->set("u_ViewPosition", player->get<TransformComponent>()->position);
+        cube->get<ModelComponent>()->model.pMaterials[0]->set("u_ViewPosition", player->get<TransformComponent>()->position);
+        if(useMap) map->get<ModelComponent>()->model.pMaterials[0]->set("u_ViewPosition", player->get<TransformComponent>()->position);
 
         //stanicTexture.setUp("../resources/textures/stene.png");
         //stanicTexture.bind(0);

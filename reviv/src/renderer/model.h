@@ -15,7 +15,8 @@ public:
 
     ModelLoader* m_ModelLoader;
 
-    Material* addMaterial(const Shader& shader);
+    Material* addMaterial(Material* material);
+    Material* addMaterialFromShader(const Shader& shader);
 
     stls::StableVector<Mesh*> pMeshes;
     stls::StableVector<Material*> pMaterials;

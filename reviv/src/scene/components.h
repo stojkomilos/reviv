@@ -7,6 +7,7 @@
 #include"renderer/vertex_array.h"
 #include"renderer/material.h"
 #include"core/mat.h"
+#include"renderer/light.h"
 
 class TransformComponent : public SpecificComponent<TransformComponent>
 {
@@ -59,6 +60,12 @@ public:
     //operator const model& () const { return model; }
     //operator model& () { return model; }
     void log() const override { cout << componentTypeName << endl; ::log(model); }
+};
+
+class PointLightComponent
+{
+    PointLight light;
+    PointLight(Args&&... args) : light(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("PointLightComponent"); }
 };
 
 /*

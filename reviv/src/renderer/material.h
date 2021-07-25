@@ -40,6 +40,8 @@ public:
     void set(const std::string& uniformName, const Vec4f& vec4f);
     void set(const std::string& uniformName, const Vec3f& vec3f);
     void set(const std::string& uniformName, int n);
+    void set(const std::string& uniformName, float n);
+    void set(const std::string& uniformName, double n);
 
     const Shader* pShader = nullptr;
     std::string name;

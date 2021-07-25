@@ -5,6 +5,7 @@
 #include"renderer/window.h"
 #include"core/input.h"
 #include"events/event.h"
+#include"scene/asset_manager.h"
 
 class Application
 {
