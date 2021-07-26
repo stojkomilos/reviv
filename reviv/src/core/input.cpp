@@ -80,6 +80,7 @@ void Input::doPlayerControllerOnEventMouseMoved(Event* event)
     Vec2f deltaMouse = subtract(((EventMouseMoved*)event)->m_Position, oldMousePosition);
     oldMousePosition = ((EventMouseMoved*)event)->m_Position;
 
+
     Scene::getPlayerEntity()->get<TransformComponent>()->rotation.yaw -= deltaMouse.x * sensitivity;
     Scene::getPlayerEntity()->get<TransformComponent>()->rotation.pitch -= deltaMouse.y * sensitivity;
 

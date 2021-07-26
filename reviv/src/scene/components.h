@@ -27,7 +27,7 @@ public:
         return result;
     }
 
-    void log() const override { cout << componentTypeName << endl; ::log(getTransform()); }
+    virtual void log() const override { cout << componentTypeName << endl; ::log(getTransform()); }
 };
 
 class CameraComponent : public SpecificComponent<CameraComponent>
@@ -44,7 +44,7 @@ public:
 
     operator const Camera& () const { return camera; }
     operator Camera& () { return camera; }
-    void log() const override { cout << componentTypeName << endl; ::log(camera); }
+    virtual void log() const override { cout << componentTypeName << endl; ::log(camera); }
 };
 
 class ModelComponent : public SpecificComponent<ModelComponent>
@@ -59,13 +59,17 @@ public:
 
     //operator const model& () const { return model; }
     //operator model& () { return model; }
-    void log() const override { cout << componentTypeName << endl; ::log(model); }
+    virtual void log() const override { cout << componentTypeName << endl; ::log(model); }
 };
 
-class PointLightComponent
+class PointLightComponent : public SpecificComponent<PointLightComponent>
 {
+public:
     PointLight light;
-    PointLight(Args&&... args) : light(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("PointLightComponent"); }
+
+    template<class ...Args>
+    PointLightComponent(Args&&... args) : light(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("PointLightComponent"); }
+    virtual void log() const override { cout << componentTypeName << endl; ::log(light); }
 };
 
 /*

@@ -17,7 +17,7 @@ void AssetManager::init()
 void AssetManager::initMaterials()
 {
     // Original value is 128.f
-    float shininessConst = 128.f;
+    float shininessConst = 32.f;
 
     materialEmerald.setShader(&shaderPhong);
     materialRuby.setShader(&shaderPhong);

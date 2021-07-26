@@ -2,7 +2,7 @@
 
 const Mat4 identity(1);
 
-#define MAT_EPSILON 0.0001f
+#define MAT_EPSILON 0.00001f
 
 void log(const bool& thing)
 {
@@ -177,14 +177,14 @@ namespace mat{
         return a;
     }
 
-    Vec4f multiply(const Mat4& a, const Vec4f& b)
+    Vec4f multiply(const Mat4& matrix, const Vec4f& vec)
     {
         //std::cout << "BBB";
         Vec4f rez;
-        rez.x = a.a.x * b.x + a.b.x * b.y + a.c.x * b.z + a.d.x * b.w;
-        rez.y = a.a.y * b.x + a.b.y * b.y + a.c.y * b.z + a.d.y * b.w;
-        rez.z = a.a.z * b.x + a.b.z * b.y + a.c.z * b.z + a.d.z * b.w;
-        rez.w = a.a.w * b.x + a.b.w * b.y + a.c.w * b.z + a.d.w * b.w;
+        rez.x = matrix.a.x * vec.x + matrix.b.x * vec.y + matrix.c.x * vec.z + matrix.d.x * vec.w;
+        rez.y = matrix.a.y * vec.x + matrix.b.y * vec.y + matrix.c.y * vec.z + matrix.d.y * vec.w;
+        rez.z = matrix.a.z * vec.x + matrix.b.z * vec.y + matrix.c.z * vec.z + matrix.d.z * vec.w;
+        rez.w = matrix.a.w * vec.x + matrix.b.w * vec.y + matrix.c.w * vec.z + matrix.d.w * vec.w;
 
         return rez;
     }
@@ -284,19 +284,12 @@ namespace mat{
 
     Vec3f subtract(const Vec3f& a, const Vec3f& b)
     {
-        Vec3f c;
-        c.x = a.x - b.x;
-        c.y = a.y - b.y;
-        c.z = a.z - b.z;
-        return c;
+        return {a.x - b.x, a.y - b.y, a.z - b.z};
     }
 
     Vec2f subtract(const Vec2f& a, const Vec2f& b)
     {
-        Vec2f c;
-        c.x = a.x - b.x;
-        c.y = a.y - b.y;
-        return c;
+        return {a.x - b.x, a.y - b.y};
     }
 
     int sgn(int n)
@@ -344,5 +337,98 @@ namespace mat{
     float radiansToDegrees(float angleInRadians)
     {
         return angleInRadians / 3.14f * 180.f;
+    }
+
+    Mat4 multiply(const Mat4& first, const Mat4& second)
+    {
+        Mat4 result;
+        result.a.x =    first.a.x * second.a.x 
+                       +first.b.x * second.a.y
+                       +first.c.x * second.a.z
+                       +first.d.x * second.a.w;
+
+        result.b.x =    first.a.x * second.b.x 
+                       +first.b.x * second.b.y
+                       +first.c.x * second.b.z
+                       +first.d.x * second.b.w;
+
+        result.c.x =    first.a.x * second.c.x 
+                       +first.b.x * second.c.y
+                       +first.c.x * second.c.z
+                       +first.d.x * second.c.w;
+
+        result.d.x =    first.a.x * second.d.x 
+                       +first.b.x * second.d.y
+                       +first.c.x * second.d.z
+                       +first.d.x * second.d.w;
+
+
+
+        result.a.y =    first.a.y * second.a.x 
+                       +first.b.y * second.a.y
+                       +first.c.y * second.a.z
+                       +first.d.y * second.a.w;
+
+        result.b.y =    first.a.y * second.b.x 
+                       +first.b.y * second.b.y
+                       +first.c.y * second.b.z
+                       +first.d.y * second.b.w;
+
+        result.c.y =    first.a.y * second.c.x 
+                       +first.b.y * second.c.y
+                       +first.c.y * second.c.z
+                       +first.d.y * second.c.w;
+
+        result.d.y =    first.a.y * second.d.x 
+                       +first.b.y * second.d.y
+                       +first.c.y * second.d.z
+                       +first.d.y * second.d.w;
+
+
+
+
+        result.a.z =    first.a.z * second.a.x 
+                       +first.b.z * second.a.y
+                       +first.c.z * second.a.z
+                       +first.d.z * second.a.w;
+
+        result.b.z =    first.a.z * second.b.x 
+                       +first.b.z * second.b.y
+                       +first.c.z * second.b.z
+                       +first.d.z * second.b.w;
+
+        result.c.z =    first.a.z * second.c.x 
+                       +first.b.z * second.c.y
+                       +first.c.z * second.c.z
+                       +first.d.z * second.c.w;
+
+        result.d.z =    first.a.z * second.d.x 
+                       +first.b.z * second.d.y
+                       +first.c.z * second.d.z
+                       +first.d.z * second.d.w;
+
+
+
+        result.a.w =    first.a.w * second.a.x 
+                       +first.b.w * second.a.y
+                       +first.c.w * second.a.z
+                       +first.d.w * second.a.w;
+
+        result.b.w =    first.a.w * second.b.x 
+                       +first.b.w * second.b.y
+                       +first.c.w * second.b.z
+                       +first.d.w * second.b.w;
+
+        result.c.w =    first.a.w * second.c.x 
+                       +first.b.w * second.c.y
+                       +first.c.w * second.c.z
+                       +first.d.w * second.c.w;
+
+        result.d.w =    first.a.w * second.d.x 
+                       +first.b.w * second.d.y
+                       +first.c.w * second.d.z
+                       +first.d.w * second.d.w;
+
+        return result;
     }
 };

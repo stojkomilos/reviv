@@ -127,6 +127,7 @@ namespace mat{
     Mat4 rotateY(Mat4 a, float theta);
     Mat4 rotateZ(Mat4 a, float theta);
 
+    Mat4 multiply(const Mat4& first, const Mat4& second);
     Vec4f multiply(const Mat4& a, const Vec4f& b);
 
     float module(const Vec3f& a);

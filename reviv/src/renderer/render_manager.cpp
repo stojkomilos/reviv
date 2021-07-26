@@ -39,15 +39,61 @@ void RenderManager::submit(const Model& model, const Mat4& transform)
 
     for(unsigned int i=0; i<model.pMeshes.size(); i++)
     {
-        model.pMaterials[i]->set("u_Model", transform);
-        model.pMaterials[i]->set("u_View", Scene::getCameraEntity()->get<CameraComponent>()->camera.viewMatrix);
-        model.pMaterials[i]->set("u_Projection", Scene::getCameraEntity()->get<CameraComponent>()->camera.projectionMatrix);
-
         model.pMaterials[i]->bind();
-
+        bindEnvironment(*model.pMaterials[i]->pShader, transform);
         model.pMeshes[i]->vao.bind();
 
         RenderCommand::drawElements(*model.pMeshes[i]);
+    }
+}
+
+void RenderManager::bindEnvironment(const Shader& shader, const Mat4& transform)
+{
+    shader.bind();
+    
+    shader.uploadUniformMat4("u_ModelMatrix", transform);
+    shader.uploadUniformMat4("u_ViewMatrix", Scene::getCameraEntity()->get<CameraComponent>()->camera.viewMatrix);
+    shader.uploadUniformMat4("u_ProjectionMatrix", Scene::getCameraEntity()->get<CameraComponent>()->camera.projectionMatrix);
+
+    if(&shader != &AssetManager::get()->shaderPhong)
+    {
+        return;
+    }
+
+    int nrLight = 0;
+    for(auto itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
+    {
+        if(itEntity->valid)
+        {
+            if(itEntity->has<PointLightComponent>())
+            {
+                RV_ASSERT(nrLight < 10, ""); // can be implemented, just string and one digit stuff
+                auto* pLight = &itEntity->get<PointLightComponent>()->light;
+
+                if(pLight->on == false)
+                {
+                    continue;
+                    RV_ASSERT(false, "");
+                }
+
+                std::string uniformNameLight = "u_PointLights[";
+                uniformNameLight += (char)(nrLight + '0');
+                uniformNameLight += "]";
+
+
+                shader.uploadUniform3f(uniformNameLight + ".position", itEntity->get<TransformComponent>()->position);
+
+                shader.uploadUniform3f(uniformNameLight + ".ambient", pLight->ambient);
+                shader.uploadUniform3f(uniformNameLight + ".diffuse", pLight->diffuse);
+                shader.uploadUniform3f(uniformNameLight + ".specular", pLight->specular);
+
+                shader.uploadUniform1f(uniformNameLight + ".constant", pLight->constant);
+                shader.uploadUniform1f(uniformNameLight + ".linear", pLight->linear);
+                shader.uploadUniform1f(uniformNameLight + ".quadratic", pLight->quadratic);
+
+                shader.uploadUniform3f("u_ViewPosition", Scene::getPlayerEntity()->get<TransformComponent>()->position);
+            }
+        }
     }
 }
 

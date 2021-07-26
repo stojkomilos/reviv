@@ -2,11 +2,18 @@
 
 order: input->update->display
 
+danas:
+ - namesti /samo/ point light
+ - basic texture (learnoopengl.com)
+ - skybox
+
 sutra:
     - textures and stuff on backpack and textures in general
     - /ne/ jos environment apstraction (skroz)
     - normals transformation
     - quaternion?
+      
+graficki bag kada gledam skroz gore ili skroz dole (mat.h -> MAT_EPSILON?)
 
 smoother mouse:
  - manji sensitivity

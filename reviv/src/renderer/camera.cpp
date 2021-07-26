@@ -9,11 +9,11 @@ void log(const Camera& camera)
     log(camera.projectionMatrix);
 }
 
-Camera::Camera(float renderDistance, float nearRenderDistance, float horizontalFov)
-    : renderDistance(renderDistance), nearRenderDistance(nearRenderDistance), m_HorizontalFov(horizontalFov)
+Camera::Camera(float nearRenderDistance, float renderDistance, float horizontalFov)
+    : nearRenderDistance(nearRenderDistance), renderDistance(renderDistance), m_HorizontalFov(horizontalFov)
 { }
 
-void Camera::recalculateViewMatrix(const Vec3f& position, const Rotation& rotation)
+void Camera::recalculateViewMatrix(const Vec3f& position, const Rotation& rotation) // right handed coordinate system
 {
     direction = getDirectionFromRotation(rotation);
     right = normalise(cross(direction, Vec3f(0, 0, 1)));
@@ -24,15 +24,15 @@ void Camera::recalculateViewMatrix(const Vec3f& position, const Rotation& rotati
     viewMatrix.c.x = right.z;
     viewMatrix.d.x = -dot(position, right);
 
-    viewMatrix.a.y = direction.x;
-    viewMatrix.b.y = direction.y;
-    viewMatrix.c.y = direction.z;
-    viewMatrix.d.y = -dot(position, direction);
+    viewMatrix.a.y = up.x;
+    viewMatrix.b.y = up.y;
+    viewMatrix.c.y = up.z;
+    viewMatrix.d.y = -dot(position, up);
 
-    viewMatrix.a.z = up.x;
-    viewMatrix.b.z = up.y;
-    viewMatrix.c.z = up.z;
-    viewMatrix.d.z = -dot(position, up);
+    viewMatrix.a.z = -direction.x;
+    viewMatrix.b.z = -direction.y;
+    viewMatrix.c.z = -direction.z;
+    viewMatrix.d.z = dot(position, direction);
 
     viewMatrix.a.w = 0;
     viewMatrix.b.w = 0;
@@ -55,17 +55,22 @@ void Camera::recalculateProjectionMatrix(const WindowData& windowData)
     projectionMatrix.d.x = 0;
 
     projectionMatrix.a.y = 0;
-    projectionMatrix.b.y = 0;
-    projectionMatrix.c.y = nearRenderDistance / height * 2;
+    projectionMatrix.b.y = nearRenderDistance / height * 2.f;
+    projectionMatrix.c.y = 0;
     projectionMatrix.d.y = 0;
 
     projectionMatrix.a.z = 0;
-    projectionMatrix.b.z = 1 / (renderDistance - nearRenderDistance);
-    projectionMatrix.c.z = 0;
-    projectionMatrix.d.z = -1;
+    projectionMatrix.b.z = 0;
+    projectionMatrix.c.z = -(renderDistance + nearRenderDistance) / (renderDistance - nearRenderDistance);
+    projectionMatrix.d.z = -2.f * renderDistance * nearRenderDistance / (renderDistance - nearRenderDistance);
+
+    //projectionMatrix.a.z = 0;
+    //projectionMatrix.b.z = 0;
+    //projectionMatrix.c.z = 0;
+    //projectionMatrix.d.z = 0;
 
     projectionMatrix.a.w = 0;
-    projectionMatrix.b.w = 1;
-    projectionMatrix.c.w = 0;
+    projectionMatrix.b.w = 0;
+    projectionMatrix.c.w = -1;
     projectionMatrix.d.w = 0;
 }

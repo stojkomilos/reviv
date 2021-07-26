@@ -11,6 +11,8 @@
 #include"renderer/material.h"
 #include"renderer/window.h"
 
+#include"scene/asset_manager.h"
+
 class RenderManager {
 public:
     ~RenderManager() = default;
@@ -38,4 +40,5 @@ private:
 
     void beginScene(const WindowData& windowData);
     void endScene();
+    void bindEnvironment(const Shader& shader, const Mat4& transform);
 };

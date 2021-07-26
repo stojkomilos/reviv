@@ -9,7 +9,7 @@ class Camera
 public:
     Camera() = default;
     Camera(const Camera&) = default;
-    Camera(float renderDistance, float nearRenderDistance, float horizontalFov);
+    Camera(float nearRenderDistance, float renderDistance, float horizontalFov);
 
     void recalculateViewMatrix(const Vec3f& position, const Rotation& rotation);
     void recalculateProjectionMatrix(const WindowData& windowData);
@@ -20,10 +20,13 @@ public:
 
     Mat4 viewMatrix, projectionMatrix;
 
+    float nearRenderDistance = 0.1f;
     float renderDistance = 10000.f;
-    float nearRenderDistance = 0.1f; //TODO, bolje vrednosti, z fighting? FOV=\aprrox 90-100
     float ratio;
     float m_HorizontalFov, m_VerticalFov;
+
+    //float newProjectionMatrix[16];
+    //float newViewMatrix[16];
 };
 
 void log(const Camera& camera);
