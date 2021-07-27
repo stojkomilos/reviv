@@ -1,5 +1,9 @@
 * Ciljevi
 
+clean todo: rename u shader.h, mat.h (a->vec, a->mtx...)
+uploading mat4, TRANSPOSE glUpload
+
+
 order: input->update->display
 
 danas:

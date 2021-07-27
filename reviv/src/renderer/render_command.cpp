@@ -15,7 +15,7 @@ void RenderCommand::iDrawElements(const Mesh& mesh)
 
 void RenderCommand::iSetClearColor(const Vec4f& color)
 {
-    glClearColor(color.x, color.y, color.z, color.w);
+    glClearColor(color.a[0], color.a[1], color.a[2], color.a[3]);
 }
 
 void RenderCommand::iClear()

@@ -6,11 +6,6 @@ Entity* map;
 ModelLoader modelLoaderBackpack, modelLoaderMap;
 Material materialStanic;
 
-TransformComponent testTransform;
-
-Shader shaderTest;
-//Texture textureCube;
-
 bool useMap = false;
 
 class Sandbox : public Application
@@ -47,7 +42,7 @@ public:
         cube = Scene::createEntity("Cube");
         //cube->get<TransformComponent>()->position = {3, 2, 1.5};
         cube->get<TransformComponent>()->position = {10, 0, 3};
-        cube->get<TransformComponent>()->scale = {0.3f, 0.3f, 0.3f};
+        cube->get<TransformComponent>()->scale = {0.3, 0.3, 0.3};
 
         materialStanic.setShader(&AssetManager::get()->shaderPhong);
     }
@@ -79,12 +74,14 @@ public:
     void onUpdate() override
     {
         light->get<TransformComponent>()->position = Vec3f(sin(Time::getTime() / 2) * 2, cos(Time::getTime() / 2) * 2, 2 + sin(Time::getTime() / 5));
-        //light->get<TransformComponent>()->position = Vec3f(sin(Time::getTime() / 100) * 2, cos(Time::getTime() / 100) * 2, 2 + sin(Time::getTime() / 5));
 
-        if(std::isnan(player->get<TransformComponent>()->position.x))
-        {
-            RV_ASSERT(false, "");
-        }
+        cube->get<TransformComponent>()->rotation.yaw = Time::getTime() * 7;
+        cube->get<TransformComponent>()->rotation.pitch = Time::getTime() * 11;
+        cube->get<TransformComponent>()->rotation.roll = Time::getTime() * 3;
+        //cube->get<TransformComponent>()->rotation.roll = Time::getTime();
+        //cube->get<TransformComponent>()->rotation.pitch = Time::getTime() * 3 + 0.4;
+        
+        //light->get<TransformComponent>()->position = Vec3f(sin(Time::getTime() / 100) * 2, cos(Time::getTime() / 100) * 2, 2 + sin(Time::getTime() / 5));
 
         if(Time::isOneSecond()){
             cout << "FPS: " << 1 / Time::getDelta() << endl;
@@ -92,58 +89,36 @@ public:
             log(Scene::getPlayerEntity()->get<TransformComponent>()->position);
             cout << "Rotation: ";
             log(Scene::getPlayerEntity()->get<TransformComponent>()->rotation);
+
+            cout << "BEGIN----------- " << endl;
+            cout << "cubeTransform" << endl;
+            log(cube->get<TransformComponent>()->getTransform());
+
+            cout << "afterTransform" << endl;
+            auto afterTransform = multiply(cube->get<TransformComponent>()->getTransform(), Vec4f(0, 0, 0, 1));
+            log(afterTransform);
+
+            cout << "afterView" << endl;
+            auto afterView = multiply(Scene::getCameraEntity()->get<CameraComponent>()->camera.viewMatrix, afterTransform);
+            log(afterView);
+
+            cout << "afterProjection" << endl;
+            auto afterProjection = multiply(Scene::getCameraEntity()->get<CameraComponent>()->camera.projectionMatrix, afterView);
+            log(afterProjection);
+
+            cout << "afterNdc" << endl;
+            auto afterNdc = afterProjection / afterProjection.a[3];
+            log(afterNdc);
+            cout << "------------------" << endl;
+
+            cout << "cubePosition:" << endl;
+            log(cube->get<TransformComponent>()->position);
+            cout << endl;
         }
+
+       
+
         
-        auto afterModel = multiply(cube->get<TransformComponent>()->getTransform(), Vec4f(0, 0, 0, 1));
-        auto afterView = multiply(Scene::getCameraEntity()->get<CameraComponent>()->camera.viewMatrix,  afterModel);
-        auto afterProjection = multiply(Scene::getCameraEntity()->get<CameraComponent>()->camera.projectionMatrix, afterView);
-        auto afterClip = Vec4f(afterProjection.x / afterProjection.w, afterProjection.y/afterProjection.w, afterProjection.z/afterProjection.w, afterProjection.w/afterProjection.w);
-        cout << "afterModel: ";
-        log(afterModel);
-        cout << endl;
-        cout << "afterView: ";
-        log(afterView);
-        cout << endl;
-        cout << "afterProjection: ";
-        log(afterProjection);
-        cout << endl;
-        cout << "afterClip: ";
-        log(afterClip);
-        cout << "------------------------------" << endl;
-
-/*      14 4 0 8 
-        2 10 15 6 
-        5 1 12 16 
-        7 13 9 11
-
-6 9 7 1 
-11 14 16 0 
-4 13 3 12 
-8 2 10 5
-*/
-        Mat4 prvi;
-        prvi.a = {14, 2, 5, 7};
-        prvi.b = {4, 10, 1, 13};
-        prvi.c = {0, 15, 12, 9};
-        prvi.d = {8, 6, 16, 11};
-
-        Mat4 drugi;
-        drugi.a = {6, 9, 7, 1};
-        drugi.b = {11, 14, 16, 0};
-        drugi.c = {4, 13, 3, 12};
-        drugi.d = {8, 2, 10, 5}; //8 2 10 5
-
-        //cout << "Mnozenje VEKTOR" << endl;
-        //log(multiply(drugi, multiply(prvi, Vec4f(0, 0, 0, 1))));
-        //log(multiply(multiply(prvi, Vec4f(0, 0, 0, 1))));
-        //log(multiply(prvi, Vec4f(0, 0, 0, 1)));
-
-        //cout << "Mnozenje MATRICE" << endl;
-        //log(multiply(prvi, drugi));
-
-        //cout << "TEST:";
-        //log(multiply(multiply(drugi, prvi), Vec4f(0, 0, 0, 1)));
-
 
         //stanicTexture.setUp("../resources/textures/stene.png");
         //stanicTexture.bind(0);

@@ -19,25 +19,25 @@ void Camera::recalculateViewMatrix(const Vec3f& position, const Rotation& rotati
     right = normalise(cross(direction, Vec3f(0, 0, 1)));
     up = normalise(cross(right, direction));
 
-    viewMatrix.a.x = right.x;
-    viewMatrix.b.x = right.y;
-    viewMatrix.c.x = right.z;
-    viewMatrix.d.x = -dot(position, right);
+    viewMatrix.a[0][0] = right.a[0];
+    viewMatrix.a[0][1] = right.a[1];
+    viewMatrix.a[0][2] = right.a[2];
+    viewMatrix.a[0][3] = -dot(position, right);
 
-    viewMatrix.a.y = up.x;
-    viewMatrix.b.y = up.y;
-    viewMatrix.c.y = up.z;
-    viewMatrix.d.y = -dot(position, up);
+    viewMatrix.a[1][0] = up.a[0];
+    viewMatrix.a[1][1] = up.a[1];
+    viewMatrix.a[1][2] = up.a[2];
+    viewMatrix.a[1][3] = -dot(position, up);
 
-    viewMatrix.a.z = -direction.x;
-    viewMatrix.b.z = -direction.y;
-    viewMatrix.c.z = -direction.z;
-    viewMatrix.d.z = dot(position, direction);
+    viewMatrix.a[2][0] = direction.a[0];
+    viewMatrix.a[2][1] = direction.a[1];
+    viewMatrix.a[2][2] = direction.a[2];
+    viewMatrix.a[2][3] = -dot(position, direction);
 
-    viewMatrix.a.w = 0;
-    viewMatrix.b.w = 0;
-    viewMatrix.c.w = 0;
-    viewMatrix.d.w = 1;
+    viewMatrix.a[3][0] = 0;
+    viewMatrix.a[3][1] = 0;
+    viewMatrix.a[3][2] = 0;
+    viewMatrix.a[3][3] = 1;
 }
 
 void Camera::recalculateProjectionMatrix(const WindowData& windowData)
@@ -49,28 +49,24 @@ void Camera::recalculateProjectionMatrix(const WindowData& windowData)
     float width = nearRenderDistance * tan(m_HorizontalFov / 2.f) * 2.f;
     float height = nearRenderDistance * tan(m_VerticalFov / 2.f) * 2.f;
 
-    projectionMatrix.a.x = nearRenderDistance / width * 2.f;
-    projectionMatrix.b.x = 0;
-    projectionMatrix.c.x = 0;
-    projectionMatrix.d.x = 0;
 
-    projectionMatrix.a.y = 0;
-    projectionMatrix.b.y = nearRenderDistance / height * 2.f;
-    projectionMatrix.c.y = 0;
-    projectionMatrix.d.y = 0;
+    projectionMatrix.a[0][0] = nearRenderDistance / width * 2.f;
+    projectionMatrix.a[0][1] = 0;
+    projectionMatrix.a[0][2] = 0;
+    projectionMatrix.a[0][3] = 0;
 
-    projectionMatrix.a.z = 0;
-    projectionMatrix.b.z = 0;
-    projectionMatrix.c.z = -(renderDistance + nearRenderDistance) / (renderDistance - nearRenderDistance);
-    projectionMatrix.d.z = -2.f * renderDistance * nearRenderDistance / (renderDistance - nearRenderDistance);
+    projectionMatrix.a[1][0] = 0;
+    projectionMatrix.a[1][1] = nearRenderDistance / height * 2.f;
+    projectionMatrix.a[1][2] = 0;
+    projectionMatrix.a[1][3] = 0;
 
-    //projectionMatrix.a.z = 0;
-    //projectionMatrix.b.z = 0;
-    //projectionMatrix.c.z = 0;
-    //projectionMatrix.d.z = 0;
+    projectionMatrix.a[2][0] = 0;
+    projectionMatrix.a[2][1] = 0;
+    projectionMatrix.a[2][2] = (renderDistance + nearRenderDistance) / (renderDistance - nearRenderDistance);
+    projectionMatrix.a[2][3] = -2.f * renderDistance * nearRenderDistance / (renderDistance - nearRenderDistance);
 
-    projectionMatrix.a.w = 0;
-    projectionMatrix.b.w = 0;
-    projectionMatrix.c.w = -1;
-    projectionMatrix.d.w = 0;
+    projectionMatrix.a[3][0] = 0;
+    projectionMatrix.a[3][1] = 0;
+    projectionMatrix.a[3][2] = 1;
+    projectionMatrix.a[3][3] = 0;
 }

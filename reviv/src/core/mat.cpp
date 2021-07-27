@@ -27,17 +27,22 @@ void log(const Rotation& thing)
 
 void log(const Mat4& thing)
 {
-    cout << thing.a.x << " " << thing.b.x << " " << thing.c.x << " " << thing.d.x << endl;
-    cout << thing.a.y << " " << thing.b.y << " " << thing.c.y << " " << thing.d.y << endl;
-    cout << thing.a.z << " " << thing.b.z << " " << thing.c.z << " " << thing.d.z << endl;
-    cout << thing.a.w << " " << thing.b.w << " " << thing.c.w << " " << thing.d.w << endl;
+    for(int i=0; i<4; i++)
+    {
+        for(int j=0; j<4; j++)
+            cout << thing.a[i][j] << " ";
+        cout << endl;
+    }
 }
 
 void log(const Mat3& thing)
 {
-    cout << thing.a.x << " " << thing.b.x << " " << thing.c.x << endl;
-    cout << thing.a.y << " " << thing.b.y << " " << thing.c.y << endl;
-    cout << thing.a.z << " " << thing.b.z << " " << thing.c.z << endl;
+    for(int i=0; i<3; i++)
+    {
+        for(int j=0; j<3; j++)
+            cout << thing.a[i][j] << " ";
+        cout << endl;
+    }
 }
 
 void log(const Vec1f& thing) {
@@ -50,12 +55,16 @@ void log(const Vec2f& thing) {
 
 void log(const Vec3f& thing)
 {
-    cout << thing.x << " " << thing.y << " " << thing.z << endl;
+    for(int i=0; i<3; i++)
+        cout << thing.a[i] << " ";
+    cout << endl;
 }
 
 void log(const Vec4f& thing)
 {
-    cout << thing.x << " " << thing.y << " " << thing.z << " " << thing.w << endl;
+    for(int i=0; i<4; i++)
+        cout << thing.a[i] << " ";
+    cout << endl;
 }
 
 void log(const Vec1i& thing)
@@ -85,10 +94,13 @@ namespace mat{
         : x(x), y(y) {}
 
     Vec3f::Vec3f(float x, float y, float z) 
-        : x(x), y(y), z(z) {}
+        : a{x, y, z} {}
 
     Vec4f::Vec4f(float x, float y, float z, float w)
-        : x(x), y(y), z(z), w(w) {}
+        : a{x, y, z, w} {}
+
+    Vec4f::Vec4f(const Vec3f& vec, float scalar)
+        : a {vec.a[0], vec.a[1], vec.a[2], scalar} {}
 
     Vec1i::Vec1i(int x)
         : x(x) {}
@@ -104,12 +116,12 @@ namespace mat{
 
     Mat4::Mat4(float n)
     {
-        a.x = b.y = c.z = d.w = n;
+        a[0][0] = a[1][1] = a[2][2] = a[3][3] = n;
     }
 
     Vec3f operator*(const Vec3f& thing, const float& scalar)
     {
-        Vec3f result(thing.x * scalar, thing.y * scalar, thing.z * scalar);
+        Vec3f result(thing.a[0] * scalar, thing.a[1] * scalar, thing.a[2] * scalar);
         return result;
     }
     
@@ -120,7 +132,7 @@ namespace mat{
 
     Vec4f operator/(const Vec4f& thing, const float& scalar)
     {
-        return {thing.x/scalar, thing.y/scalar, thing.z/scalar, thing.w/scalar};
+        return {thing.a[0]/scalar, thing.a[1]/scalar, thing.a[2]/scalar, thing.a[3]/scalar};
     }
 
     Vec4f operator/(const float& scalar, const Vec4f& thing)
@@ -128,45 +140,103 @@ namespace mat{
         return thing / scalar;
     }
 
-    Mat4 translate(Mat4 a, const Vec3f& b)
+    Mat4 translate(Mat4 mtx, const Vec4f& vec)
     {
-        a.d.x += b.x;
-        a.d.y += b.y;
-        a.d.z += b.z;
-        return a;
+        mtx.a[0][3] += vec.a[0];
+        mtx.a[1][3] += vec.a[1];
+        mtx.a[2][3] += vec.a[2];
+        mtx.a[3][3] += vec.a[3];
+        return mtx;
     }
 
-    Mat4 scale(Mat4 a, const Vec3f& b)
-    {
-        a.a.x *= b.x;
-        a.b.y *= b.y;
-        a.c.z *= b.z;
-        return a;
+    Mat4 scale(Mat4 mtx, const Vec4f& vec)
+    {            
+        for(int i=0; i<4; i++)
+            for(int j=0; j<3; j++)
+                mtx.a[i][j] *= vec.a[i];
+
+        return mtx;
     }
 
-    Mat4 rotateX(Mat4 a, float theta)
+    Mat4 rotateX(float theta) // supposed to be roll
     {
-        a.a.x = 1;
-        a.b.y = cos(theta);
-        a.b.z = sin(theta);
-        a.c.y = -sin(theta);
-        a.c.z = cos(theta);
-        a.d.w = 1;
-        return a;
+        Mat4 mtx;
+
+        mtx.a[0][0] = 1;
+        mtx.a[0][1] = 0;
+        mtx.a[0][2] = 0;
+        mtx.a[0][3] = 0;
+
+        mtx.a[1][0] = 0;
+        mtx.a[1][1] = cos(theta);
+        mtx.a[1][2] = -sin(theta);
+        mtx.a[1][3] = 0;
+
+        mtx.a[2][0] = 0;
+        mtx.a[2][1] = sin(theta);
+        mtx.a[2][2] = cos(theta);
+        mtx.a[2][3] = 0;
+
+        mtx.a[3][0] = 0;
+        mtx.a[3][1] = 0;
+        mtx.a[3][2] = 0;
+        mtx.a[3][3] = 1;
+
+        return mtx;
     }
 
-    Mat4 rotateY(Mat4 a, float theta)
+    Mat4 rotateY(float theta) // supposed to be pitch
     {
-        a.a.x = cos(theta);
-        a.a.z = -sin(theta);
-        a.b.y = 1;
-        a.c.x = sin(theta);
-        a.c.z = cos(theta);
-        a.d.w = 1;
-        return a;
+        Mat4 mtx;
+        mtx.a[0][0] = cos(theta);
+        mtx.a[0][1] = 0;
+        mtx.a[0][2] = -sin(theta);
+        mtx.a[0][3] = 0;
+
+        mtx.a[1][0] = 0;
+        mtx.a[1][1] = 1;
+        mtx.a[1][2] = 0;
+        mtx.a[1][3] = 0;
+
+        mtx.a[2][0] = sin(theta);
+        mtx.a[2][1] = 0;
+        mtx.a[2][2] = cos(theta);
+        mtx.a[2][3] = 0;
+
+        mtx.a[3][0] = 0;
+        mtx.a[3][1] = 0;
+        mtx.a[3][2] = 0;
+        mtx.a[3][3] = 1;
+
+        return mtx;
     }
 
-    Mat4 rotateZ(Mat4 a, float theta)
+    Mat4 rotateZ(float theta) // supposed to be yaw
+    {
+        Mat4 mtx;
+        mtx.a[0][0] = cos(theta);
+        mtx.a[0][1] = -sin(theta);
+        mtx.a[0][2] = 0;
+        mtx.a[0][3] = 0;
+
+        mtx.a[1][0] = sin(theta);
+        mtx.a[1][1] = cos(theta);
+        mtx.a[1][2] = 0;
+        mtx.a[1][3] = 0;
+
+        mtx.a[2][0] = 0;
+        mtx.a[2][1] = 0;
+        mtx.a[2][2] = 1;
+        mtx.a[2][3] = 0;
+
+        mtx.a[3][0] = 0;
+        mtx.a[3][1] = 0;
+        mtx.a[3][2] = 0;
+        mtx.a[3][3] = 1;
+
+        return mtx;
+    }
+    /*Mat4 rotateZ(Mat4 a, float theta)
     {
         a.a.x = cos(theta);
         a.a.y = sin(theta);
@@ -176,15 +246,19 @@ namespace mat{
         a.c.w = 1;
         return a;
     }
+    */
 
-    Vec4f multiply(const Mat4& matrix, const Vec4f& vec)
+    Vec4f multiply(const Mat4& mtx, const Vec4f& vec)
     {
-        //std::cout << "BBB";
         Vec4f rez;
-        rez.x = matrix.a.x * vec.x + matrix.b.x * vec.y + matrix.c.x * vec.z + matrix.d.x * vec.w;
-        rez.y = matrix.a.y * vec.x + matrix.b.y * vec.y + matrix.c.y * vec.z + matrix.d.y * vec.w;
-        rez.z = matrix.a.z * vec.x + matrix.b.z * vec.y + matrix.c.z * vec.z + matrix.d.z * vec.w;
-        rez.w = matrix.a.w * vec.x + matrix.b.w * vec.y + matrix.c.w * vec.z + matrix.d.w * vec.w;
+        for(int i=0; i<4; i++)
+        {                
+            rez.a[i] = 0;
+            for(int j=0; j<4; j++)
+            {                    
+                rez.a[i] += mtx.a[i][j] * vec.a[j];
+            }
+        }
 
         return rez;
     }
@@ -192,33 +266,36 @@ namespace mat{
     Vec3f getDirectionFromRotation(const Rotation& rotation)
     {
         Vec3f direction;
-        direction.x = cos(rotation.pitch) * cos(rotation.yaw);
-        direction.y = cos(rotation.pitch) * sin(rotation.yaw);
-        direction.z = sin(rotation.pitch);
+        direction.a[0] = cos(rotation.pitch) * cos(rotation.yaw);
+        direction.a[1] = cos(rotation.pitch) * sin(rotation.yaw);
+        direction.a[2] = sin(rotation.pitch);
 
         return direction;
     }
 
-    float module(const Vec3f& a)
+    float module(const Vec3f& vec)
     {
-        return sqrt(a.x * a.x + a.y * a.y + a.z * a.z + MAT_EPSILON);
+        return sqrt(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1] + vec.a[2]*vec.a[2] + MAT_EPSILON);
     }
 
-    float module(const Vec2f& a)
+    float module(const Vec2f& vec)
     {
-        return sqrt(a.x * a.x + a.y * a.y + MAT_EPSILON);
+        return sqrt(vec.x*vec.x + vec.y*vec.y + MAT_EPSILON);
+        //return sqrt(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1] + MAT_EPSILON);
     }
 
-    float dot(const Vec3f& a, const Vec3f& b)
+    float dot(const Vec3f& first, const Vec3f& second)
     {
-        return a.x * b.x + a.y * b.y + a.z * b.z;
+        return first.a[0]*second.a[0] + first.a[1]*second.a[1] + first.a[2]*second.a[2];
     }
 
-    float dot(const Vec2f& a, const Vec2f& b)
+    float dot(const Vec2f& first, const Vec2f& second)
     {
-        return a.x * b.x + a.y * b.y;
+        return first.x*second.x + first.y*second.y;
+        //return first.a[0]*second.a[0] + first.a[1]*second.a[1];
     }
 
+    /*
     Vec3f projection(const Vec3f& a, const Vec3f& b)
     {
         float d = (module(b)) * (module(b)) / dot(a, b);
@@ -228,106 +305,100 @@ namespace mat{
         c.z = a.z * d;
         return c;
     }
+    */
 
-    Vec3f normalise(Vec3f a)
+    Vec3f normalise(Vec3f vec)
     {
-        float b = module(a);
-        a.x /= b;
-        a.y /= b;
-        a.z /= b;
+        float b = module(vec);
+        vec.a[0] /= b;
+        vec.a[1] /= b;
+        vec.a[2] /= b;
 
-        return a;
+        return vec;
     }
 
-    Vec2f normalise(Vec2f a)
+    Vec2f normalise(Vec2f vec)
     {
-        float b = module(a);
-        a.x /= b;
-        a.y /= b;
+        float b = module(vec);
+        vec.x /= b;
+        vec.y /= b;
+        //vec.a[0] /= b;
+        //vec.a[1] /= b;
 
-        return a;
+        return vec;
     }
 
-    Vec3f cross(const Vec3f& a, const Vec3f& b)
+    Vec3f cross(const Vec3f& first, const Vec3f& second)
     {
-        Vec3f rez;
-        rez.x = a.y * b.z - a.z * b.y;
-        rez.y = a.z * b.x - a.x * b.z;
-        rez.z = a.x * b.y - a.y * b.x;
-        return rez;
+        Vec3f result;
+        result.a[0] = first.a[1] * second.a[2] - first.a[2] * second.a[1];
+        result.a[1] = first.a[2] * second.a[0] - first.a[0] * second.a[2];
+        result.a[2] = first.a[0] * second.a[1] - first.a[1] * second.a[0];
+
+        return result;
     }
 
-    Vec3f multiplyScalar(Vec3f a, float b)
+    Vec3f multiply(Vec3f vec, float scalar)
     {
-        a.x *= b;
-        a.y *= b;
-        a.z *= b;
-        return a;
+        vec.a[0] *= scalar;
+        vec.a[1] *= scalar;
+        vec.a[2] *= scalar;
+        return vec;
     }
 
-    Vec3f multiplyScalar(Vec3f a, int b)
+    Vec3f multiply(Vec3f vec, int intiger)
     {
-        a.x *= b;
-        a.y *= b;
-        a.z *= b;
-        return a;
+        vec.a[0] *= intiger;
+        vec.a[1] *= intiger;
+        vec.a[2] *= intiger;
+        return vec;
     }
 
-    Vec3f add(const Vec3f& a, const Vec3f& b)
+    Vec3f add(const Vec3f& first, const Vec3f& second)
     {
-        Vec3f c;
-        c.x = a.x + b.x;
-        c.y = a.y + b.y;
-        c.z = a.z + b.z;
-        return c;
+        Vec3f result;
+        result.a[0] = first.a[0] + second.a[0];
+        result.a[1] = first.a[1] + second.a[1];
+        result.a[2] = first.a[2] + second.a[2];
+        return result;
     }
 
-    Vec3f subtract(const Vec3f& a, const Vec3f& b)
+    Vec3f subtract(const Vec3f& first, const Vec3f& second)
     {
-        return {a.x - b.x, a.y - b.y, a.z - b.z};
+        return {first.a[0]-second.a[0], first.a[1]-second.a[1], first.a[2]-second.a[2]};
     }
 
-    Vec2f subtract(const Vec2f& a, const Vec2f& b)
+    Vec2f subtract(const Vec2f& first, const Vec2f& second)
     {
-        return {a.x - b.x, a.y - b.y};
+        //return {first.a[0]-second.a[0], first.a[1]-second.a[1]};
+        return {first.x-second.x, first.y-second.y};
     }
 
-    int sgn(int n)
+   
+
+    ///
+    Vec3f operator-(const Vec3f& first, const Vec3f& second)
     {
-        if (n > 0)
-            return 1;
-        else return -1;
+        return {first.a[0] - second.a[0], first.a[1] - second.a[1], first.a[2] - second.a[2]};
     }
 
-    int sgn(float n)
+    Vec3f operator-(const Vec3f& first)
     {
-        if (n > 0)
-            return 1;
-        else return -1;
+        return {-first.a[0], -first.a[1], -first.a[2]};
     }
 
-    float clampTwoSide(float minPossibleValue, float maxPossibleValue, float n)
+    Vec3f& operator+=(Vec3f& first, const Vec3f& second)
     {
-        if (n < minPossibleValue)
-            return minPossibleValue;
-        if (n > maxPossibleValue)
-            return maxPossibleValue;
-        return n;
+        first.a[0] += second.a[0];
+        first.a[1] += second.a[1];
+        first.a[2] += second.a[2];
 
+        return first;
     }
 
-    float clampMin(float minPossibleValue, float n)
+    Vec3f operator/(const Vec3f& first, float scalar)
     {
-        if (n < minPossibleValue)
-            return minPossibleValue;
-        else return n;
-    }
-
-    float clampMax(float maxPossibleValue, float n)
-    {
-        if (n > maxPossibleValue)
-            return maxPossibleValue;
-        else return n;
+        return {first.a[0] / scalar, first.a[1] / scalar, first.a[2]/scalar};
     }
 
     float degreesToRadians(float angleInDegrees)
@@ -339,6 +410,23 @@ namespace mat{
         return angleInRadians / 3.14f * 180.f;
     }
 
+    Mat4 multiply(const Mat4& first, const Mat4& second)
+    {
+        Mat4 result;
+        for(int i=0; i<4; i++)
+            for(int j=0; j<4; j++)
+            {
+                result.a[i][j] = 0;
+                for(int k=0; k<4; k++)
+                    result.a[i][j] += first.a[i][k] * second.a[k][j];
+            }
+
+        return result;
+    }
+};
+    ///
+
+    /*
     Mat4 multiply(const Mat4& first, const Mat4& second)
     {
         Mat4 result;
@@ -431,4 +519,69 @@ namespace mat{
 
         return result;
     }
-};
+*/
+/*
+ int sgn(int n)
+    {
+        if (n > 0)
+            return 1;
+        else return -1;
+    }
+
+    int sgn(float n)
+    {
+        if (n > 0)
+            return 1;
+        else return -1;
+    }
+
+    float clampTwoSide(float minPossibleValue, float maxPossibleValue, float n)
+    {
+        if (n < minPossibleValue)
+            return minPossibleValue;
+        if (n > maxPossibleValue)
+            return maxPossibleValue;
+        return n;
+
+    }
+
+    float clampMin(float minPossibleValue, float n)
+    {
+        if (n < minPossibleValue)
+            return minPossibleValue;
+        else return n;
+    }
+
+    float clampMax(float maxPossibleValue, float n)
+    {
+        if (n > maxPossibleValue)
+            return maxPossibleValue;
+        else return n;
+    }
+
+    Quaternion conjugate(Quaternion quaternion)
+    {
+        Quaternion result;
+
+        result.x[0] =  quaternion.x[0];
+        result.x[1] = -quaternion.x[1];
+        result.x[2] = -quaternion.x[2];
+        result.x[3] = -quaternion.x[3];
+
+        return result;
+    }
+
+    float moduleSquared(Quaternion quaternion)
+    {
+        return quaternion.x[0] * quaternion.x[0] + quaternion.x[1] * quaternion.x[1] +quaternion.x[2] * quaternion.x[2] + quaternion.x[3] * quaternion.x[3];
+    }
+
+    Quaternion inverse(Quaternion quaternion)
+    {
+        return conjugate(quaternion) * (1 / moduleSquared(quaternion));
+    }
+    Quaternion operator*(Quaternion quaternion, float scalar)
+    {
+        return {quaternion.x[0] / scalar, quaternion.x[1] / scalar, quaternion.x[2] / scalar, quaternion.x[3] / scalar};
+    }
+*/

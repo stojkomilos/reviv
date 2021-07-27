@@ -68,17 +68,11 @@ void Application::run()
     {
         onUpdate();                     // game defined onUpdate function
 
-        RV_DBG1
         Time::onUpdate();
-        RV_DBG1
         Input::onUpdate();
-        RV_DBG1
         PhysicsManager::onUpdate();
-        RV_DBG1
         RenderManager::onUpdate(window.m_Data);
-        RV_DBG1
         window.onUpdate();              // update the glfw window
-        RV_DBG1
     }
 
     RenderManager::shutdown();

@@ -117,19 +117,19 @@ int Shader::getUniformLocation(const std::string& uniformName) const
 void Shader::uploadUniformMat4(const std::string& name, const Mat4& matrix) const
 {
     int location = getUniformLocation(name);
-    glUniformMatrix4fv(location, 1, GL_FALSE, (float*)&matrix);
+    glUniformMatrix4fv(location, 1, GL_TRUE, (float*)&matrix);
 }
 
-void Shader::uploadUniform3f(const std::string& name, const Vec3f& a) const
+void Shader::uploadUniform3f(const std::string& name, const Vec3f& vec) const
 {
     int location = getUniformLocation(name);
-    glUniform3f(location, a.x, a.y, a.z);
+    glUniform3f(location, vec.a[0], vec.a[1], vec.a[2]);
 }
 
-void Shader::uploadUniform4f(const std::string& name, const Vec4f& a) const
+void Shader::uploadUniform4f(const std::string& name, const Vec4f& vec) const
 {
     int location = getUniformLocation(name);
-    glUniform4f(location, a.x, a.y, a.z, a.w);
+    glUniform4f(location, vec.a[0], vec.a[1], vec.a[2], vec.a[3]);
 }
 
 void Shader::uploadUniform1i(const std::string& name, int a) const

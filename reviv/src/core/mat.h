@@ -27,45 +27,30 @@ namespace mat{
     class Vec3f
     {
     public:
-        float x, y, z;
+        float a[3];
         Vec3f() = default;
         Vec3f(float x, float y, float z);
         Vec3f(const Vec3f&) = default;
-        Vec3f operator-(const Vec3f other)
-        {
-            return {x - other.x, y - other.y, z - other.z};
-        }
-        Vec3f operator-() const
-        {
-            return {-x, -y, -z};
-        }
-        Vec3f& operator+=(const Vec3f& other)
-        {
-            x = x + other.x;
-            y = y + other.y;
-            z = z + other.z;
-
-            return *this;
-        }
-        Vec3f operator/(float scalar) const
-        {
-            return {x / scalar, y / scalar, z / scalar};
-        }
     };
+    Vec3f& operator+=(Vec3f& first, const Vec3f& second);
+    Vec3f operator-(const Vec3f& first, const Vec3f second);
+    Vec3f operator-(const Vec3f& first);
+    Vec3f operator/(const Vec3f& vec, float scalar);
 
     class Vec4f
     {
     public:
-        float x, y, z, w;
+        float a[4];
         Vec4f() = default;
         Vec4f(float x, float y, float z, float w);
         Vec4f(const Vec4f&) = default;
+        Vec4f(const Vec3f& vec, float scalar);
     };
 
     class Mat3
     {
     public:
-        Vec3f a, b, c;
+        float a[3][3];
         Mat3() = default;
         Mat3(float n);
         Mat3(const Mat3&) = default;
@@ -74,7 +59,7 @@ namespace mat{
     class Mat4
     {
     public:
-        Vec4f a, b, c, d;
+        float a[4][4];
         Mat4() = default;
         Mat4(float n);
         Mat4(const Mat4&) = default;
@@ -115,17 +100,29 @@ namespace mat{
         Vec4i(int x, int y, int z, int w);
         Vec4i(const Vec4i&) = default;
     };
+    
+    struct Quaternion
+    {
+        float x[4];
+    };
+
+/*
+    Quaternion conjugate(Quaternion quaternion);
+    float moduleSquared(Quaternion quaternion);
+    Quaternion inverse(Quaternion quaternion);
+    Quaternion operator*(Quaternion quaternion, float scalar);
+*/
 
     Vec3f operator*(const Vec3f& thing, const float& scalar);
     Vec3f operator*(const float& scalar, const Vec3f& thing);
     Vec4f operator/(const Vec4f& thing, const float& scalar);
     Vec4f operator/(const float& scalar, const Vec4f& thing);
 
-    Mat4 translate(Mat4 a, const Vec3f& b);
-    Mat4 scale(Mat4 a, const Vec3f& b);
-    Mat4 rotateX(Mat4 a, float theta);
-    Mat4 rotateY(Mat4 a, float theta);
-    Mat4 rotateZ(Mat4 a, float theta);
+    Mat4 translate(Mat4 mtx, const Vec4f& vec);
+    Mat4 scale(Mat4 a, const Vec4f& b);
+    Mat4 rotateX(float theta); // supposed to be roll
+    Mat4 rotateY(float theta); // supposed to be pitch
+    Mat4 rotateZ(float theta); // supposed to be yaw
 
     Mat4 multiply(const Mat4& first, const Mat4& second);
     Vec4f multiply(const Mat4& a, const Vec4f& b);
@@ -157,7 +154,7 @@ namespace mat{
         Rotation() = default;
         Rotation(const Rotation&) = default;
         Rotation(const Vec3f& initRotation) 
-            : pitch(initRotation.x), yaw(initRotation.y), roll(initRotation.z) {}
+            : pitch(initRotation.a[0]), yaw(initRotation.a[1]), roll(initRotation.a[2]) {}
     };
 
     Vec3f getDirectionFromRotation(const Rotation& rotation);

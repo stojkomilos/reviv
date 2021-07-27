@@ -54,18 +54,18 @@ void ModelLoader::addMesh(aiMesh* loaderMesh, Mesh* pMesh)
 
     for(unsigned int i=0; i < loaderMesh->mNumVertices; i++)
     {
-        vertex.position.x = loaderMesh->mVertices[i].x;
-        vertex.position.y = loaderMesh->mVertices[i].y;
-        vertex.position.z = loaderMesh->mVertices[i].z;
+        vertex.position.a[0] = loaderMesh->mVertices[i].x;
+        vertex.position.a[1] = loaderMesh->mVertices[i].y;
+        vertex.position.a[2] = loaderMesh->mVertices[i].z;
 
-        vertex.normal.x = loaderMesh->mNormals[i].x;
-        vertex.normal.y = loaderMesh->mNormals[i].y;
-        vertex.normal.z = loaderMesh->mNormals[i].z;
+        vertex.normal.a[0] = loaderMesh->mNormals[i].x;
+        vertex.normal.a[1] = loaderMesh->mNormals[i].y;
+        vertex.normal.a[2] = loaderMesh->mNormals[i].z;
 
         if(loaderMesh->mTextureCoords[0])
         {
             vertex.texCoords.x = loaderMesh->mTextureCoords[0][i].x;
-            vertex.texCoords.y = loaderMesh->mTextureCoords[0][i].y;
+            vertex.texCoords.x = loaderMesh->mTextureCoords[0][i].y;
         }
         else 
         {

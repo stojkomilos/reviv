@@ -20,10 +20,11 @@ public:
 
     Mat4 getTransform() const
     {
-        Mat4 result = identity;
-        result = translate(identity, position);
-        result = mat::scale(result, scale);
-        //result = rotateX(result, rotation.yaw);
+        //Mat4 result(1);
+        Mat4 result = multiply(rotateZ(rotation.yaw), multiply(rotateY(rotation.pitch), rotateX(rotation.roll)));
+        //Mat4 result = rotateZ(rotation.yaw);
+        result = translate(result, Vec4f(position, 0));
+        result = mat::scale(result, Vec4f(this->scale, 1));
         return result;
     }
 
