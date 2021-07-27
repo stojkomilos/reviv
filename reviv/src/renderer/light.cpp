@@ -27,7 +27,7 @@ void log(const PointLight& light)
 }
  
 Light::Light()
- : ambient(1, 1, 1), diffuse(0.2, 0.2, 0.2), specular(0.5, 0.5, 0.5), on(true), intensity(1.f)
+ : ambient(1, 1, 1), diffuse(0.2, 0.2, 0.2), specular(0.05, 0.05, 0.05), on(true), intensity(1.f)
 { }
 
 PointLight::PointLight()

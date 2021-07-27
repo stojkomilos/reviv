@@ -1,37 +1,23 @@
 * Ciljevi
 
-clean todo: rename u shader.h, mat.h (a->vec, a->mtx...)
-uploading mat4, TRANSPOSE glUpload
-
-
-order: input->update->display
-
-danas:
- - namesti /samo/ point light
- - basic texture (learnoopengl.com)
- - skybox
-
 sutra:
-    - textures and stuff on backpack and textures in general
-    - /ne/ jos environment apstraction (skroz)
-    - normals transformation
-    - quaternion?
-      
-graficki bag kada gledam skroz gore ili skroz dole (mat.h -> MAT_EPSILON?)
-
-smoother mouse:
- - manji sensitivity
- - double for position?
- - pogledaj kako racunas mozda moze bolje da se preser-vuje
+ - basic texture rendering inside sandbox
+ - texture za backpack, i sa time /vrlo/ basic apstrakcija tekstura (model?). assimp learnopengl.com (basic material?)
+ - speeedrun "advanced opengl"
+   
+order: input->update->display
+bugs:
+    - graficki bag kada gledam skroz gore ili skroz dole (mat.h -> MAT_EPSILON?)
+    - lose osvetljenje na kocki
 
 shallow work:
  - dll assimp
 
-math:
+todo:
+ -----
  - normals move: http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
- - quaterinions
+ - procitaj: https://learnopengl.com/In-Practice/Debugging
 
-procitaj: https://learnopengl.com/In-Practice/Debugging
 
 clean:
  - git "merge" with main, reviv1
@@ -41,21 +27,8 @@ clean:
  - assets copy: u debug: assets kao parametar, u release: kopiraj u cmake
  - environment stuff?
 
-texture, i backpack sa njima
-distance lighting
-pretty shaders
-textures in materials
-skybox
-zfightings probaj sam pa onda(http://www.songho.ca/opengl/gl_projectionmatrix.html)
-scale i normalizacija
-
 vscode:
  - disable (or set low-prio) searching on files from vendor
-
-crash:
- - glfw crash thing
- - windows 10 not working
- - player becomes nan
 
 long term:
     - full scripting system
@@ -67,6 +40,7 @@ organizacija:
  - iteratori kako valja
  - const * gde treba
  - red include-ova (ima na stack overflow)
+ - operatori za mat.h
       
 * Window, event, input
 

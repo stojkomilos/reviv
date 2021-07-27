@@ -42,8 +42,6 @@ private:
     Entity* iCreateEntity(const std::string& entityName);
     Entity* iFindEntity(const std::string& entityName);
     void iLogEntity(const std::string& entityName);
-    std::vector<Entity>* iGetEntityList() const;
-
     stls::StableVector<Entity>* iGetEntityList();
 
     Entity* iGetCameraEntity();
@@ -51,4 +49,6 @@ private:
 
     Entity* iGetPlayerEntity();
     Entity* iSetPlayerEntity(Entity* pNewPlayerEntity);
+
+    void projectPosition(const Entity& entity);
 };

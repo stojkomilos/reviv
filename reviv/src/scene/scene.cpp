@@ -53,3 +53,31 @@ Entity* Scene::iSetPlayerEntity(Entity* pNewPlayerEntity)
 
     return pPlayerEntity;
 }
+
+void Scene::projectPosition(const Entity& entity)
+{ 
+    cout << "Projecting Position of: " << entity.entityName << "-----------" << endl;
+
+    cout << "Position:" << endl;
+    log(entity.get<TransformComponent>()->position);
+
+    cout << "Transform" << endl;
+    log(entity.get<TransformComponent>()->getTransform());
+
+    cout << "afterTransform" << endl;
+    auto afterTransform = multiply(entity.get<TransformComponent>()->getTransform(), Vec4f(0, 0, 0, 1));
+    log(afterTransform);
+
+    cout << "afterView" << endl;
+    auto afterView = multiply(Scene::getCameraEntity()->get<CameraComponent>()->camera.viewMatrix, afterTransform);
+    log(afterView);
+
+    cout << "afterProjection" << endl;
+    auto afterProjection = multiply(Scene::getCameraEntity()->get<CameraComponent>()->camera.projectionMatrix, afterView);
+    log(afterProjection);
+
+    cout << "afterNdc" << endl;
+    auto afterNdc = afterProjection / afterProjection.a[3];
+    log(afterNdc);
+    cout << "End of projecting position------------------" << endl;
+}

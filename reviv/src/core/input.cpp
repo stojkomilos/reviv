@@ -1,6 +1,6 @@
 #include"input.h"
 
-const float sensitivity = 0.002f;
+static const float sensitivity = 0.0035f;
 
 void Input::iOnUpdate()
 {
@@ -74,7 +74,6 @@ void Input::onEventMouseMoved(Event* event)
 
 void Input::doPlayerControllerOnEventMouseMoved(Event* event)
 {
-    float sensitivity = 0.005;
 
     static Vec2f oldMousePosition = ((EventMouseMoved*)event)->m_Position;
     Vec2f deltaMouse = subtract(((EventMouseMoved*)event)->m_Position, oldMousePosition);

@@ -44,17 +44,11 @@ in vec3 v_FragPosition;
 
 out vec4 FragColor;
 
-// environment
-//uniform mat4 u_ModelMatrix;
-//uniform mat4 u_ViewMatrix;
-//uniform mat4 u_ProjectionMatrix;
 
 uniform vec3 u_ViewPosition;
-
-// material
 uniform Material u_Material;
 
-#define NR_POINT_LIGHTS 1
+#define NR_POINT_LIGHTS 3
 #define NR_DIRECTIONAL_LIGHTS 0
 #define NR_FOCUSED_LIGHTS 0
 
@@ -66,9 +60,10 @@ uniform PointLight u_PointLights[NR_POINT_LIGHTS];
 //vec3 calculateFocusedLight(PointLight pointLight);
 vec3 calculatePointLight(PointLight pointLight);
 
+//uniform sampler2D u_TestTexture;
+
 void main()
 {
-
     vec3 result = vec3(0, 0, 0);
     for(int i=0; i<NR_POINT_LIGHTS; i++)
     {
@@ -76,6 +71,8 @@ void main()
     }
 
     FragColor = vec4(result, 1);
+
+    //FragColor = texture(u_TestTexture, v_TexCoord);
 }
 
 vec3 calculatePointLight(PointLight pointLight)

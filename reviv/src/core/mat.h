@@ -119,27 +119,27 @@ namespace mat{
     Vec4f operator/(const float& scalar, const Vec4f& thing);
 
     Mat4 translate(Mat4 mtx, const Vec4f& vec);
-    Mat4 scale(Mat4 a, const Vec4f& b);
+    Mat4 scale(Mat4 mtx, const Vec4f& vec);
     Mat4 rotateX(float theta); // supposed to be roll
     Mat4 rotateY(float theta); // supposed to be pitch
     Mat4 rotateZ(float theta); // supposed to be yaw
 
     Mat4 multiply(const Mat4& first, const Mat4& second);
-    Vec4f multiply(const Mat4& a, const Vec4f& b);
+    Vec4f multiply(const Mat4& mtx, const Vec4f& vec);
 
-    float module(const Vec3f& a);
-    float module(const Vec2f& a);
-    float dot(const Vec3f& a, const Vec3f& b);
-    float dot(const Vec2f& a, const Vec2f& b);
-    Vec3f projection(const Vec3f& a, const Vec3f& b);
-    Vec3f normalise(Vec3f a);
-    Vec2f normalise(Vec2f a);
-    Vec3f cross(const Vec3f& a, const Vec3f& b);
-    Vec3f multiplyScalar(Vec3f a, float b);
-    Vec3f multiplyScalar(Vec3f a, int b);
+    float module(const Vec3f& vec);
+    float module(const Vec2f& vec);
+    float dot(const Vec3f& first, const Vec3f& second);
+    float dot(const Vec2f& first, const Vec2f& second);
+    Vec3f projection(const Vec3f& first, const Vec3f& second);
+    Vec3f normalise(Vec3f vec);
+    Vec2f normalise(Vec2f vec);
+    Vec3f cross(const Vec3f& first, const Vec3f& second);
+    Vec3f multiplyScalar(Vec3f vec, float scalar);
+    Vec3f multiplyScalar(Vec3f vec, int intiger);
     Vec3f add(const Vec3f& a, const Vec3f& b);
-    Vec3f subtract(const Vec3f& a, const Vec3f& b);
-    Vec2f subtract(const Vec2f& a, const Vec2f& b);
+    Vec3f subtract(const Vec3f& first, const Vec3f& second);
+    Vec2f subtract(const Vec2f& first, const Vec2f& second);
     //int sgn(int n);
     //int sgn(float n);
     //float clampTwoSide(float minPossibleValue, float maxPossibleValue, float n);

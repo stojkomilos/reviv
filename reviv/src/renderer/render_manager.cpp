@@ -25,10 +25,6 @@ void RenderManager::iOnUpdate(const WindowData& windowData)
 void RenderManager::iInit(const WindowData& windowData)
 {
     RenderCommand::init();
-
-    auto* cameraEntity = Scene::getCameraEntity();
-    cameraEntity->get<CameraComponent>()->camera.recalculateViewMatrix(cameraEntity->get<TransformComponent>()->position, cameraEntity->get<TransformComponent>()->rotation);
-    cameraEntity->get<CameraComponent>()->camera.recalculateProjectionMatrix(windowData);
 }
 
 void RenderManager::submit(const Model& model, const Mat4& transform)
@@ -57,6 +53,7 @@ void RenderManager::bindEnvironment(const Shader& shader, const Mat4& transform)
 
     if(&shader != &AssetManager::get()->shaderPhong)
     {
+        RV_ASSERT(&shader == &AssetManager::get()->shaderMonochroma , "");
         return;
     }
 
@@ -80,7 +77,6 @@ void RenderManager::bindEnvironment(const Shader& shader, const Mat4& transform)
                 uniformNameLight += (char)(nrLight + '0');
                 uniformNameLight += "]";
 
-
                 shader.uploadUniform3f(uniformNameLight + ".position", itEntity->get<TransformComponent>()->position);
 
                 shader.uploadUniform3f(uniformNameLight + ".ambient", pLight->ambient);
@@ -92,6 +88,8 @@ void RenderManager::bindEnvironment(const Shader& shader, const Mat4& transform)
                 shader.uploadUniform1f(uniformNameLight + ".quadratic", pLight->quadratic);
 
                 shader.uploadUniform3f("u_ViewPosition", Scene::getPlayerEntity()->get<TransformComponent>()->position);
+
+                nrLight++;
             }
         }
     }

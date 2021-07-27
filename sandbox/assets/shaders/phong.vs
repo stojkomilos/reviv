@@ -12,6 +12,8 @@ out vec3 v_Normal;
 out vec2 v_TexCoord;
 out vec3 v_FragPosition;
 
+uniform sampler2D u_TestTexture;
+
 void main()
 {
     gl_Position = u_ProjectionMatrix * (u_ViewMatrix * (u_ModelMatrix * vec4(a_Position, 1.0)));
