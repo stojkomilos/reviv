@@ -5,7 +5,10 @@ Shader::Shader()
     id = 0;
 };
 
-void Shader::init(const char* vertexPath, const char* fragmentPath) { //, const char* geometryPath = nullptr)
+void Shader::init(const char* vertexPath, const char* fragmentPath)
+{
+    filePathVertex = vertexPath;
+    filePathFragment = fragmentPath;
 
     std::string vertexCode;
     std::string fragmentCode;

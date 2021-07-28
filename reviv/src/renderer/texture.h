@@ -21,6 +21,8 @@ public:
     unsigned int id = 0;
 
     bool isInited = false;
+
+    std::string m_FilePath;
     //unsigned int getWidth() const = 0;
     //unsigned int getHeight() const = 0;
 protected:
@@ -36,8 +38,6 @@ public:
         : Texture(GL_TEXTURE_2D) { }
 
     void load(const std::string& filePath);
-
-    std::string path;
 
     //unsigned int getWidth() const override;
     //unsigned int getHeight() const override;

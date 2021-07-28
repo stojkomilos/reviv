@@ -53,7 +53,7 @@ void RenderManager::bindEnvironment(const Shader& shader, const Mat4& transform)
 
     if(&shader != &AssetManager::get()->shaderPhong)
     {
-        RV_ASSERT(&shader == &AssetManager::get()->shaderMonochroma , "");
+        RV_ASSERT(&shader == &AssetManager::get()->shaderMonochroma || &shader == &AssetManager::get()->shaderTexture, "");
         return;
     }
 

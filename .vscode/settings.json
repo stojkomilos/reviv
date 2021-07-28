@@ -91,6 +91,7 @@
         "hash_set": "cpp",
         "forward_list": "cpp",
         "regex": "cpp",
-        "*.idl": "cpp"
+        "*.idl": "cpp",
+        "filesystem": "cpp"
     }
 }

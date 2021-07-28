@@ -4,6 +4,8 @@ sutra:
  - basic texture rendering inside sandbox
  - texture za backpack, i sa time /vrlo/ basic apstrakcija tekstura (model?). assimp learnopengl.com (basic material?)
  - speeedrun "advanced opengl"
+
+basic fog?
    
 order: input->update->display
 bugs:

@@ -60,8 +60,6 @@ uniform PointLight u_PointLights[NR_POINT_LIGHTS];
 //vec3 calculateFocusedLight(PointLight pointLight);
 vec3 calculatePointLight(PointLight pointLight);
 
-//uniform sampler2D u_TestTexture;
-
 void main()
 {
     vec3 result = vec3(0, 0, 0);

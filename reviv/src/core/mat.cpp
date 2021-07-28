@@ -264,12 +264,12 @@ namespace mat{
 
     float module(const Vec3f& vec)
     {
-        return sqrt(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1] + vec.a[2]*vec.a[2] + MAT_EPSILON);
+        return sqrt(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1] + vec.a[2]*vec.a[2]);
     }
 
     float module(const Vec2f& vec)
     {
-        return sqrt(vec.x*vec.x + vec.y*vec.y + MAT_EPSILON);
+        return sqrt(vec.x*vec.x + vec.y*vec.y);
         //return sqrt(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1] + MAT_EPSILON);
     }
 
@@ -283,8 +283,8 @@ namespace mat{
         return first.x*second.x + first.y*second.y;
         //return first.a[0]*second.a[0] + first.a[1]*second.a[1];
     }
-
-    Vec3f normalise(Vec3f vec)
+/*
+    Vec3f normalise(Vec3f vec) // NOTE: should be avoided because module of
     {
         float b = module(vec);
         vec.a[0] /= b;
@@ -304,7 +304,7 @@ namespace mat{
 
         return vec;
     }
-
+*/
     Vec3f cross(const Vec3f& first, const Vec3f& second)
     {
         Vec3f result;

@@ -5,6 +5,7 @@
 #include"core/mat.h"
 #include"shader.h"
 #include"buffer.h"
+#include"texture.h"
 
 extern unsigned int ShaderDataTypeSize(ShaderDataType type);
 
@@ -31,7 +32,7 @@ public:
     Material& operator=(const Material& other) = delete; // can be implemented
 
     Material(const Shader* pShader)
-        : pShader(pShader) { map.clear(); name.clear(); }
+        : pShader(pShader), pTextures(5) { map.clear(); }
 
     void setShader(Shader* inShader);
     void bindShader();
@@ -44,8 +45,10 @@ public:
     void set(const std::string& uniformName, double n);
 
     const Shader* pShader = nullptr;
-    std::string name;
     std::unordered_map <std::string, MaterialHelpingStruct> map;
+    stls::StableVector<const Texture*> pTextures;
+
+    void addTexture(const Texture& texture);
 };
 
 void log(const Material& material);

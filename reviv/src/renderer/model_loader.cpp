@@ -65,13 +65,13 @@ void ModelLoader::addMesh(aiMesh* loaderMesh, Mesh* pMesh)
         if(loaderMesh->mTextureCoords[0])
         {
             vertex.texCoords.x = loaderMesh->mTextureCoords[0][i].x;
-            vertex.texCoords.x = loaderMesh->mTextureCoords[0][i].y;
+            vertex.texCoords.y = loaderMesh->mTextureCoords[0][i].y;
         }
         else 
         {
             vertex.texCoords.x = 0;
             vertex.texCoords.y = 0; //TODO:
-            //RV_ASSERT(false, "");
+            RV_ASSERT(false, "");
         }
 
         pMesh->m_Vertices.pushBack(vertex);

@@ -132,8 +132,8 @@ namespace mat{
     float dot(const Vec3f& first, const Vec3f& second);
     float dot(const Vec2f& first, const Vec2f& second);
     Vec3f projection(const Vec3f& first, const Vec3f& second);
-    Vec3f normalise(Vec3f vec);
-    Vec2f normalise(Vec2f vec);
+    //Vec3f normalise(Vec3f vec);
+    //Vec2f normalise(Vec2f vec);
     Vec3f cross(const Vec3f& first, const Vec3f& second);
     Vec3f multiplyScalar(Vec3f vec, float scalar);
     Vec3f multiplyScalar(Vec3f vec, int intiger);
@@ -149,12 +149,12 @@ namespace mat{
     class Rotation
     {
     public:
-        float pitch, yaw, roll;
+        float roll, pitch, yaw;
 
         Rotation() = default;
         Rotation(const Rotation&) = default;
         Rotation(const Vec3f& initRotation) 
-            : pitch(initRotation.a[0]), yaw(initRotation.a[1]), roll(initRotation.a[2]) {}
+            : roll(initRotation.a[0]), pitch(initRotation.a[1]), yaw(initRotation.a[2]) {}
     };
 
     Vec3f getDirectionFromRotation(const Rotation& rotation);

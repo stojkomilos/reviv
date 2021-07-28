@@ -1,5 +1,11 @@
 #include"material.h"
 
+void Material::addTexture(const Texture& texture)
+{
+    RV_ASSERT(texture.isInited == true, "");
+    pTextures.pushBack(&texture);
+}
+
 Material::~Material()
 {
     for(const auto& [uniformName, help] : map)
@@ -12,6 +18,7 @@ void Material::setShader(Shader* inShader)
 {
     RV_ASSERT(pShader == nullptr, "");
     pShader = inShader;
+    pTextures.reserve(5);
 }
 
 void Material::bindShader()
@@ -24,6 +31,16 @@ void Material::bind() const
 {
     RV_ASSERT(pShader != nullptr, "shader not set");
     pShader->bind();
+
+    int textureCounter = 0;
+    for(auto it = pTextures.begin(); it != pTextures.end(); it++)
+    {
+        (*it)->bind(textureCounter);
+        std::string uniformName = "u_Texture" + std::to_string(textureCounter);
+        pShader->uploadUniform1i(uniformName, textureCounter);
+
+        textureCounter++;
+    }
 
     MaterialHelpingStruct help;
     std::string typeName;

@@ -1,10 +1,10 @@
 #include<reviv.h>
 
 Entity *player, *camera, *stanic, *light, *platform, *sphere, *cube, *sun, *lamp;
+Entity* container;
 Entity* map;
 
 ModelLoader modelLoaderBackpack, modelLoaderMap;
-Material materialStanic;
 
 bool useMap = false;
 
@@ -21,6 +21,9 @@ public:
 
     void initAfterEngine() override
     {
+        //tex.load("assets/textures/container.png");
+        tex.load("assets/textures/container.jpg");
+        tex.bind(0);
 
         camera = Scene::setCameraEntity(Scene::createEntity("Camera"));
         camera->add<CameraComponent>(0.01f, 5000.f, degreesToRadians(100.f));
@@ -35,14 +38,13 @@ public:
             map->get<TransformComponent>()->scale = {0.005f, 0.005f, 0.005f};
             map->get<TransformComponent>()->rotation.roll = degreesToRadians(90);
             modelLoaderMap.load("assets/sponza/scene.gltf");
-            map->add<ModelComponent> (&modelLoaderMap, &AssetManager::get()->materialTurquoise);
+            map->add<ModelComponent>(&modelLoaderMap, &AssetManager::get()->materialTurquoise);
         }
 
         stanic = Scene::createEntity("Stanic");
         stanic->get<TransformComponent>()->position = {1, 0, 2};
         modelLoaderBackpack.load("assets/models/backpack/backpack.obj");
-        stanic->add<ModelComponent>         (&modelLoaderBackpack,                      &AssetManager::get()->materialEmerald);
-        materialStanic.setShader(&AssetManager::get()->shaderPhong);   
+        stanic->add<ModelComponent>(&modelLoaderBackpack, &AssetManager::get()->materialObsidian);
 
         light = Scene::createEntity("Light");
         light->get<TransformComponent>()->scale = {0.2f, 0.2f, 0.2f};
@@ -63,9 +65,6 @@ public:
         //platform->add<ModelComponent>       (&AssetManager::get()->modelLoaderCube,     &AssetManager::get()->materialGold);
         auto* platformModel = platform->add<ModelComponent>(&AssetManager::get()->modelLoaderCube);
         platformModel->model.addMaterial(&AssetManager::get()->materialGold);
-        
-        //platform->get<ModelComponent>()->model.addMaterialFromShader(AssetManager::get()->shaderMonochroma);
-        //platform->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec3f(1, 1, 1));
 
         sphere = Scene::createEntity("Sphere");
         sphere->get<TransformComponent>()->position = {1, 6, 2};
@@ -86,27 +85,32 @@ public:
         sun->get<ModelComponent>()->model.addMaterialFromShader(AssetManager::get()->shaderMonochroma);
         sun->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec3f(1, 1, 0));
 
-        //tex.load("assets/textures/container.png");
-        //tex.bind(0);
-
+        //container = Scene::createEntity("Container");
+        //container->get<TransformComponent>()->position.a[2] += 3;
+        //container->add<ModelComponent>(&AssetManager::get()->modelLoaderCube);
+        //container->get<ModelComponent>()->model.addMaterialFromShader(AssetManager::get()->shaderTexture);
+        //container->get<ModelComponent>()->model.pMaterials[0]->addTexture(tex);
     }
 
     void onUpdate() override
     {
-        //sphere->get<ModelComponent>()->model.pMaterials[0]->set("u_TestTexture", 0);
-
         light->get<TransformComponent>()->position = Vec3f(sin(Time::getTime() / 2) * 2, cos(Time::getTime() / 2) * 3, 2 + sin(Time::getTime() / 5));
 
-        cube->get<TransformComponent>()->rotation.yaw = Time::getTime() * 7;
-        cube->get<TransformComponent>()->rotation.pitch = Time::getTime() * 11;
-        cube->get<TransformComponent>()->rotation.roll = Time::getTime() * 3;
+        //cube->get<TransformComponent>()->rotation.yaw = Time::getTime() * 7;
+        //cube->get<TransformComponent>()->rotation.pitch = Time::getTime() * 11;
+        //cube->get<TransformComponent>()->rotation.roll = Time::getTime() * 3;
 
         cube->get<TransformComponent>()->rotation.yaw = 1;
         cube->get<TransformComponent>()->rotation.pitch = 1;
         cube->get<TransformComponent>()->rotation.roll = 1;
         
         lamp->get<TransformComponent>()->position = Vec3f(sin(Time::getTime() * 2) * 3.5, cos(Time::getTime() / 1.3) * 7, 3);
-        lamp->get<TransformComponent>()->rotation = Vec3f(Time::getTime() * 5, Time::getTime() * 3, Time::getTime() * 10);
+
+        //lamp->get<TransformComponent>()->rotation = Vec3f(Time::getTime() * 5, Time::getTime() * 3, Time::getTime() * 10);
+        //lamp->get<TransformComponent>()->rotation.roll = Time::getTime() * 5;
+        lamp->get<TransformComponent>()->rotation.pitch = Time::getTime() * 3;
+        lamp->get<TransformComponent>()->rotation.yaw = Time::getTime() * 10;
+         //= Vec3f(Time::getTime() * 5, Time::getTime() * 3, Time::getTime() * 10);
 
         if(Time::isOneSecond())
         {

@@ -21,6 +21,9 @@ public:
     void uploadUniform4f(const std::string& name, const Vec4f& a) const;
     void uploadUniform1i(const std::string& name, int a) const;
     void uploadUniform1f(const std::string& name, float a) const;
+
+    std::string filePathVertex;
+    std::string filePathFragment;
 private:
     void checkCompileErrors(GLuint shader, std::string type);
 };

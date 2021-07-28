@@ -11,6 +11,7 @@ class Model
 public:
     Model() = default;
     Model(ModelLoader* pModelLoader, Material* pMaterial);
+    Model(ModelLoader* pModelLoader, Shader* pShader);
     Model(ModelLoader* pModelLoader);
 
     ModelLoader* m_ModelLoader;

@@ -16,8 +16,11 @@ Camera::Camera(float nearRenderDistance, float renderDistance, float horizontalF
 void Camera::recalculateViewMatrix(const Vec3f& position, const Rotation& rotation) // right handed coordinate system
 {
     direction = getDirectionFromRotation(rotation);
-    right = normalise(cross(direction, Vec3f(0, 0, 1)));
-    up = normalise(cross(right, direction));
+
+    Vec3f tempRight = cross(direction, Vec3f(0, 0, 1));
+    right = tempRight / (module(tempRight));
+    Vec3f tempUp = cross(right, direction);
+    up = tempUp / (module(tempUp));
 
     viewMatrix.a[0][0] = right.a[0];
     viewMatrix.a[0][1] = right.a[1];

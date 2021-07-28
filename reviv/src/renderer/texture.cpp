@@ -10,6 +10,7 @@ void Texture::init()
 void Texture2D::load(const std::string& filePath)
 {
     RV_ASSERT(isInited == false, "texture already loaded/inited");
+    m_FilePath = filePath;
     isInited = true;
 
     stbi_set_flip_vertically_on_load(true);
@@ -17,15 +18,18 @@ void Texture2D::load(const std::string& filePath)
     RV_ASSERT(data, "Failed to load texture" << filePath);
 
     glGenTextures(1, &id);
-
     glBindTexture(GL_TEXTURE_2D, id);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 
     glGenerateMipmap(GL_TEXTURE_2D);
 
     stbi_image_free(data);
-
 
     //GLenum internalFormat = 0, dataFormat = 0;
     //if (channels1 == 4)

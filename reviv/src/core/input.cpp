@@ -103,35 +103,39 @@ void Input::doPlayerControllerPolling()
     Vec3f* playerPos = &player->get<TransformComponent>()->position;
     Vec3f moveDirection(0, 0, 0);
     Vec3f aimDirection = getDirectionFromRotation(player->get<TransformComponent>()->rotation);
+    Vec3f rightDirection = cross(aimDirection, Vec3f(0, 0, 1));
 
-    if(isKeyPressed(RV_KEY_W))
-        moveDirection = aimDirection;
-    
-    if(isKeyPressed(RV_KEY_S))
-        moveDirection = -aimDirection;
+    bool pressedW = isKeyPressed(RV_KEY_W);
+    bool pressedS = isKeyPressed(RV_KEY_S);
+    bool pressedA = isKeyPressed(RV_KEY_A);
+    bool pressedD = isKeyPressed(RV_KEY_D);
 
-    Vec3f rightDirection;
-    rightDirection = cross(aimDirection, Vec3f(0, 0, 1));
+    if(pressedW and !pressedS)
+        moveDirection += aimDirection;
+    else if(!pressedW and pressedS)
+        moveDirection += -aimDirection;
 
-    if(isKeyPressed(RV_KEY_D))
+    if(pressedD and !pressedA)
         moveDirection += rightDirection;
-
-    if(isKeyPressed(RV_KEY_A))
+    else if(!pressedD and pressedA)
         moveDirection += -rightDirection;
 
-    Vec3f hDelta = normalise(moveDirection) * speed * Time::getDelta();
 
-    if(isKeyPressed(RV_KEY_W) || isKeyPressed(RV_KEY_A) || isKeyPressed(RV_KEY_S) || isKeyPressed(RV_KEY_D))
+    if(pressedW or pressedS or pressedD or pressedA)
     {
-        *playerPos += hDelta;
+        Vec3f horizontalPlaneDelta = moveDirection / module(moveDirection) * speed * Time::getDelta();
+        *playerPos += horizontalPlaneDelta;
     }
 
     Vec3f verticalDelta(0,0,0);
-    if(isKeyPressed(RV_KEY_SPACE))
-        verticalDelta = verticalSpeed * Vec3f(0, 0, 1) * Time::getDelta();
+    bool pressedSpace = isKeyPressed(RV_KEY_SPACE);
+    bool pressedLeftShift = isKeyPressed(RV_KEY_LEFT_SHIFT);
 
-    if(isKeyPressed(RV_KEY_LEFT_SHIFT))
-        verticalDelta = -verticalSpeed * Vec3f(0, 0, 1) * Time::getDelta();
+    if(pressedSpace and !pressedLeftShift)
+        verticalDelta = verticalSpeed * Vec3f(0, 0, 1) * Time::getDelta();
+        else if(!pressedSpace and pressedLeftShift)
+            verticalDelta = -verticalSpeed * Vec3f(0, 0, 1) * Time::getDelta();
+
     *playerPos += verticalDelta;
     
 }

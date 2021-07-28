@@ -5,10 +5,12 @@
 void AssetManager::init()
 {
     modelLoaderCube.load("assets/models/cube.fbx");
+
     modelLoaderSphere.load("assets/models/sphere.fbx");
 
     shaderMonochroma.init("assets/shaders/monochroma.vs", "assets/shaders/monochroma.fs");
     shaderPhong.init("assets/shaders/phong.vs", "assets/shaders/phong.fs");
+    shaderTexture.init("assets/shaders/texture.vs", "assets/shaders/texture.fs");
 
     initMaterials();
 

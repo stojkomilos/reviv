@@ -36,6 +36,24 @@ Model::Model(ModelLoader* pModelLoader, Material* pMaterial)
     }
 }
 
+
+Model::Model(ModelLoader* pModelLoader, Shader* pShader)
+{
+    RV_ASSERT(pModelLoader->isLoaded, "");
+
+    m_ModelLoader = pModelLoader;
+
+    pMeshes.reserve(pModelLoader->meshes.size());
+    pMaterials.reserve(pModelLoader->meshes.size());
+
+    Material* pMaterial = new Material(pShader);                             // TODO: no one really owns material then, no one will call the destructor or free the memory
+    for(unsigned int i=0; i < pModelLoader->meshes.size(); i++)
+    {
+        pMeshes.pushBack(&pModelLoader->meshes[i]);
+        pMaterials.pushBack(pMaterial);
+    }
+}
+
 Model::Model(ModelLoader* pModelLoader)
 {
     RV_ASSERT(pModelLoader->isLoaded, "");
