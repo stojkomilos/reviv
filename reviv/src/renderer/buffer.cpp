@@ -90,27 +90,32 @@ BufferLayout::BufferLayout(stls::StableVector<BufferElement> inLayout)
 
 GBufferObject::~GBufferObject()
 {
+    RV_ASSERT(isInited == true, "");
     glDeleteBuffers(1, &id);
 }
 
 void GBufferObject::init()
 {
+    RV_ASSERT(isInited == false, "");
+    isInited = true;
     glGenBuffers(1, &id);
 }
 
 void GBufferObject::bind() const
 {
+    RV_ASSERT(isInited == true, "");
     glBindBuffer(bufferType, id);
 }
 
 void GBufferObject::unbind() const
 {
+    RV_ASSERT(isInited == true, "");
     glBindBuffer(bufferType, 0);
 }
 
-
 void GBufferObject::load(void* pData, unsigned int size)
 {
+    RV_ASSERT(isInited == true, "");
     glBindBuffer(bufferType, id);
     RV_ASSERT(pParentVao != nullptr, "For safety, can't load data into buffer if it does not belong to a Vao object");
     glBufferData(bufferType, size, pData, GL_STATIC_DRAW);

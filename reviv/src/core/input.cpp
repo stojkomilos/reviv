@@ -80,8 +80,8 @@ void Input::doPlayerControllerOnEventMouseMoved(Event* event)
     oldMousePosition = ((EventMouseMoved*)event)->m_Position;
 
 
-    Scene::getPlayerEntity()->get<TransformComponent>()->rotation.yaw -= deltaMouse.x * sensitivity;
-    Scene::getPlayerEntity()->get<TransformComponent>()->rotation.pitch -= deltaMouse.y * sensitivity;
+    Scene::getPlayerEntity()->get<TransformComponent>()->rotation.yaw -= deltaMouse.a[0] * sensitivity;
+    Scene::getPlayerEntity()->get<TransformComponent>()->rotation.pitch -= deltaMouse.a[1] * sensitivity;
 
     if (Scene::getPlayerEntity()->get<TransformComponent>()->rotation.pitch >= degreesToRadians(90))
     {

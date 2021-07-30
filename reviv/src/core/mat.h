@@ -9,7 +9,7 @@ namespace mat{
     class Vec1f
     {
     public:
-        float x;
+        float a[1];
         Vec1f() = default;
         Vec1f(float x);
         Vec1f(const Vec1f&) = default;
@@ -18,7 +18,7 @@ namespace mat{
     class Vec2f
     {
     public:
-        float x, y;
+        float a[2];
         Vec2f() = default;
         Vec2f(float x, float y);
         Vec2f(const Vec2f&) = default;
@@ -32,10 +32,6 @@ namespace mat{
         Vec3f(float x, float y, float z);
         Vec3f(const Vec3f&) = default;
     };
-    Vec3f& operator+=(Vec3f& first, const Vec3f& second);
-    Vec3f operator-(const Vec3f& first, const Vec3f second);
-    Vec3f operator-(const Vec3f& first);
-    Vec3f operator/(const Vec3f& vec, float scalar);
 
     class Vec4f
     {
@@ -106,18 +102,6 @@ namespace mat{
         float x[4];
     };
 
-/*
-    Quaternion conjugate(Quaternion quaternion);
-    float moduleSquared(Quaternion quaternion);
-    Quaternion inverse(Quaternion quaternion);
-    Quaternion operator*(Quaternion quaternion, float scalar);
-*/
-
-    Vec3f operator*(const Vec3f& thing, const float& scalar);
-    Vec3f operator*(const float& scalar, const Vec3f& thing);
-    Vec4f operator/(const Vec4f& thing, const float& scalar);
-    Vec4f operator/(const float& scalar, const Vec4f& thing);
-
     Mat4 translate(Mat4 mtx, const Vec4f& vec);
     Mat4 scale(Mat4 mtx, const Vec4f& vec);
     Mat4 rotateX(float theta); // supposed to be roll
@@ -132,19 +116,26 @@ namespace mat{
     float dot(const Vec3f& first, const Vec3f& second);
     float dot(const Vec2f& first, const Vec2f& second);
     Vec3f projection(const Vec3f& first, const Vec3f& second);
-    //Vec3f normalise(Vec3f vec);
-    //Vec2f normalise(Vec2f vec);
+
+    Vec2f subtract(const Vec2f& first, const Vec2f& second);
+    Vec2f operator-(const Vec2f& first, const Vec2f& second);
+
     Vec3f cross(const Vec3f& first, const Vec3f& second);
     Vec3f multiplyScalar(Vec3f vec, float scalar);
     Vec3f multiplyScalar(Vec3f vec, int intiger);
     Vec3f add(const Vec3f& a, const Vec3f& b);
     Vec3f subtract(const Vec3f& first, const Vec3f& second);
-    Vec2f subtract(const Vec2f& first, const Vec2f& second);
-    //int sgn(int n);
-    //int sgn(float n);
-    //float clampTwoSide(float minPossibleValue, float maxPossibleValue, float n);
-    //float clampMin(float minPossibleValue, float n);
-    //float clampMax(float maxPossibleValue, float n);
+
+    Vec3f& operator+=(Vec3f& first, const Vec3f& second);
+    Vec3f operator-(const Vec3f& first, const Vec3f& second);
+    Vec3f operator-(const Vec3f& first);
+    Vec3f operator/(const Vec3f& vec, float scalar);
+    Vec3f operator*(const Vec3f& thing, const float& scalar);
+    Vec3f operator*(const float& scalar, const Vec3f& thing);
+
+    Vec4f operator/(const Vec4f& thing, const float& scalar);
+    Vec4f operator/(const float& scalar, const Vec4f& thing);
+
 
     class Rotation
     {
@@ -160,6 +151,13 @@ namespace mat{
     Vec3f getDirectionFromRotation(const Rotation& rotation);
     float degreesToRadians(float angleInDegrees);
     float radiansToDegrees(float angleInRadians);
+
+/*
+    Quaternion conjugate(Quaternion quaternion);
+    float moduleSquared(Quaternion quaternion);
+    Quaternion inverse(Quaternion quaternion);
+    Quaternion operator*(Quaternion quaternion, float scalar);
+*/
 
 }
 

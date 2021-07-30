@@ -37,6 +37,8 @@ public:
     void setShader(Shader* inShader);
     void bindShader();
     void bind() const;
+
+    //void setTexture(const std::string& uniformName, unsigned int slot);
     void set(const std::string& uniformName, const Mat4& mat4);
     void set(const std::string& uniformName, const Vec4f& vec4f);
     void set(const std::string& uniformName, const Vec3f& vec3f);

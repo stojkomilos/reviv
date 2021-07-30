@@ -46,11 +46,11 @@ void log(const Mat3& thing)
 }
 
 void log(const Vec1f& thing) {
-    cout << thing.x << endl;
+    cout << thing.a[0] << endl;
 }
 
 void log(const Vec2f& thing) {
-    cout << thing.x << " " << thing.y << endl;
+    cout << thing.a[0] << " " << thing.a[1] << endl;
 }
 
 void log(const Vec3f& thing)
@@ -91,7 +91,7 @@ void log(const Vec4i& thing)
 namespace mat{
 
     Vec2f::Vec2f(float x, float y) 
-        : x(x), y(y) {}
+        : a{x, y} {}
 
     Vec3f::Vec3f(float x, float y, float z) 
         : a{x, y, z} {}
@@ -269,8 +269,7 @@ namespace mat{
 
     float module(const Vec2f& vec)
     {
-        return sqrt(vec.x*vec.x + vec.y*vec.y);
-        //return sqrt(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1] + MAT_EPSILON);
+        return sqrt(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1]);
     }
 
     float dot(const Vec3f& first, const Vec3f& second)
@@ -280,31 +279,9 @@ namespace mat{
 
     float dot(const Vec2f& first, const Vec2f& second)
     {
-        return first.x*second.x + first.y*second.y;
-        //return first.a[0]*second.a[0] + first.a[1]*second.a[1];
-    }
-/*
-    Vec3f normalise(Vec3f vec) // NOTE: should be avoided because module of
-    {
-        float b = module(vec);
-        vec.a[0] /= b;
-        vec.a[1] /= b;
-        vec.a[2] /= b;
-
-        return vec;
+        return first.a[0]*second.a[0] + first.a[1]*second.a[1];
     }
 
-    Vec2f normalise(Vec2f vec)
-    {
-        float b = module(vec);
-        vec.x /= b;
-        vec.y /= b;
-        //vec.a[0] /= b;
-        //vec.a[1] /= b;
-
-        return vec;
-    }
-*/
     Vec3f cross(const Vec3f& first, const Vec3f& second)
     {
         Vec3f result;
@@ -347,8 +324,7 @@ namespace mat{
 
     Vec2f subtract(const Vec2f& first, const Vec2f& second)
     {
-        //return {first.a[0]-second.a[0], first.a[1]-second.a[1]};
-        return {first.x-second.x, first.y-second.y};
+        return {first.a[0]-second.a[0], first.a[1]-second.a[1]};
     }
 
    
@@ -387,6 +363,11 @@ namespace mat{
         return angleInRadians / 3.14f * 180.f;
     }
 
+    Vec2f operator-(const Vec2f& first, const Vec2f& second)
+    {
+        return subtract(first, second);
+    }
+
     Mat4 multiply(const Mat4& first, const Mat4& second)
     {
         Mat4 result;
@@ -401,3 +382,26 @@ namespace mat{
         return result;
     }
 };
+
+/*
+    Vec3f normalise(Vec3f vec) // NOTE: should be avoided because module of
+    {
+        float b = module(vec);
+        vec.a[0] /= b;
+        vec.a[1] /= b;
+        vec.a[2] /= b;
+
+        return vec;
+    }
+
+    Vec2f normalise(Vec2f vec)
+    {
+        float b = module(vec);
+        vec.x /= b;
+        vec.y /= b;
+        //vec.a[0] /= b;
+        //vec.a[1] /= b;
+
+        return vec;
+    }
+*/

@@ -37,7 +37,7 @@ public:
     bool doesCameraEntityExist = false;
 
 private:
-    Scene() : entityList(50) { }
+    Scene() : entityList(5000000) { }
 
     Entity* iCreateEntity(const std::string& entityName);
     Entity* iFindEntity(const std::string& entityName);

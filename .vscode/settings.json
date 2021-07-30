@@ -92,6 +92,10 @@
         "forward_list": "cpp",
         "regex": "cpp",
         "*.idl": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "future": "cpp",
+        "csignal": "cpp",
+        "cfenv": "cpp",
+        "typeindex": "cpp"
     }
 }

@@ -5,21 +5,21 @@
 void AssetManager::init()
 {
     modelLoaderCube.load("assets/models/cube.fbx");
-
     modelLoaderSphere.load("assets/models/sphere.fbx");
 
     shaderMonochroma.init("assets/shaders/monochroma.vs", "assets/shaders/monochroma.fs");
     shaderPhong.init("assets/shaders/phong.vs", "assets/shaders/phong.fs");
     shaderTexture.init("assets/shaders/texture.vs", "assets/shaders/texture.fs");
 
-    initMaterials();
+    //modelLoaderQuad.
 
+    initMaterials();
 }
 
 void AssetManager::initMaterials()
 {
-    // Original value is 128.f
-    float shininessConst = 32.f;
+    // Original value is 128.f.     |     32 is good pick
+    float shininessConst = 128.f * 10;
 
     materialEmerald.setShader(&shaderPhong);
     materialRuby.setShader(&shaderPhong);
@@ -42,7 +42,7 @@ void AssetManager::initMaterials()
     materialGold.set("u_Material.ambient", Vec3f(0.24725, 0.1995, 0.0745));
     materialGold.set("u_Material.diffuse", Vec3f(0.75164, 0.60648, 0.22648));
     materialGold.set("u_Material.specular", Vec3f(0.628281, 0.555802, 0.366065));
-    materialGold.set("u_Material.shininess", 0.4f * 128);
+    materialGold.set("u_Material.shininess", 0.4f * shininessConst);
 
     materialChrome.set("u_Material.ambient", Vec3f(0.25, 0.25, 0.25));
     materialChrome.set("u_Material.diffuse", Vec3f(0.4, 0.4, 0.4));

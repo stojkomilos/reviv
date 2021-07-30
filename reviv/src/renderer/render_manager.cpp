@@ -1,7 +1,43 @@
 #include"render_manager.h"
 
+void RenderManager::iInit(const WindowData& windowData)
+{
+    RenderCommand::init();
+
+    std::vector<std::string> skyboxFaces;
+    skyboxFaces.push_back("assets/textures/skybox/right.jpg"); // the order of theese makes no sense within the context of the world coordinate system, but it is used because opengl incorectly rotates the cube map textures within this coordinate system
+    skyboxFaces.push_back("assets/textures/skybox/left.jpg");
+    skyboxFaces.push_back("assets/textures/skybox/bottom.jpg");
+    skyboxFaces.push_back("assets/textures/skybox/top.jpg");
+    skyboxFaces.push_back("assets/textures/skybox/front.jpg");
+    skyboxFaces.push_back("assets/textures/skybox/back.jpg");
+    skybox.init(skyboxFaces);
+
+    /*
+    framebufferScreen.init();
+    framebufferScreen.bind();
+
+    WindowData windowData = Application::get()->getWindow()->windowData;
+    framebufferScreenTexutre.initFramebuffer(windowData.width, windowData.height);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferScreenTexutre, 0);
+    unsigned int rbo;
+    glGenRenderBuffers(1, &rbo);
+    glBindRenderBuffer(GL_RENDERBUFFER, rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24, windowData.width, windowData.height);
+    glBindRenderBuffer(GL_RENDERBUFFER, 0);
+
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
+    RV_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "framebuffer is not complete");
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    */
+}
+
 void RenderManager::iOnUpdate(const WindowData& windowData)
 {
+    ////framebufferScreen.bind();
+    ////glEnable(GL_DEPTH_TEST);
+    // ----
+
     RenderCommand::setClearColor(Vec4f(100.f, 10.f, 80.f, 256.f) / 256.f);
     RenderCommand::clear();
 
@@ -20,12 +56,26 @@ void RenderManager::iOnUpdate(const WindowData& windowData)
         }
     }
     endScene();
+
+    skybox.onUpdate();
+
+    /// ---------------
+    /*
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    RenderCommand::setClearColor(Vec4f(1, 1, 1, 1));
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    screenShader.bind();
+    AssetManager::get()->vaoQuad.bind();
+    glDisable(GL_DEPTH_TEST);
+    glBindTexture(GL_TEXTURE_2D, screenTexture);
+    glDrawElements(GL_TRIANGLES, mesh.m_Indices.size(), GL_UNSIGNED_INT, 0);
+    //glDrawArrays(GL_TRIANGLES, 0, 6);
+    */
+
+
 }
 
-void RenderManager::iInit(const WindowData& windowData)
-{
-    RenderCommand::init();
-}
 
 void RenderManager::submit(const Model& model, const Mat4& transform)
 {

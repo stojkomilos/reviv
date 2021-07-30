@@ -4,22 +4,28 @@
 
 struct FramebufferSpecification
 {
-	unsigned int width, height;
-	unsigned int Samples = 1;
+    unsigned int width, height;
+    unsigned int Samples = 1;
 
-	bool swapChainTarget = false;
+    bool swapChainTarget = false;
 };
 
 class Framebuffer 
 {
 public:
-	Framebuffer();
-	~Framebuffer();
-	void setUp(FramebufferSpecification& specification1);
-	void invalidate();
-	void bind();
-	void unbind();
-	unsigned int ID;
-	unsigned int colorAttachment, depthAttachment;
-	FramebufferSpecification specification;
+    Framebuffer() = default;
+    ~Framebuffer();
+
+    void init();
+    void bind();
+
+    unsigned int id;
+
+    bool isInited = false;
+    //unsigned int colorAttachment, depthAttachment;
+    //FramebufferSpecification specification;
+
+    //void setUp(FramebufferSpecification& specification1);
+    //void invalidate();
+    //void unbind();
 };

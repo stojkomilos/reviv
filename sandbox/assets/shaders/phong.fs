@@ -48,7 +48,7 @@ out vec4 FragColor;
 uniform vec3 u_ViewPosition;
 uniform Material u_Material;
 
-#define NR_POINT_LIGHTS 3
+#define NR_POINT_LIGHTS 1
 #define NR_DIRECTIONAL_LIGHTS 0
 #define NR_FOCUSED_LIGHTS 0
 
@@ -87,19 +87,16 @@ vec3 calculatePointLight(PointLight pointLight)
     vec3 diffuse = pointLight.diffuse * (diffuseIntensity * u_Material.diffuse);
 
     vec3 viewDirection = normalize(u_ViewPosition - v_FragPosition);
-    vec3 reflectionDirection = reflect(-lightDirection, normal);
-    float specularIntensity = pow(u_Material.shininess, max(0.0, dot(viewDirection, reflectionDirection)));
+    vec3 halfwayDirection = normalize(lightDirection + viewDirection);
+    float specularIntensity = pow(max(0.0, dot(viewDirection, halfwayDirection)), u_Material.shininess);
     vec3 specular = pointLight.specular * (specularIntensity * u_Material.specular);
 
-    //float specularIntensity = pow(u_Material.shininess, attenuation * max(0.0, dot(viewDirection, reflectionDirection)));
-    //ambient *= attenuation;
-    //diffuse *= attenuation;
-    //specular *= attenuation;
-    //return (ambient + diffuse + specular);
     return ((ambient + diffuse + specular) * attenuation);
+    //return ((specular) * attenuation + (ambient + diffuse + specular) * 0.001f);
 }
 
 /*
+//NOT BLINN
 vec3 calculateDirectionalLight(DirectionalLight directionalLight, vec3 normal, vec3 viewDirection)
 {
     vec3 ambient = directionalLight.ambient * u_Material.ambient;
@@ -110,12 +107,13 @@ vec3 calculateDirectionalLight(DirectionalLight directionalLight, vec3 normal, v
 
     vec3 viewDirection = normalize(u_ViewPosition - v_FragPosition);
     vec3 reflectionDirection = reflect(-lightDirection, v_Normal);
-    float specularIntensity = pow(u_Material.shininess, max(0.0, dot(viewDirection, reflectionDirection)));
+    float specularIntensity = pow( max(0.0, dot(viewDirection, reflectionDirection)), u_Material.shininess);
     vec3 specular = directionalLight.specular * (specularIntensity * u_Material.specular);
 
     return (ambient + diffuse + specular);
 }
 
+// NOT BLINN
 vec3 calculateFocusedLight(FocusedLight focusedLight, vec3 normal, vec3 viewDirection)
 {
     vec3 ambient = focusedLight.ambient * u_Material.ambient;
@@ -126,7 +124,7 @@ vec3 calculateFocusedLight(FocusedLight focusedLight, vec3 normal, vec3 viewDire
 
     vec3 viewDirection = normalize(u_ViewPosition - v_FragPosition);
     vec3 reflectionDirection = reflect(-lightDirection, v_Normal);
-    float specularIntensity = pow(u_Material.shininess, max(0.0, dot(viewDirection, reflectionDirection)));
+    float specularIntensity = pow( max(0.0, dot(viewDirection, reflectionDirection)), u_Material.shininess);
     vec3 specular = pointLight.specular * (specularIntensity * u_Material.specular);
 
     // clamp

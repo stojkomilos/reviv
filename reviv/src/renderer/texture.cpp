@@ -7,7 +7,7 @@ void Texture::init()
     isInited = true;
 }
 
-void Texture2D::load(const std::string& filePath)
+void Texture2D::load(const std::string& filePath) // uses sRGB
 {
     RV_ASSERT(isInited == false, "texture already loaded/inited");
     m_FilePath = filePath;
@@ -17,6 +17,19 @@ void Texture2D::load(const std::string& filePath)
     stbi_uc* data = stbi_load(filePath.c_str(), &width, &height, &nrChannels, 0);
     RV_ASSERT(data, "Failed to load texture" << filePath);
 
+    GLenum internalFormat = 0, dataFormat = 0;
+    if (nrChannels == 4)
+    {
+        internalFormat = GL_SRGB_ALPHA;
+        dataFormat = GL_RGBA;
+    }
+    else if (nrChannels == 3)
+    {
+        internalFormat = GL_SRGB;
+        dataFormat = GL_RGB;
+    }
+    RV_ASSERT(internalFormat & dataFormat, "Texture format not supported");
+
     glGenTextures(1, &id);
     glBindTexture(GL_TEXTURE_2D, id);
 
@@ -25,39 +38,16 @@ void Texture2D::load(const std::string& filePath)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
 
     glGenerateMipmap(GL_TEXTURE_2D);
 
     stbi_image_free(data);
-
-    //GLenum internalFormat = 0, dataFormat = 0;
-    //if (channels1 == 4)
-    //{
-    //    internalFormat = GL_RGBA8;
-    //    dataFormat = GL_RGBA;
-    //}
-    //else if (channels1 == 3)
-    //{
-    //    internalFormat = GL_RGB8;
-    //    dataFormat = GL_RGB;
-    //}
-    //RV_ASSERT(internalFormat & dataFormat, "Texture format not supported");
-
-    //glCreateTextures(GL_TEXTURE_2D, 1, &id);
-    //glTextureStorage2D(id, 1, internalFormat, width, height);
-
-    //glTextureParameteri(id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    //glTextureParameteri(id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-    //glTextureSubImage2D(id, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, data);
-
-    //stbi_image_free(data);
-
 }
 
 Texture::~Texture()
 {
+    RV_ASSERT(isInited == true, "");
     glDeleteTextures(1, &id);
 }
 
@@ -68,42 +58,46 @@ void Texture::bind(unsigned int slot) const
 
     glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(textureType, id);
-    //glBindTextureUnit(slot, id);
 }
 
-
-/*
-void Texture2D::load(const std::string& filePath)
+void Texture2D::initFramebuffer(int inWidth, int inHeight)
 {
-    int width1, height1, channels1;
-    stbi_uc* data = stbi_load(path.c_str(), &width1, &height1, &channels1, 0);
-    stbi_set_flip_vertically_on_load(1);
-    RV_ASSERT(data, "Failed to load texture" << path);
-    width = width1; //TODO: clean
-    height = height1;
+    RV_ASSERT(isInited == false, "");
+    isInited = true;
 
-    GLenum internalFormat = 0, dataFormat = 0;
-    if (channels1 == 4)
-    {
-        internalFormat = GL_RGBA8;
-        dataFormat = GL_RGBA;
-    }
-    else if (channels1 == 3)
-    {
-        internalFormat = GL_RGB8;
-        dataFormat = GL_RGB;
-    }
-    RV_ASSERT(internalFormat & dataFormat, "Texture format not supported");
+    width = inWidth;
+    height = inHeight;
 
-    glCreateTextures(GL_TEXTURE_2D, 1, &id);
-    glTextureStorage2D(id, 1, internalFormat, width, height);
+    glGenTextures(1, &id);
+    glBindTexture(GL_TEXTURE_2D, id);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
-    glTextureParameteri(id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTextureParameteri(id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-    glTextureSubImage2D(id, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, data);
-
-    stbi_image_free(data);
-
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
-*/
+
+void TextureCubeMap::load(std::vector<std::string> filePaths) // loads in sRGB
+{
+    RV_ASSERT(isInited == false, "texture already loaded/inited");
+    isInited = true;
+
+    glGenTextures(1, &id);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, id);
+
+
+    stbi_set_flip_vertically_on_load(true);
+    for(int i=0; i < 6; i++)
+    {
+        int tempWidth, tempHeight, tempNrChannels;
+        unsigned char* data = stbi_load(filePaths[i].c_str(), &tempWidth, &tempHeight, &tempNrChannels, 0);
+        RV_ASSERT(data, "Failed to load a texture of type cubemap");
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_SRGB,          tempWidth, tempHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data); //TODO: positive X ne valja u mom koordinatnom sistemu
+        stbi_image_free(data);
+    }
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);  
+}

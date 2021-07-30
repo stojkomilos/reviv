@@ -20,6 +20,8 @@
 #include"renderer/model.h"
 #include"scene/asset_manager.h"
 
+#include"stls/random.h"
+
 // ------Entry point-----------------------------------------------
 #include"core/entry_point.h"
 // ----------------------------------------------------------------

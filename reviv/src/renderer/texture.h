@@ -22,7 +22,6 @@ public:
 
     bool isInited = false;
 
-    std::string m_FilePath;
     //unsigned int getWidth() const = 0;
     //unsigned int getHeight() const = 0;
 protected:
@@ -37,15 +36,16 @@ public:
     Texture2D()
         : Texture(GL_TEXTURE_2D) { }
 
-    void load(const std::string& filePath);
-
-    //unsigned int getWidth() const override;
-    //unsigned int getHeight() const override;
+    void load(const std::string& filePath); // uses sRGB
+    void initFramebuffer(int inWidth, int inHeight);
+    std::string m_FilePath;
 };
 
+class TextureCubeMap : public Texture
+{
+public:
+    TextureCubeMap()
+        : Texture(GL_TEXTURE_CUBE_MAP) { }
 
-        //stanicTexture.setUp("../resources/textures/stene.png");
-        //stanicTexture.bind(0);
-        //beloTexture.setUp("../resources/textures/belo.png");
-
-        //textureCube.init("assets/textures/container.png");
+    void load(std::vector<std::string> filePaths); // uses sRGB
+};

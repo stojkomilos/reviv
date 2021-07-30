@@ -42,6 +42,8 @@ void RenderCommand::iInit()
     //glEnable(GL_BLEND);
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    //glEnable(GL_CULL_FACE); // can be implemented: add flags to each vao/mesh on weather or not to enable this (should be disabled for objects that are not fully closed)
+
     int nrAttributes;
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
     RV_ASSERT((nrAttributes >= 10), ""); 

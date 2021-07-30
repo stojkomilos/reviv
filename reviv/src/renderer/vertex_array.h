@@ -22,4 +22,6 @@ public:
     void addEbo();
     stls::StableVector<Vbo> vertexBuffers;
     stls::StableVector<Ebo> elementBuffers;
+private:
+    bool isInited = false;
 };

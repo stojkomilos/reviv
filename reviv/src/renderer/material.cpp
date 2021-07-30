@@ -78,6 +78,11 @@ void Material::bind() const
     //cout << "ENDDDDDD MATERIAL--" << endl;
     pShader->bind(); //TODO ovo se mozda moze ukloniti
 }
+//
+//void Material::setTexture(const std::string& uniformName, unsigned int slot)
+//{
+//    set(uniformName, slot);
+//}
 
 void Material::set(const std::string& uniformName, const Mat4& mat4)
 {

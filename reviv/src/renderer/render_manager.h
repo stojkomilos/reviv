@@ -12,8 +12,11 @@
 #include"renderer/window.h"
 
 #include"scene/asset_manager.h"
+#include"framebuffer.h"
+#include"skybox.h"
 
-class RenderManager {
+class RenderManager
+{
 public:
     ~RenderManager() = default;
     RenderManager(const RenderManager&) = delete;
@@ -28,6 +31,10 @@ public:
         static RenderManager instance;
         return &instance;
     }
+
+    Skybox skybox;
+    //Framebuffer screenFramebuffer;
+    //Texture2D screenFramebufferTexture;
 
 private:
     RenderManager() = default;

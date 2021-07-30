@@ -32,10 +32,10 @@ void Camera::recalculateViewMatrix(const Vec3f& position, const Rotation& rotati
     viewMatrix.a[1][2] = up.a[2];
     viewMatrix.a[1][3] = -dot(position, up);
 
-    viewMatrix.a[2][0] = direction.a[0];
-    viewMatrix.a[2][1] = direction.a[1];
-    viewMatrix.a[2][2] = direction.a[2];
-    viewMatrix.a[2][3] = -dot(position, direction);
+    viewMatrix.a[2][0] = -direction.a[0];
+    viewMatrix.a[2][1] = -direction.a[1];
+    viewMatrix.a[2][2] = -direction.a[2];
+    viewMatrix.a[2][3] = dot(position, direction);
 
     viewMatrix.a[3][0] = 0;
     viewMatrix.a[3][1] = 0;
@@ -65,11 +65,11 @@ void Camera::recalculateProjectionMatrix(const WindowData& windowData)
 
     projectionMatrix.a[2][0] = 0;
     projectionMatrix.a[2][1] = 0;
-    projectionMatrix.a[2][2] = (renderDistance + nearRenderDistance) / (renderDistance - nearRenderDistance);
+    projectionMatrix.a[2][2] = -(renderDistance + nearRenderDistance) / (renderDistance - nearRenderDistance);
     projectionMatrix.a[2][3] = -2.f * renderDistance * nearRenderDistance / (renderDistance - nearRenderDistance);
 
     projectionMatrix.a[3][0] = 0;
     projectionMatrix.a[3][1] = 0;
-    projectionMatrix.a[3][2] = 1;
+    projectionMatrix.a[3][2] = -1;
     projectionMatrix.a[3][3] = 0;
 }
