@@ -17,7 +17,7 @@ public:
 
     ModelLoader modelLoaderCube;
     ModelLoader modelLoaderSphere;
-    //ModelLoader modelLoaderQuad2D;
+    ModelLoader modelLoaderQuad2D;
 
     //Mesh meshQuad2D;
 

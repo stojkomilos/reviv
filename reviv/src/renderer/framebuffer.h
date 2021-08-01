@@ -2,6 +2,8 @@
 
 #include<glad/glad.h>
 
+#include"texture.h"
+
 struct FramebufferSpecification
 {
     unsigned int width, height;
@@ -18,10 +20,16 @@ public:
 
     void init();
     void bind();
+    void unbind();
+
+    void attachTexture();
+    void attachRenderbuffer();
 
     unsigned int id;
 
     bool isInited = false;
+    Texture* pTexture;
+    unsigned int rbo;
     //unsigned int colorAttachment, depthAttachment;
     //FramebufferSpecification specification;
 

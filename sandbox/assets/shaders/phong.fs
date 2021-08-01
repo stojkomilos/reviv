@@ -59,6 +59,11 @@ uniform PointLight u_PointLights[NR_POINT_LIGHTS];
 //vec3 calculateDirectionalLight(DirectionalLight directionalLight);
 //vec3 calculateFocusedLight(PointLight pointLight);
 vec3 calculatePointLight(PointLight pointLight);
+float calculateShadow();
+
+uniform sampler2D u_ShadowMap;
+uniform mat4 u_LightViewMatrix;
+uniform mat4 u_LightProjectionMatrix;
 
 void main()
 {
@@ -67,10 +72,28 @@ void main()
     {
         result += calculatePointLight(u_PointLights[i]);
     }
+    
+    float shadow = calculateShadow();
+    if(shadow == 0)
+        FragColor = vec4(result, 1);
+    else
+        FragColor = vec4(0, 0, 0, 1);
+}
+float calculateShadow()
+{
+    float bias = 0.005f;
+    vec4 positionFromLight = u_LightProjectionMatrix * (u_LightViewMatrix * vec4(v_FragPosition, 1));
+    positionFromLight.x = (positionFromLight.x + 1) / 2;
+    positionFromLight.y = (positionFromLight.y + 1) / 2;
+    float shadow = 0;
+    if(texture(u_ShadowMap, positionFromLight.xy).r * 2 - 1 < positionFromLight.z - bias)
+    {
+        shadow = 1;
+    }
+    if(positionFromLight.z > 1.0)
+        shadow = 0.0;
 
-    FragColor = vec4(result, 1);
-
-    //FragColor = texture(u_TestTexture, v_TexCoord);
+    return shadow;
 }
 
 vec3 calculatePointLight(PointLight pointLight)

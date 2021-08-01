@@ -11,8 +11,9 @@ public:
     Camera(const Camera&) = default;
     Camera(float nearRenderDistance, float renderDistance, float horizontalFov);
 
-    void recalculateViewMatrix(const Vec3f& position, const Rotation& rotation);
-    void recalculateProjectionMatrix(const WindowData& windowData);
+    void setViewMatrix(const Vec3f& position, const Rotation& rotation);
+    void setPerspectiveProjection();
+    void setOrthographicProjection(float width);
 
     void onEventMouseMoved(Event* event);
 

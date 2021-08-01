@@ -14,8 +14,8 @@ public:
     Application(const Application&) = delete;
     Application& operator=(const Application&) = delete;
 
-    static void onEvent(Event* event) { getInstance()->iOnEvent(event); }
-    static Application* getInstance()
+    static void onEvent(Event* event) { get()->iOnEvent(event); }
+    static Application* get()
     {
         return s_Instance;
     }

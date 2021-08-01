@@ -6,8 +6,6 @@
 
 static void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 { 
-    (void)window; // supressing -Wunused-parameter
-
     glViewport(0, 0, width, height);
 }
 

@@ -1,5 +1,14 @@
 * Ciljevi
 
+framebuffer todo:
+ - totalno ukloniti onaj sistem gde se ceka frame nr. 3 za sve, nek sve ide regularno u init itd.
+   - morace se i resize kad se resize prozor
+   - cherno video
+   - bolji kvalitet za boje (ovaj je bas los izlgeda)
+   - izbaciti stencil
+
+ukloniti argument u =beginScene(windowData)=
+
 sutra:
  - basic texture rendering inside sandbox
  - texture za backpack, i sa time /vrlo/ basic apstrakcija tekstura (model?). assimp learnopengl.com (basic material?)

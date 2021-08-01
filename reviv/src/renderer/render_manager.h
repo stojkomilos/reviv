@@ -1,19 +1,13 @@
 #pragma once
 
-#include"window.h"
 #include"core/mat.h"
 #include"renderer/render_command.h"
-#include"renderer/texture.h"
-
-#include"scene/components.h"
 #include"scene/scene.h"
-
-#include"renderer/material.h"
-#include"renderer/window.h"
-
 #include"scene/asset_manager.h"
 #include"framebuffer.h"
 #include"skybox.h"
+#include"core/time.h"
+#include"core/application.h"
 
 class RenderManager
 {
@@ -22,8 +16,8 @@ public:
     RenderManager(const RenderManager&) = delete;
     RenderManager& operator=(const RenderManager&) = delete;
     
-    static void init(const WindowData& windowData) { getInstance()->iInit(windowData); }
-    static void onUpdate(const WindowData& windowData) { getInstance()->iOnUpdate(windowData); }
+    static void init() { getInstance()->iInit(); }
+    static void onUpdate() { getInstance()->iOnUpdate(); }
     static void shutdown() { getInstance()->iShutdown(); }
     
     static RenderManager* getInstance()
@@ -33,19 +27,24 @@ public:
     }
 
     Skybox skybox;
-    //Framebuffer screenFramebuffer;
-    //Texture2D screenFramebufferTexture;
+    Framebuffer screenFramebuffer;
+    Shader screenShader;
+    ShadowMap shadowMap;
+
+    Shader depthTestShader;
+
+    Shader shadowMapShader;
 
 private:
     RenderManager() = default;
 
-    void iInit(const WindowData& windowData);
-    void iOnUpdate(const WindowData& windowData);
+    void iInit();
+    void iOnUpdate();
     void iShutdown();
 
     void submit(const Model& model, const Mat4& transform);
 
-    void beginScene(const WindowData& windowData);
+    void beginScene();
     void endScene();
     void bindEnvironment(const Shader& shader, const Mat4& transform);
 };

@@ -4,13 +4,14 @@ Entity *player, *camera, *stanic, *light, *platform, *sphere, *cube, *sun, *lamp
 Entity* container;
 Entity* map;
 
+Entity* directionalLight;
+
 ModelLoader modelLoaderBackpack, modelLoaderMap;
 
 bool useMap = false;
 
 //Texture2D tex, texFramebuffer;
-Texture2D tex;
-//Framebuffer framebuffer;
+//Texture2D tex;
 
 Perlin2D perlin;
 
@@ -27,6 +28,7 @@ public:
     {
         glEnable(GL_FRAMEBUFFER_SRGB);
 
+        /*
         int voxelMapSize = 11;
         perlin.init(voxelMapSize, voxelMapSize);
         for(int i=-voxelMapSize/2; i<voxelMapSize/2; i++)
@@ -49,9 +51,10 @@ public:
                 entity->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &AssetManager::get()->materialGold);
             }
         }
+        */
         
-        tex.load("assets/textures/floor.png");
-        tex.bind(0);
+        //tex.load("assets/textures/floor.png");
+        //tex.bind(0);
 
         camera = Scene::setCameraEntity(Scene::createEntity("Camera"));
         camera->add<CameraComponent>(0.01f, 5000.f, degreesToRadians(100.f));
@@ -82,10 +85,6 @@ public:
         light->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec3f(1, 1, 1));
         auto* pLightComp = &light->get<PointLightComponent>()->light;
 
-        //pLightComp->constant = 0.1f;
-        //pLightComp->linear = 0;
-        //pLightComp->quadratic = 1.8f;
-
         //pLightComp->ambient = Vec3f(0, 0, 0);
         //pLightComp->diffuse = Vec3f(1, 1, 1);
         //pLightComp->specular = Vec3f(0.0, 0.1, 0.1);
@@ -109,8 +108,11 @@ public:
         sphere->add<ModelComponent>         (&AssetManager::get()->modelLoaderSphere,   &AssetManager::get()->materialRuby);
 
         cube = Scene::createEntity("Cube");
-        cube->get<TransformComponent>()->position = {10, 0, 3};
-        cube->get<TransformComponent>()->scale = {0.3, 0.3, 0.3};
+        //cube->get<TransformComponent>()->position = {10, 0, 3};
+        //cube->get<TransformComponent>()->position = {-0.3, 1, 6.5};
+        cube->get<TransformComponent>()->position = {-0.3, 1, 0.8 + cube->get<TransformComponent>()->scale.a[2]};
+        //cube->get<TransformComponent>()->scale = {0.3, 0.3, 0.3};
+        cube->get<TransformComponent>()->scale = {1, 1, 1};
         cube->add<ModelComponent>           (&AssetManager::get()->modelLoaderCube,     &AssetManager::get()->materialChrome);
 
         //sun = Scene::createEntity("Sun");
@@ -127,6 +129,14 @@ public:
         //container->add<ModelComponent>(&AssetManager::get()->modelLoaderCube);
         //container->get<ModelComponent>()->model.addMaterialFromShader(AssetManager::get()->shaderTexture);
         //container->get<ModelComponent>()->model.pMaterials[0]->addTexture(tex);
+
+        directionalLight = Scene::createEntity("Directional Light");
+        directionalLight->add<DirectionalLightComponent>();
+        directionalLight->get<DirectionalLightComponent>()->light.direction = Vec3f(0, 0, -1);
+        directionalLight->get<TransformComponent>()->position = {0, 0, 10};
+        directionalLight->get<TransformComponent>()->rotation.pitch = degreesToRadians(-90);
+        directionalLight->get<TransformComponent>()->rotation.yaw = 0;
+        directionalLight->get<TransformComponent>()->rotation.roll = 0;
     }
 
     void onUpdate() override
@@ -145,9 +155,9 @@ public:
         //cube->get<TransformComponent>()->rotation.pitch = Time::getTime() * 11;
         //cube->get<TransformComponent>()->rotation.roll = Time::getTime() * 3;
 
-        cube->get<TransformComponent>()->rotation.yaw = 1;
-        cube->get<TransformComponent>()->rotation.pitch = 1;
-        cube->get<TransformComponent>()->rotation.roll = 1;
+        //cube->get<TransformComponent>()->rotation.yaw = 1;
+        //cube->get<TransformComponent>()->rotation.pitch = 1;
+        //cube->get<TransformComponent>()->rotation.roll = 1;
         
         //lamp->get<TransformComponent>()->position = Vec3f(sin(Time::getTime() * 2) * 3.5, cos(Time::getTime() / 1.3) * 7, 3);
 

@@ -51,7 +51,7 @@ void Application::initEngine()
     Input::useRawMouseMotion();
 
     PhysicsManager::init();
-    RenderManager::init(window.m_Data);
+    RenderManager::init();
 
     AssetManager::get()->init();
 }
@@ -71,7 +71,7 @@ void Application::run()
         Time::onUpdate();
         Input::onUpdate();
         PhysicsManager::onUpdate();
-        RenderManager::onUpdate(window.m_Data);
+        RenderManager::onUpdate();
         window.onUpdate();              // update the glfw window
     }
 

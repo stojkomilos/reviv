@@ -34,8 +34,6 @@ public:
     Entity(const Entity&) = delete; // can be implemented
     Entity& operator=(const Entity&) = delete; // can be implemented
 
-    void print() const;
-
     template <class T, class... Args>
     T* add(Args&&... args);
 
@@ -61,12 +59,13 @@ public:
     virtual ~SpecificComponent() = default;
     static ComponentId id;
     static std::string componentTypeName;
-    static ComponentId generateNewComponentId();
-    static bool runOnFirstInit(const std::string& initCompName);
     inline ComponentId getId() const override;
     std::string getComponentTypeName() const override;
 protected:
     SpecificComponent() = default;
+    static bool runOnFirstInit(const std::string& initCompName);
+private:
+    static ComponentId generateNewComponentId();
 };
 
 template <class T>

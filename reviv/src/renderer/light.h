@@ -3,6 +3,7 @@
 #include"rv_pch.hpp"
 
 #include"core/mat.h"
+#include"framebuffer.h"
 
 class Light
 {
@@ -30,6 +31,18 @@ class DirectionalLight : public Light
 {
 public:
     Vec3f direction;
+};
+
+class ShadowMap
+{
+public:
+    void init(unsigned int width, unsigned int height);
+
+    Framebuffer framebuffer;
+    Texture2D depthMap;
+
+    unsigned int m_Width;
+    unsigned int m_Height;
 };
 
 void log(const Light& light);

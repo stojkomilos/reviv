@@ -73,6 +73,16 @@ public:
     virtual void log() const override { cout << componentTypeName << endl; ::log(light); }
 };
 
+class DirectionalLightComponent : public SpecificComponent<DirectionalLightComponent>
+{
+public:
+    DirectionalLight light;
+
+    template<class ...Args>
+    DirectionalLightComponent(Args&&... args) : light(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("DirectionalLightComponent"); }
+    virtual void log() const override { cout << componentTypeName << endl; ::log(light); }
+};
+
 /*
 template <class ComponentTemplate, class BasicTemplate>
 class ComponentTemplate : public SpecificComponent<ComponentTemplate>, public <BasicTemplate>

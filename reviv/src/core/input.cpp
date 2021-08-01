@@ -9,19 +9,19 @@ void Input::iOnUpdate()
 
 bool Input::iIsKeyPressed(int keycode)
 {
-    unsigned char status = glfwGetKey(Application::getInstance()->getWindow()->pWindow, keycode);
+    unsigned char status = glfwGetKey(Application::get()->getWindow()->pWindow, keycode);
     return status == GLFW_PRESS || status == GLFW_REPEAT;
 }
 
 bool Input::iIsMouseButtonPressed(int mousecode)
 {
-    return glfwGetMouseButton(Application::getInstance()->getWindow()->pWindow, mousecode) == GLFW_PRESS;
+    return glfwGetMouseButton(Application::get()->getWindow()->pWindow, mousecode) == GLFW_PRESS;
 }
 
 Vec2f Input::iGetMousePosition()
 {
     double x, y;
-    glfwGetCursorPos(Application::getInstance()->getWindow()->pWindow, &x, &y);
+    glfwGetCursorPos(Application::get()->getWindow()->pWindow, &x, &y);
 
     return { (float)x, (float)y };
 }
@@ -30,22 +30,22 @@ void Input::iUseRawMouseMotion() // Usefull for 3D fps camera controllers. Disab
 {                                           // Requirements: disabled cursor
 
     RV_ASSERT(glfwRawMouseMotionSupported(), "raw mouse motion not supported, maybe you didn't disable the cursor beforehand?");
-    glfwSetInputMode(Application::getInstance()->getWindow()->pWindow, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+    glfwSetInputMode(Application::get()->getWindow()->pWindow, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 }
 
 void Input::iDisableCursor()
 {
-    glfwSetInputMode(Application::getInstance()->getWindow()->pWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(Application::get()->getWindow()->pWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 void Input::iHideCursor()
 {
-    glfwSetInputMode(Application::getInstance()->getWindow()->pWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    glfwSetInputMode(Application::get()->getWindow()->pWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 }
 
 void Input::iUseNormalCursor()
 {
-    glfwSetInputMode(Application::getInstance()->getWindow()->pWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL); // Reverts the effects of GLFW_CURSOR_DISABLED && GLFW_CURSOR_HIDDEN
+    glfwSetInputMode(Application::get()->getWindow()->pWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL); // Reverts the effects of GLFW_CURSOR_DISABLED && GLFW_CURSOR_HIDDEN
 }
 
 Vec2f Input::iGetCursorPosition()
@@ -110,18 +110,18 @@ void Input::doPlayerControllerPolling()
     bool pressedA = isKeyPressed(RV_KEY_A);
     bool pressedD = isKeyPressed(RV_KEY_D);
 
-    if(pressedW and !pressedS)
+    if(pressedW && !pressedS)
         moveDirection += aimDirection;
-    else if(!pressedW and pressedS)
+    else if(!pressedW && pressedS)
         moveDirection += -aimDirection;
 
-    if(pressedD and !pressedA)
+    if(pressedD && !pressedA)
         moveDirection += rightDirection;
-    else if(!pressedD and pressedA)
+    else if(!pressedD && pressedA)
         moveDirection += -rightDirection;
 
 
-    if(pressedW or pressedS or pressedD or pressedA)
+    if(pressedW || pressedS || pressedD || pressedA)
     {
         Vec3f horizontalPlaneDelta = moveDirection / module(moveDirection) * speed * Time::getDelta();
         *playerPos += horizontalPlaneDelta;
@@ -131,9 +131,9 @@ void Input::doPlayerControllerPolling()
     bool pressedSpace = isKeyPressed(RV_KEY_SPACE);
     bool pressedLeftShift = isKeyPressed(RV_KEY_LEFT_SHIFT);
 
-    if(pressedSpace and !pressedLeftShift)
+    if(pressedSpace && !pressedLeftShift)
         verticalDelta = verticalSpeed * Vec3f(0, 0, 1) * Time::getDelta();
-        else if(!pressedSpace and pressedLeftShift)
+        else if(!pressedSpace && pressedLeftShift)
             verticalDelta = -verticalSpeed * Vec3f(0, 0, 1) * Time::getDelta();
 
     *playerPos += verticalDelta;

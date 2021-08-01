@@ -19,7 +19,7 @@ void Skybox::onUpdate()
     shader.uploadUniformMat4("u_ViewMatrix", skyboxViewMatrix);
     shader.uploadUniformMat4("u_ProjectionMatrix", pCamera->projectionMatrix);
     shader.uploadUniform1i("u_CubeMap", 0); // TODO: ne moze na slot 0 jer druge teksture to mozda budu koristile
-    textureCubeMap.bind(0);
+    textureCubeMap.bind(1);
 
     cubeModel.meshes[0].vao.bind();
     RenderCommand::drawElements(cubeModel.meshes[0]);

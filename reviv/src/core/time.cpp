@@ -2,6 +2,8 @@
 
 void Time::iOnUpdate()
 {
+    gameLoopCounter++;
+
     float currentTime = glfwGetTime();
     delta = currentTime - time;
     time = currentTime;

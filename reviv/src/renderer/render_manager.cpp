@@ -1,6 +1,10 @@
 #include"render_manager.h"
 
-void RenderManager::iInit(const WindowData& windowData)
+extern Entity* directionalLight;
+
+Camera lightCamera(0.1f, 20.f, 90);
+
+void RenderManager::iInit()
 {
     RenderCommand::init();
 
@@ -11,37 +15,101 @@ void RenderManager::iInit(const WindowData& windowData)
     skyboxFaces.push_back("assets/textures/skybox/top.jpg");
     skyboxFaces.push_back("assets/textures/skybox/front.jpg");
     skyboxFaces.push_back("assets/textures/skybox/back.jpg");
-    skybox.init(skyboxFaces);
+    //skybox.init(skyboxFaces);
 
-    /*
-    framebufferScreen.init();
-    framebufferScreen.bind();
+    shadowMap.init(1000, 1000);
+    shadowMapShader.init("assets/shaders/shadow_map.vs", "assets/shaders/shadow_map.fs");
 
-    WindowData windowData = Application::get()->getWindow()->windowData;
-    framebufferScreenTexutre.initFramebuffer(windowData.width, windowData.height);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferScreenTexutre, 0);
-    unsigned int rbo;
-    glGenRenderBuffers(1, &rbo);
-    glBindRenderBuffer(GL_RENDERBUFFER, rbo);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24, windowData.width, windowData.height);
-    glBindRenderBuffer(GL_RENDERBUFFER, 0);
-
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
-    RV_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "framebuffer is not complete");
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    */
+    //depthTestShader.init("assets/shaders/screen_framebuffer.vs", "assets/shaders/depth_test.fs");
 }
 
-void RenderManager::iOnUpdate(const WindowData& windowData)
+void RenderManager::iOnUpdate()
 {
-    ////framebufferScreen.bind();
-    ////glEnable(GL_DEPTH_TEST);
+    /*
+    if(Time::getLoopCounter() == 3)
+    {
+        screenFramebuffer.init();
+        screenFramebuffer.attachTexture();
+        screenFramebuffer.attachRenderbuffer();
+        screenShader.init("assets/shaders/screen_framebuffer.vs", "assets/shaders/screen_framebuffer.fs");
+    }
+    if(Time::getLoopCounter() >= 3)
+    {
+        screenFramebuffer.bind();
+        glEnable(GL_DEPTH_TEST); // TODO: staviti gore
+    }
+    */
     // ----
+
+    shadowMap.framebuffer.bind();
+    glClear(GL_DEPTH_BUFFER_BIT);
+    lightCamera.setViewMatrix(directionalLight->get<TransformComponent>()->position, directionalLight->get<TransformComponent>()->rotation);
+    //lightCamera.setPerspectiveProjection();
+    lightCamera.setOrthographicProjection(14);
+    shadowMapShader.bind();
+    shadowMapShader.uploadUniformMat4("u_ViewMatrix", lightCamera.viewMatrix);
+    shadowMapShader.uploadUniformMat4("u_ProjectionMatrix", lightCamera.projectionMatrix);
+    glViewport(0, 0, 1000, 1000);
+
+    for(auto itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
+    {
+        if(itEntity->valid)
+        {
+            if(itEntity->has<ModelComponent>() && itEntity->has<TransformComponent>())
+            {
+                cout << "Shadow for entity: " << itEntity->entityName << endl;
+                Model* pModel = &itEntity->get<ModelComponent>()->model;
+                TransformComponent* pTransform = itEntity->get<TransformComponent>();
+
+                for(unsigned int i=0; i < pModel->pMeshes.size(); i++)
+                {
+                    shadowMapShader.uploadUniformMat4("u_ModelMatrix", pTransform->getTransform());
+                    pModel->pMeshes[i]->vao.bind();
+                    RenderCommand::drawElements(*pModel->pMeshes[i]);
+                }
+            }
+        }
+    }
+    endScene();
+
+    /*
+    shadowMap.framebuffer.unbind();
+    int tempWidth = Application::get()->getWindow()->m_Data.width;
+    int tempHeight = Application::get()->getWindow()->m_Data.height;
+    glViewport(0, 0, tempWidth, tempHeight);
+    RenderCommand::setClearColor(Vec4f(100.f, 10.f, 80.f, 256.f) / 256.f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //config;
+    shadowMap.depthMap.bind(0);
+    shadowMap.framebuffer.unbind();
+    depthTestShader.bind();
+
+    auto* pMesh = &AssetManager::get()->modelLoaderQuad2D.meshes[0];
+    pMesh->vao.bind();
+    RenderCommand::drawElements(*pMesh);
+    */
+
+    //// RENDERING REGULAR SCENE:
+
+    //skybox.onUpdate();
+
+    /// ---------------
+
+    
+    shadowMap.framebuffer.unbind();
+    int tempWidth = Application::get()->getWindow()->m_Data.width;
+    int tempHeight = Application::get()->getWindow()->m_Data.height;
+    glViewport(0, 0, tempWidth, tempHeight);
+    //config;
+    shadowMap.depthMap.bind(0);
+
+
+    //// ------
 
     RenderCommand::setClearColor(Vec4f(100.f, 10.f, 80.f, 256.f) / 256.f);
     RenderCommand::clear();
 
-    beginScene(windowData); // Update camera stuff
+    beginScene(); // Update camera stuff
 
     for(auto itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
     {
@@ -55,27 +123,26 @@ void RenderManager::iOnUpdate(const WindowData& windowData)
             }
         }
     }
-    endScene();
+    
+    
+    //if(Time::getLoopCounter() >= 3)
+    //{
+    //    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    //    RenderCommand::setClearColor(Vec4f(1, 1, 1, 1));
+    //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    skybox.onUpdate();
+    //    screenShader.bind();
+    //    //glDisable(GL_DEPTH_TEST);
+    //    screenFramebuffer.pTexture->bind(0);
 
-    /// ---------------
-    /*
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    RenderCommand::setClearColor(Vec4f(1, 1, 1, 1));
-    glClear(GL_COLOR_BUFFER_BIT);
+    //    AssetManager::get()->modelLoaderQuad2D.meshes[0].vao.bind();
+    //    //glDrawElements(GL_TRIANGLES, AssetManager::get()->modelLoaderQuad2D.meshes[0].m_Indices.size(), GL_UNSIGNED_INT, 0);
 
-    screenShader.bind();
-    AssetManager::get()->vaoQuad.bind();
-    glDisable(GL_DEPTH_TEST);
-    glBindTexture(GL_TEXTURE_2D, screenTexture);
-    glDrawElements(GL_TRIANGLES, mesh.m_Indices.size(), GL_UNSIGNED_INT, 0);
-    //glDrawArrays(GL_TRIANGLES, 0, 6);
-    */
-
-
+    //    RenderCommand::drawElements(AssetManager::get()->modelLoaderQuad2D.meshes[0]);
+    //}
+    
+   
 }
-
 
 void RenderManager::submit(const Model& model, const Mat4& transform)
 {
@@ -106,6 +173,10 @@ void RenderManager::bindEnvironment(const Shader& shader, const Mat4& transform)
         RV_ASSERT(&shader == &AssetManager::get()->shaderMonochroma || &shader == &AssetManager::get()->shaderTexture, "");
         return;
     }
+
+    shader.uploadUniformMat4("u_LightViewMatrix", lightCamera.viewMatrix);
+    shader.uploadUniformMat4("u_LightProjectionMatrix", lightCamera.projectionMatrix);
+    //shader.uploadUniform1i("u_ShadowMap", 0);
 
     int nrLight = 0;
     for(auto itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
@@ -149,7 +220,7 @@ void RenderManager::iShutdown()
 {
 }
 
-void RenderManager::beginScene(const WindowData& windowData)
+void RenderManager::beginScene()
 {
     Camera* camera = &Scene::getCameraEntity()->get<CameraComponent>()->camera;
 
@@ -157,11 +228,11 @@ void RenderManager::beginScene(const WindowData& windowData)
         && Scene::getCameraEntity()->has<TransformComponent>(),
         "submitted entity is supposed to be a camera, but does NOT have required components");
 
-    camera->recalculateViewMatrix(
+    camera->setViewMatrix(
         Scene::getCameraEntity()->get<TransformComponent>()->position,
         Scene::getCameraEntity()->get<TransformComponent>()->rotation);
 
-    camera->recalculateProjectionMatrix(windowData);
+    camera->setPerspectiveProjection();
 
 }
 

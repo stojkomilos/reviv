@@ -1,5 +1,6 @@
 #include"camera.h"
 #include"scene/scene.h"
+#include"core/application.h"
 
 void log(const Camera& camera)
 {
@@ -13,7 +14,7 @@ Camera::Camera(float nearRenderDistance, float renderDistance, float horizontalF
     : nearRenderDistance(nearRenderDistance), renderDistance(renderDistance), m_HorizontalFov(horizontalFov)
 { }
 
-void Camera::recalculateViewMatrix(const Vec3f& position, const Rotation& rotation) // right handed coordinate system
+void Camera::setViewMatrix(const Vec3f& position, const Rotation& rotation)
 {
     direction = getDirectionFromRotation(rotation);
 
@@ -43,9 +44,10 @@ void Camera::recalculateViewMatrix(const Vec3f& position, const Rotation& rotati
     viewMatrix.a[3][3] = 1;
 }
 
-void Camera::recalculateProjectionMatrix(const WindowData& windowData)
+void Camera::setPerspectiveProjection()
 {
-    ratio = (float)windowData.width / (float)windowData.height;
+    float ratio = (Application::get()->getWindow()->m_Data.width * 1.f)
+                 / (Application::get()->getWindow()->m_Data.height * 1.f);
 
     m_VerticalFov = 2 * atan(tan(m_HorizontalFov / 2.f) / ratio);
 
@@ -72,4 +74,37 @@ void Camera::recalculateProjectionMatrix(const WindowData& windowData)
     projectionMatrix.a[3][1] = 0;
     projectionMatrix.a[3][2] = -1;
     projectionMatrix.a[3][3] = 0;
+}
+
+void Camera::setOrthographicProjection(float width)
+{
+    float ratio = (Application::get()->getWindow()->m_Data.width * 1.f)
+                 / (Application::get()->getWindow()->m_Data.height * 1.f);
+
+    float height = width / ratio;
+
+    projectionMatrix.a[0][0] = 2.f / width;
+    projectionMatrix.a[0][1] = 0;
+    projectionMatrix.a[0][2] = 0;
+    projectionMatrix.a[0][3] = 0;
+
+    projectionMatrix.a[1][0] = 0;
+    projectionMatrix.a[1][1] = 2.f / height;
+    projectionMatrix.a[1][2] = 0;
+    projectionMatrix.a[1][3] = 0;
+
+    //projectionMatrix.a[2][0] = 0;
+    //projectionMatrix.a[2][1] = 0;
+    //projectionMatrix.a[2][2] = 0;
+    //projectionMatrix.a[2][3] = 0;
+
+    projectionMatrix.a[2][0] = 0;
+    projectionMatrix.a[2][1] = 0;
+    projectionMatrix.a[2][2] = -2 / (renderDistance - nearRenderDistance);
+    projectionMatrix.a[2][3] = -(renderDistance + nearRenderDistance) / (renderDistance - nearRenderDistance);
+    
+    projectionMatrix.a[3][0] = 0;
+    projectionMatrix.a[3][1] = 0;
+    projectionMatrix.a[3][2] = 0;
+    projectionMatrix.a[3][3] = 1;
 }

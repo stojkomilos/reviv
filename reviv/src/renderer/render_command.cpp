@@ -10,7 +10,6 @@ void RenderCommand::iDrawArrays(const Mesh& mesh)
 void RenderCommand::iDrawElements(const Mesh& mesh)
 {
     glDrawElements(GL_TRIANGLES, mesh.m_Indices.size(), GL_UNSIGNED_INT, 0);
-
 }
 
 void RenderCommand::iSetClearColor(const Vec4f& color)

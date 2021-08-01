@@ -13,6 +13,7 @@ public:
     static float getTime() { return getInstance()->igetTime(); }
     static float getDelta() { return getInstance()->iGetDelta(); } // returns time in dt in seconds
     static float isOneSecond() { return getInstance()->iIsOneSecond(); }
+    static float getLoopCounter() { return getInstance()->gameLoopCounter; }
 
     static Time* getInstance()
     {
@@ -25,6 +26,7 @@ private:
     float iGetDelta();
     float igetTime();
     bool iIsOneSecond();
+    unsigned long long gameLoopCounter = 0;
 
     bool m_OneSecond = false;
     float time;

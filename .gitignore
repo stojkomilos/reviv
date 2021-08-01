@@ -63,6 +63,8 @@ ltximg/
 **/ltximg/
 
 sandbox/assets/models/*
-!sandbox/assets/models/sphere.obj
-!sandbox/assets/models/cube.obj
 !sandbox/assets/models/weapon.obj
+!sandbox/assets/models/cube.obj
+!sandbox/assets/models/cube.fbx
+!sandbox/assets/models/sphere.obj
+!sandbox/assets/models/sphere.fbx
