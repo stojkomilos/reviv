@@ -6,6 +6,7 @@
 #include<GLFW/glfw3.h>
 
 #include"core/mat.h"
+#include"renderer/buffer.h"
 
 class Shader{
 
@@ -27,3 +28,37 @@ public:
 private:
     void checkCompileErrors(GLuint shader, std::string type);
 };
+
+struct ShaderUniformHelpingStruct
+{
+    ShaderUniformHelpingStruct() : ptr(nullptr) {}
+    void* ptr = nullptr;
+    ShaderDataType type;
+
+    ShaderUniformHelpingStruct(const ShaderUniformHelpingStruct&) = delete;
+    ShaderUniformHelpingStruct& operator=(const ShaderUniformHelpingStruct&) = delete;
+
+    bool operator==(const ShaderUniformHelpingStruct& other) const = delete;
+    bool operator!=(const ShaderUniformHelpingStruct& other) const = delete;
+
+};
+
+class ShaderUniformMap
+{
+public:
+    ShaderUniformMap()
+        { map.clear(); }
+    ~ShaderUniformMap();
+
+    void bind(const Shader& shader) const;
+    std::unordered_map <std::string, ShaderUniformHelpingStruct> map;
+    void set(const std::string& uniformName, const Mat4& mat4);
+    void set(const std::string& uniformName, const Vec4f& vec4f);
+    void set(const std::string& uniformName, const Vec3f& vec3f);
+    void set(const std::string& uniformName, int n);
+    void set(const std::string& uniformName, float n);
+    void set(const std::string& uniformName, double n);
+};
+
+void log(const ShaderUniformMap& shaderUniformMap);
+void logSpecificUniform(const ShaderUniformMap& shaderUniformMap, const std::string& uniformName);

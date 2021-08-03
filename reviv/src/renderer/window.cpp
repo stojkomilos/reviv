@@ -112,6 +112,8 @@ void Window::init(bool enableVSync, bool isFullscreen, unsigned int windowWidth,
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
+    //glfwWindowHint(GLFW_SAMPLES, 4); // for MSAA anti-aliasing
+
     GLFWmonitor* monitor = nullptr;
 
     if(m_Data.isFullscreen){

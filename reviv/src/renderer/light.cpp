@@ -36,6 +36,8 @@ PointLight::PointLight()
 
 void ShadowMap::init(unsigned int width, unsigned int height)
 {
+    RV_ASSERT(false, "temporary, can be removed");
+
     m_Width = width;
     m_Height = height;
 

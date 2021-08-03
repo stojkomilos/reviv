@@ -1,11 +1,14 @@
 * Ciljevi
 
-framebuffer todo:
- - totalno ukloniti onaj sistem gde se ceka frame nr. 3 za sve, nek sve ide regularno u init itd.
-   - morace se i resize kad se resize prozor
-   - cherno video
-   - bolji kvalitet za boje (ovaj je bas los izlgeda)
-   - izbaciti stencil
+sutra:
+   framebuffer:
+        - morace se i resize kad se resize prozor
+        - cherno video
+        - bolji kvalitet za boje (ovaj je bas los izlgeda)
+        - izbaciti stencil
+   environment
+   hdr, bloom
+   physics (designing a physics engine in 5 minutes)
 
 ukloniti argument u =beginScene(windowData)=
 
@@ -53,6 +56,65 @@ organizacija:
  - red include-ova (ima na stack overflow)
  - operatori za mat.h
       
+* Renderer
+
+submit:
+ entity.meterial.bind();
+ bindEnvironment(entity.shader);
+ entity.vao.bind();
+ drawElements();
+
+Material sadrzi samo:
+    - Shader
+    - Shader data -> uniforms + textures
+    - Flags:
+        - two-sided
+        - depth test
+        - blending
+        - etc...
+
+- setEnvironment("uEnvironment_lightKurcina", light.kurcina);
+
+- entity.material.setTexture("u_NormalMap", entity123.normalmap);
+
+#+begin_src cpp
+  void bindEnvironment(Shader shader)
+  {
+    shader.bind(); // proveriti da li je vec bound-ovan?
+    for(auto it : environmentMap) // sad je pitanje: gde staviti ovaj environment map. Scene? (nemoj EnvironmentManager, ili bar nemoj u odvojen fajl stavljati)
+      // environment map treba da bude isti kao onaj map za materiale. taj novi tip mogu nazvati: uniformMap
+      {
+        for(auto iterator : shader.uniformNameMap)
+          {
+            if(iterator.first == it.first)
+              {
+                environmentSet(it.second, it.second);
+              }
+          }
+      }
+  }
+#+end_src
+
+#+begin_src cpp
+  void Material::setTexture(string name, Texture* pTexture)
+  {
+      textureMap[name] = pTexture;
+  }
+
+  void Material::bind()
+  {
+    // other stuff
+
+    int counter = 0;
+    for(auto it : textureMap)
+      {
+        counter++;
+        it->bind(counter);
+        this->pShader->uploadUniform1i(counter);
+      }
+  }
+#+end_src
+
 * Window, event, input
 
 =Application= creates =window=, =window= does not know about =application=.
@@ -68,64 +130,6 @@ Event class contains info about the event. Ex. MouesBUttonPressEvent
 Window has function pointer to the callback function in application 
 
 Callback function : onEvent(const Event& event)
-
-* Renderer
-** Shader, light, environment
-
-Entity-ji imaju light component. ?Dalje se sami namestaju shader-i u begin scene? a mozda i u material.configEnvironemnt(environment& environment)
-
-submit:
- entity.meterial.bind();
- entity.environment.bind();
- entity.vao.bind();
- drawElements()
-
-
-** Model
-
-class Model
-{
-Loader* loader;
-std::vector<Material*> pMaterials;
-std::vector<Mesh*> pMeshes;
-}
-
-Material:
- Shader*
- unordered_map
-
-custom code?: pMaterial[i].map["u_diffuseSpecular"]=loader->getMaterial(i, ....) (vidi learnopengl.com/.../model -> Material(chapter)
-
-** mesh
-
-** vao
-
-Vao poseduje:
- - vbo
- - ebo
- - vbo layout
-
-Mozes imati vise buffer-a po jednom vao, ali se to retko radi
-
-https://learnopengl.com: A single mesh is the minimal representation of what we need to draw an object in OpenGL (vertex data, indices, and material properties). A model (usually) consists of several meshes.
-
-
-
-Material sadrzi samo:
-    - Shader
-    - Shader data -> uniforms + textures
-    - Flags:
-    - two-sided
-    - depth test
-    - blending
-    - etc...
-
-Jedno potencijalno resenje za =light uniforme= je navodno "light manager" koji se pokrece unutar render loop-a.
-
-squareMesh->setMaterial(material);
-
-Konstrukcija shadera. Ovo *nije* nesto bitno, napravi ako ti je dosadno.
-  - shader = Shader::Create("Ime_Shadera", const std::string& vetexSrc, const std::string& fragmentSrc);
 
 * beleske
 ** Static

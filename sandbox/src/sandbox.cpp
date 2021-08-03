@@ -72,10 +72,10 @@ public:
             map->add<ModelComponent>(&modelLoaderMap, &AssetManager::get()->materialTurquoise);
         }
 
-        stanic = Scene::createEntity("Stanic");
-        stanic->get<TransformComponent>()->position = {1, 0, 2};
-        modelLoaderBackpack.load("assets/models/backpack/backpack.obj");
-        stanic->add<ModelComponent>(&modelLoaderBackpack, &AssetManager::get()->materialEmerald);
+        //stanic = Scene::createEntity("Stanic");
+        //stanic->get<TransformComponent>()->position = {1, 0, 2};
+        //modelLoaderBackpack.load("assets/models/backpack/backpack.obj");
+        //stanic->add<ModelComponent>(&modelLoaderBackpack, &AssetManager::get()->materialEmerald);
 
         light = Scene::createEntity("Light");
         light->get<TransformComponent>()->scale = {0.2f, 0.2f, 0.2f};
@@ -84,10 +84,6 @@ public:
         light->get<ModelComponent>()->model.addMaterialFromShader(AssetManager::get()->shaderMonochroma);
         light->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec3f(1, 1, 1));
         auto* pLightComp = &light->get<PointLightComponent>()->light;
-
-        //pLightComp->ambient = Vec3f(0, 0, 0);
-        //pLightComp->diffuse = Vec3f(1, 1, 1);
-        //pLightComp->specular = Vec3f(0.0, 0.1, 0.1);
 
         //lamp = Scene::createEntity("Lamp");
         //lamp->get<TransformComponent>()->scale = {0.4f, 0.1f, 0.2f};
@@ -98,14 +94,14 @@ public:
 
         platform = Scene::createEntity("Platform");
         platform->get<TransformComponent>()->scale = {7, 14, 0.4};
-        platform->add<ModelComponent>       (&AssetManager::get()->modelLoaderCube,     &AssetManager::get()->materialGold);
-        //auto* platformModel = platform->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &AssetManager::get()->shaderTexture);
-        //platformModel->model.pMaterials[0]->addTexture(tex);
+        platform->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &AssetManager::get()->shaderDeffered);
+        platform->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1, 1, 0));
+        platform->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.5f);
 
-        sphere = Scene::createEntity("Sphere");
-        sphere->get<TransformComponent>()->position = {1, 6, 2};
-        sphere->get<TransformComponent>()->scale = {0.3f, 0.3f, 0.3f};
-        sphere->add<ModelComponent>         (&AssetManager::get()->modelLoaderSphere,   &AssetManager::get()->materialRuby);
+        //sphere = Scene::createEntity("Sphere");
+        //sphere->get<TransformComponent>()->position = {1, 6, 2};
+        //sphere->get<TransformComponent>()->scale = {0.3f, 0.3f, 0.3f};
+        //sphere->add<ModelComponent>         (&AssetManager::get()->modelLoaderSphere,   &AssetManager::get()->materialRuby);
 
         cube = Scene::createEntity("Cube");
         //cube->get<TransformComponent>()->position = {10, 0, 3};
@@ -113,7 +109,9 @@ public:
         cube->get<TransformComponent>()->position = {-0.3, 1, 0.8 + cube->get<TransformComponent>()->scale.a[2]};
         //cube->get<TransformComponent>()->scale = {0.3, 0.3, 0.3};
         cube->get<TransformComponent>()->scale = {1, 1, 1};
-        cube->add<ModelComponent>           (&AssetManager::get()->modelLoaderCube,     &AssetManager::get()->materialChrome);
+        cube->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &AssetManager::get()->shaderDeffered);
+        cube->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1, 0, 0));
+        cube->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.5f);
 
         //sun = Scene::createEntity("Sun");
         //float sunHeight = 30;
@@ -123,12 +121,6 @@ public:
         //sun->add<ModelComponent>            (&AssetManager::get()->modelLoaderSphere);
         //sun->get<ModelComponent>()->model.addMaterialFromShader(AssetManager::get()->shaderMonochroma);
         //sun->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec3f(1, 1, 0));
-
-        //container = Scene::createEntity("Container");
-        //container->get<TransformComponent>()->position = Vec3f(5, 5, 5);
-        //container->add<ModelComponent>(&AssetManager::get()->modelLoaderCube);
-        //container->get<ModelComponent>()->model.addMaterialFromShader(AssetManager::get()->shaderTexture);
-        //container->get<ModelComponent>()->model.pMaterials[0]->addTexture(tex);
 
         directionalLight = Scene::createEntity("Directional Light");
         directionalLight->add<DirectionalLightComponent>();

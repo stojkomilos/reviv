@@ -9,49 +9,36 @@
 
 extern unsigned int ShaderDataTypeSize(ShaderDataType type);
 
-struct MaterialHelpingStruct
-{
-    MaterialHelpingStruct() : ptr(nullptr) {}
-    void* ptr = nullptr;
-    ShaderDataType type;
-
-    MaterialHelpingStruct(const MaterialHelpingStruct&) = delete;
-    MaterialHelpingStruct& operator=(const MaterialHelpingStruct&) = delete;
-
-    bool operator==(const MaterialHelpingStruct& other) const = delete;
-    bool operator!=(const MaterialHelpingStruct& other) const = delete;
-
-};
-
 class Material
 {
 public:
     Material() = default;
-    ~Material();
+    ~Material() = default;
     Material(const Material& other) = delete; // can be implemented
     Material& operator=(const Material& other) = delete; // can be implemented
 
     Material(const Shader* pShader)
-        : pShader(pShader), pTextures(5) { map.clear(); }
+        : pShader(pShader), pTextures(10) {}
 
     void setShader(Shader* inShader);
     void bindShader();
     void bind() const;
 
     //void setTexture(const std::string& uniformName, unsigned int slot);
-    void set(const std::string& uniformName, const Mat4& mat4);
-    void set(const std::string& uniformName, const Vec4f& vec4f);
-    void set(const std::string& uniformName, const Vec3f& vec3f);
-    void set(const std::string& uniformName, int n);
-    void set(const std::string& uniformName, float n);
-    void set(const std::string& uniformName, double n);
 
     const Shader* pShader = nullptr;
-    std::unordered_map <std::string, MaterialHelpingStruct> map;
     stls::StableVector<const Texture*> pTextures;
 
     void addTexture(const Texture& texture);
+
+    ShaderUniformMap shaderUniformMap;
+
+    inline void set(const std::string& uniformName, const Mat4& mat4) { shaderUniformMap.set(uniformName, mat4); }
+    inline void set(const std::string& uniformName, const Vec4f& vec4f) { shaderUniformMap.set(uniformName, vec4f); }
+    inline void set(const std::string& uniformName, const Vec3f& vec3f) { shaderUniformMap.set(uniformName, vec3f); }
+    inline void set(const std::string& uniformName, int n) { shaderUniformMap.set(uniformName, n); }
+    inline void set(const std::string& uniformName, float n) { shaderUniformMap.set(uniformName, n); }
+    inline void set(const std::string& uniformName, double n) { shaderUniformMap.set(uniformName, n); }
 };
 
 void log(const Material& material);
-void logSpecificUniform(const Material& material, const std::string& uniformName);

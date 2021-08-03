@@ -36,6 +36,8 @@ void RenderCommand::iInit()
    
     glEnable(GL_DEPTH_TEST);
 
+    //glEnable(GL_MULTISAMPLE); // for MSAA anti-aliasing
+
     //glDepthFunc(GL_LESS);
 
     //glEnable(GL_BLEND);

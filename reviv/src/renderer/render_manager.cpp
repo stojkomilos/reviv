@@ -1,9 +1,5 @@
 #include"render_manager.h"
 
-extern Entity* directionalLight;
-
-Camera lightCamera(0.1f, 20.f, 90);
-
 void RenderManager::iInit()
 {
     RenderCommand::init();
@@ -17,167 +13,120 @@ void RenderManager::iInit()
     skyboxFaces.push_back("assets/textures/skybox/back.jpg");
     //skybox.init(skyboxFaces);
 
-    shadowMap.init(1000, 1000);
-    shadowMapShader.init("assets/shaders/shadow_map.vs", "assets/shaders/shadow_map.fs");
+    gBuffer.init();
+    gBuffer.bind();
 
-    //depthTestShader.init("assets/shaders/screen_framebuffer.vs", "assets/shaders/depth_test.fs");
+    int screenWidth = Application::get()->getWindow()->m_Data.width;
+    int screenHeight = Application::get()->getWindow()->m_Data.height;
+    screenWidth = 956;
+    screenHeight = 1050;
+    gPosition.init();
+    gPosition.bind(0);
+    ////////////////////////////////////////////////////// BAD WIDTH PROBABLY
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, screenWidth, screenHeight, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition.id, 0);
+
+    gNormal.init();
+    gNormal.bind(1);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, screenWidth, screenHeight, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal.id, 0);
+
+    gAlbedoSpecular.init();
+    gAlbedoSpecular.bind(2);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, screenWidth, screenHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpecular.id, 0);
+
+    unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+    glDrawBuffers(3, attachments);
+
+    gBuffer.unbind();
+
+    defferedShader.init("assets/shaders/deffered.vs", "assets/shaders/deffered.fs");
+
 }
 
 void RenderManager::iOnUpdate()
 {
-    /*
-    if(Time::getLoopCounter() == 3)
-    {
-        screenFramebuffer.init();
-        screenFramebuffer.attachTexture();
-        screenFramebuffer.attachRenderbuffer();
-        screenShader.init("assets/shaders/screen_framebuffer.vs", "assets/shaders/screen_framebuffer.fs");
-    }
-    if(Time::getLoopCounter() >= 3)
-    {
-        screenFramebuffer.bind();
-        glEnable(GL_DEPTH_TEST); // TODO: staviti gore
-    }
-    */
-    // ----
-
-    shadowMap.framebuffer.bind();
-    glClear(GL_DEPTH_BUFFER_BIT);
-    lightCamera.setViewMatrix(directionalLight->get<TransformComponent>()->position, directionalLight->get<TransformComponent>()->rotation);
-    //lightCamera.setPerspectiveProjection();
-    lightCamera.setOrthographicProjection(14);
-    shadowMapShader.bind();
-    shadowMapShader.uploadUniformMat4("u_ViewMatrix", lightCamera.viewMatrix);
-    shadowMapShader.uploadUniformMat4("u_ProjectionMatrix", lightCamera.projectionMatrix);
-    glViewport(0, 0, 1000, 1000);
-
-    for(auto itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
-    {
-        if(itEntity->valid)
-        {
-            if(itEntity->has<ModelComponent>() && itEntity->has<TransformComponent>())
-            {
-                cout << "Shadow for entity: " << itEntity->entityName << endl;
-                Model* pModel = &itEntity->get<ModelComponent>()->model;
-                TransformComponent* pTransform = itEntity->get<TransformComponent>();
-
-                for(unsigned int i=0; i < pModel->pMeshes.size(); i++)
-                {
-                    shadowMapShader.uploadUniformMat4("u_ModelMatrix", pTransform->getTransform());
-                    pModel->pMeshes[i]->vao.bind();
-                    RenderCommand::drawElements(*pModel->pMeshes[i]);
-                }
-            }
-        }
-    }
-    endScene();
-
-    /*
-    shadowMap.framebuffer.unbind();
-    int tempWidth = Application::get()->getWindow()->m_Data.width;
-    int tempHeight = Application::get()->getWindow()->m_Data.height;
-    glViewport(0, 0, tempWidth, tempHeight);
-    RenderCommand::setClearColor(Vec4f(100.f, 10.f, 80.f, 256.f) / 256.f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //config;
-    shadowMap.depthMap.bind(0);
-    shadowMap.framebuffer.unbind();
-    depthTestShader.bind();
-
-    auto* pMesh = &AssetManager::get()->modelLoaderQuad2D.meshes[0];
-    pMesh->vao.bind();
-    RenderCommand::drawElements(*pMesh);
-    */
-
-    //// RENDERING REGULAR SCENE:
-
-    //skybox.onUpdate();
-
-    /// ---------------
-
+    beginScene(); // Update camera stuff
     
-    shadowMap.framebuffer.unbind();
-    int tempWidth = Application::get()->getWindow()->m_Data.width;
-    int tempHeight = Application::get()->getWindow()->m_Data.height;
-    glViewport(0, 0, tempWidth, tempHeight);
-    //config;
-    shadowMap.depthMap.bind(0);
-
-
-    //// ------
+    gBuffer.bind();
 
     RenderCommand::setClearColor(Vec4f(100.f, 10.f, 80.f, 256.f) / 256.f);
     RenderCommand::clear();
 
-    beginScene(); // Update camera stuff
-
-    for(auto itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
+    for(stls::StableVector<Entity>::Iterator itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
     {
         if(itEntity->valid)
         {
             if(itEntity->has<ModelComponent>() && itEntity->has<TransformComponent>())
             {
-                //cout << "Rendering entity: " << itEntity->entityName << endl;
-                submit(itEntity->get<ModelComponent>()->model,
-                    itEntity->get<TransformComponent>()->getTransform());
+                Model* pModel = &itEntity->get<ModelComponent>()->model;
+                TransformComponent* pTransformComponent = itEntity->get<TransformComponent>();
+
+                for(unsigned int i=0; i < pModel->pMeshes.size(); i++)
+                {
+                    if(pModel->pMaterials[0]->pShader == &AssetManager::get()->shaderDeffered)
+                    {
+                        pModel->pMaterials[i]->bind();
+                        environment.set("u_ModelMatrix", pTransformComponent->getTransform());
+                        environment.bind(*pModel->pMaterials[i]->pShader);
+
+                        pModel->pMeshes[i]->vao.bind();
+
+                        RenderCommand::drawElements(*pModel->pMeshes[i]);
+                    }
+                }
             }
         }
     }
-    
-    
-    //if(Time::getLoopCounter() >= 3)
-    //{
-    //    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    //    RenderCommand::setClearColor(Vec4f(1, 1, 1, 1));
-    //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //    screenShader.bind();
-    //    //glDisable(GL_DEPTH_TEST);
-    //    screenFramebuffer.pTexture->bind(0);
+    gBuffer.unbind();
+    AssetManager::get()->shaderDefferedBlinnPhong.bind();
 
-    //    AssetManager::get()->modelLoaderQuad2D.meshes[0].vao.bind();
-    //    //glDrawElements(GL_TRIANGLES, AssetManager::get()->modelLoaderQuad2D.meshes[0].m_Indices.size(), GL_UNSIGNED_INT, 0);
+    AssetManager::get()->shaderDefferedBlinnPhong.uploadUniform1i("u_gPosition", 0);
+    AssetManager::get()->shaderDefferedBlinnPhong.uploadUniform1i("u_gNormal", 1);
+    AssetManager::get()->shaderDefferedBlinnPhong.uploadUniform1i("u_gAlbedoSpecular", 2);
 
-    //    RenderCommand::drawElements(AssetManager::get()->modelLoaderQuad2D.meshes[0]);
-    //}
-    
-   
+    environment.bind(AssetManager::get()->shaderDefferedBlinnPhong);
+
+    RenderCommand::clear();
+    gPosition.bind(0);
+    gNormal.bind(1);
+    gAlbedoSpecular.bind(2);
+    AssetManager::get()->modelLoaderQuad2D.meshes[0].vao.bind();
+    RenderCommand::drawElements(AssetManager::get()->modelLoaderQuad2D.meshes[0]);
 }
 
-void RenderManager::submit(const Model& model, const Mat4& transform)
+
+void RenderManager::beginScene()
 {
-    RV_ASSERT(model.pMeshes.size() > 0 && model.pMaterials.size() > 0, "");
-    RV_ASSERT(model.pMaterials.size() == model.pMeshes.size(), "");
-    //RV_ASSERT(model.pMaterials.size() == model.pMeshes.size() || model.pMaterials.size() == 1, ""); // every mesh should have an equivalent material, OR there is just 1 material for every mesh
+    Camera* camera = &Scene::getCameraEntity()->get<CameraComponent>()->camera;
 
-    for(unsigned int i=0; i<model.pMeshes.size(); i++)
-    {
-        model.pMaterials[i]->bind();
-        bindEnvironment(*model.pMaterials[i]->pShader, transform);
-        model.pMeshes[i]->vao.bind();
+    RV_ASSERT(Scene::getCameraEntity()->has<CameraComponent>()
+        && Scene::getCameraEntity()->has<TransformComponent>(),
+        "submitted entity is supposed to be a camera, but does NOT have required components");
 
-        RenderCommand::drawElements(*model.pMeshes[i]);
-    }
+    camera->setViewMatrix(
+        Scene::getCameraEntity()->get<TransformComponent>()->position,
+        Scene::getCameraEntity()->get<TransformComponent>()->rotation);
+
+    camera->setPerspectiveProjection();
+
+    environment.set("u_ViewMatrix", camera->viewMatrix);
+    environment.set("u_ProjectionMatrix", camera->projectionMatrix);
+
+    environment.setLights();
+  
 }
 
-void RenderManager::bindEnvironment(const Shader& shader, const Mat4& transform)
+void Environment::setLights()
 {
-    shader.bind();
-    
-    shader.uploadUniformMat4("u_ModelMatrix", transform);
-    shader.uploadUniformMat4("u_ViewMatrix", Scene::getCameraEntity()->get<CameraComponent>()->camera.viewMatrix);
-    shader.uploadUniformMat4("u_ProjectionMatrix", Scene::getCameraEntity()->get<CameraComponent>()->camera.projectionMatrix);
-
-    if(&shader != &AssetManager::get()->shaderPhong)
-    {
-        RV_ASSERT(&shader == &AssetManager::get()->shaderMonochroma || &shader == &AssetManager::get()->shaderTexture, "");
-        return;
-    }
-
-    shader.uploadUniformMat4("u_LightViewMatrix", lightCamera.viewMatrix);
-    shader.uploadUniformMat4("u_LightProjectionMatrix", lightCamera.projectionMatrix);
-    //shader.uploadUniform1i("u_ShadowMap", 0);
-
     int nrLight = 0;
     for(auto itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
     {
@@ -197,18 +146,19 @@ void RenderManager::bindEnvironment(const Shader& shader, const Mat4& transform)
                 std::string uniformNameLight = "u_PointLights[";
                 uniformNameLight += (char)(nrLight + '0');
                 uniformNameLight += "]";
+                cout << "lightUniform: " << uniformNameLight << endl;
 
-                shader.uploadUniform3f(uniformNameLight + ".position", itEntity->get<TransformComponent>()->position);
+                set(uniformNameLight + ".position", itEntity->get<TransformComponent>()->position);
 
-                shader.uploadUniform3f(uniformNameLight + ".ambient", pLight->ambient);
-                shader.uploadUniform3f(uniformNameLight + ".diffuse", pLight->diffuse);
-                shader.uploadUniform3f(uniformNameLight + ".specular", pLight->specular);
+                set(uniformNameLight + ".ambient", pLight->ambient);
+                set(uniformNameLight + ".diffuse", pLight->diffuse);
+                set(uniformNameLight + ".specular", pLight->specular);
 
-                shader.uploadUniform1f(uniformNameLight + ".constant", pLight->constant);
-                shader.uploadUniform1f(uniformNameLight + ".linear", pLight->linear);
-                shader.uploadUniform1f(uniformNameLight + ".quadratic", pLight->quadratic);
+                set(uniformNameLight + ".constant", pLight->constant);
+                set(uniformNameLight + ".linear", pLight->linear);
+                set(uniformNameLight + ".quadratic", pLight->quadratic);
 
-                shader.uploadUniform3f("u_ViewPosition", Scene::getPlayerEntity()->get<TransformComponent>()->position);
+                set("u_ViewPosition", Scene::getPlayerEntity()->get<TransformComponent>()->position);
 
                 nrLight++;
             }
@@ -216,27 +166,31 @@ void RenderManager::bindEnvironment(const Shader& shader, const Mat4& transform)
     }
 }
 
+/*
+void RenderManager::submit(const Model& model, const Mat4& transform)
+{
+    RV_ASSERT(model.pMeshes.size() > 0 && model.pMaterials.size() > 0, "");
+    RV_ASSERT(model.pMaterials.size() == model.pMeshes.size(), "");
+    //RV_ASSERT(model.pMaterials.size() == model.pMeshes.size() || model.pMaterials.size() == 1, ""); // every mesh should have an equivalent material, OR there is just 1 material for every mesh
+
+    if(model.pMaterials[0]->pShader == &AssetManager::get()->shaderDefferedBlinnPhong)
+    for(unsigned int i=0; i<model.pMeshes.size(); i++)
+    {
+        model.pMaterials[i]->bind();
+        bindEnvironment(*model.pMaterials[i]->pShader, transform);
+        model.pMeshes[i]->vao.bind();
+
+        RenderCommand::drawElements(*model.pMeshes[i]);
+    }
+}
+*/
+
+void Environment::bind(const Shader& shader) const
+{
+    shader.bind();
+    shaderUniformMap.bind(shader);
+}
+
 void RenderManager::iShutdown() 
 {
-}
-
-void RenderManager::beginScene()
-{
-    Camera* camera = &Scene::getCameraEntity()->get<CameraComponent>()->camera;
-
-    RV_ASSERT(Scene::getCameraEntity()->has<CameraComponent>()
-        && Scene::getCameraEntity()->has<TransformComponent>(),
-        "submitted entity is supposed to be a camera, but does NOT have required components");
-
-    camera->setViewMatrix(
-        Scene::getCameraEntity()->get<TransformComponent>()->position,
-        Scene::getCameraEntity()->get<TransformComponent>()->rotation);
-
-    camera->setPerspectiveProjection();
-
-}
-
-void RenderManager::endScene()
-{
-
 }

@@ -13,7 +13,6 @@ public:
         return &instance;
     }
     void init();
-    void initMaterials();
 
     ModelLoader modelLoaderCube;
     ModelLoader modelLoaderSphere;
@@ -22,6 +21,8 @@ public:
     //Mesh meshQuad2D;
 
     Shader shaderPhong;
+    Shader shaderDefferedBlinnPhong;
+    Shader shaderDeffered;
     Shader shaderMonochroma;
     Shader shaderTexture;
 
@@ -33,6 +34,8 @@ public:
                 materialSilver,
                 materialTurquoise,
                 materialObsidian;
+
+    //void initMaterials();
 private:
     AssetManager() = default;
 };

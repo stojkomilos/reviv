@@ -9,13 +9,14 @@ void AssetManager::init()
     modelLoaderQuad2D.load("assets/models/quad_2d.obj");
 
     shaderMonochroma.init("assets/shaders/monochroma.vs", "assets/shaders/monochroma.fs");
-    shaderPhong.init("assets/shaders/phong.vs", "assets/shaders/phong.fs");
     shaderTexture.init("assets/shaders/texture.vs", "assets/shaders/texture.fs");
+    shaderPhong.init("assets/shaders/phong.vs", "assets/shaders/phong.fs");
+    shaderDefferedBlinnPhong.init("assets/shaders/deffered_blinn_phong.vs", "assets/shaders/deffered_blinn_phong.fs");
+    shaderDeffered.init("assets/shaders/deffered.vs", "assets/shaders/deffered.fs");
 
-
-    initMaterials();
 }
 
+/*
 void AssetManager::initMaterials()
 {
     // Original value is 128.f.     |     32 is good pick
@@ -64,3 +65,4 @@ void AssetManager::initMaterials()
     materialObsidian.set("u_Material.specular", Vec3f(0.332741, 0.328634, 0.346435));
     materialObsidian.set("u_Material.shininess", 0.3f * shininessConst);
 }
+*/
