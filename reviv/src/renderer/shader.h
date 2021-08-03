@@ -54,7 +54,8 @@ public:
         { map.clear(); }
     ~ShaderUniformMap();
 
-    void bind(const Shader& shader) const;
+    void uploadUniform(const Shader& shader, const std::string& existingUniformName) const;
+    void uploadAllUniforms(const Shader& shader) const;
     std::unordered_map <std::string, ShaderUniformHelpingStruct> map;
     void set(const std::string& uniformName, const Mat4& mat4);
     void set(const std::string& uniformName, const Vec4f& vec4f);

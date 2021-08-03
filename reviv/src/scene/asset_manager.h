@@ -21,8 +21,6 @@ public:
     //Mesh meshQuad2D;
 
     Shader shaderPhong;
-    Shader shaderDefferedBlinnPhong;
-    Shader shaderDeffered;
     Shader shaderMonochroma;
     Shader shaderTexture;
 

@@ -11,9 +11,6 @@ void AssetManager::init()
     shaderMonochroma.init("assets/shaders/monochroma.vs", "assets/shaders/monochroma.fs");
     shaderTexture.init("assets/shaders/texture.vs", "assets/shaders/texture.fs");
     shaderPhong.init("assets/shaders/phong.vs", "assets/shaders/phong.fs");
-    shaderDefferedBlinnPhong.init("assets/shaders/deffered_blinn_phong.vs", "assets/shaders/deffered_blinn_phong.fs");
-    shaderDeffered.init("assets/shaders/deffered.vs", "assets/shaders/deffered.fs");
-
 }
 
 /*

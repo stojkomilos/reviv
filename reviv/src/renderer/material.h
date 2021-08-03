@@ -18,18 +18,18 @@ public:
     Material& operator=(const Material& other) = delete; // can be implemented
 
     Material(const Shader* pShader)
-        : pShader(pShader), pTextures(10) {}
+        : pShader(pShader), pTextures(10), textureUniformNames(10) {}
 
     void setShader(Shader* inShader);
     void bindShader();
-    void bind() const;
-
-    //void setTexture(const std::string& uniformName, unsigned int slot);
+    void bind();
 
     const Shader* pShader = nullptr;
     stls::StableVector<const Texture*> pTextures;
+    stls::StableVector<std::string> textureUniformNames;
 
-    void addTexture(const Texture& texture);
+    void addTexture(const std::string& textureUniformName, const Texture& texture);
+
 
     ShaderUniformMap shaderUniformMap;
 

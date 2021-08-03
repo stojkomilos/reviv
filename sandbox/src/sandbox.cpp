@@ -94,7 +94,7 @@ public:
 
         platform = Scene::createEntity("Platform");
         platform->get<TransformComponent>()->scale = {7, 14, 0.4};
-        platform->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &AssetManager::get()->shaderDeffered);
+        platform->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::getInstance()->shaderDeffered);
         platform->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1, 1, 0));
         platform->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.5f);
 
@@ -106,12 +106,12 @@ public:
         cube = Scene::createEntity("Cube");
         //cube->get<TransformComponent>()->position = {10, 0, 3};
         //cube->get<TransformComponent>()->position = {-0.3, 1, 6.5};
-        cube->get<TransformComponent>()->position = {-0.3, 1, 0.8 + cube->get<TransformComponent>()->scale.a[2]};
+        cube->get<TransformComponent>()->position = {0, 0, 0.8 + cube->get<TransformComponent>()->scale.a[2]};
         //cube->get<TransformComponent>()->scale = {0.3, 0.3, 0.3};
         cube->get<TransformComponent>()->scale = {1, 1, 1};
-        cube->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &AssetManager::get()->shaderDeffered);
-        cube->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1, 0, 0));
-        cube->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.5f);
+        cube->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::getInstance()->shaderDeffered);
+        cube->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 0, 1));
+        cube->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.2f);
 
         //sun = Scene::createEntity("Sun");
         //float sunHeight = 30;

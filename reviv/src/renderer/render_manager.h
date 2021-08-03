@@ -9,8 +9,6 @@
 #include"core/time.h"
 #include"core/application.h"
 
-class RenderManager;
-
 class Environment
 {
 public:
@@ -56,7 +54,9 @@ public:
     //Shader depthTestShader;
     //Shader shadowMapShader;
 
-    Shader defferedShader;
+    Shader shaderDefferedBlinnPhong;
+    Material materialDefferedBlinnPhong; // special material, bind sort of environment stuff actually
+    Shader shaderDeffered;
     Framebuffer gBuffer;
     Texture2D gPosition, gNormal, gAlbedoSpecular;
 

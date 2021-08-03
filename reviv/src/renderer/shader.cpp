@@ -86,15 +86,25 @@ void Shader::init(const char* vertexPath, const char* fragmentPath)
   //  if (geometryPath != nullptr)
   //      glDeleteShader(geometry);
 
-    int tempUniformCount;
-    glGetProgramiv(id, GL_ACTIVE_UNIFORMS, &count);
+    int uniformCount;
+    glGetProgramiv(id, GL_ACTIVE_UNIFORMS, &uniformCount);
 
-    for(int i=0; i<count; i++)
+    uniformNames.reserve(20);
+    for(int i=0; i<uniformCount; i++)
     {
-        glGetActiveUniform(program, (GLuint)i, bufSize, &length, &size, &type, &name);
-    }
+        GLint size;
+        GLenum type;
 
+        const GLsizei bufSize = 100; // maximum name length
+        GLchar name[bufSize];
+
+        GLsizei length;
+
+        glGetActiveUniform(id, (GLuint)i, bufSize, &length, &size, &type, name);
+        uniformNames.pushBack(name);
+    }
 }
+
 void Shader::bind() const
 {
     glUseProgram(id);
@@ -269,45 +279,57 @@ void logSpecificUniform(const ShaderUniformMap& shaderUniformMap, const std::str
     cout << endl;
 }
 
-void ShaderUniformMap::bind(const Shader& shader) const
+void ShaderUniformMap::uploadUniform(const Shader& shader, const std::string& existingUniformName) const
 {
     shader.bind();
 
     ShaderUniformHelpingStruct help;
-    std::string typeName;
+
+    auto iterator = map.find(existingUniformName);
+    RV_ASSERT(iterator != map.end(), "uniform does not exist in ShaderUniformMap already");
+
+    help.ptr = iterator->second.ptr;
+    help.type = iterator->second.type;
+
     //cout << "MATERIAL=============" << endl;
+    switch(help.type)
+    {
+        case ShaderDataType::SdtMat4:
+            shader.uploadUniformMat4(existingUniformName, *(Mat4*)(help.ptr));
+            //cout << "material uniform: " << uniformName;
+            //log(*(Mat4*)(help.ptr));
+            break;
+
+        case ShaderDataType::SdtFloat1:
+            shader.uploadUniform1f(existingUniformName, *(float*)(help.ptr));
+            break;
+
+        case ShaderDataType::SdtFloat3:
+            shader.uploadUniform3f(existingUniformName, *(Vec3f*)(help.ptr));
+            break;
+
+        case ShaderDataType::SdtFloat4:
+            shader.uploadUniform4f(existingUniformName, *(Vec4f*)(help.ptr));
+            break;
+
+        case ShaderDataType::SdtInt1:
+            shader.uploadUniform1i(existingUniformName, *(int*)(help.ptr));
+            break;
+
+        default:
+            RV_ASSERT(false, "ERROR: Specified uniform data type not found");
+    }
+}
+
+void ShaderUniformMap::uploadAllUniforms(const Shader& shader) const
+{
+    shader.bind();
+
+    ShaderUniformHelpingStruct help;
     for(const auto& [uniformName, help] : map)
     {
-        switch(help.type)
-        {
-            case ShaderDataType::SdtMat4:
-                shader.uploadUniformMat4(uniformName, *(Mat4*)(help.ptr));
-                //cout << "material uniform: " << uniformName;
-                //log(*(Mat4*)(help.ptr));
-                break;
-
-            case ShaderDataType::SdtFloat1:
-                shader.uploadUniform1f(uniformName, *(float*)(help.ptr));
-                break;
-
-            case ShaderDataType::SdtFloat3:
-                shader.uploadUniform3f(uniformName, *(Vec3f*)(help.ptr));
-                break;
-
-            case ShaderDataType::SdtFloat4:
-                shader.uploadUniform4f(uniformName, *(Vec4f*)(help.ptr));
-                break;
-
-            case ShaderDataType::SdtInt1:
-                shader.uploadUniform1i(uniformName, *(int*)(help.ptr));
-                break;
-
-            default:
-                RV_ASSERT(false, "ERROR: Specified uniform data type not found");
-        }
+        uploadUniform(shader, uniformName);
     }
-    //cout << "ENDDDDDD MATERIAL--" << endl;
-    shader.bind(); //TODO ovo se mozda moze ukloniti
 }
 
 void ShaderUniformMap::set(const std::string& uniformName, const Mat4& mat4)

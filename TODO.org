@@ -1,5 +1,10 @@
 * Ciljevi
 
+notes za sutra:
+ - nema depth checkinga. prvo implementiraj svetlost (drugi shader) u learnopengl.com. pa onda gledaj dalje debug depth shita
+ - skybox koji se ne obojava automatski
+
+
 sutra:
    framebuffer:
         - morace se i resize kad se resize prozor
