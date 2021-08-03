@@ -7,6 +7,7 @@
 
 #include"core/mat.h"
 #include"renderer/buffer.h"
+#include"stls/stable_vector.h"
 
 class Shader{
 
@@ -25,6 +26,9 @@ public:
 
     std::string filePathVertex;
     std::string filePathFragment;
+
+    stls::StableVector<std::string> uniformNames;
+    
 private:
     void checkCompileErrors(GLuint shader, std::string type);
 };

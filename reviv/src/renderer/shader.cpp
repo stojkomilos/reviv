@@ -85,6 +85,15 @@ void Shader::init(const char* vertexPath, const char* fragmentPath)
     glDeleteShader(fragment);
   //  if (geometryPath != nullptr)
   //      glDeleteShader(geometry);
+
+    int tempUniformCount;
+    glGetProgramiv(id, GL_ACTIVE_UNIFORMS, &count);
+
+    for(int i=0; i<count; i++)
+    {
+        glGetActiveUniform(program, (GLuint)i, bufSize, &length, &size, &type, &name);
+    }
+
 }
 void Shader::bind() const
 {
