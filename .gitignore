@@ -68,3 +68,4 @@ sandbox/assets/models/*
 !sandbox/assets/models/cube.fbx
 !sandbox/assets/models/sphere.obj
 !sandbox/assets/models/sphere.fbx
+!sandbox/assets/models/quad_2d.obj
