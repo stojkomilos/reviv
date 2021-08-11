@@ -41,6 +41,11 @@ void main()
     d_Normal = texture(u_gNormal, v_TexCoords).rgb;
     d_MaterialDiffuse = texture(u_gAlbedoSpecular, v_TexCoords).rgb;
     d_MaterialSpecular = texture(u_gAlbedoSpecular, v_TexCoords).a;
+    
+    if(d_Normal == vec3(0, 0, 0))
+    {
+        discard;
+    }
 
     for(int i=0; i<NR_POINT_LIGHTS; i++)
     {

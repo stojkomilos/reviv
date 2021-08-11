@@ -40,7 +40,7 @@ void RenderCommand::iInit()
 
     //glDepthFunc(GL_LESS);
 
-    //glEnable(GL_BLEND);
+    //glEnable(GL_);
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //glEnable(GL_CULL_FACE); // can be implemented: add flags to each vao/mesh on weather or not to enable this (should be disabled for objects that are not fully closed)

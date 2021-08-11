@@ -46,7 +46,7 @@ public:
         return &instance;
     }
 
-    //Skybox skybox;
+    Skybox skybox;
     //Framebuffer screenFramebuffer;
     //Shader screenShader;
     //ShadowMap shadowMap;

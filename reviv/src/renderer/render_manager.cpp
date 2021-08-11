@@ -11,15 +11,15 @@ void RenderManager::iInit()
     skyboxFaces.push_back("assets/textures/skybox/top.jpg");
     skyboxFaces.push_back("assets/textures/skybox/front.jpg");
     skyboxFaces.push_back("assets/textures/skybox/back.jpg");
-    //skybox.init(skyboxFaces);
-
-    gBuffer.init();
-    gBuffer.bind();
+    skybox.init(skyboxFaces);
 
     int screenWidth = Application::get()->getWindow()->m_Data.width;
     int screenHeight = Application::get()->getWindow()->m_Data.height;
     screenWidth = 956;
     screenHeight = 1050;
+
+    gBuffer.init();
+    gBuffer.bind();
 
     gDepth.init();
     gDepth.bind(0);
@@ -48,8 +48,10 @@ void RenderManager::iInit()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpecular.id, 0);
 
-    unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-    glDrawBuffers(3, attachments);
+    unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 }; // promeniti?
+    glDrawBuffers(3, attachments); // TODO: mozda povecati?
+
+    RV_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "incomplete framebuffer");
 
     gBuffer.unbind();
 
@@ -69,7 +71,7 @@ void RenderManager::iOnUpdate()
     
     gBuffer.bind();
 
-    RenderCommand::setClearColor(Vec4f(100.f, 10.f, 80.f, 256.f) / 256.f);
+    RenderCommand::setClearColor(Vec4f(0.f, 0.f, 0.f, 1.f));
     RenderCommand::clear();
 
     for(stls::StableVector<Entity>::Iterator itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
@@ -87,9 +89,8 @@ void RenderManager::iOnUpdate()
                     {
                         pModel->pMaterials[i]->bind();
                         pModel->pMaterials[i]->pShader->uploadUniformMat4("u_ModelMatrix", pTransformComponent->getTransform());
-                        environment.bind(*pModel->pMaterials[i]->pShader);
-
                         pModel->pMeshes[i]->vao.bind();
+                        environment.bind(*pModel->pMaterials[i]->pShader);
 
                         RenderCommand::drawElements(*pModel->pMeshes[i]);
                     }
@@ -98,16 +99,17 @@ void RenderManager::iOnUpdate()
         }
     }
 
+
     gBuffer.unbind();
     materialDefferedBlinnPhong.bind();
-    //AssetManager::get()->shaderDefferedBlinnPhong.bind();
     environment.bind(shaderDefferedBlinnPhong);
 
+    RenderCommand::setClearColor(Vec4f(1.f, 0.f, 1.f, 1.f));
     RenderCommand::clear();
     AssetManager::get()->modelLoaderQuad2D.meshes[0].vao.bind();
     RenderCommand::drawElements(AssetManager::get()->modelLoaderQuad2D.meshes[0]);
 
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer.id);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer.id); //TODO: ovde se nesto verovatno moze ukloniti
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     int screenWidth = Application::get()->getWindow()->m_Data.width;
     int screenHeight = Application::get()->getWindow()->m_Data.height;
@@ -140,6 +142,8 @@ void RenderManager::iOnUpdate()
             }
         }
     }
+
+    skybox.onUpdate();
 }
 
 void RenderManager::beginScene()

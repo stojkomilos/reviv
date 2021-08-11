@@ -16,5 +16,6 @@ public:
 
     TextureCubeMap textureCubeMap;
     ModelLoader cubeModel;
+    Material material;
     Shader shader;
 };

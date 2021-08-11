@@ -5,7 +5,7 @@ layout (location = 0) in vec3 a_Position;
 out vec3 v_TexCoords;
 
 uniform mat4 u_ProjectionMatrix;
-uniform mat4 u_ViewMatrix;
+uniform mat4 u_SkyboxViewMatrix;
 
 void main()
 {
@@ -13,7 +13,7 @@ void main()
     v_TexCoords.y = -a_Position.z;
     v_TexCoords.z = a_Position.x;
 
-    vec4 result = u_ProjectionMatrix * u_ViewMatrix * vec4(a_Position, 1.0);
+    vec4 result = u_ProjectionMatrix * u_SkyboxViewMatrix * vec4(a_Position, 1.0);
 
     gl_Position = result.xyww;
 }
