@@ -1,53 +1,15 @@
 * Ciljevi
 
-notes za sutra:
- - nema depth checkinga. prvo implementiraj svetlost (drugi shader) u learnopengl.com. pa onda gledaj dalje debug depth shita
- - skybox koji se ne obojava automatski
-
-
-sutra:
-   framebuffer:
-        - morace se i resize kad se resize prozor
-        - cherno video
-        - bolji kvalitet za boje (ovaj je bas los izlgeda)
-        - izbaciti stencil
-   environment
-   hdr, bloom
-   physics (designing a physics engine in 5 minutes)
-
-ukloniti argument u =beginScene(windowData)=
-
-sutra:
- - basic texture rendering inside sandbox
- - texture za backpack, i sa time /vrlo/ basic apstrakcija tekstura (model?). assimp learnopengl.com (basic material?)
- - speeedrun "advanced opengl"
-
-basic fog?
-   
+novi ciljevi:
+ - skybox
+ - proper lighting, proper normal transforms (learnopengl.com ima resurs)http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
+ - hdr, bloom
+ - shadowmaps
+ 
 order: input->update->display
-bugs:
-    - graficki bag kada gledam skroz gore ili skroz dole (mat.h -> MAT_EPSILON?)
-    - lose osvetljenje na kocki
 
-shallow work:
- - dll assimp
-
-todo:
- -----
- - normals move: http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
- - procitaj: https://learnopengl.com/In-Practice/Debugging
-
-
-clean:
+clean project:
  - git "merge" with main, reviv1
- - gitlc? models
- - .dll za assimp?
- - asset manager, bolje dodavanje shadera, materiala, meshova, transforma...
- - assets copy: u debug: assets kao parametar, u release: kopiraj u cmake
- - environment stuff?
-
-vscode:
- - disable (or set low-prio) searching on files from vendor
 
 long term:
     - full scripting system

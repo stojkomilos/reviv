@@ -59,6 +59,7 @@ public:
     Shader shaderDeffered;
     Framebuffer gBuffer;
     Texture2D gPosition, gNormal, gAlbedoSpecular;
+    Texture2D gDepth;
 
 private:
     RenderManager() = default;
