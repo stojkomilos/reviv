@@ -25,10 +25,6 @@ public:
     void bind();
 
     const Shader* pShader = nullptr;
-    stls::StableVector<const Texture*> pTextures;
-    stls::StableVector<std::string> textureUniformNames;
-
-    void addTexture(const std::string& textureUniformName, const Texture& texture);
 
 
     ShaderUniformMap shaderUniformMap;

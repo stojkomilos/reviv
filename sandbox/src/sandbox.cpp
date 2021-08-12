@@ -4,6 +4,8 @@ Entity *player, *camera, *stanic, *light, *platform, *sphere, *cube, *sun, *lamp
 Entity* container;
 Entity* map;
 
+Entity* externLight;
+
 Entity* directionalLight;
 
 ModelLoader modelLoaderBackpack, modelLoaderMap;
@@ -106,7 +108,7 @@ public:
         cube = Scene::createEntity("Cube");
         //cube->get<TransformComponent>()->position = {10, 0, 3};
         //cube->get<TransformComponent>()->position = {-0.3, 1, 6.5};
-        cube->get<TransformComponent>()->position = {0, 0, 0.8 + cube->get<TransformComponent>()->scale.a[2]};
+        cube->get<TransformComponent>()->position = {0, 0, 0.8 + cube->get<TransformComponent>()->scale.a[2] + 4};
         //cube->get<TransformComponent>()->scale = {0.3, 0.3, 0.3};
         cube->get<TransformComponent>()->scale = {1, 1, 1};
         cube->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::getInstance()->shaderDeffered);
@@ -121,6 +123,14 @@ public:
         //sun->add<ModelComponent>            (&AssetManager::get()->modelLoaderSphere);
         //sun->get<ModelComponent>()->model.addMaterialFromShader(AssetManager::get()->shaderMonochroma);
         //sun->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec3f(1, 1, 0));
+
+        directionalLight = Scene::createEntity("Directional Light");
+        directionalLight->add<DirectionalLightComponent>();
+        directionalLight->get<DirectionalLightComponent>()->light.direction = Vec3f(0, 0, -1);
+        directionalLight->get<TransformComponent>()->position = {0, 0, 10};
+        directionalLight->get<TransformComponent>()->rotation.pitch = degreesToRadians(-90);
+        directionalLight->get<TransformComponent>()->rotation.yaw = 0;
+        directionalLight->get<TransformComponent>()->rotation.roll = 0;
 
         directionalLight = Scene::createEntity("Directional Light");
         directionalLight->add<DirectionalLightComponent>();

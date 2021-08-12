@@ -1,5 +1,7 @@
 #include"render_manager.h"
 
+extern Entity* directionalLight;
+
 void RenderManager::iInit()
 {
     RenderCommand::init();
@@ -63,12 +65,56 @@ void RenderManager::iInit()
     materialDefferedBlinnPhong.addTexture("u_gPosition", gPosition);
     materialDefferedBlinnPhong.addTexture("u_gNormal", gNormal);
     materialDefferedBlinnPhong.addTexture("u_gAlbedoSpecular", gAlbedoSpecular);
+
+    shadowMap.init(956, 1050); //TODO: proveri da li moze ako nije kvadrat. (ako ne moze, implementiraj)
+    shadowMapShader.init("assets/shaders/shadow_map.vs", "assets/shaders/shadow_map.fs");
 }
 
 void RenderManager::iOnUpdate()
 {
     beginScene(); // Update camera stuff, update environment uniforms(doesn't upload them)
     
+    shadowMap.framebuffer.bind();
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    lightCamera.setViewMatrix(directionalLight->get<TransformComponent>()->position, directionalLight->get<TransformComponent>()->rotation);
+    lightCamera.setOrthographicProjection(14);
+    shadowMapShader.bind();
+    shadowMapShader.uploadUniformMat4("u_ShadowMapViewMatrix", lightCamera.viewMatrix);
+    shadowMapShader.uploadUniformMat4("u_ShadowMapProjectionMatrix", lightCamera.projectionMatrix);
+
+    for(stls::StableVector<Entity>::Iterator itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
+    {
+        if(itEntity->valid)
+        {
+            if(itEntity->has<ModelComponent>() && itEntity->has<TransformComponent>())
+            {
+                cout << "Shadow for entity: " << itEntity->entityName << endl;
+                Model* pModel = &itEntity->get<ModelComponent>()->model;
+                TransformComponent* pTransformComponent = itEntity->get<TransformComponent>();
+
+                for(unsigned int i=0; i < pModel->pMeshes.size(); i++)
+                {
+                    shadowMapShader.uploadUniformMat4("u_ModelMatrix", pTransformComponent->getTransform());
+                    pModel->pMeshes[i]->vao.bind();
+                    environment.bind(shadowMapShader);
+
+                    RenderCommand::drawElements(*pModel->pMeshes[i]);
+                }
+            }
+        }
+    }
+
+    environment.set("ue_ShadowMap", (int))
+
+uniform sampler2D ue_ShadowMap;
+uniform mat4 ue_LightViewMatrix;
+uniform mat4 ue_LightProjectionMatrix;
+
+
+
+    
+
     gBuffer.bind();
 
     RenderCommand::setClearColor(Vec4f(0.f, 0.f, 0.f, 1.f));

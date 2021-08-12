@@ -346,3 +346,20 @@ void ShaderUniformMap::set(const std::string& uniformName, const Mat4& mat4)
         *(Mat4*)it->second.ptr = mat4;
     }
 }
+
+void ShaderUniformMap::addTexture(const std::string& textureUniformName, const Texture& texture)
+{
+#if RV_DEBUG
+    for(int i=0; i<textureUniformNames.size(); i++)
+        for(int j=0; j<textureUniformNames.size(); j++)
+        {
+            if(i != j)
+            {
+                RV_ASSERT(textureUniformNames[i] != textureUniformNames[j], "can't have more than one texture with the same uniform name");
+            }
+        }
+#endif
+
+    pTextures.pushBack(&texture);
+    textureUniformNames.pushBack(textureUniformName);
+}

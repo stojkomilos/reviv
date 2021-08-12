@@ -9,6 +9,8 @@
 #include"renderer/buffer.h"
 #include"stls/stable_vector.h"
 
+#include"renderer/texture.h"
+
 class Shader{
 
 public:
@@ -28,6 +30,8 @@ public:
     std::string filePathFragment;
 
     stls::StableVector<std::string> uniformNames;
+
+    unsigned char lastUsed = 0;
     
 private:
     void checkCompileErrors(GLuint shader, std::string type);
@@ -51,8 +55,13 @@ class ShaderUniformMap
 {
 public:
     ShaderUniformMap()
-        { map.clear(); }
+        : pTextures(10), textureUniformNames(10) { map.clear(); }
     ~ShaderUniformMap();
+
+    stls::StableVector<const Texture*> pTextures;
+    stls::StableVector<std::string> textureUniformNames;
+
+    void addTexture(const std::string& textureUniformName, const Texture& texture);
 
     void uploadUniform(const Shader& shader, const std::string& existingUniformName) const;
     void uploadAllUniforms(const Shader& shader) const;

@@ -18,6 +18,7 @@ in vec2 v_TexCoords;
 out vec4 FragColor;
 
 vec3 calculatePointLight(PointLight light);
+float calculateShadows();
 
 #define NR_POINT_LIGHTS 1
 uniform PointLight ue_PointLights[NR_POINT_LIGHTS];
@@ -31,6 +32,10 @@ vec3 d_FragPosition;
 vec3 d_Normal;
 vec3 d_MaterialDiffuse;
 float d_MaterialSpecular;
+
+uniform sampler2D ue_ShadowMap;
+uniform mat4 ue_LightViewMatrix;
+uniform mat4 ue_LightProjectionMatrix;
 
 void main()
 {
@@ -52,11 +57,32 @@ void main()
         result += calculatePointLight(ue_PointLights[i]);
     }
 
+    float shadow = calculateShadow();
+    if(shadow == 1)
+        result = vec3(0, 0, 0);
+
     //result = result * 0.00001f + vec3(d_MaterialSpecular, d_MaterialSpecular, d_MaterialSpecular);
     //result = result * 0.00001f + d_MaterialDiffuse.rgb;
     //result = result * 0.00001f + normalize(d_FragPosition.xyz);
 
     FragColor = vec4(result, 1);
+}
+
+float calculateShadow()
+{
+    float bias = 0.005f;
+    vec4 positionFromLight = ue_LightProjectionMatrix * (ue_LightViewMatrix * vec4(d_FragPosition, 1));
+    positionFromLight.x = (positionFromLight.x + 1) / 2;
+    positionFromLight.y = (positionFromLight.y + 1) / 2;
+    float shadow = 0;
+    if(texture(ue_ShadowMap, positionFromLight.xy).r * 2 - 1 < positionFromLight.z - bias)
+    {
+        shadow = 1;
+    }
+    if(positionFromLight.z > 1.0)
+        shadow = 0.0;
+
+    return shadow;
 }
 
 vec3 calculatePointLight(PointLight light)

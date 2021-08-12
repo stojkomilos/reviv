@@ -47,12 +47,13 @@ public:
     }
 
     Skybox skybox;
+    ShadowMap shadowMap;
+    Shader shadowMapShader;
+    Camera lightCamera;
+
     //Framebuffer screenFramebuffer;
     //Shader screenShader;
-    //ShadowMap shadowMap;
-
     //Shader depthTestShader;
-    //Shader shadowMapShader;
 
     Shader shaderDefferedBlinnPhong;
     Material materialDefferedBlinnPhong; // special material, bind sort of environment stuff actually
