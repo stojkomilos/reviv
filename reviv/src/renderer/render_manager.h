@@ -8,26 +8,9 @@
 #include"skybox.h"
 #include"core/time.h"
 #include"core/application.h"
+#include"renderer/deffered.h"
+#include"environment.h"
 
-class Environment
-{
-public:
-    ShaderUniformMap shaderUniformMap;
-
-    void bind(const Shader& shader) const;
-
-    void setLights();
-
-    inline void set(const std::string& uniformName, const Mat4& mat4) { shaderUniformMap.set(uniformName, mat4); }
-    inline void set(const std::string& uniformName, const Vec4f& vec4f) { shaderUniformMap.set(uniformName, vec4f); }
-    inline void set(const std::string& uniformName, const Vec3f& vec3f) { shaderUniformMap.set(uniformName, vec3f); }
-    inline void set(const std::string& uniformName, int n) { shaderUniformMap.set(uniformName, n); }
-    inline void set(const std::string& uniformName, float n) { shaderUniformMap.set(uniformName, n); }
-    inline void set(const std::string& uniformName, double n) { shaderUniformMap.set(uniformName, n); }
-private:
-    Environment() = default;
-    friend class RenderManager;
-};
 
 class RenderManager
 {
@@ -47,9 +30,7 @@ public:
     }
 
     Skybox skybox;
-    ShadowMap shadowMap;
     Shader shadowMapShader;
-    Camera lightCamera;
 
     //Framebuffer screenFramebuffer;
     //Shader screenShader;
@@ -57,10 +38,10 @@ public:
 
     Shader shaderDefferedBlinnPhong;
     Material materialDefferedBlinnPhong; // special material, bind sort of environment stuff actually
-    Shader shaderDeffered;
-    Framebuffer gBuffer;
-    Texture2D gPosition, gNormal, gAlbedoSpecular;
-    Texture2D gDepth;
+    Deffered deffered;
+
+    void bindEnvironmentAndMaterial(Shader* shader, Environment* environment, Material* material);
+    void bindEnvironment(Shader* shader, Environment* environment);
 
 private:
     RenderManager() = default;

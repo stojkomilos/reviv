@@ -13,7 +13,7 @@ static void GlfwErrorCallback(int error, const char* description)
 {
     // Ignoring common, maybe unavoidable erros on wayland, glfw still works even when they occur
     RV_ASSERT(strncmp(description, "Wayland: The platform does not support setting the input focus", 10) || strncmp(description, "Wayland: focusing a window requires user interaction", 10),
-    "Glfw Error" << description);
+    "Glfw Error: " << description);
 }
 
 void Window::onUpdate()

@@ -77,11 +77,11 @@ Material* Model::addMaterial(Material* pMaterial)
     return pMaterial;
 }
 
-Material* Model::addMaterialFromShader(const Shader& shader)
+Material* Model::addMaterialFromShader(Shader* shader)
 {
     RV_ASSERT(pMeshes.size() == 1 && pMaterials.size() == 0, ""); // can be implemented, but be careful
 
-    Material* pMaterial = new Material(&shader);
+    Material* pMaterial = new Material(shader);
     pMaterials.pushBack(pMaterial);
 
     return pMaterial;

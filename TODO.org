@@ -1,5 +1,28 @@
 * Ciljevi
 
+** 
+
+todo:
+ - generalizuj shadow maps za vise svetala, i za point light
+ - directional light u blin phong
+ - fix lighting (marko kaze da misli da ne vidi specular)
+ - resize-able window (renderbuffer, shadowmaps and other stuff)
+ - clear comments, TODO, and useless code
+
+1. environment texture bind . jer svi koriste environment, cak i ako ne koriste
+2. material texture bind
+
+opciono debug:
+    - provera da li je material i environment counter isti za neku instnacu shader-a svaki put (zahteva set-ovanje svih uniformi :( )
+
+      static Shader& lastBoundShader;
+      material.bind(){
+         if(lastBoundShader != this.shader)
+             assert(false);
+      }
+
+** 
+
 novi ciljevi:
  - skybox
  - proper lighting, proper normal transforms (learnopengl.com ima resurs)http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
@@ -24,6 +47,15 @@ organizacija:
  - operatori za mat.h
       
 * Renderer
+
+** hdr & bloom
+
+https://www.youtube.com/watch?v=tI70-HIc5ro&t=1256s
+
+unity tone mapping:
+ ACES (popular, used in film industry)
+
+** 
 
 submit:
  entity.meterial.bind();

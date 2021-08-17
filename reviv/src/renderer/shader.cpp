@@ -89,13 +89,16 @@ void Shader::init(const char* vertexPath, const char* fragmentPath)
     int uniformCount;
     glGetProgramiv(id, GL_ACTIVE_UNIFORMS, &uniformCount);
 
-    uniformNames.reserve(20);
+    uniformNames.reserve(200);
+
+    glGetProgramiv(id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxUniformNameLength);
+
     for(int i=0; i<uniformCount; i++)
     {
         GLint size;
         GLenum type;
 
-        const GLsizei bufSize = 100; // maximum name length
+        const GLsizei bufSize = 56; // maximum name length
         GLchar name[bufSize];
 
         GLsizei length;
@@ -347,19 +350,7 @@ void ShaderUniformMap::set(const std::string& uniformName, const Mat4& mat4)
     }
 }
 
-void ShaderUniformMap::addTexture(const std::string& textureUniformName, const Texture& texture)
+void ShaderUniformMap::setTexture(const std::string& textureUniformName, const Texture& texture)
 {
-#if RV_DEBUG
-    for(int i=0; i<textureUniformNames.size(); i++)
-        for(int j=0; j<textureUniformNames.size(); j++)
-        {
-            if(i != j)
-            {
-                RV_ASSERT(textureUniformNames[i] != textureUniformNames[j], "can't have more than one texture with the same uniform name");
-            }
-        }
-#endif
-
-    pTextures.pushBack(&texture);
-    textureUniformNames.pushBack(textureUniformName);
+    textureMap[textureUniformName] = &texture;
 }

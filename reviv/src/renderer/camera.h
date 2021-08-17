@@ -9,7 +9,7 @@ class Camera
 public:
     Camera() = default;
     Camera(const Camera&) = default;
-    Camera(float nearRenderDistance, float renderDistance, float horizontalFov);
+    Camera(float nearRenderDistance, float renderDistance, float horizontalFovInRadians);
 
     void setViewMatrix(const Vec3f& position, const Rotation& rotation);
     void setPerspectiveProjection();

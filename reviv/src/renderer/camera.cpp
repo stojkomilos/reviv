@@ -10,8 +10,8 @@ void log(const Camera& camera)
     log(camera.projectionMatrix);
 }
 
-Camera::Camera(float nearRenderDistance, float renderDistance, float horizontalFov)
-    : nearRenderDistance(nearRenderDistance), renderDistance(renderDistance), m_HorizontalFov(horizontalFov)
+Camera::Camera(float nearRenderDistance, float renderDistance, float horizontalFovInRadians)
+    : nearRenderDistance(nearRenderDistance), renderDistance(renderDistance), m_HorizontalFov(horizontalFovInRadians)
 { }
 
 void Camera::setViewMatrix(const Vec3f& position, const Rotation& rotation)

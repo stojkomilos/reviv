@@ -7,7 +7,7 @@ void Skybox::init(const std::vector<std::string>& filePaths)
     material.setShader(&shader);
     textureCubeMap.load(filePaths);
 
-    material.addTexture("u_CubeMap", textureCubeMap);
+    material.setTexture("u_CubeMap", textureCubeMap);
 }
 
 void Skybox::onUpdate()

@@ -79,13 +79,13 @@ public:
         //modelLoaderBackpack.load("assets/models/backpack/backpack.obj");
         //stanic->add<ModelComponent>(&modelLoaderBackpack, &AssetManager::get()->materialEmerald);
 
-        light = Scene::createEntity("Light");
-        light->get<TransformComponent>()->scale = {0.2f, 0.2f, 0.2f};
-        light->add<PointLightComponent>();
-        light->add<ModelComponent>          (&AssetManager::get()->modelLoaderSphere);
-        light->get<ModelComponent>()->model.addMaterialFromShader(AssetManager::get()->shaderMonochroma);
-        light->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec3f(1, 1, 1));
-        auto* pLightComp = &light->get<PointLightComponent>()->light;
+        //light = Scene::createEntity("Light");
+        //light->get<TransformComponent>()->scale = {0.2f, 0.2f, 0.2f};
+        //light->add<PointLightComponent>();
+        //light->add<ModelComponent>          (&AssetManager::get()->modelLoaderSphere);
+        //light->get<ModelComponent>()->model.addMaterialFromShader(&AssetManager::get()->shaderMonochroma);
+        //light->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec3f(1, 1, 1));
+        //auto* pLightComp = &light->get<PointLightComponent>()->light;
 
         //lamp = Scene::createEntity("Lamp");
         //lamp->get<TransformComponent>()->scale = {0.4f, 0.1f, 0.2f};
@@ -96,7 +96,7 @@ public:
 
         platform = Scene::createEntity("Platform");
         platform->get<TransformComponent>()->scale = {7, 14, 0.4};
-        platform->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::getInstance()->shaderDeffered);
+        platform->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::getInstance()->deffered.geometryPassShader);
         platform->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1, 1, 0));
         platform->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.5f);
 
@@ -111,7 +111,7 @@ public:
         cube->get<TransformComponent>()->position = {0, 0, 0.8 + cube->get<TransformComponent>()->scale.a[2] + 4};
         //cube->get<TransformComponent>()->scale = {0.3, 0.3, 0.3};
         cube->get<TransformComponent>()->scale = {1, 1, 1};
-        cube->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::getInstance()->shaderDeffered);
+        cube->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::getInstance()->deffered.geometryPassShader);
         cube->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 0, 1));
         cube->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.2f);
 
@@ -128,17 +128,12 @@ public:
         directionalLight->add<DirectionalLightComponent>();
         directionalLight->get<DirectionalLightComponent>()->light.direction = Vec3f(0, 0, -1);
         directionalLight->get<TransformComponent>()->position = {0, 0, 10};
-        directionalLight->get<TransformComponent>()->rotation.pitch = degreesToRadians(-90);
-        directionalLight->get<TransformComponent>()->rotation.yaw = 0;
-        directionalLight->get<TransformComponent>()->rotation.roll = 0;
+        directionalLight->get<DirectionalLightComponent>()->light.enableShadowMap();
 
-        directionalLight = Scene::createEntity("Directional Light");
-        directionalLight->add<DirectionalLightComponent>();
-        directionalLight->get<DirectionalLightComponent>()->light.direction = Vec3f(0, 0, -1);
-        directionalLight->get<TransformComponent>()->position = {0, 0, 10};
-        directionalLight->get<TransformComponent>()->rotation.pitch = degreesToRadians(-90);
-        directionalLight->get<TransformComponent>()->rotation.yaw = 0;
-        directionalLight->get<TransformComponent>()->rotation.roll = 0;
+        directionalLight->get<DirectionalLightComponent>()->light.shadowMap.width = 14;
+        directionalLight->get<DirectionalLightComponent>()->light.shadowMap.nearRenderDistance = 0.1f;
+        directionalLight->get<DirectionalLightComponent>()->light.shadowMap.renderDistance = 100.f;
+
     }
 
     void onUpdate() override
@@ -151,11 +146,13 @@ public:
             it->get<TransformComponent>()->scale = Vec3f(help/2, help/2, help/2);
         }
 
-        light->get<TransformComponent>()->position = Vec3f(sin(Time::getTime() / 2) * 2, cos(Time::getTime() / 2) * 3, 2 + sin(Time::getTime() / 5));
+        //light->get<TransformComponent>()->position = Vec3f(sin(Time::getTime() / 2) * 2, cos(Time::getTime() / 2) * 3, 2 + sin(Time::getTime() / 5));
 
         //cube->get<TransformComponent>()->rotation.yaw = Time::getTime() * 7;
         //cube->get<TransformComponent>()->rotation.pitch = Time::getTime() * 11;
         //cube->get<TransformComponent>()->rotation.roll = Time::getTime() * 3;
+
+        cube->get<TransformComponent>()->position = Vec3f(0, sin(Time::getTime()) * 3, 3);
 
         //cube->get<TransformComponent>()->rotation.yaw = 1;
         //cube->get<TransformComponent>()->rotation.pitch = 1;

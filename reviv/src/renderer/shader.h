@@ -32,9 +32,13 @@ public:
     stls::StableVector<std::string> uniformNames;
 
     unsigned char lastUsed = 0;
+
+    unsigned int environmentTextureUniformCounter = 0; // always bind enviroment first, and then after bind material
+    unsigned int materialTextureUniformCounter = 0;
     
 private:
     void checkCompileErrors(GLuint shader, std::string type);
+    int maxUniformNameLength = 0;
 };
 
 struct ShaderUniformHelpingStruct
@@ -54,14 +58,12 @@ struct ShaderUniformHelpingStruct
 class ShaderUniformMap
 {
 public:
-    ShaderUniformMap()
-        : pTextures(10), textureUniformNames(10) { map.clear(); }
+    ShaderUniformMap() { map.clear(); }
     ~ShaderUniformMap();
 
-    stls::StableVector<const Texture*> pTextures;
-    stls::StableVector<std::string> textureUniformNames;
+    std::unordered_map<std::string, const Texture*> textureMap; // first = texture uniform name ; second = pointer to the actual texture object
 
-    void addTexture(const std::string& textureUniformName, const Texture& texture);
+    void setTexture(const std::string& textureUniformName, const Texture& texture);
 
     void uploadUniform(const Shader& shader, const std::string& existingUniformName) const;
     void uploadAllUniforms(const Shader& shader) const;

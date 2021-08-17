@@ -34,18 +34,16 @@ PointLight::PointLight()
  : constant(1.f), linear(0), quadratic(0.07f) // range approximately 32 meters
 { }
 
-void ShadowMap::init(unsigned int width, unsigned int height)
+void ShadowMap::init(unsigned int resolutionWidth, unsigned int resolutionHeight)
 {
-    m_Width = width;
-    m_Height = height;
-
-    glViewport(0, 0, width, height);
+    m_ResolutionWidth = resolutionWidth;
+    m_ResolutionHeight = resolutionHeight;
     
     framebuffer.init();
     depthMap.init();
     depthMap.bind(0);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, m_Width, m_Height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, m_ResolutionWidth, m_ResolutionHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -60,4 +58,13 @@ void ShadowMap::init(unsigned int width, unsigned int height)
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap.id, 0);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
+
+    framebuffer.unbind();
+}
+
+void Light::enableShadowMap()
+{
+    RV_ASSERT(isShadowMapped == false, "shadow mapping for this light is already on");
+    isShadowMapped = true;
+    shadowMap.init(956, 1050);
 }

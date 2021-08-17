@@ -16,13 +16,18 @@ void Material::bindShader()
 void Material::bind()
 {
     pShader->bind();
-:wqa
-    int textureCounter=0;
-    for(unsigned int i=0; i<pTextures.size(); i++) // TODO: zameniti "auto it =..." sa "range based for loop", e.g. "auto it : pTextures"
+
+    //RV_ASSERT(pShader->environmentTextureUniformCounter > 0, "potential error: environment has not set any textures so far. Maybe you forgot that you HAVE to bind an environment before you bind a material? Maybe this is not an error");
+
+    pShader->materialTextureUniformCounter = pShader->environmentTextureUniformCounter + 1;
+
+    for(auto const& it : shaderUniformMap.textureMap)
     {
         //pShader->uploadUniform1i(textureUniformNames[i], i);
-        set(textureUniformNames[i], (int)i);
-        pTextures[i]->bind(i);
+        set(it.first, (int)pShader->materialTextureUniformCounter);
+        it.second->bind((int)pShader->materialTextureUniformCounter);
+        
+        pShader->materialTextureUniformCounter++;
     }
 
     shaderUniformMap.uploadAllUniforms(*pShader);

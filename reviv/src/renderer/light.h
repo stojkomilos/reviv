@@ -5,6 +5,23 @@
 #include"core/mat.h"
 #include"framebuffer.h"
 
+class ShadowMap
+{
+public:
+    void init(unsigned int resolutionWidth, unsigned int resolutionHeight);
+
+    Framebuffer framebuffer;
+    Texture2D depthMap;
+
+    unsigned int m_ResolutionWidth;
+    unsigned int m_ResolutionHeight;
+
+    float width;
+
+    float nearRenderDistance;
+    float renderDistance;
+};
+
 class Light
 {
 public:
@@ -14,6 +31,12 @@ public:
 
     bool on = true;
     float intensity = 1.0f;
+
+    ShadowMap shadowMap;
+    bool isShadowMapped = false;
+
+    void enableShadowMap();
+
 protected:
     Light();
 };
@@ -22,7 +45,7 @@ class PointLight : public Light
 {
 public:
     PointLight(); 
-    float constant; // good ranges numbers for different ranges: https://wiki.ogre3d.org/tiki-index.php?page=-Point+Light+Attenuation
+    float constant; // Invalid for gamma corrected? good ranges numbers for different ranges: https://wiki.ogre3d.org/tiki-index.php?page=-Point+Light+Attenuation
     float linear;
     float quadratic;
 };
@@ -33,17 +56,6 @@ public:
     Vec3f direction;
 };
 
-class ShadowMap
-{
-public:
-    void init(unsigned int width, unsigned int height);
-
-    Framebuffer framebuffer;
-    Texture2D depthMap;
-
-    unsigned int m_Width;
-    unsigned int m_Height;
-};
 
 void log(const Light& light);
 void log(const DirectionalLight& light);
