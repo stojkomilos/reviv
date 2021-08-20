@@ -4,6 +4,7 @@
 
 #include"core/mat.h"
 #include"framebuffer.h"
+#include"camera.h"
 
 class ShadowMap
 {
@@ -20,6 +21,8 @@ public:
 
     float nearRenderDistance;
     float renderDistance;
+
+    Camera camera;
 };
 
 class Light
@@ -53,7 +56,6 @@ public:
 class DirectionalLight : public Light
 {
 public:
-    Vec3f direction;
 };
 
 

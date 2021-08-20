@@ -76,11 +76,8 @@ void Camera::setPerspectiveProjection()
     projectionMatrix.a[3][3] = 0;
 }
 
-void Camera::setOrthographicProjection(float width)
+void Camera::setOrthographicProjection(float width, float ratio)
 {
-    float ratio = (Application::get()->getWindow()->m_Data.width * 1.f)
-                 / (Application::get()->getWindow()->m_Data.height * 1.f);
-
     float height = width / ratio;
 
     projectionMatrix.a[0][0] = 2.f / width;

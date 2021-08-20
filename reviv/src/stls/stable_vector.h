@@ -30,7 +30,7 @@ public:
 
     bool operator==(const StableVectorIterator& other) const
     {
-        return this->ptr == other.ptr;
+        return (this->ptr == other.ptr);
     }
 
     bool operator!=(const StableVectorIterator& other) const
@@ -38,7 +38,7 @@ public:
         return !(*this == other);
     }
 
-    ValueType operator*()
+    ValueType& operator*()
     {
         return *ptr;
     }

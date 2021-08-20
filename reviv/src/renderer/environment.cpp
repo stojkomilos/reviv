@@ -1,17 +1,25 @@
 #include"environment.h"
 #include"render_manager.h"
 
+void log(const Environment& environment)
+{
+    cout << "Environment----" << endl;
+    log(environment.shaderUniformMap);
+    cout << "END of environment" << endl;
+}
+
 void Environment::setLights()
 {
-    int nrPointLights = 0;
-    int nrDirectionalLights = 0;
+    nrPointLights = 0;
+    nrDirectionalLights = 0;
 
     for(auto itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
     {
         if(itEntity->valid)
         {
-            if(itEntity->has<PointLightComponent>())
+            if(itEntity->has<PointLightComponent>()) // set point lights
             {
+                RV_ASSERT(false, ""); // temp. can be removed
                 RV_ASSERT(nrPointLights < 10, ""); // can be implemented, just string and one digit stuff
                 auto* pLight = &itEntity->get<PointLightComponent>()->light;
 
@@ -37,7 +45,8 @@ void Environment::setLights()
 
                 nrPointLights++;
             }
-            if(itEntity->has<DirectionalLightComponent>())
+
+            if(itEntity->has<DirectionalLightComponent>()) // set directional lights
             {
                 RV_ASSERT(nrDirectionalLights < 10, ""); // can be implemented, just string and one digit stuff
 
@@ -53,7 +62,11 @@ void Environment::setLights()
                 uniformNameLight += (char)(nrDirectionalLights + '0');
                 uniformNameLight += "]";
 
-                set(uniformNameLight + ".direction", itEntity->get<DirectionalLightComponent>()->light.direction);
+                if(uniformNameLight == "ue_DirectionalLight[1]")
+                    continue;
+
+                Vec3f direction = getDirectionFromRotation(itEntity->get<TransformComponent>()->rotation);
+                set(uniformNameLight + ".direction", direction);
 
                 set(uniformNameLight + ".ambient", pLight->ambient);
                 set(uniformNameLight + ".diffuse", pLight->diffuse);
@@ -63,12 +76,20 @@ void Environment::setLights()
                 {
                     setTexture(uniformNameLight + ".shadowMap.depthMap", pLight->shadowMap.depthMap);
 
-                    Camera tempShadowMapCamera(pLight->shadowMap.nearRenderDistance, pLight->shadowMap.renderDistance, 90.f);
-                    tempShadowMapCamera.setViewMatrix(itEntity->get<TransformComponent>()->position, itEntity->get<TransformComponent>()->rotation);
-                    tempShadowMapCamera.setOrthographicProjection(pLight->shadowMap.width);
+                    Camera* pCamera = &pLight->shadowMap.camera;
+                    pCamera->nearRenderDistance = pLight->shadowMap.nearRenderDistance;
+                    pCamera->renderDistance = pLight->shadowMap.renderDistance;
+                    pCamera->setViewMatrix(itEntity->get<TransformComponent>()->position, itEntity->get<TransformComponent>()->rotation);
+                    pCamera->setOrthographicProjection(pLight->shadowMap.width, 1);
 
-                    Mat4 viewProjectionMatrix = multiply(tempShadowMapCamera.projectionMatrix, tempShadowMapCamera.viewMatrix);
-                    set(uniformNameLight + ".shadowMap.viewProjectionMatrix", viewProjectionMatrix);
+                    //cout << "light Position: ";
+                    //log(itEntity->get<TransformComponent>()->position);
+                    //cout << "light Rotation: ";
+                    //log(itEntity->get<TransformComponent>()->rotation);
+                    //cout << endl << endl << endl;
+
+                    set(uniformNameLight + ".shadowMap.viewMatrix", pLight->shadowMap.camera.viewMatrix);
+                    set(uniformNameLight + ".shadowMap.projectionMatrix", pLight->shadowMap.camera.projectionMatrix);
 
                     RV_ASSERT(pLight->shadowMap.nearRenderDistance != 0 && pLight->shadowMap.renderDistance != 0 && pLight->shadowMap.nearRenderDistance < pLight->shadowMap.renderDistance && pLight->shadowMap.width != 0, "shadow map is incorrectly or incompletely configured");
                 }
@@ -80,6 +101,9 @@ void Environment::setLights()
 
     set("ue_NumberOfPointLights", (int)nrPointLights);
     set("ue_NumberOfDirectionalLights", (int)nrDirectionalLights);
+
+    RV_ASSERT(nrPointLights == 0, ""); // temp, can be removed
+    //cout << "nrDirectionalLights: " << nrDirectionalLights << endl;
 }
 
 void Environment::bind(Shader* shader)
@@ -96,7 +120,7 @@ void Environment::bind(Shader* shader)
             {
                 if(*it == iteratorUniformMap.first)
                 {
-                    cout << "Environment texture: " << *it << " slot: " << shader->environmentTextureUniformCounter << endl;
+                    //cout << "Environment texture: " << *it << " slot: " << shader->environmentTextureUniformCounter << endl;
                     RV_ASSERT(shader != &RenderManager::getInstance()->shadowMapShader, "");
 
                     shaderUniformMap.set(*it, (int)(shader->environmentTextureUniformCounter));
@@ -109,7 +133,12 @@ void Environment::bind(Shader* shader)
             }
 
             if(isTexture == false)
-                shaderUniformMap.uploadUniform(*shader, *it);
+            {
+                if(shaderUniformMap.map.find(*it) != shaderUniformMap.map.end()) // can be optimized. doing map.find() twice, once here, and second time in shaderUniformMap.uploadUniform()
+                {
+                    shaderUniformMap.uploadUniform(*shader, *it);
+                }
+            }
         }
     }
 }

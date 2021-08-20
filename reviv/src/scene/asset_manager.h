@@ -18,20 +18,16 @@ public:
     ModelLoader modelLoaderSphere;
     ModelLoader modelLoaderQuad2D;
 
-    //Mesh meshQuad2D;
-
-    Shader shaderPhong;
-    Shader shaderMonochroma;
     Shader shaderTexture;
 
     // Material data available here: http://devernay.free.fr/cours/opengl/materials.html
-    Material materialEmerald,
-                materialRuby,
-                materialGold,
-                materialChrome,
-                materialSilver,
-                materialTurquoise,
-                materialObsidian;
+    //Material materialEmerald,
+    //            materialRuby,
+    //            materialGold,
+    //            materialChrome,
+    //            materialSilver,
+    //            materialTurquoise,
+    //            materialObsidian;
 
     //void initMaterials();
 private:

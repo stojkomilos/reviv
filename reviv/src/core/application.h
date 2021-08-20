@@ -4,8 +4,9 @@
 
 #include"renderer/window.h"
 #include"core/input.h"
-#include"events/event.h"
+#include"event/event.h"
 #include"scene/asset_manager.h"
+#include"game_stuff/game_stuff_manager.h"
 
 class Application
 {
@@ -21,6 +22,11 @@ public:
     }
     
     Window* getWindow();
+
+    inline unsigned int getWindowWidth() { return window.m_Data.width; }
+    inline unsigned int getWindowHeight() { return window.m_Data.height; }
+    inline float getWindowRatio() { return window.getRatio(); }
+
     bool m_IsRunning;
 
 protected:

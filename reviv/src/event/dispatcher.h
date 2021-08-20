@@ -2,6 +2,7 @@
 
 #include"event.h"
 #include"core/application.h"
+#include"renderer/render_manager.h"
 
 class EventDispatcher
 {
@@ -15,6 +16,7 @@ public:
                 break;
             case(EventType::EventTypeWindowResize):
                 Application::onEvent(event);
+                RenderManager::onEvent(event);
                 break;
             case(EventType::EventTypeMouseMoved):
                 Input::onEvent(event);

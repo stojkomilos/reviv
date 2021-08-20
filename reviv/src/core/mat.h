@@ -127,11 +127,13 @@ namespace mat{
     Vec3f subtract(const Vec3f& first, const Vec3f& second);
 
     Vec3f& operator+=(Vec3f& first, const Vec3f& second);
+    Vec3f& operator*=(Vec3f& first, float second);
     Vec3f operator-(const Vec3f& first, const Vec3f& second);
     Vec3f operator-(const Vec3f& first);
     Vec3f operator/(const Vec3f& vec, float scalar);
     Vec3f operator*(const Vec3f& thing, const float& scalar);
     Vec3f operator*(const float& scalar, const Vec3f& thing);
+    Vec3f operator+(const Vec3f& first, const Vec3f& second);
 
     Vec4f operator/(const Vec4f& thing, const float& scalar);
     Vec4f operator/(const float& scalar, const Vec4f& thing);

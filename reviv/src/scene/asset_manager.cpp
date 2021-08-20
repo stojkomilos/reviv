@@ -8,9 +8,7 @@ void AssetManager::init()
     modelLoaderSphere.load("assets/models/sphere.fbx");
     modelLoaderQuad2D.load("assets/models/quad_2d.obj");
 
-    shaderMonochroma.init("assets/shaders/monochroma.vs", "assets/shaders/monochroma.fs");
     shaderTexture.init("assets/shaders/texture.vs", "assets/shaders/texture.fs");
-    shaderPhong.init("assets/shaders/phong.vs", "assets/shaders/phong.fs");
 }
 
 /*

@@ -5,7 +5,7 @@
 
 #include"rv_pch.hpp"
 
-#include"events/event.h"
+#include"event/event.h"
 
 using std::cin; using std::cout; using std::endl;
 
@@ -36,6 +36,7 @@ public:
     unsigned int getHeight() const;
     void setVSync(bool isEnabled);
     bool getVSync();
+    float getRatio();
 
     GLFWwindow* pWindow;
     WindowData m_Data;

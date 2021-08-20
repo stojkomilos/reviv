@@ -12,9 +12,6 @@ void log(const Light& light)
 
 void log(const DirectionalLight& light)
 {
-    cout << "direction: ";
-    log(light.direction);
-
     log((Light)light);
 }
 
@@ -43,7 +40,7 @@ void ShadowMap::init(unsigned int resolutionWidth, unsigned int resolutionHeight
     depthMap.init();
     depthMap.bind(0);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, m_ResolutionWidth, m_ResolutionHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, m_ResolutionWidth, m_ResolutionHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -66,5 +63,5 @@ void Light::enableShadowMap()
 {
     RV_ASSERT(isShadowMapped == false, "shadow mapping for this light is already on");
     isShadowMapped = true;
-    shadowMap.init(956, 1050);
+    shadowMap.init(1500, 1500);
 }

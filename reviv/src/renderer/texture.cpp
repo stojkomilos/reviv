@@ -49,6 +49,7 @@ Texture::~Texture()
 {
     RV_ASSERT(isInited == true, "");
     glDeleteTextures(1, &id);
+    isInited = false;
 }
 
 void Texture::bind(unsigned int slot) const

@@ -130,6 +130,11 @@ namespace mat{
         return thing * scalar;
     }
 
+    Vec3f operator+(const Vec3f& first, const Vec3f& second)
+    {
+        return {first.a[0]+second.a[0], first.a[1]+second.a[1], first.a[2]+second.a[2]};
+    }
+
     Vec4f operator/(const Vec4f& thing, const float& scalar)
     {
         return {thing.a[0]/scalar, thing.a[1]/scalar, thing.a[2]/scalar, thing.a[3]/scalar};
@@ -345,6 +350,15 @@ namespace mat{
         first.a[0] += second.a[0];
         first.a[1] += second.a[1];
         first.a[2] += second.a[2];
+
+        return first;
+    }
+
+    Vec3f& operator*=(Vec3f& first, float second)
+    {
+        first.a[0] *= second;
+        first.a[1] *= second;
+        first.a[2] *= second;
 
         return first;
     }

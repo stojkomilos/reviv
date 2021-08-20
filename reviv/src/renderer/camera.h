@@ -13,7 +13,7 @@ public:
 
     void setViewMatrix(const Vec3f& position, const Rotation& rotation);
     void setPerspectiveProjection();
-    void setOrthographicProjection(float width);
+    void setOrthographicProjection(float width, float ratio);
 
     void onEventMouseMoved(Event* event);
 

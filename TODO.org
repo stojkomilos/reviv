@@ -2,29 +2,24 @@
 
 ** 
 
+ideja:
+ renderSceneToFramebuffer(Framebuffer* pFramebuffer, bool isShadowsOn)
+moze se koristiti za ogledala, portale itd... i za renderovanje obicne scene. (zahteva funkciju shadowsRenderPass ili tako nesto)
+
+Debug za sutra:
+ - Cini mi se da tekstura /uopste/ nije kreirana kako treba (clip-ovanje je lose) pogledati to. shadowMap.init() ?
+
 todo:
+ - default stuff for camera, lights, and materials("u_Diffuse", "u_Specular"). Default material
+ - weather "system"
  - generalizuj shadow maps za vise svetala, i za point light
  - directional light u blin phong
  - fix lighting (marko kaze da misli da ne vidi specular)
- - resize-able window (renderbuffer, shadowmaps and other stuff)
  - clear comments, TODO, and useless code
-
-1. environment texture bind . jer svi koriste environment, cak i ako ne koriste
-2. material texture bind
-
-opciono debug:
-    - provera da li je material i environment counter isti za neku instnacu shader-a svaki put (zahteva set-ovanje svih uniformi :( )
-
-      static Shader& lastBoundShader;
-      material.bind(){
-         if(lastBoundShader != this.shader)
-             assert(false);
-      }
 
 ** 
 
 novi ciljevi:
- - skybox
  - proper lighting, proper normal transforms (learnopengl.com ima resurs)http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
  - hdr, bloom
  - shadowmaps
@@ -305,6 +300,10 @@ Provertiti da li se mozda zovu neki construktori i desktruktori koji ne bi treba
 ???? culling? Ne znam koja reci ide umesto "????".
 
 staiviti inline na mesta gde funkcija samo return-uje.
+
+U iteraciji =for(auto itEntity = iGetEntityList()->begin(); itEntity != iGetEntityList()->end(); itEntity++)=, iGetEntityList() je neefikasno da se ponavlja svaku iteraciju.
+
+Proper deffered rendering for lighting. (gives light ranges that they don't act outside of)
 
 * Long term ideje
 

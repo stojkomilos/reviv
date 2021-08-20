@@ -14,8 +14,10 @@
 #include"renderer/model_loader.h"
 #include"renderer/model.h"
 #include"scene/asset_manager.h"
+#include"game_stuff/game_stuff_manager.h"
 
 #include"stls/random.h"
+
 
 // ------Entry point-----------------------------------------------
 #include"core/entry_point.h"

@@ -24,7 +24,12 @@ public:
 
     inline void setTexture(const std::string& textureUniformName, const Texture& texture) { shaderUniformMap.setTexture(textureUniformName, texture); }
 
+    int nrPointLights = 0;
+    int nrDirectionalLights = 0;
+
 private:
     Environment() = default;
     friend class RenderManager;
 };
+
+void log(const Environment& environment);

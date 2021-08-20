@@ -89,7 +89,7 @@ void Shader::init(const char* vertexPath, const char* fragmentPath)
     int uniformCount;
     glGetProgramiv(id, GL_ACTIVE_UNIFORMS, &uniformCount);
 
-    uniformNames.reserve(200);
+    uniformNames.reserve(uniformCount);
 
     glGetProgramiv(id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxUniformNameLength);
 
@@ -98,10 +98,10 @@ void Shader::init(const char* vertexPath, const char* fragmentPath)
         GLint size;
         GLenum type;
 
-        const GLsizei bufSize = 56; // maximum name length
+        const GLsizei bufSize = 100; // maximum name length
         GLchar name[bufSize];
 
-        GLsizei length;
+        GLsizei length = maxUniformNameLength;
 
         glGetActiveUniform(id, (GLuint)i, bufSize, &length, &size, &type, name);
         uniformNames.pushBack(name);
@@ -246,9 +246,16 @@ void ShaderUniformMap::set(const std::string& uniformName, double n)
 
 void log(const ShaderUniformMap& shaderUniformMap)
 {
+    cout << "Uniforms:----" << endl;
     for(const auto& [key, value] : shaderUniformMap.map)
     {
         logSpecificUniform(shaderUniformMap, key);
+    }
+
+    cout << "Textures:----" << endl;
+    for(const auto& [key, value] : shaderUniformMap.textureMap)
+    {
+        cout << key << " : " << value << endl;
     }
 }
 

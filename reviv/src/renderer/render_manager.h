@@ -11,6 +11,8 @@
 #include"renderer/deffered.h"
 #include"environment.h"
 
+#include"game_stuff/weather.h"
+
 
 class RenderManager
 {
@@ -22,6 +24,8 @@ public:
     static void init() { getInstance()->iInit(); }
     static void onUpdate() { getInstance()->iOnUpdate(); }
     static void shutdown() { getInstance()->iShutdown(); }
+
+    static void onEvent(Event* event);
     
     static RenderManager* getInstance()
     {
@@ -33,10 +37,12 @@ public:
     Shader shadowMapShader;
 
     //Framebuffer screenFramebuffer;
+    Framebuffer defaultFramebuffer;
     //Shader screenShader;
     //Shader depthTestShader;
 
     Shader shaderDefferedBlinnPhong;
+    Shader shaderMonochroma;
     Material materialDefferedBlinnPhong; // special material, bind sort of environment stuff actually
     Deffered deffered;
 
@@ -50,12 +56,15 @@ private:
     void iOnUpdate();
     void iShutdown();
 
+    void renderSceneToFramebuffer(Framebuffer* pFrameBuffer);
+
+    void shadowMapRenderPass();
+    void defferedGeometryRenderPass();
+    void defferedLightingRenderPass();
+    void defferedMonochromaRenderPass();
 
     void beginScene();
-    //void bindEnvironment(const Shader& shader, const Mat4& transform);
     void bindEnvironment(const Shader& shader);
 
-    //void endScene();
-    //void submit(const Model& model, const Mat4& transform);
     Environment environment;
 };

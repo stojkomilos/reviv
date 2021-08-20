@@ -13,7 +13,7 @@ public:
     Scene& operator=(const Scene& other) = delete;
 
     static Entity* createEntity(const std::string& entityName = "NamelessEntity") { return getInstance()->iCreateEntity(entityName); }
-    static Entity* findEntity(const std::string& entityName) { return getInstance()->iFindEntity(entityName); }
+    static Entity* getEntity(const std::string& entityName) { return getInstance()->iGetEntity(entityName); }
     static void logEntity(const std::string& entityName) { return getInstance()->iLogEntity(entityName); }
     static stls::StableVector<Entity>* getEntityList() { return getInstance()->iGetEntityList(); }
 
@@ -40,7 +40,7 @@ private:
     Scene() : entityList(5000000) { }
 
     Entity* iCreateEntity(const std::string& entityName);
-    Entity* iFindEntity(const std::string& entityName);
+    Entity* iGetEntity(const std::string& entityName);
     void iLogEntity(const std::string& entityName);
     stls::StableVector<Entity>* iGetEntityList();
 

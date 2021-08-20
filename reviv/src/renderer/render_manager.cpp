@@ -13,7 +13,8 @@ void RenderManager::iInit()
     skyboxFaces.push_back("assets/textures/skybox/back.jpg");
     skybox.init(skyboxFaces);
 
-    deffered.init();
+    //deffered.init(Application::get()->getWindowWidth(), Application::get()->getWindowHeight());
+    deffered.init(956, 1050);
 
     shadowMapShader.init("assets/shaders/shadow_map.vs", "assets/shaders/shadow_map.fs");
 
@@ -22,11 +23,57 @@ void RenderManager::iInit()
     materialDefferedBlinnPhong.setTexture("u_gPosition", deffered.gPosition);
     materialDefferedBlinnPhong.setTexture("u_gNormal", deffered.gNormal);
     materialDefferedBlinnPhong.setTexture("u_gAlbedoSpecular", deffered.gAlbedoSpecular);
+
+    defaultFramebuffer.id = 0;
+    defaultFramebuffer.isInited = true;
+
+    shaderMonochroma.init("assets/shaders/monochroma.vs", "assets/shaders/monochroma.fs");
 }
 
 void RenderManager::iOnUpdate()
 {
+    renderSceneToFramebuffer(&defaultFramebuffer);
+}
+
+void RenderManager::renderSceneToFramebuffer(Framebuffer* pFrameBuffer)
+{
     beginScene(); // Update camera stuff, update environment uniforms(doesn't upload them)
+    shadowMapRenderPass();
+    defferedGeometryRenderPass();
+    defferedLightingRenderPass();
+    defferedMonochromaRenderPass();
+    skybox.onUpdate();
+}
+
+void RenderManager::beginScene()
+{
+    Camera* camera = &Scene::getCameraEntity()->get<CameraComponent>()->camera;
+
+    RV_ASSERT(Scene::getCameraEntity()->has<CameraComponent>()
+        && Scene::getCameraEntity()->has<TransformComponent>(),
+        "submitted entity is supposed to be a camera, but does NOT have required components");
+
+    camera->setViewMatrix(
+        Scene::getCameraEntity()->get<TransformComponent>()->position,
+        Scene::getCameraEntity()->get<TransformComponent>()->rotation);
+
+    camera->setPerspectiveProjection();
+    if(Input::isKeyPressed(RV_KEY_P)) // TODO: remove
+        camera->setOrthographicProjection(10, Application::get()->getWindowRatio());
+
+    //*camera = Scene::getEntity("secondSun")->get<DirectionalLightComponent>()->light.shadowMap.camera;
+    
+    environment.set("ue_ViewMatrix", camera->viewMatrix);
+    environment.set("ue_ProjectionMatrix", camera->projectionMatrix);
+    
+    environment.set("ue_ViewPosition", Scene::getCameraEntity()->get<TransformComponent>()->position);
+
+    environment.setLights();
+}
+
+void RenderManager::shadowMapRenderPass()
+{
+    shadowMapShader.bind();
 
     for(auto itLight = Scene::getEntityList()->begin(); itLight != Scene::getEntityList()->end(); itLight++)
     {
@@ -53,38 +100,39 @@ void RenderManager::iOnUpdate()
                 }
 
                 pShadowMap->framebuffer.bind();
-                glClear(GL_DEPTH_BUFFER_BIT);
                 glViewport(0, 0, pShadowMap->m_ResolutionWidth, pShadowMap->m_ResolutionHeight);
+                glClear(GL_DEPTH_BUFFER_BIT);
 
                 for(auto itOpaque = Scene::getEntityList()->begin(); itOpaque != Scene::getEntityList()->end(); itOpaque++)
                 {
-                    if(itOpaque == itLight) // don't cast shadow on yourself
+                    if(itOpaque == itLight) // don't cast shadow on light that emits the light that casts the shadow
                         continue;
-
 
                     if(itOpaque->has<ModelComponent>() && itOpaque->has<TransformComponent>())
                     {
-                        cout << "Shadow by light: " << itLight->entityName << " for entity: " << itOpaque->entityName << endl;
                         Model* pModel = &itOpaque->get<ModelComponent>()->model;
                         TransformComponent* pTransformComponent = itOpaque->get<TransformComponent>();
 
+                        shadowMapShader.uploadUniformMat4("u_ModelMatrix", pTransformComponent->getTransform());
+                        shadowMapShader.uploadUniformMat4("u_ShadowMapViewMatrix", itLight->get<DirectionalLightComponent>()->light.shadowMap.camera.viewMatrix);
+                        shadowMapShader.uploadUniformMat4("u_ShadowMapProjectionMatrix", itLight->get<DirectionalLightComponent>()->light.shadowMap.camera.projectionMatrix);
+
                         for(unsigned int i=0; i < pModel->pMeshes.size(); i++)
                         {
-                            bindEnvironment(&shadowMapShader, &environment); // TODO: unnecessary to call every time, can be greatly reduced maybe?
-                            shadowMapShader.uploadUniformMat4("u_ModelMatrix", pTransformComponent->getTransform());
-                            shadowMapShader.uploadUniformMat4("u_ShadowMapViewProjectionMatrix", pTransformComponent->getTransform());
                             pModel->pMeshes[i]->vao.bind();
-
                             RenderCommand::drawElements(*pModel->pMeshes[i]);
                         }
                     }
                 }
-
             }
         }
     }
+}
 
+void RenderManager::defferedGeometryRenderPass()
+{
     deffered.gBuffer.bind();
+    glViewport(0, 0, deffered.m_Width, deffered.m_Height);
 
     RenderCommand::setClearColor(Vec4f(0.f, 0.f, 0.f, 1.f));
     RenderCommand::clear();
@@ -104,26 +152,33 @@ void RenderManager::iOnUpdate()
                     {
                         bindEnvironmentAndMaterial(pModel->pMaterials[i]->pShader, &environment, pModel->pMaterials[i]);
                         pModel->pMaterials[i]->pShader->uploadUniformMat4("u_ModelMatrix", pTransformComponent->getTransform());
-
                         pModel->pMeshes[i]->vao.bind();
-
                         RenderCommand::drawElements(*pModel->pMeshes[i]);
                     }
                 }
             }
         }
     }
-    deffered.gBuffer.unbind();
+}
 
-    bindEnvironmentAndMaterial(&shaderDefferedBlinnPhong, &environment, &materialDefferedBlinnPhong);
+void RenderManager::defferedLightingRenderPass()
+{
+        deffered.gBuffer.unbind();
+        RV_ASSERT(Time::getLoopCounter() <= 1 || (Application::get()->getWindowWidth() == deffered.m_Width && Application::get()->getWindowHeight() == deffered.m_Height), "gBuffer for deffered rendering does not have the same width or height as the actual window");
+        glViewport(0, 0, Application::get()->getWindowWidth(), Application::get()->getWindowHeight());
+        bindEnvironmentAndMaterial(&shaderDefferedBlinnPhong, &environment, &materialDefferedBlinnPhong);
 
-    RenderCommand::setClearColor(Vec4f(1.f, 0.f, 1.f, 1.f));
-    RenderCommand::clear();
-    AssetManager::get()->modelLoaderQuad2D.meshes[0].vao.bind();
-    RenderCommand::drawElements(AssetManager::get()->modelLoaderQuad2D.meshes[0]);
+        RenderCommand::setClearColor(Vec4f(1.f, 0.f, 1.f, 1.f));
+        RenderCommand::clear();
+        AssetManager::get()->modelLoaderQuad2D.meshes[0].vao.bind();
+        RenderCommand::drawElements(AssetManager::get()->modelLoaderQuad2D.meshes[0]);
+}
 
+void RenderManager::defferedMonochromaRenderPass()
+{
     glBindFramebuffer(GL_READ_FRAMEBUFFER, deffered.gBuffer.id); //TODO: ovde se nesto verovatno moze ukloniti
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    glViewport(0, 0, Application::get()->getWindowWidth(), Application::get()->getWindowHeight());
     int screenWidth = Application::get()->getWindow()->m_Data.width;
     int screenHeight = Application::get()->getWindow()->m_Data.height;
     glBlitFramebuffer(0, 0, screenWidth, screenHeight, 0, 0, screenWidth, screenHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
@@ -140,10 +195,9 @@ void RenderManager::iOnUpdate()
 
                 for(unsigned int i=0; i < pModel->pMeshes.size(); i++)
                 {
-                    if(pModel->pMaterials[0]->pShader == &AssetManager::get()->shaderMonochroma)
+                    if(pModel->pMaterials[0]->pShader == &RenderManager::getInstance()->shaderMonochroma)
                     {
                         cout << "Rendering light: " << itEntity->entityName << endl;
-
                         bindEnvironmentAndMaterial(pModel->pMaterials[i]->pShader, &environment, pModel->pMaterials[i]);
                         pModel->pMaterials[i]->pShader->uploadUniformMat4("u_ModelMatrix", pTransformComponent->getTransform());
 
@@ -155,37 +209,6 @@ void RenderManager::iOnUpdate()
             }
         }
     }
-
-    skybox.onUpdate();
-}
-
-void RenderManager::beginScene()
-{
-    Camera* camera = &Scene::getCameraEntity()->get<CameraComponent>()->camera;
-
-    RV_ASSERT(Scene::getCameraEntity()->has<CameraComponent>()
-        && Scene::getCameraEntity()->has<TransformComponent>(),
-        "submitted entity is supposed to be a camera, but does NOT have required components");
-
-    camera->setViewMatrix(
-        Scene::getCameraEntity()->get<TransformComponent>()->position,
-        Scene::getCameraEntity()->get<TransformComponent>()->rotation);
-
-    camera->setPerspectiveProjection();
-
-    //Scene::getCameraEntity()->get<CameraComponent>()->camera.viewMatrix = lightCamera.viewMatrix;
-    //Scene::getCameraEntity()->get<CameraComponent>()->camera.projectionMatrix = lightCamera.projectionMatrix;
-
-    environment.set("ue_ViewMatrix", camera->viewMatrix);
-    environment.set("ue_ProjectionMatrix", camera->projectionMatrix);
-    
-    environment.set("ue_ViewPosition", Scene::getCameraEntity()->get<TransformComponent>()->position);
-
-    environment.setLights();
-}
-
-void RenderManager::iShutdown() 
-{
 }
 
 void RenderManager::bindEnvironmentAndMaterial(Shader* shader, Environment* environment, Material* material)
@@ -200,4 +223,19 @@ void RenderManager::bindEnvironment(Shader* shader, Environment* environment)
 {
     shader->bind();
     environment->bind(shader);
+}
+
+void RenderManager::onEvent(Event* event)
+{
+    RV_ASSERT(event->m_Type == EventTypeWindowResize, "event not recognized");
+    if(event->m_Type == EventTypeWindowResize)
+    {
+        EventWindowResize* resizeEvent = (EventWindowResize*)event;
+        getInstance()->deffered.resize(resizeEvent->m_Width, resizeEvent->m_Height);
+    }
+
+}
+
+void RenderManager::iShutdown() 
+{
 }

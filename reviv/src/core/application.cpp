@@ -54,6 +54,7 @@ void Application::initEngine()
     RenderManager::init();
 
     AssetManager::get()->init();
+    GameStuffManager::init();
 }
 
 void Application::run()
@@ -71,6 +72,7 @@ void Application::run()
         Time::onUpdate();
         Input::onUpdate();
         PhysicsManager::onUpdate();
+        GameStuffManager::onUpdate();
         RenderManager::onUpdate();
         window.onUpdate();              // update the glfw window
     }

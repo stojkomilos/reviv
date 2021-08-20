@@ -8,10 +8,30 @@ Entity* Scene::iCreateEntity(const std::string& entityName)
     return pEntity;
 }
 
-Entity* Scene::iFindEntity(const std::string& entityName)
+Entity* Scene::iGetEntity(const std::string& entityName)
 {
-    RV_ASSERT(false, "");
+    for(auto itEntity = iGetEntityList()->begin(); itEntity != iGetEntityList()->end(); itEntity++)
+    {
+        if(itEntity->entityName == entityName)
+        {
+            return &(*itEntity);
+        }
+    }
+
+#if RV_DEBUG // checks if there is more than one entity with the GIVEN name
+    for(auto itEntity = iGetEntityList()->begin(); itEntity != iGetEntityList()->end(); itEntity++)
+    {
+        bool found = false;
+        if(itEntity->entityName == entityName)
+        {
+            RV_ASSERT(found == false, "more than one entity with the given name");
+            found = true;
+        }
+    }
+#endif
+    RV_ASSERT(false, "there is no entity with the given name");
     return nullptr;
+
 }
 
 void Scene::iLogEntity(const std::string& entityName)

@@ -1,13 +1,13 @@
 #include"rv_pch.hpp"
 
 #include"window.h"
-#include"events/dispatcher.h"
-#include"events/event.h"
+#include"event/dispatcher.h"
+#include"event/event.h"
 
-static void framebufferSizeCallback(GLFWwindow* window, int width, int height)
-{ 
-    glViewport(0, 0, width, height);
-}
+//static void framebufferSizeCallback(GLFWwindow* window, int width, int height)
+//{ 
+//    glViewport(0, 0, width, height);
+//}
 
 static void GlfwErrorCallback(int error, const char* description)
 {
@@ -143,7 +143,7 @@ void Window::init(bool enableVSync, bool isFullscreen, unsigned int windowWidth,
     //cout << "Renderer: " << glGetString(GL_RENDERER) << endl;
     //cout << "Version: " << glGetString(GL_VERSION) << endl;
 
-    glfwSetFramebufferSizeCallback(pWindow, framebufferSizeCallback);
+    //glfwSetFramebufferSizeCallback(pWindow, framebufferSizeCallback);
 
     //glfwSetInputMode(pWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     //glfwSetInputMode(pWindow, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
@@ -161,4 +161,9 @@ void Window::init(bool enableVSync, bool isFullscreen, unsigned int windowWidth,
     //glfwSetScrollCallback(pWindow, scrollCallback);
     glfwSetCursorPosCallback(pWindow, cursorPosCallback);
     //glfwSetCursorEnterCallback(pWindow, cursorEnterCallback);
+}
+
+float Window::getRatio()
+{
+    return (((float)m_Data.width) / ((float)m_Data.height));
 }
