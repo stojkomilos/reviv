@@ -58,8 +58,6 @@ public:
 
     ModelComponent(const ModelComponent&) = default;
 
-    //operator const model& () const { return model; }
-    //operator model& () { return model; }
     virtual void log() const override { cout << componentTypeName << endl; ::log(model); }
 };
 

@@ -72,7 +72,7 @@ void Application::run()
         Time::onUpdate();
         Input::onUpdate();
         PhysicsManager::onUpdate();
-        GameStuffManager::onUpdate();
+        //GameStuffManager::onUpdate();
         RenderManager::onUpdate();
         window.onUpdate();              // update the glfw window
     }

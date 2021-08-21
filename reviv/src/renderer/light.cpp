@@ -12,7 +12,7 @@ void log(const Light& light)
 
 void log(const DirectionalLight& light)
 {
-    log((Light)light);
+    log((const Light&)light);
 }
 
 void log(const PointLight& light)
@@ -20,7 +20,7 @@ void log(const PointLight& light)
     cout << "constant: " << light.constant << endl;
     cout << "linear: " << light.constant << endl;
     cout << "quadratic: " << light.constant << endl;
-    log((Light)light);
+    log((const Light&)light);
 }
  
 Light::Light()
@@ -59,9 +59,16 @@ void ShadowMap::init(unsigned int resolutionWidth, unsigned int resolutionHeight
     framebuffer.unbind();
 }
 
-void Light::enableShadowMap()
+void DirectionalLight::enableShadowMap()
 {
     RV_ASSERT(isShadowMapped == false, "shadow mapping for this light is already on");
     isShadowMapped = true;
-    shadowMap.init(1500, 1500);
+    shadowMap.init(1024, 1024);
+}
+
+void PointLight::enableShadowMap()
+{
+    RV_ASSERT(isShadowMapped == false, "shadow mapping for this light is already on");
+    isShadowMapped = true;
+    // da li? shadowMap.init(1024, 1024);
 }

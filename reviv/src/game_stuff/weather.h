@@ -5,15 +5,20 @@
 class Weather
 {
 public:
-    void init(int timeOfDayHours, int timeOfDayMinutes, float timeOfDaySeconds);
-    void setSunPosition(int timeOfDayHours, int timeOfDayMinutes, float timeOfDaySeconds);
-    void setSunModelPosition();
-    void setSunDirectionalLightPosition();
-    void onUpdate();
+    Weather() = default;
+    void init(const std::string& baseNameEntities, float timeInHours);
 
-    int m_TimeOfDayHours;
-    int m_TimeOfDayMinutes;
-    float m_TimeOfDaySeconds;
+    void onUpdate();
+    void setSunTimeOfDay(float timeInHours);
+
+private:
+    bool isInited = false;
+
+    void setSunModelPosition();
+    void setSunDirectionalLight();
+
+    float m_TotalTimeInHours;
+    std::string m_baseNameEntities;
 
     Vec3f sunDirection;
     Entity* pSunModel;

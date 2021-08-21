@@ -16,7 +16,7 @@ class Shader{
 public:
     Shader();
     unsigned int id;
-    void init(const char* vertexPath, const char* fragmentPath); ///, const char* geometryPath
+    void init(const char* vertexPath, const char* fragmentPath, const char* geometryShader = nullptr);
     void bind() const;
 
     int getUniformLocation(const std::string& uniformName) const;

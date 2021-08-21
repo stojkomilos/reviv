@@ -2,6 +2,9 @@
 
 ** 
 
+ne znam gde da stavim secondSun.onUpdate(); light boundary texture thing.
+cela ona stvar sa RV_ASSERT(isInited, "") je samo problem jer ne koristim konstruktore nego thing.init();
+
 ideja:
  renderSceneToFramebuffer(Framebuffer* pFramebuffer, bool isShadowsOn)
 moze se koristiti za ogledala, portale itd... i za renderovanje obicne scene. (zahteva funkciju shadowsRenderPass ili tako nesto)
@@ -304,6 +307,8 @@ staiviti inline na mesta gde funkcija samo return-uje.
 U iteraciji =for(auto itEntity = iGetEntityList()->begin(); itEntity != iGetEntityList()->end(); itEntity++)=, iGetEntityList() je neefikasno da se ponavlja svaku iteraciju.
 
 Proper deffered rendering for lighting. (gives light ranges that they don't act outside of)
+
+Don't store vertex info on CPU.
 
 * Long term ideje
 

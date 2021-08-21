@@ -49,6 +49,7 @@ void RenderCommand::iInit()
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
     RV_ASSERT((nrAttributes >= 10), ""); 
 
+    glEnable(GL_FRAMEBUFFER_SRGB); // for gamma correction
 }
 
 void logMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParams)

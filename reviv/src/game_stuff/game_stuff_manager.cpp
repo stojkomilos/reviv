@@ -7,7 +7,7 @@ void GameStuffManager::iInit()
 
     Entity* player = Scene::setPlayerEntity(Scene::createEntity("Player"));
 
-    weather.init(12, 00, 00);
+    weather.init("WeatherSun", 12);
 }
 
 void GameStuffManager::iOnUpdate()

@@ -38,7 +38,7 @@ public:
     ShadowMap shadowMap;
     bool isShadowMapped = false;
 
-    void enableShadowMap();
+    virtual void enableShadowMap() = 0;
 
 protected:
     Light();
@@ -51,11 +51,13 @@ public:
     float constant; // Invalid for gamma corrected? good ranges numbers for different ranges: https://wiki.ogre3d.org/tiki-index.php?page=-Point+Light+Attenuation
     float linear;
     float quadratic;
+    virtual void enableShadowMap() override;
 };
 
 class DirectionalLight : public Light
 {
 public:
+    virtual void enableShadowMap() override;
 };
 
 

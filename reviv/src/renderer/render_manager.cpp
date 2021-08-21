@@ -197,7 +197,7 @@ void RenderManager::defferedMonochromaRenderPass()
                 {
                     if(pModel->pMaterials[0]->pShader == &RenderManager::getInstance()->shaderMonochroma)
                     {
-                        cout << "Rendering light: " << itEntity->entityName << endl;
+                        //cout << "Rendering light: " << itEntity->entityName << endl;
                         bindEnvironmentAndMaterial(pModel->pMaterials[i]->pShader, &environment, pModel->pMaterials[i]);
                         pModel->pMaterials[i]->pShader->uploadUniformMat4("u_ModelMatrix", pTransformComponent->getTransform());
 
