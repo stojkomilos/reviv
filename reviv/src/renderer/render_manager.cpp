@@ -38,7 +38,7 @@ void RenderManager::iOnUpdate()
 void RenderManager::renderSceneToFramebuffer(Framebuffer* pFrameBuffer)
 {
     beginScene(); // Update camera stuff, update environment uniforms(doesn't upload them)
-    shadowMapRenderPass();
+    //shadowMapRenderPass();
     defferedGeometryRenderPass();
     defferedLightingRenderPass();
     defferedMonochromaRenderPass();
@@ -57,11 +57,9 @@ void RenderManager::beginScene()
         Scene::getCameraEntity()->get<TransformComponent>()->position,
         Scene::getCameraEntity()->get<TransformComponent>()->rotation);
 
-    camera->setPerspectiveProjection();
+    camera->setPerspectiveProjection(camera->m_HorizontalFov, Application::get()->getWindowRatio());
     if(Input::isKeyPressed(RV_KEY_P)) // TODO: remove
         camera->setOrthographicProjection(10, Application::get()->getWindowRatio());
-
-    //*camera = Scene::getEntity("secondSun")->get<DirectionalLightComponent>()->light.shadowMap.camera;
     
     environment.set("ue_ViewMatrix", camera->viewMatrix);
     environment.set("ue_ProjectionMatrix", camera->projectionMatrix);
@@ -78,51 +76,55 @@ void RenderManager::shadowMapRenderPass()
     for(auto itLight = Scene::getEntityList()->begin(); itLight != Scene::getEntityList()->end(); itLight++)
     {
         if(itLight->valid)
+            continue;
+
+        if(!(itLight->has<PointLightComponent>() || itLight->has<DirectionalLightComponent>()))
+            continue;
+
+        RV_ASSERT((itLight->has<PointLightComponent>() != itLight->has<DirectionalLightComponent>()) || (itLight->has<PointLightComponent>() == false), "entity can't have more than one light component on it"); // this is purely for mental simplification reasons
+
+        ShadowMap* pShadowMap;
+        Light* pLight;
+        if(itLight->has<PointLightComponent>())
         {
+            pLight = &itLight->get<PointLightComponent>()->light;
+        }
+        else if(itLight->has<DirectionalLightComponent>())
+        {
+            pLight = &itLight->get<DirectionalLightComponent>()->light;
+        }
+        else { RV_ASSERT(false, "light type not recognized"); }
 
-            if(itLight->has<PointLightComponent>() || itLight->has<DirectionalLightComponent>())
+        if(pLight->isShadowMapped == false || pLight->on == false)
+            continue;
+
+        pShadowMap = pLight->getShadowMap();
+
+        pShadowMap->framebuffer.bind();
+        glViewport(0, 0, pShadowMap->m_ResolutionWidth, pShadowMap->m_ResolutionHeight);
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        for(auto itOpaque = Scene::getEntityList()->begin(); itOpaque != Scene::getEntityList()->end(); itOpaque++)
+        {
+            if(itOpaque == itLight) // don't cast shadow on light that emits the light that casts the shadow
+                continue;
+
+            if(!itOpaque->valid)
+                continue;
+
+            if(itOpaque->has<ModelComponent>() && itOpaque->has<TransformComponent>())
             {
-                RV_ASSERT((itLight->has<PointLightComponent>() != itLight->has<DirectionalLightComponent>()) || (itLight->has<PointLightComponent>() == false), "entity can't have more than one light component on it"); // this is purely for mental simplification reasons
+                Model* pModel = &itOpaque->get<ModelComponent>()->model;
+                TransformComponent* pTransformComponent = itOpaque->get<TransformComponent>();
 
-                ShadowMap* pShadowMap;
-                if(itLight->has<PointLightComponent>())
+                shadowMapShader.uploadUniformMat4("u_ModelMatrix", pTransformComponent->getTransform());
+                shadowMapShader.uploadUniformMat4("u_ShadowMapViewMatrix", pShadowMap->camera.viewMatrix);
+                shadowMapShader.uploadUniformMat4("u_ShadowMapProjectionMatrix", pShadowMap->camera.projectionMatrix);
+
+                for(unsigned int i=0; i < pModel->pMeshes.size(); i++)
                 {
-                    RV_ASSERT(false, ""); // temporary, can be removed
-                }
-                else if(itLight->has<DirectionalLightComponent>())
-                {
-                    DirectionalLight* pDirectionalLight = &itLight->get<DirectionalLightComponent>()->light;
-
-                    if(pDirectionalLight->isShadowMapped == false || pDirectionalLight->on == false)
-                        continue;
-
-                    pShadowMap = &pDirectionalLight->shadowMap;
-                }
-
-                pShadowMap->framebuffer.bind();
-                glViewport(0, 0, pShadowMap->m_ResolutionWidth, pShadowMap->m_ResolutionHeight);
-                glClear(GL_DEPTH_BUFFER_BIT);
-
-                for(auto itOpaque = Scene::getEntityList()->begin(); itOpaque != Scene::getEntityList()->end(); itOpaque++)
-                {
-                    if(itOpaque == itLight) // don't cast shadow on light that emits the light that casts the shadow
-                        continue;
-
-                    if(itOpaque->has<ModelComponent>() && itOpaque->has<TransformComponent>())
-                    {
-                        Model* pModel = &itOpaque->get<ModelComponent>()->model;
-                        TransformComponent* pTransformComponent = itOpaque->get<TransformComponent>();
-
-                        shadowMapShader.uploadUniformMat4("u_ModelMatrix", pTransformComponent->getTransform());
-                        shadowMapShader.uploadUniformMat4("u_ShadowMapViewMatrix", itLight->get<DirectionalLightComponent>()->light.shadowMap.camera.viewMatrix);
-                        shadowMapShader.uploadUniformMat4("u_ShadowMapProjectionMatrix", itLight->get<DirectionalLightComponent>()->light.shadowMap.camera.projectionMatrix);
-
-                        for(unsigned int i=0; i < pModel->pMeshes.size(); i++)
-                        {
-                            pModel->pMeshes[i]->vao.bind();
-                            RenderCommand::drawElements(*pModel->pMeshes[i]);
-                        }
-                    }
+                    pModel->pMeshes[i]->vao.bind();
+                    RenderCommand::drawElements(*pModel->pMeshes[i]);
                 }
             }
         }
@@ -139,22 +141,22 @@ void RenderManager::defferedGeometryRenderPass()
 
     for(auto itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
     {
-        if(itEntity->valid)
-        {
-            if(itEntity->has<ModelComponent>() && itEntity->has<TransformComponent>())
-            {
-                Model* pModel = &itEntity->get<ModelComponent>()->model;
-                TransformComponent* pTransformComponent = itEntity->get<TransformComponent>();
+        if(!itEntity->valid)
+            continue;
 
-                for(unsigned int i=0; i < pModel->pMeshes.size(); i++)
+        if(itEntity->has<ModelComponent>() && itEntity->has<TransformComponent>())
+        {
+            Model* pModel = &itEntity->get<ModelComponent>()->model;
+            TransformComponent* pTransformComponent = itEntity->get<TransformComponent>();
+
+            for(unsigned int i=0; i < pModel->pMeshes.size(); i++)
+            {
+                if(pModel->pMaterials[0]->pShader == &deffered.geometryPassShader)
                 {
-                    if(pModel->pMaterials[0]->pShader == &deffered.geometryPassShader)
-                    {
-                        bindEnvironmentAndMaterial(pModel->pMaterials[i]->pShader, &environment, pModel->pMaterials[i]);
-                        pModel->pMaterials[i]->pShader->uploadUniformMat4("u_ModelMatrix", pTransformComponent->getTransform());
-                        pModel->pMeshes[i]->vao.bind();
-                        RenderCommand::drawElements(*pModel->pMeshes[i]);
-                    }
+                    bindEnvironmentAndMaterial(pModel->pMaterials[i]->pShader, &environment, pModel->pMaterials[i]);
+                    pModel->pMaterials[i]->pShader->uploadUniformMat4("u_ModelMatrix", pTransformComponent->getTransform());
+                    pModel->pMeshes[i]->vao.bind();
+                    RenderCommand::drawElements(*pModel->pMeshes[i]);
                 }
             }
         }
@@ -186,25 +188,25 @@ void RenderManager::defferedMonochromaRenderPass()
 
     for(stls::StableVector<Entity>::Iterator itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
     {
-        if(itEntity->valid)
+        if(!itEntity->valid)
+            continue;
+
+        if(itEntity->has<ModelComponent>() && itEntity->has<TransformComponent>())
         {
-            if(itEntity->has<ModelComponent>() && itEntity->has<TransformComponent>())
+            Model* pModel = &itEntity->get<ModelComponent>()->model;
+            TransformComponent* pTransformComponent = itEntity->get<TransformComponent>();
+
+            for(unsigned int i=0; i < pModel->pMeshes.size(); i++)
             {
-                Model* pModel = &itEntity->get<ModelComponent>()->model;
-                TransformComponent* pTransformComponent = itEntity->get<TransformComponent>();
-
-                for(unsigned int i=0; i < pModel->pMeshes.size(); i++)
+                if(pModel->pMaterials[0]->pShader == &RenderManager::getInstance()->shaderMonochroma)
                 {
-                    if(pModel->pMaterials[0]->pShader == &RenderManager::getInstance()->shaderMonochroma)
-                    {
-                        //cout << "Rendering light: " << itEntity->entityName << endl;
-                        bindEnvironmentAndMaterial(pModel->pMaterials[i]->pShader, &environment, pModel->pMaterials[i]);
-                        pModel->pMaterials[i]->pShader->uploadUniformMat4("u_ModelMatrix", pTransformComponent->getTransform());
+                    //cout << "Rendering light: " << itEntity->entityName << endl;
+                    bindEnvironmentAndMaterial(pModel->pMaterials[i]->pShader, &environment, pModel->pMaterials[i]);
+                    pModel->pMaterials[i]->pShader->uploadUniformMat4("u_ModelMatrix", pTransformComponent->getTransform());
 
-                        pModel->pMeshes[i]->vao.bind();
+                    pModel->pMeshes[i]->vao.bind();
 
-                        RenderCommand::drawElements(*pModel->pMeshes[i]);
-                    }
+                    RenderCommand::drawElements(*pModel->pMeshes[i]);
                 }
             }
         }

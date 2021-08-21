@@ -3,7 +3,7 @@
 void Skybox::init(const std::vector<std::string>& filePaths)
 {
     cubeModel.load("assets/models/cube.fbx");
-    shader.init("assets/shaders/cubemap.vs", "assets/shaders/cubemap.fs");
+    shader.init("assets/shaders/skybox.vs", "assets/shaders/skybox.fs");
     material.setShader(&shader);
     textureCubeMap.load(filePaths);
 
@@ -14,7 +14,8 @@ void Skybox::onUpdate()
 {
     glDisable(GL_CULL_FACE);
     glDepthFunc(GL_LEQUAL);
-    shader.bind();
+    
+    material.bind();
     auto* pCamera = &Scene::getCameraEntity()->get<CameraComponent>()->camera;
     Mat4 skyboxViewMatrix;
     skyboxViewMatrix = pCamera->viewMatrix;

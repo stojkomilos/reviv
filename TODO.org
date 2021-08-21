@@ -2,6 +2,8 @@
 
 ** 
 
+fix loseg kvaliteta zbog korsicenaj gBuffer-a
+
 ne znam gde da stavim secondSun.onUpdate(); light boundary texture thing.
 cela ona stvar sa RV_ASSERT(isInited, "") je samo problem jer ne koristim konstruktore nego thing.init();
 

@@ -15,9 +15,9 @@ void Weather::init(const std::string& baseNameEntities, float timeInHours)
     pSunModel->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec3f(1, 1, 0));
 
     pSunDirectionalLight->add<DirectionalLightComponent>();
-    pSunDirectionalLight->get<DirectionalLightComponent>()->light.shadowMap.width = 50;
-    pSunDirectionalLight->get<DirectionalLightComponent>()->light.shadowMap.nearRenderDistance = 0.01f;
-    pSunDirectionalLight->get<DirectionalLightComponent>()->light.shadowMap.renderDistance = 50.f;
+    pSunDirectionalLight->get<DirectionalLightComponent>()->light.getShadowMap()->width = 50;
+    pSunDirectionalLight->get<DirectionalLightComponent>()->light.getShadowMap()->nearRenderDistance = 0.01f;
+    pSunDirectionalLight->get<DirectionalLightComponent>()->light.getShadowMap()->renderDistance = 50.f;
     pSunDirectionalLight->get<DirectionalLightComponent>()->light.enableShadowMap();
     
     setSunTimeOfDay(timeInHours);
@@ -61,7 +61,7 @@ void Weather::setSunDirectionalLight()
 
     Vec3f cameraPosition = Scene::getCameraEntity()->get<TransformComponent>()->position;
 
-    float distanceFromCamera = 0.5f * pSunDirectionalLight->get<DirectionalLightComponent>()->light.shadowMap.renderDistance;
+    float distanceFromCamera = 0.5f * pSunDirectionalLight->get<DirectionalLightComponent>()->light.getShadowMap()->renderDistance;
     pSunDirectionalLight->get<TransformComponent>()->position = cameraPosition + sunDirection * distanceFromCamera;
     pSunDirectionalLight->get<TransformComponent>()->rotation.pitch = angle + 3.14f / 2.f;
     pSunDirectionalLight->get<TransformComponent>()->rotation.yaw = 0;

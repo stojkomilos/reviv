@@ -14,7 +14,7 @@ struct Vertex
 
 enum class ShaderDataType
 {
-	None = 0, SdtFloat1, SdtFloat2, SdtFloat3, SdtFloat4, SdtMat3, SdtMat4, SdtInt1, SdtInt2, SdtInt3, SdtInt4, SdtBool
+	None = 0, SdtFloat1, SdtFloat2, SdtFloat3, SdtFloat4, SdtMat3, SdtMat4, SdtInt1, SdtInt2, SdtInt3, SdtInt4, SdtBool, SdtUint1
 };
 
 struct BufferElement 

@@ -23,15 +23,7 @@ void log(const PointLight& light)
     log((const Light&)light);
 }
  
-Light::Light()
- : ambient(0.1, 0.1, 0.1), diffuse(0.2, 0.2, 0.2), specular(0.5, 0.5, 0.5), on(true), intensity(1.f)
-{ }
-
-PointLight::PointLight()
- : constant(1.f), linear(0), quadratic(0.07f) // range approximately 32 meters
-{ }
-
-void ShadowMap::init(unsigned int resolutionWidth, unsigned int resolutionHeight)
+void ShadowMapDirectional::init(unsigned int resolutionWidth, unsigned int resolutionHeight)
 {
     m_ResolutionWidth = resolutionWidth;
     m_ResolutionHeight = resolutionHeight;
@@ -59,6 +51,35 @@ void ShadowMap::init(unsigned int resolutionWidth, unsigned int resolutionHeight
     framebuffer.unbind();
 }
 
+void ShadowMapOmnidirectional::init(unsigned int resolutionWidth, unsigned int resolutionHeight)
+{
+    m_ResolutionWidth = resolutionWidth;
+    m_ResolutionHeight = resolutionHeight;
+
+    framebuffer.init(); // ?
+    depthMap.init();
+    depthMap.bind(0); // ?
+
+    for(int i=0; i<6; i++)
+    {
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 
+            m_ResolutionWidth, m_ResolutionHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    }
+    
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);  
+
+    framebuffer.bind();
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthMap.id, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+
+    framebuffer.unbind();
+}
+
 void DirectionalLight::enableShadowMap()
 {
     RV_ASSERT(isShadowMapped == false, "shadow mapping for this light is already on");
@@ -70,5 +91,25 @@ void PointLight::enableShadowMap()
 {
     RV_ASSERT(isShadowMapped == false, "shadow mapping for this light is already on");
     isShadowMapped = true;
-    // da li? shadowMap.init(1024, 1024);
+    shadowMap.init(1024, 1024);
+}
+
+ShadowMap* DirectionalLight::getShadowMap()
+{
+    return &shadowMap;
+}
+
+ShadowMap* PointLight::getShadowMap()
+{
+    return &shadowMap;
+}
+
+Texture* ShadowMapDirectional::getDepthMap()
+{
+    return &depthMap;
+}
+
+Texture* ShadowMapOmnidirectional::getDepthMap()
+{
+    return &depthMap;
 }

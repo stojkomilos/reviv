@@ -149,6 +149,7 @@ namespace mat{
         Rotation(const Vec3f& initRotation) 
             : roll(initRotation.a[0]), pitch(initRotation.a[1]), yaw(initRotation.a[2]) {}
     };
+    Rotation lookAtGetRotation(const Vec3f& eyePosition, const Vec3f& targetPosition);
 
     Vec3f getDirectionFromRotation(const Rotation& rotation);
     float degreesToRadians(float angleInDegrees);

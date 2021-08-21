@@ -6,8 +6,6 @@ void GameStuffManager::iInit()
     camera->add<CameraComponent>(0.01f, 5000.f, degreesToRadians(100.f));
 
     Entity* player = Scene::setPlayerEntity(Scene::createEntity("Player"));
-
-    weather.init("WeatherSun", 12);
 }
 
 void GameStuffManager::iOnUpdate()

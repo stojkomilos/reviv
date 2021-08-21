@@ -44,10 +44,10 @@ void Camera::setViewMatrix(const Vec3f& position, const Rotation& rotation)
     viewMatrix.a[3][3] = 1;
 }
 
-void Camera::setPerspectiveProjection()
+void Camera::setPerspectiveProjection(float horizontalFov, float ratio)
 {
-    float ratio = (Application::get()->getWindow()->m_Data.width * 1.f)
-                 / (Application::get()->getWindow()->m_Data.height * 1.f);
+    RV_ASSERT(nearRenderDistance != 0 && renderDistance != 0 && nearRenderDistance < renderDistance, "camera incorrectly or incompletly configured");
+    m_HorizontalFov = horizontalFov;
 
     m_VerticalFov = 2 * atan(tan(m_HorizontalFov / 2.f) / ratio);
 
@@ -79,6 +79,7 @@ void Camera::setPerspectiveProjection()
 void Camera::setOrthographicProjection(float width, float ratio)
 {
     float height = width / ratio;
+    RV_ASSERT(nearRenderDistance != 0 && renderDistance != 0 && nearRenderDistance < renderDistance, "camera incorrectly or incompletly configured");
 
     projectionMatrix.a[0][0] = 2.f / width;
     projectionMatrix.a[0][1] = 0;
@@ -89,11 +90,6 @@ void Camera::setOrthographicProjection(float width, float ratio)
     projectionMatrix.a[1][1] = 2.f / height;
     projectionMatrix.a[1][2] = 0;
     projectionMatrix.a[1][3] = 0;
-
-    //projectionMatrix.a[2][0] = 0;
-    //projectionMatrix.a[2][1] = 0;
-    //projectionMatrix.a[2][2] = 0;
-    //projectionMatrix.a[2][3] = 0;
 
     projectionMatrix.a[2][0] = 0;
     projectionMatrix.a[2][1] = 0;

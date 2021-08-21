@@ -47,8 +47,8 @@ void Texture2D::load(const std::string& filePath) // uses sRGB
 
 Texture::~Texture()
 {
-    RV_ASSERT(isInited == true, "");
-    glDeleteTextures(1, &id);
+    if(isInited)
+        glDeleteTextures(1, &id);
     isInited = false;
 }
 

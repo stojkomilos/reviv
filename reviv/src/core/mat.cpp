@@ -395,27 +395,16 @@ namespace mat{
 
         return result;
     }
+
+    Rotation lookAtGetRotation(const Vec3f& eyePosition, const Vec3f& targetPosition)
+    {
+        Rotation rotation;
+        float distance = module(eyePosition - targetPosition);
+
+        rotation.pitch = asin((targetPosition.a[2] - eyePosition.a[2]) / distance);
+        rotation.roll = 0;
+        rotation.yaw = atan2(targetPosition.a[1] - eyePosition.a[1], targetPosition.a[0] - eyePosition.a[0]);
+
+        return rotation;
+    }
 };
-
-/*
-    Vec3f normalise(Vec3f vec) // NOTE: should be avoided because module of
-    {
-        float b = module(vec);
-        vec.a[0] /= b;
-        vec.a[1] /= b;
-        vec.a[2] /= b;
-
-        return vec;
-    }
-
-    Vec2f normalise(Vec2f vec)
-    {
-        float b = module(vec);
-        vec.x /= b;
-        vec.y /= b;
-        //vec.a[0] /= b;
-        //vec.a[1] /= b;
-
-        return vec;
-    }
-*/

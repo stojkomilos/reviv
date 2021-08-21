@@ -12,7 +12,7 @@ public:
     Camera(float nearRenderDistance, float renderDistance, float horizontalFovInRadians);
 
     void setViewMatrix(const Vec3f& position, const Rotation& rotation);
-    void setPerspectiveProjection();
+    void setPerspectiveProjection(float horizontalFov, float ratio);
     void setOrthographicProjection(float width, float ratio);
 
     void onEventMouseMoved(Event* event);

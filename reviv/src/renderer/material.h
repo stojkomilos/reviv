@@ -6,6 +6,7 @@
 #include"shader.h"
 #include"buffer.h"
 #include"texture.h"
+#include"shader_uniform_map.h"
 
 extern unsigned int ShaderDataTypeSize(ShaderDataType type);
 
@@ -32,6 +33,7 @@ public:
     inline void set(const std::string& uniformName, int n) { shaderUniformMap.set(uniformName, n); }
     inline void set(const std::string& uniformName, float n) { shaderUniformMap.set(uniformName, n); }
     inline void set(const std::string& uniformName, double n) { shaderUniformMap.set(uniformName, n); }
+    //inline void set(const std::string& uniformName, unsigned int n) { shaderUniformMap.set(uniformName, n); }
 
     Shader* pShader = nullptr;
     ShaderUniformMap shaderUniformMap;

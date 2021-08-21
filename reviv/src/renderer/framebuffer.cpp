@@ -11,8 +11,8 @@ void Framebuffer::init()
 
 Framebuffer::~Framebuffer()
 {
-    RV_ASSERT(isInited, "");
-    glDeleteFramebuffers(1, &id);
+    if(isInited)
+        glDeleteFramebuffers(1, &id);
     isInited = false;
 }
 
