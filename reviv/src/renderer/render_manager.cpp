@@ -13,8 +13,7 @@ void RenderManager::iInit()
     skyboxFaces.push_back("assets/textures/skybox/back.jpg");
     skybox.init(skyboxFaces);
 
-    //deffered.init(Application::get()->getWindowWidth(), Application::get()->getWindowHeight());
-    deffered.init(956, 1050);
+    deffered.init(Application::get()->getWindowWidth(), Application::get()->getWindowHeight());
 
     shadowMapShader.init("assets/shaders/shadow_map.vs", "assets/shaders/shadow_map.fs");
 
@@ -38,7 +37,7 @@ void RenderManager::iOnUpdate()
 void RenderManager::renderSceneToFramebuffer(Framebuffer* pFrameBuffer)
 {
     beginScene(); // Update camera stuff, update environment uniforms(doesn't upload them)
-    //shadowMapRenderPass();
+    shadowMapRenderPass();
     defferedGeometryRenderPass();
     defferedLightingRenderPass();
     defferedMonochromaRenderPass();
@@ -75,7 +74,7 @@ void RenderManager::shadowMapRenderPass()
 
     for(auto itLight = Scene::getEntityList()->begin(); itLight != Scene::getEntityList()->end(); itLight++)
     {
-        if(itLight->valid)
+        if(!itLight->valid)
             continue;
 
         if(!(itLight->has<PointLightComponent>() || itLight->has<DirectionalLightComponent>()))
@@ -114,6 +113,7 @@ void RenderManager::shadowMapRenderPass()
 
             if(itOpaque->has<ModelComponent>() && itOpaque->has<TransformComponent>())
             {
+                cout << "ShadowMapping light: " << itLight->entityName << " opaque: " << itOpaque->entityName << endl;
                 Model* pModel = &itOpaque->get<ModelComponent>()->model;
                 TransformComponent* pTransformComponent = itOpaque->get<TransformComponent>();
 
@@ -135,6 +135,7 @@ void RenderManager::defferedGeometryRenderPass()
 {
     deffered.gBuffer.bind();
     glViewport(0, 0, deffered.m_Width, deffered.m_Height);
+    RV_ASSERT(Time::getLoopCounter() <= 1 || (Application::get()->getWindowWidth() == deffered.m_Width && Application::get()->getWindowHeight() == deffered.m_Height), "gBuffer for deffered rendering does not have the same width or height as the actual window");
 
     RenderCommand::setClearColor(Vec4f(0.f, 0.f, 0.f, 1.f));
     RenderCommand::clear();
@@ -166,7 +167,6 @@ void RenderManager::defferedGeometryRenderPass()
 void RenderManager::defferedLightingRenderPass()
 {
         deffered.gBuffer.unbind();
-        RV_ASSERT(Time::getLoopCounter() <= 1 || (Application::get()->getWindowWidth() == deffered.m_Width && Application::get()->getWindowHeight() == deffered.m_Height), "gBuffer for deffered rendering does not have the same width or height as the actual window");
         glViewport(0, 0, Application::get()->getWindowWidth(), Application::get()->getWindowHeight());
         bindEnvironmentAndMaterial(&shaderDefferedBlinnPhong, &environment, &materialDefferedBlinnPhong);
 

@@ -22,7 +22,7 @@ public:
     void initAfterEngine() override
     {
 
-        //GameStuffManager::get()->weather.init("WeatherSun", 12);
+        GameStuffManager::get()->weather.init("WeatherSun", 12);
 
         pointLight = Scene::createEntity("PointLight");
         pointLight->add<ModelComponent>(&AssetManager::get()->modelLoaderSphere, &RenderManager::getInstance()->deffered.geometryPassShader);

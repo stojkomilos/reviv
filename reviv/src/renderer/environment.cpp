@@ -83,10 +83,11 @@ void Environment::setShadowMap(Entity* pEntity, Light* pLight, const std::string
 {
     if(pLight->isShadowMapped)
     {
+        set(uniformNameLight + ".isShadowMapped", (int)1);
         setTexture(uniformNameLight + ".shadowMap.depthMap", *pLight->getShadowMap()->getDepthMap());
 
         Camera* pCamera = &pLight->getShadowMap()->camera;
-        pCamera->nearRenderDistance = pLight->getShadowMap()->nearRenderDistance; // TODO: zameniti sa getShadowMap()
+        pCamera->nearRenderDistance = pLight->getShadowMap()->nearRenderDistance;
         pCamera->renderDistance = pLight->getShadowMap()->renderDistance;
         pCamera->setViewMatrix(pEntity->get<TransformComponent>()->position, pEntity->get<TransformComponent>()->rotation);
         if(pLight->lightType == LightType::LightTypePoint)
@@ -102,6 +103,9 @@ void Environment::setShadowMap(Entity* pEntity, Light* pLight, const std::string
         set(uniformNameLight + ".shadowMap.projectionMatrix", pLight->getShadowMap()->camera.projectionMatrix);
 
         RV_ASSERT(pLight->getShadowMap()->nearRenderDistance != 0 && pLight->getShadowMap()->renderDistance != 0 && pLight->getShadowMap()->nearRenderDistance < pLight->getShadowMap()->renderDistance, "shadow map is incorrectly or incompletely configured");
+    }
+    else {
+        set(uniformNameLight + ".isShadowMapped", (int)0);
     }
 
 }

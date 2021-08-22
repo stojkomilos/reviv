@@ -25,6 +25,7 @@ struct PointLight
     float linear;
     float quadratic;
 
+    int isShadowMapped;
     ShadowMapOmnidirectional shadowMap;
 };
 
@@ -36,6 +37,7 @@ struct DirectionalLight
     vec3 diffuse;
     vec3 specular;
 
+    int isShadowMapped;
     ShadowMapDirectional shadowMap;
 };
 
@@ -48,8 +50,8 @@ vec3 calculateDirectionalLight(DirectionalLight light);
 float calculateShadowDirectional(ShadowMapDirectional shadowMap);
 
 uniform PointLight ue_PointLights[8];
-vec3 calculatePointLight(int index);
-float calculateShadowOmnidirectional(int index);
+vec3 calculatePointLight(PointLight light);
+//float calculateShadowOmnidirectional(PointLight light);
 
 uniform int ue_NumberOfPointLights;
 uniform int ue_NumberOfDirectionalLights;
@@ -83,7 +85,7 @@ void main()
 
     for(int i=0; i<ue_NumberOfPointLights; i++)
     {
-        result += calculatePointLight(i);
+        result += calculatePointLight(ue_PointLights[i]);
     }
 
     for(int i=0; i<ue_NumberOfDirectionalLights; i++)
@@ -109,6 +111,8 @@ float calculateShadowDirectional(ShadowMapDirectional shadowMap)
     if(positionFromLight.z > 1.0)
         shadow = 0.0;
 
+    //shadow = texture(shadowMap.depthMap, v_TexCoords).r; // for DEBUG
+
     return shadow;
 }
 
@@ -126,7 +130,12 @@ vec3 calculateDirectionalLight(DirectionalLight light)
     float specularIntensity = pow(max(0.0, dot(viewDirection, halfwayDirection)), materialShininess);
     vec3 specular = light.specular * (specularIntensity * d_MaterialSpecular);
 
-    float shadow = calculateShadowDirectional(light.shadowMap);
+    float shadow = 0.0;
+
+    if(light.isShadowMapped == 1)
+    {
+        shadow = calculateShadowDirectional(light.shadowMap);
+    }
 
     if(shadow == 1)
     {
@@ -135,19 +144,21 @@ vec3 calculateDirectionalLight(DirectionalLight light)
     }
 
     return (ambient + diffuse + specular);
-    //vec3 vShadow = vec3(shadow, shadow, shadow);
+    //vec3 vShadow = vec3(shadow, shadow, shadow);                // for DEBUG
     //return (ambient + diffuse + specular) * 0.0001f + vShadow;
 }
 
-float calculateShadowOmnidirectional(int index)
+
+/*
+float calculateShadowOmnidirectional(PointLight light)
 {
     float bias = 0.05f; //TODO: why different from directionalLight bias?
-    vec3 positionFromLight = d_FragPosition - ue_PointLights[index].position;
+    vec3 positionFromLight = d_FragPosition - light.position;
 
     float shadow = 0;
-    float depthMapTextureValue = texture(ue_PointLights[index].shadowMap.depthMap, positionFromLight).r;
+    float depthMapTextureValue = texture(light.shadowMap.depthMap, positionFromLight).r;
 
-    depthMapTextureValue *= ue_PointLights[index].shadowMap.farPlane;
+    depthMapTextureValue *= light.shadowMap.farPlane;
     float currentDepth = length(positionFromLight);
 
     if(currentDepth > depthMapTextureValue + bias)
@@ -155,36 +166,44 @@ float calculateShadowOmnidirectional(int index)
         shadow = 1.0;
     }
 
-    if(currentDepth > ue_PointLights[index].shadowMap.farPlane)
+    if(currentDepth > light.shadowMap.farPlane)
         shadow = 1.0;
 
     return shadow;
 }
+*/
 
-vec3 calculatePointLight(int index)
+vec3 calculatePointLight(PointLight light)
 {
-    vec3 ambient = ue_PointLights[index].ambient * 0.1;
+    vec3 ambient = light.ambient * 0.1;
+    //vec3 ambient = vec3(0, 0, 0);
 
-    float distance = length(ue_PointLights[index].position - d_FragPosition);
-    float attenuation = 1.0f / (ue_PointLights[index].constant + ue_PointLights[index].linear * distance + ue_PointLights[index].quadratic * distance * distance);
+    float fragmentDistance = length(light.position - d_FragPosition);
+    float attenuation = 1.0f / (light.constant + light.linear * fragmentDistance + light.quadratic * fragmentDistance * fragmentDistance);
 
-    vec3 lightDirection = normalize(ue_PointLights[index].position - d_FragPosition);
+    vec3 lightDirection = normalize(light.position - d_FragPosition);
 
-    float diffuseIntensity = max(0, dot(lightDirection, d_Normal));
-    vec3 diffuse = ue_PointLights[index].diffuse * (diffuseIntensity * d_MaterialDiffuse);
+    //float diffuseIntensity = max(0, dot(lightDirection, d_Normal));
+    //vec3 diffuse = light.diffuse * (diffuseIntensity * d_MaterialDiffuse);
+    vec3 diffuse = vec3(0, 0, 0);
 
-    vec3 viewDirection = normalize(ue_ViewPosition - d_FragPosition);
-    vec3 halfwayDirection = normalize(lightDirection + viewDirection);
-    float specularIntensity = pow(max(0.0, dot(viewDirection, halfwayDirection)), materialShininess);
-    vec3 specular = ue_PointLights[index].specular * (specularIntensity * d_MaterialSpecular);
+    //vec3 viewDirection = normalize(ue_ViewPosition - d_FragPosition);
+    //vec3 halfwayDirection = normalize(lightDirection + viewDirection);
+    //float specularIntensity = pow(max(0.0, dot(viewDirection, halfwayDirection)), materialShininess);
+    //vec3 specular = light.specular * (specularIntensity * d_MaterialSpecular);
+    vec3 specular = vec3(0, 0, 0);
 
-    float shadow = calculateShadowOmnidirectional(index);
-
-    if(shadow == 1)
+    float shadow = 0.0;
+    if(light.isShadowMapped == 1)
     {
-        diffuse = vec3(0, 0, 0); //alternative that may be more optimized:  diffuse = diffuse * (1 - shadow);
-        specular = vec3(0, 0, 0);                             //            specular = specular * (1 - shadow);
+        //shadow = calculateShadowOmnidirectional(light.shadowMap);
     }
+
+    //if(shadow == 1)
+    //{
+    //    diffuse = vec3(0, 0, 0); //alternative that may be more optimized:  diffuse = diffuse * (1 - shadow);
+    //    specular = vec3(0, 0, 0);                             //            specular = specular * (1 - shadow);
+    //}
 
     return ((ambient + diffuse + specular) * attenuation);
 }
