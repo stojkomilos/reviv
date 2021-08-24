@@ -1,6 +1,7 @@
 #include"input.h"
 
 static const float sensitivity = 0.0035f;
+#define RV_EPSILON 0.00001f
 
 void Input::iOnUpdate()
 {
@@ -123,7 +124,7 @@ void Input::doPlayerControllerPolling()
 
     if(pressedW || pressedS || pressedD || pressedA)
     {
-        Vec3f horizontalPlaneDelta = moveDirection / module(moveDirection) * speed * Time::getDelta();
+        Vec3f horizontalPlaneDelta = moveDirection / (module(moveDirection) + RV_EPSILON) * speed * Time::getDelta(); // TODO: the + RV_EPSILON thing is probably responsible for a movement bug
         *playerPos += horizontalPlaneDelta;
     }
 

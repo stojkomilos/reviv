@@ -10,8 +10,6 @@ void Shader::init(const char* vertexPath, const char* fragmentPath, const char* 
     filePathVertex = vertexPath;
     filePathFragment = fragmentPath;
 
-    RV_ASSERT(geometryPath == nullptr, ""); //temp
-
     std::string vertexCode;
     std::string fragmentCode;
     std::string geometryCode;

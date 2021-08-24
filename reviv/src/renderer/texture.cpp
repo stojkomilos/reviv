@@ -54,11 +54,19 @@ Texture::~Texture()
 
 void Texture::bind(unsigned int slot) const
 {
+    RV_ASSERT(isInited == true, "can't bind non initialized texture");
     RV_ASSERT(slot < 16, "");
     RV_ASSERT(GL_TEXTURE1 == GL_TEXTURE0 + 1, "");
 
     glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(textureType, id);
+}
+
+void Texture::unbind() const
+{
+    RV_ASSERT(isInited == true, ""); // just for mental simplification reasons
+    glBindTexture(GL_TEXTURE_2D, 0);
+
 }
 
 void Texture2D::initFramebuffer(int inWidth, int inHeight)

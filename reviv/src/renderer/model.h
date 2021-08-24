@@ -6,6 +6,11 @@
 
 #include"stls/stable_vector.h"
 
+struct ModelFlags
+{
+    bool isCullFaceOn = true;
+};
+
 class Model
 {
 public:
@@ -15,6 +20,7 @@ public:
     Model(ModelLoader* pModelLoader);
 
     ModelLoader* m_ModelLoader;
+    ModelFlags flags;
 
     Material* addMaterial(Material* material);
     Material* addMaterialFromShader(Shader* shader);

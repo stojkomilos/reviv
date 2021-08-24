@@ -43,8 +43,6 @@ void RenderCommand::iInit()
     //glEnable(GL_);
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    //glEnable(GL_CULL_FACE); // can be implemented: add flags to each vao/mesh on weather or not to enable this (should be disabled for objects that are not fully closed)
-
     int nrAttributes;
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
     RV_ASSERT((nrAttributes >= 10), ""); 
@@ -58,6 +56,7 @@ void logMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, 
     {
         case GL_DEBUG_SEVERITY_HIGH:
             RV_ASSERT(false, "[OpenGL Debug HIGH]" << message);
+            cout << message << endl;
             break;
 
         case GL_DEBUG_SEVERITY_MEDIUM:

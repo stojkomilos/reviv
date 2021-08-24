@@ -2,6 +2,8 @@
 
 ** 
 
+generalization for flags. must be set when rendering shadows too?
+
 fix loseg kvaliteta zbog korsicenaj gBuffer-a
 
 ne znam gde da stavim secondSun.onUpdate(); light boundary texture thing.

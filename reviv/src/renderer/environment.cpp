@@ -84,26 +84,35 @@ void Environment::setShadowMap(Entity* pEntity, Light* pLight, const std::string
     if(pLight->isShadowMapped)
     {
         set(uniformNameLight + ".isShadowMapped", (int)1);
-        setTexture(uniformNameLight + ".shadowMap.depthMap", *pLight->getShadowMap()->getDepthMap());
-
-        Camera* pCamera = &pLight->getShadowMap()->camera;
-        pCamera->nearRenderDistance = pLight->getShadowMap()->nearRenderDistance;
-        pCamera->renderDistance = pLight->getShadowMap()->renderDistance;
-        pCamera->setViewMatrix(pEntity->get<TransformComponent>()->position, pEntity->get<TransformComponent>()->rotation);
-        if(pLight->lightType == LightType::LightTypePoint)
+        if(pLight->lightType == LightType::LightTypeDirectional)
         {
-            pCamera->setPerspectiveProjection(degreesToRadians(90), 1.f);
+            setTexture(uniformNameLight + ".shadowMap.depthMap", *pLight->getShadowMap()->getDepthMap());
+
+            Camera* pCamera = &pLight->getShadowMap()->camera;
+            pCamera->nearRenderDistance = pLight->getShadowMap()->nearRenderDistance;
+            pCamera->renderDistance = pLight->getShadowMap()->renderDistance;
+            pCamera->setViewMatrix(pEntity->get<TransformComponent>()->position, pEntity->get<TransformComponent>()->rotation);
+            if(pLight->lightType == LightType::LightTypePoint)
+            {
+                pCamera->setPerspectiveProjection(degreesToRadians(90), 1.f);
+            }
+            else {
+                pCamera->setOrthographicProjection(pLight->getShadowMap()->width, 1);
+                RV_ASSERT(pLight->getShadowMap()->width > 0, "shadow map is incorrectly or incompletely configured");
+            }
+
+            set(uniformNameLight + ".shadowMap.viewMatrix", pLight->getShadowMap()->camera.viewMatrix);
+            set(uniformNameLight + ".shadowMap.projectionMatrix", pLight->getShadowMap()->camera.projectionMatrix);
+
+            RV_ASSERT(pLight->getShadowMap()->nearRenderDistance != 0 && pLight->getShadowMap()->renderDistance != 0 && pLight->getShadowMap()->nearRenderDistance < pLight->getShadowMap()->renderDistance, "shadow map is incorrectly or incompletely configured");
         }
         else {
-            pCamera->setOrthographicProjection(pLight->getShadowMap()->width, 1);
-            RV_ASSERT(pLight->getShadowMap()->width > 0, "shadow map is incorrectly or incompletely configured");
+            const std::string baseString = "ue_PointLightShadowMaps";
+            setTexture(baseString + "DepthMap" + '[' + (char)(nrPointLights + '0') + ']', *pLight->getShadowMap()->getDepthMap());
+            set(baseString + "FarPlane" + '[' + (char)(nrPointLights + '0') + ']', pLight->getShadowMap()->camera.renderDistance);
         }
-
-        set(uniformNameLight + ".shadowMap.viewMatrix", pLight->getShadowMap()->camera.viewMatrix);
-        set(uniformNameLight + ".shadowMap.projectionMatrix", pLight->getShadowMap()->camera.projectionMatrix);
-
-        RV_ASSERT(pLight->getShadowMap()->nearRenderDistance != 0 && pLight->getShadowMap()->renderDistance != 0 && pLight->getShadowMap()->nearRenderDistance < pLight->getShadowMap()->renderDistance, "shadow map is incorrectly or incompletely configured");
     }
+
     else {
         set(uniformNameLight + ".isShadowMapped", (int)0);
     }
@@ -125,7 +134,8 @@ void Environment::bind(Shader* shader)
                 if(*it == iteratorUniformMap.first)
                 {
                     //cout << "Environment texture: " << *it << " slot: " << shader->environmentTextureUniformCounter << endl;
-                    RV_ASSERT(shader != &RenderManager::getInstance()->shadowMapShader, "");
+                    RV_ASSERT(shader != &RenderManager::getInstance()->directionalShadowMapShader, ""); // temp, can be removed
+                    RV_ASSERT(shader != &RenderManager::getInstance()->omnidirectionalShadowMapShader, ""); // temp, can be removed
 
                     shaderUniformMap.set(*it, (int)(shader->environmentTextureUniformCounter));
                     iteratorUniformMap.second->bind(shader->environmentTextureUniformCounter);

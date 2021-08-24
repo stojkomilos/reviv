@@ -2,6 +2,7 @@
 
 Entity *stanic, *pointLight, *platform, *sphere, *cube;
 Entity* map;
+Entity* room;
 
 Entity *player, *camera;
 
@@ -22,20 +23,27 @@ public:
     void initAfterEngine() override
     {
 
-        GameStuffManager::get()->weather.init("WeatherSun", 12);
+        //GameStuffManager::get()->weather.init("WeatherSun", 12);
 
         pointLight = Scene::createEntity("PointLight");
-        pointLight->add<ModelComponent>(&AssetManager::get()->modelLoaderSphere, &RenderManager::getInstance()->deffered.geometryPassShader);
+        pointLight->add<ModelComponent>(&AssetManager::get()->modelLoaderSphere, &RenderManager::getInstance()->shaderMonochroma);
         pointLight->add<PointLightComponent>();
         pointLight->get<TransformComponent>()->position = Vec3f{0, 0, 6};
-        pointLight->get<TransformComponent>()->rotation.pitch = degreesToRadians(-90);
-        pointLight->get<TransformComponent>()->scale *= 0.3f;
-        pointLight->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1.f, 0.f, 0.3f));
-        pointLight->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.3f);
+        pointLight->get<TransformComponent>()->rotation.pitch = Time::getTime();
+        pointLight->get<TransformComponent>()->scale *= 0.65;
+        pointLight->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec3f(1.f, 0.f, 0.3f));
 
-        pointLight->get<PointLightComponent>()->light.enableShadowMap();
         pointLight->get<PointLightComponent>()->light.getShadowMap()->renderDistance = 25.f;
         pointLight->get<PointLightComponent>()->light.getShadowMap()->nearRenderDistance = 0.1f;
+        pointLight->get<PointLightComponent>()->light.enableShadowMap();
+
+        room = Scene::createEntity("Room");
+        room->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::getInstance()->deffered.geometryPassShader);
+        room->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0.f, 0.7f, 0.0f));
+        room->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.7f);
+        room->get<TransformComponent>()->position = Vec3f{0, 0, 10};
+        room->get<TransformComponent>()->scale *= 7.f;
+        room->get<ModelComponent>()->model.flags.isCullFaceOn = false;
         
         /*
         int voxelMapSize = 11;
@@ -92,14 +100,14 @@ public:
 
         sphere = Scene::createEntity("Sphere");
         sphere->get<TransformComponent>()->position = {1, 6, 2};
-        //sphere->get<TransformComponent>()->scale = {0.3f, 0.3f, 0.3f};
+        sphere->get<TransformComponent>()->scale *= 0.65f;
         sphere->add<ModelComponent>(&AssetManager::get()->modelLoaderSphere, &RenderManager::getInstance()->deffered.geometryPassShader);
         sphere->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1, 0, 0));
         sphere->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.2f);
 
         cube = Scene::createEntity("Cube");
         cube->get<TransformComponent>()->position = {0, 0, 0.8 + cube->get<TransformComponent>()->scale.a[2] + 4};
-        cube->get<TransformComponent>()->scale = {1, 1, 1};
+        cube->get<TransformComponent>()->scale *= 0.3;
         cube->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::getInstance()->deffered.geometryPassShader);
         cube->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 0, 1));
         cube->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.2f);
@@ -120,9 +128,31 @@ public:
 
         //GameStuffManager::get()->weather.setSunTimeOfDay(Time::getTime());
 
-        Scene::getPlayerEntity()->get<TransformComponent>()->rotation = lookAtGetRotation(Scene::getPlayerEntity()->get<TransformComponent>()->position, cube->get<TransformComponent>()->position);
+        //Scene::getPlayerEntity()->get<TransformComponent>()->rotation = lookAtGetRotation(Scene::getPlayerEntity()->get<TransformComponent>()->position, cube->get<TransformComponent>()->position);
 
-        cube->get<TransformComponent>()->position = Vec3f(0, sin(Time::getTime()) * 3, 3.5);
+        //cube->get<TransformComponent>()->position = Vec3f(0, sin(Time::getTime()) * 3, 3.5);
+        //cube->get<TransformComponent>()->position = Vec3f(sin(Time::getTime() * 2) * 11 + 1.8, sin(Time::getTime()) * 7, 3.5);
+        //cube->get<TransformComponent>()->position = Vec3f(cos(Time::getTime() * 1) * 4, sin(Time::getTime() * 1) * 4, 3.5);
+        cube->get<TransformComponent>()->position = Vec3f(cos(Time::getTime() * 1) * 4, sin(Time::getTime() * 1) * 4, 7);
+        sphere->get<TransformComponent>()->position = Vec3f(sin(Time::getTime() * 1) * 4, cos(Time::getTime() * 1) * 4, 20.f);
+
+        //pointLight->get<TransformComponent>()->position = Vec3f{0, 0, 4 + sin(Time::getTime() / 10) * 3};
+        pointLight->get<TransformComponent>()->position = Vec3f{0, 0, 10};
+
+        TransformComponent* plTrans = Scene::getPlayerEntity()->get<TransformComponent>();
+        if(Input::isKeyPressed(RV_KEY_1))
+            plTrans->rotation = lookAtGetRotation(plTrans->position, plTrans->position + Vec3f(1, 0, 0));
+        if(Input::isKeyPressed(RV_KEY_2))
+            plTrans->rotation = lookAtGetRotation(plTrans->position, plTrans->position + Vec3f(-1, 0, 0));
+        if(Input::isKeyPressed(RV_KEY_3))
+            plTrans->rotation = lookAtGetRotation(plTrans->position, plTrans->position + Vec3f(0, 1, 0));
+        if(Input::isKeyPressed(RV_KEY_4))
+            plTrans->rotation = lookAtGetRotation(plTrans->position, plTrans->position + Vec3f(0, -1, 0));
+        if(Input::isKeyPressed(RV_KEY_5))
+            plTrans->rotation = lookAtGetRotation(plTrans->position, plTrans->position + Vec3f(0, 0, 1));
+        if(Input::isKeyPressed(RV_KEY_6))
+            plTrans->rotation = lookAtGetRotation(plTrans->position, plTrans->position + Vec3f(0, 0, -1));
+
         //cube->get<TransformComponent>()->rotation.yaw = 1;
         //cube->get<TransformComponent>()->rotation.pitch = 1;
         //cube->get<TransformComponent>()->rotation.roll = 1;

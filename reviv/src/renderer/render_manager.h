@@ -34,7 +34,8 @@ public:
     }
 
     Skybox skybox;
-    Shader shadowMapShader;
+    Shader directionalShadowMapShader;
+    Shader omnidirectionalShadowMapShader;
 
     //Framebuffer screenFramebuffer;
     Framebuffer defaultFramebuffer;

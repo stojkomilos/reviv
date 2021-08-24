@@ -23,7 +23,7 @@ public:
 
     float nearRenderDistance = 0.1f;
     float renderDistance = 10000.f;
-    float ratio;
+    //float ratio;
     float m_HorizontalFov, m_VerticalFov;
 
     //float newProjectionMatrix[16];

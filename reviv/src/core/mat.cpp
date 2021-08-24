@@ -269,6 +269,7 @@ namespace mat{
 
     float module(const Vec3f& vec)
     {
+        //assert(vec.a[0] != 0 || vec.a[1] != 0 || vec.a[2] != 0);
         return sqrt(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1] + vec.a[2]*vec.a[2]);
     }
 

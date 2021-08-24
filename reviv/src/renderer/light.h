@@ -49,7 +49,8 @@ public:
     virtual ~ShadowMapOmnidirectional() = default;
     virtual void init(unsigned int resolutionWidth, unsigned int resolutionHeight) override;
     virtual Texture* getDepthMap() override;
-    TextureCubeMap depthMap;
+    Texture2D depthMap;
+    TextureCubeMap shadowMap;
 };
 
 class Light

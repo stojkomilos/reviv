@@ -12,6 +12,7 @@ public:
 
     void init();
     void bind(unsigned int slot) const;
+    void unbind() const;
 
     const int textureType;
 
