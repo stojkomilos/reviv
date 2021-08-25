@@ -102,8 +102,8 @@ void main()
     //    result += calculateDirectionalLight(i);
     //}
 
-    //result = result * 0.000001f + d_FragPosition;
-    result = result * 0.000001f + vec3(0.1, 0.1, 0.1);
+    // result = result * 0.000001f + d_FragPosition;
+    result = result * 0.0001f + vec3(0.1, 0.1, 0.1);
     FragColor = vec4(result, 1);
 }
 

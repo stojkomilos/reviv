@@ -11,8 +11,8 @@ void RenderManager::renderSceneToFramebuffer(Framebuffer* pFrameBuffer)
     //shadowMapRenderPass();
     defferedGeometryRenderPass();
     defferedLightingRenderPass();
-    defferedMonochromaRenderPass();
-    skybox.onUpdate();
+    //defferedMonochromaRenderPass();
+    //skybox.onUpdate();
 }
 
 void RenderManager::iInit()
@@ -26,7 +26,7 @@ void RenderManager::iInit()
     skyboxFaces.push_back("assets/textures/skybox/top.jpg");
     skyboxFaces.push_back("assets/textures/skybox/front.jpg");
     skyboxFaces.push_back("assets/textures/skybox/back.jpg");
-    skybox.init(skyboxFaces);
+    //skybox.init(skyboxFaces);
 
     deffered.init(Application::get()->getWindowWidth(), Application::get()->getWindowHeight());
 

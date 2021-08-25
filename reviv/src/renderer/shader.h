@@ -17,7 +17,7 @@ class Shader{
 
 public:
     Shader();
-    unsigned int id;
+    unsigned int id = 0;
     void init(const char* vertexPath, const char* fragmentPath, const char* geometryShader = nullptr);
     void bind() const;
 
@@ -27,7 +27,6 @@ public:
     void uploadUniform4f(const std::string& name, const Vec4f& a) const;
     void uploadUniform1i(const std::string& name, int a) const;
     void uploadUniform1f(const std::string& name, float a) const;
-    //void uploadUniform1ui(const std::string& name, unsigned int a) const;
 
     std::string filePathVertex;
     std::string filePathFragment;

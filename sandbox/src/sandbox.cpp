@@ -33,9 +33,9 @@ public:
         pointLight->get<TransformComponent>()->scale *= 0.65;
         pointLight->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec3f(1.f, 0.f, 0.3f));
 
-        pointLight->get<PointLightComponent>()->light.getShadowMap()->renderDistance = 25.f;
-        pointLight->get<PointLightComponent>()->light.getShadowMap()->nearRenderDistance = 0.1f;
-        pointLight->get<PointLightComponent>()->light.enableShadowMap();
+        //pointLight->get<PointLightComponent>()->light.getShadowMap()->renderDistance = 25.f;
+        //pointLight->get<PointLightComponent>()->light.getShadowMap()->nearRenderDistance = 0.1f;
+        //pointLight->get<PointLightComponent>()->light.enableShadowMap();
 
         room = Scene::createEntity("Room");
         room->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::getInstance()->deffered.geometryPassShader);

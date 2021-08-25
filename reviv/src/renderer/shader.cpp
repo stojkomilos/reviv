@@ -108,6 +108,7 @@ void Shader::init(const char* vertexPath, const char* fragmentPath, const char* 
 
 void Shader::bind() const
 {
+    RV_ASSERT(id != 0, "shader not inititialized");
     glUseProgram(id);
 }
 

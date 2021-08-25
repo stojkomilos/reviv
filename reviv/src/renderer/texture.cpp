@@ -5,6 +5,7 @@ void Texture::init()
     RV_ASSERT(isInited == false, "texture already loaded/inited");
     glGenTextures(1, &id);
     isInited = true;
+    RV_ASSERT(textureType != GL_TEXTURE_CUBE_MAP, ""); // temp
 }
 
 void Texture2D::load(const std::string& filePath) // uses sRGB
