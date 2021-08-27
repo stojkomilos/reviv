@@ -1,4 +1,5 @@
 #include"scene.h"
+#include"components.h"
 
 Entity* Scene::iCreateEntity(const std::string& entityName)
 {

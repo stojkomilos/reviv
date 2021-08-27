@@ -55,6 +55,7 @@ void Application::initEngine()
 
     AssetManager::get()->init();
     GameStuffManager::init();
+    Time::init(); // must be last (so that physics doesn't start before everything is loaded)
 }
 
 void Application::run()
@@ -71,7 +72,7 @@ void Application::run()
 
         Time::onUpdate();
         Input::onUpdate();
-        PhysicsManager::onUpdate();
+        PhysicsManager::onUpdate(Time::getDelta());
         GameStuffManager::onUpdate();
         RenderManager::onUpdate();
         window.onUpdate();              // update the glfw window

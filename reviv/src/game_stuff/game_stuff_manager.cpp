@@ -1,4 +1,5 @@
 #include"game_stuff_manager.h"
+#include"scene/components.h"
 
 void GameStuffManager::iInit()
 {

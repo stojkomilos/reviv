@@ -1,4 +1,7 @@
 #include"skybox.h"
+#include"renderer/camera.h"
+#include"scene/scene.h"
+#include"scene/components.h"
 
 void Skybox::init(const std::vector<std::string>& filePaths)
 {

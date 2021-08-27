@@ -4,7 +4,6 @@
 #include<vector>
 
 #include"entity.h"
-#include"components.h"
 
 class Scene{
 public:
@@ -21,6 +20,7 @@ public:
     static Entity* setCameraEntity(Entity* pNewCameraEntity) { return getInstance()->iSetCameraEntity(pNewCameraEntity); }
     static Entity* getPlayerEntity() { return getInstance()->iGetPlayerEntity(); }
     static Entity* setPlayerEntity(Entity* pNewPlayerEntity) { return getInstance()->iSetPlayerEntity(pNewPlayerEntity); }
+    static float getGravity() { return getInstance()->iGetGravity(); }
 
     static Scene* getInstance()
     {
@@ -36,6 +36,8 @@ public:
     bool doesPlayerEntityExist = false;
     bool doesCameraEntityExist = false;
 
+    float gravity = 9.81f;
+
 private:
     Scene() : entityList(5000000) { }
 
@@ -50,5 +52,7 @@ private:
     Entity* iGetPlayerEntity();
     Entity* iSetPlayerEntity(Entity* pNewPlayerEntity);
 
-    void projectPosition(const Entity& entity);
+    inline float iGetGravity() { return gravity; }
+
+    void projectPosition(const Entity& entity); // for debug
 };

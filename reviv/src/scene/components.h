@@ -8,6 +8,7 @@
 #include"renderer/material.h"
 #include"core/mat.h"
 #include"renderer/light.h"
+#include"physics/physics_manager.h"
 
 class TransformComponent : public SpecificComponent<TransformComponent>
 {
@@ -70,6 +71,7 @@ public:
 
     template<class ...Args>
     PointLightComponent(Args&&... args) : light(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("PointLightComponent"); }
+    
     virtual void log() const override { cout << componentTypeName << endl; ::log(light); }
 };
 
@@ -80,7 +82,42 @@ public:
 
     template<class ...Args>
     DirectionalLightComponent(Args&&... args) : light(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("DirectionalLightComponent"); }
+
     virtual void log() const override { cout << componentTypeName << endl; ::log(light); }
+};
+
+class PhysicalComponent : public SpecificComponent<PhysicalComponent>
+{
+public:
+    PhysicalDynamic physical;
+
+    template<class ...Args>
+    PhysicalComponent(Args&&... args) : physical(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("PhysicalComponent"); }
+
+    //PhysicalComponent(TransformComponent* pTransformComponent) : physical(pTransformComponent) { static bool isFirstInit = runOnFirstInit("PhysicalComponent"); }
+
+    virtual void log() const override { cout << componentTypeName << endl; ::log(physical); }
+};
+
+class ColliderSphereComponent : public SpecificComponent<ColliderSphereComponent>
+{
+public:
+    ColliderSphere collider;
+
+    template<class ...Args>
+    ColliderSphereComponent(Args&&... args) : collider(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("ColliderSphereComponent"); }
+
+    virtual void log() const override { cout << componentTypeName << endl; ::log(collider); }
+};
+
+class ColliderAabbComponent : public SpecificComponent<ColliderAabbComponent>
+{
+public:
+    ColliderAabb collider;
+
+    template<class ...Args>
+    ColliderAabbComponent(Args&&... args) : collider(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("ColliderAabbComponent"); }
+    virtual void log() const override { cout << componentTypeName << endl; ::log(collider); }
 };
 
 /*
