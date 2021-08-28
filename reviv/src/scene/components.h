@@ -9,6 +9,8 @@
 #include"core/mat.h"
 #include"renderer/light.h"
 #include"physics/physics_manager.h"
+#include"physics/collision_manager.h"
+#include"physics/dynamics_manager.h"
 
 class TransformComponent : public SpecificComponent<TransformComponent>
 {
@@ -110,13 +112,13 @@ public:
     virtual void log() const override { cout << componentTypeName << endl; ::log(collider); }
 };
 
-class ColliderAabbComponent : public SpecificComponent<ColliderAabbComponent>
+class ColliderBoxComponent : public SpecificComponent<ColliderBoxComponent>
 {
 public:
-    ColliderAabb collider;
+    ColliderBox collider;
 
     template<class ...Args>
-    ColliderAabbComponent(Args&&... args) : collider(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("ColliderAabbComponent"); }
+    ColliderBoxComponent(Args&&... args) : collider(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("ColliderBoxComponent"); }
     virtual void log() const override { cout << componentTypeName << endl; ::log(collider); }
 };
 

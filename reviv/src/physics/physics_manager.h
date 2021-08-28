@@ -1,10 +1,11 @@
 #pragma once
 
 #include"scene/entity.h"
-//#include"scene/components.h"
 #include"core/mat.h"
 #include"scene/scene.h"
-//#include"scene/components.h"
+
+#include"physics/collision_manager.h"
+#include"physics/dynamics_manager.h"
 
 class PhysicsManager
 {
@@ -13,16 +14,18 @@ public:
     PhysicsManager(const PhysicsManager&) = delete;
     PhysicsManager& operator=(const PhysicsManager&) = delete;
 
-    static void init() { getInstance()->iInit(); }
-    static void onUpdate(float dt) { getInstance()->iOnUpdate(dt); }
+    static void init() { get()->iInit(); }
+    static void onUpdate(float dt) { get()->iOnUpdate(dt); }
 
-    static PhysicsManager* getInstance()
+    static PhysicsManager* get()
     {
         static PhysicsManager instance;
         return &instance;
     }
 
+    std::vector<Collision> collisions;
 
+    Collider* getCollidableFromEntity(Entity* pEntity);
 private:
     PhysicsManager() = default;
     void iInit();
@@ -35,58 +38,3 @@ private:
 
     void alignPositionAndRotation(const Entity& parentEntity, Entity* childEntity);
 };
-
-class Collider
-{
-protected:
-    Collider() = default;
-};
-
-class ColliderSphere : public Collider
-{
-public:
-    float radius;
-};
-
-class ColliderAabb
-{
-public:
-    float relativeXMinus, relativeXPlus;
-    float relativeYMinus, relativeYPlus;
-};
-
-class TransformComponent;
-class PhysicalStatic // separated into ObjectStatic and ObjectDynamic to save memory for static terrain
-{
-public:
-    //TransformComponent* pTransform = nullptr;
-
-protected:
-    //PhysicalStatic(TransformComponent* pTransformComponent);
-    PhysicalStatic() = default; // temporary, later can be made public
-};
-
-class PhysicalDynamic : public PhysicalStatic
-{
-public:
-    PhysicalDynamic();
-
-    float mass;
-    Vec3f velocity;
-    Vec3f force;
-
-    float gravity;
-};
-
-class CollisionPoints
-{
-    Vec3f a;
-    Vec3f b;
-    Vec3f normal;
-    float depth;
-    bool hasCollided;
-};
-
-void log(const PhysicalDynamic& physical);
-void log(const ColliderSphere& collider);
-void log(const ColliderAabb& collider);

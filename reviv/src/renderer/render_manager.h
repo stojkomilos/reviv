@@ -21,13 +21,13 @@ public:
     RenderManager(const RenderManager&) = delete;
     RenderManager& operator=(const RenderManager&) = delete;
     
-    static void init() { getInstance()->iInit(); }
-    static void onUpdate() { getInstance()->iOnUpdate(); }
-    static void shutdown() { getInstance()->iShutdown(); }
+    static void init() { get()->iInit(); }
+    static void onUpdate() { get()->iOnUpdate(); }
+    static void shutdown() { get()->iShutdown(); }
 
     static void onEvent(Event* event);
     
-    static RenderManager* getInstance()
+    static RenderManager* get()
     {
         static RenderManager instance;
         return &instance;

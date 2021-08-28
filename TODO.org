@@ -17,6 +17,16 @@ todo:
  - fix lighting (marko kaze da misli da ne vidi specular)
  - clear comments, TODO, and useless code
 
+don't forget:
+ - good normal vectors for shaders after scaling
+ - apstract factory
+ - basic scripting
+ - better include-s
+ - singleton use get() everywhere and /not/ getInstance()
+ - rename pointers
+ - comments, TODO comments
+ - rename member variables to some convention
+
 ** 
 
 novi ciljevi:
@@ -42,6 +52,55 @@ organizacija:
  - operatori za mat.h
       
 * Physics
+
+** (blank) 
+
+general plan:
+ 1. double dispatch
+ 2. collision detection: sat/gjk
+ 3. collision response
+ 4. merge
+ -------
+ - broadphase:
+     -kD tree
+     -space hash (https://www.gamedev.net/tutorials/_/technical/game-programming/spatial-hashing-r2697/)
+ - copy raycasting from old physics?
+ - player motion with raycasting (works on uneven surfaces)
+ - entity sliding na povrsinama radi tek kasnije
+ 
+
+** ray casting
+
+Ray casts are used by weapon systems (e.g., to determine bullet hits), player mechanics (e.g., to determine whether or not there is solid ground beneath the character’s feet), AI systems (e.g., line of sight checks, targeting, movement queries, etc.), vehicle systems (e.g., to locate and snap the vehicle’s tires to the terrain) and so on.
+
+probably should report only the nearest "hit".
+
+
+$p(t) = p_0 + td, \quad t \in [0, 1]$
+Game engine book:
+    #+begin_src cpp
+      struct RayCastContact
+      {
+          float t; // value of t for constact
+
+          Entity* pEntity; // which entity did we hit
+
+          Vec3f normal; // surface normal at contact
+
+        // other info
+      };
+
+    #+end_src
+
+** shape cast
+
+PROBABLY USED FOR CHARACTER MOTION. WORKS ON UNEVEN PLANE. LOOK AT GAME ENGINE BOOK
+Similar to ray cast.
+
+Game engine book:
+    "The contact information returned by a shape cast is necessarily a bit more complex than it is for a ray cast. We cannot simply return one or more t values, because a t value only describes the location of the center point of the shape along its path. It tells us nothing of where, on the surface or interior of the shape, it came into contact with the impacted collidable. As a result, most shape casting APIs return both a t value and the actual contact point, along with other relevant information (such as which collidable was struck, the surface normal at the contact point, etc.)."
+
+** (blank)
 
 collider/rigidbody3d thing:
  - capsule (optional)
@@ -79,7 +138,7 @@ collider/rigidbody3d thing:
 
 Mozda: odvojene funkcije detectColissions() i resolveColissions(). detectCollisions push_back-uje =Collision=-e u vektor collision-a. i onda ih resolveCollision resolv-uje.
 
-Nikola:
+** Nikola o Unreal Engine-u:
  Tipovi objekata za koliziju:
     Staticni: 
         arhitektura, zgrade itd...
@@ -95,6 +154,32 @@ Nikola:
 
 za bilijarske kugle bi koristio physics body da moze da korsiti sam svoju fiziku
 
+** Game engine architecture book
+
+Collision primitives:
+ - sphere (radius + position = 4 floats -> SIMD fast af)
+ - capsule . 2 points + radius. more efficient than spheres and boxes
+ - aabb. represented by 2 points, one with smaller x and y, and the other with larger x and y. fast with other aabb collision detection
+ - orented bounding box (a.k.a. box). represented by three half dimensions and transformation
+
+*** Contact information
+
+Collision systems usually package contact information into a convenient data structure that can be instanced for each contact detected. For example, Havok returns contacts as instances of the class hkContactPoint. Contact information often includes a separating vector—a vector along which we can slide the objects in order to efficiently move them out of collision. It also typically contains information about which two collidables were in contact, including which individual shapes were intersecting and possibly even which individual features of those shapes were in contact. The system may also return additional information, such as the velocity of the bodies projected onto the separating normal.
+
+** SAT
+
+Such a line is called a separating line, and it is always perpendicular to
+the separating axis
+
+ *good optimization* - We can also think of a projection as a minimum and
+maximum coordinate along the axis, which we can write as the fully closed
+interval [cmin, cmax]
+
+*** Wikipedia:
+
+In 3D, using face normals alone will fail to separate some edge-on-edge non-colliding cases. Additional axes, consisting of the cross-products of pairs of edges, one taken from each object, are required.[6]
+
+For increased efficiency, parallel axes may be calculated as a single axis.
 
 * Renderer
 
@@ -190,9 +275,6 @@ stvari koje cine static cini mi se:
  - inicijalizacija se radi samo jednom
  - program life time
  - local to that scope
-
-** =delete =default
-Stackoverflow odgovor: https://stackoverflow.com/a/6502854
 
 ** const
 

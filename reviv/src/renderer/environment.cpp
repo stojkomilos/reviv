@@ -121,7 +121,7 @@ void Environment::bind(Shader* shader)
                 if(*it == iteratorUniformMap.first)
                 {
                     //cout << "Environment texture: " << *it << " slot: " << shader->environmentTextureUniformCounter << endl;
-                    RV_ASSERT(shader != &RenderManager::getInstance()->shadowMapShader, "");
+                    RV_ASSERT(shader != &RenderManager::get()->shadowMapShader, "");
 
                     shaderUniformMap.set(*it, (int)(shader->environmentTextureUniformCounter));
                     iteratorUniformMap.second->bind(shader->environmentTextureUniformCounter);

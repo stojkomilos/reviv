@@ -7,14 +7,14 @@ using std::cin; using std::cout; using std::endl;
 class Time
 {
 public:
-    static void init() { getInstance()->iInit(); }
-    static void onUpdate() { getInstance()->iOnUpdate(); }
-    static float getTime() { return getInstance()->igetTime(); } // returns time since the start of rendering
-    static float getDelta() { return getInstance()->iGetDelta(); } // returns time in dt in seconds
-    static float isOneSecond() { return getInstance()->iIsOneSecond(); }
-    static float getLoopCounter() { return getInstance()->gameLoopCounter; }
+    static void init() { get()->iInit(); }
+    static void onUpdate() { get()->iOnUpdate(); }
+    static float getTime() { return get()->igetTime(); } // returns time since the start of rendering
+    static float getDelta() { return get()->iGetDelta(); } // returns time in dt in seconds
+    static float isOneSecond() { return get()->iIsOneSecond(); }
+    static float getLoopCounter() { return get()->gameLoopCounter; }
 
-    static Time* getInstance()
+    static Time* get()
     {
         static Time instance;
         return &instance;

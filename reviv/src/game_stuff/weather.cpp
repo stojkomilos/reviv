@@ -7,7 +7,7 @@ void Weather::init(int timeOfDayHours, int timeOfDayMinutes, float timeOfDaySeco
     pSunModel = Scene::createEntity("WeatherSunModel");
     pSunDirectionalLight = Scene::createEntity("WeatherSunDirectionalLight");
     
-    pSunModel->add<ModelComponent>(&AssetManager::get()->modelLoaderSphere, &RenderManager::getInstance()->shaderMonochroma);
+    pSunModel->add<ModelComponent>(&AssetManager::get()->modelLoaderSphere, &RenderManager::get()->shaderMonochroma);
     pSunModel->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec3f(1, 1, 0));
 
     pSunDirectionalLight->add<DirectionalLightComponent>();

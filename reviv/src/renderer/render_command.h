@@ -11,13 +11,13 @@ public:
     RenderCommand(const RenderCommand&) = delete;
     RenderCommand& operator=(const RenderCommand&) = delete;
 
-    static void init() { getInstance()->iInit(); }
-    static void setClearColor(const Vec4f& color) { getInstance()->iSetClearColor(color); }
-    static void clear() { getInstance()->iClear(); }
-    static void drawArrays(const Mesh& mesh) { getInstance()->iDrawArrays(mesh); }
-    static void drawElements(const Mesh& mesh) { getInstance()->iDrawElements(mesh); }
+    static void init() { get()->iInit(); }
+    static void setClearColor(const Vec4f& color) { get()->iSetClearColor(color); }
+    static void clear() { get()->iClear(); }
+    static void drawArrays(const Mesh& mesh) { get()->iDrawArrays(mesh); }
+    static void drawElements(const Mesh& mesh) { get()->iDrawElements(mesh); }
 
-    static RenderCommand* getInstance()
+    static RenderCommand* get()
     {
         static RenderCommand instance;
         return &instance;

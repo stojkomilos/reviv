@@ -195,9 +195,9 @@ void RenderManager::defferedMonochromaRenderPass()
 
                 for(unsigned int i=0; i < pModel->pMeshes.size(); i++)
                 {
-                    if(pModel->pMaterials[0]->pShader == &RenderManager::getInstance()->shaderMonochroma)
+                    if(pModel->pMaterials[0]->pShader == &RenderManager::get()->shaderMonochroma)
                     {
-                        cout << "Rendering light: " << itEntity->entityName << endl;
+                        //cout << "Rendering light: " << itEntity->entityName << endl;
                         bindEnvironmentAndMaterial(pModel->pMaterials[i]->pShader, &environment, pModel->pMaterials[i]);
                         pModel->pMaterials[i]->pShader->uploadUniformMat4("u_ModelMatrix", pTransformComponent->getTransform());
 
@@ -231,7 +231,7 @@ void RenderManager::onEvent(Event* event)
     if(event->m_Type == EventTypeWindowResize)
     {
         EventWindowResize* resizeEvent = (EventWindowResize*)event;
-        getInstance()->deffered.resize(resizeEvent->m_Width, resizeEvent->m_Height);
+        get()->deffered.resize(resizeEvent->m_Width, resizeEvent->m_Height);
     }
 
 }
