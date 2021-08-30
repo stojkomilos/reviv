@@ -72,8 +72,8 @@ void Application::run()
 
         Time::onUpdate();
         Input::onUpdate();
-        PhysicsManager::onUpdate(Time::getDelta());
         GameStuffManager::onUpdate();
+        PhysicsManager::onUpdate(Time::getDelta());             //TODO: maybe goes before rendermanager? probably doesn't matter too much
         RenderManager::onUpdate();
         window.onUpdate();              // update the glfw window
     }

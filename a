@@ -48,6 +48,12 @@ CollisionPoints CollisionManager::gjk(Collider* pFirstCollider, TransformCompone
     while(true)
     {
         Vec3f newPoint = doSupportFunction(direction, pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
+
+        if(dot(direction, newPoint) < 0.0001f) // temp
+        {
+            cout << "dot < 0.0001f" << endl;
+        }
+
         if(dot(direction, newPoint) <= 0.0) // mozda < umesto <=
         {
             collisionPoints.hasCollided = false;
@@ -71,7 +77,6 @@ CollisionPoints CollisionManager::gjk(Collider* pFirstCollider, TransformCompone
         if(gjkHandleSimplex(&simplex, &direction))
         {
             collisionPoints.hasCollided = true;
-            cout << "breakPls?" << endl;
             break;
         }
     }
@@ -109,14 +114,14 @@ static bool gjkHandleLine(SimplexHelpingStruct* pSimplex, Vec3f* pDirection)
     if(sDir(ab, ao))
     {
         *pDirection = cross(cross(ab, ao), ab);
+        return false;
     }
     else {
         pSimplex->points[0] = pSimplex->points[1];
         pSimplex->size--;
-        gjkHandlePoint(pSimplex, pDirection);
+        return false;
     }
 
-    return false;
 }
 
 static bool gjkHandleTriangle(SimplexHelpingStruct* pSimplex, Vec3f* pDirection)
@@ -151,32 +156,29 @@ static bool gjkHandleTriangle(SimplexHelpingStruct* pSimplex, Vec3f* pDirection)
         {
             pSimplex->size = 2;
             pSimplex->points[1] = pSimplex->points[2];
-            //gjkHandleLine(pSimplex, pDirection);
+            gjkHandleLine(pSimplex, pDirection);
+            return false;
         }
         else {   
             pSimplex->size = 2;
-            pSimplex->points[1] = pSimplex->points[2];
+            pSimplex->points[2] = pSimplex->points[1];
             gjkHandleLine(pSimplex, pDirection);
+            return false;
         }
-        return false;
     }
     else if(sDir(bcPerp, bo))
     {
         if(sDir(-bc, co))
         {
             pSimplex->size = 2;
-            pSimplex->points[0] = pSimplex->points[1];
-            pSimplex->points[1] = pSimplex->points[2];
-            //return gjkHandleLine(pSimplex, pDirection);
-            //gjkHandleLine(pSimplex, pDirection);
+            gjkHandleLine(pSimplex, pDirection);
+            return false;
         }
-        else {
-            pSimplex->points[0] = pSimplex->points[1];
-            pSimplex->points[1] = pSimplex->points[2];
+        else { // zadrazava A i B, mozda lose
             pSimplex->size = 2;
             gjkHandleLine(pSimplex, pDirection);
+            return false;
         }
-        return false;
     }
     else { // is "inside" the triangle projection
         if(sDir(ao, abc)) // is "above"
@@ -186,10 +188,7 @@ static bool gjkHandleTriangle(SimplexHelpingStruct* pSimplex, Vec3f* pDirection)
         }
         else { // is "below"
             *pDirection = -abc;
-            pSimplex->points[0] = b;
-            pSimplex->points[1] = a;
-            pSimplex->points[2] = c;
-            //RV_ASSERT(sDir(*pDirection, ao), "");
+            RV_ASSERT(sDir(*pDirection, ao), "");
         }
         cout << "HAHA!" << endl;
         return false;
@@ -198,7 +197,7 @@ static bool gjkHandleTriangle(SimplexHelpingStruct* pSimplex, Vec3f* pDirection)
 
 static bool gjkHandleTetrahedron(SimplexHelpingStruct *pSimplex, Vec3f* pDirection)
 {
-    Vec3f a = pSimplex->points[0];
+ Vec3f a = pSimplex->points[0];
     Vec3f b = pSimplex->points[1];
     Vec3f c = pSimplex->points[2];
     Vec3f d = pSimplex->points[3];
@@ -222,66 +221,6 @@ static bool gjkHandleTetrahedron(SimplexHelpingStruct *pSimplex, Vec3f* pDirecti
     Vec3f co = -c;
     Vec3f doo = -d;
 
-
-    Vec3f abd = cross(ab, ad);
-    Vec3f acd = cross(ad, ac);
-    Vec3f bcd = cross(bc, bd);
-
-    if(module(a - b) < 0.0001f || module(a - c) < 0.0001f || module(a - d) < 0.0001f || module(b - c) < 0.0001f || module(b - d) < 0.0001f || module(c - d) < 0.0001f)
-    {
-        cout << endl;
-    }
-
-
-    cout << "a: ";
-    log(a);
-
-    cout << "b: ";
-    log(b);
-
-    cout << "c: ";
-    log(c);
-
-    cout << "d: ";
-    log(d);
-    cout << endl << endl;
-
-    RV_ASSERT(sDir(*pDirection, ao), "invalid origin position");
-
-    //RV_ASSERT(!sDir(acPerp, ao), ""); // all 3 temp
-    //RV_ASSERT(!sDir(bcPerp, bo), "");
-    //RV_ASSERT((sDir(abc, cross(ab, ao)) && sDir(abc, cross(bc, bo)) && sDir(abc, cross(-ac, co))), "");
-
-
-    if(sDir(abd, ao))
-    {
-        pSimplex->points[2] = pSimplex->points[3];
-        pSimplex->size--;
-        gjkHandleTriangle(pSimplex, pDirection);
-        return false;
-    }
-
-    if(sDir(acd, ao))
-    {
-        pSimplex->points[1] = pSimplex->points[2];
-        pSimplex->points[2] = pSimplex->points[3];
-        pSimplex->size--;
-        gjkHandleTriangle(pSimplex, pDirection);
-        return false;
-    }
-
-    if(sDir(bcd, bo))
-    {
-        pSimplex->points[0] = pSimplex->points[1];
-        pSimplex->points[1] = pSimplex->points[2];
-        pSimplex->points[2] = pSimplex->points[3];
-        pSimplex->size--;
-        gjkHandleTriangle(pSimplex, pDirection);
-        return false;
-    }
-
-    cout << "FOOKING FOUND IT NIGGERFAGGOT" << endl;
-    return true;
 }
 
 bool CollisionManager::gjkHandleSimplex(SimplexHelpingStruct* pSimplex, Vec3f* pDirection)

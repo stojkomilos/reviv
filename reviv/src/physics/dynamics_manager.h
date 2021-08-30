@@ -18,17 +18,7 @@ private:
 
 class TransformComponent;
 
-class PhysicalStatic // separated into ObjectStatic and ObjectDynamic to save memory for static terrain
-{
-public:
-    //TransformComponent* pTransform = nullptr;
-
-protected:
-    //PhysicalStatic(TransformComponent* pTransformComponent);
-    PhysicalStatic() = default; // temporary, later can be made public
-};
-
-class PhysicalDynamic : public PhysicalStatic
+class PhysicalDynamic
 {
 public:
     PhysicalDynamic();

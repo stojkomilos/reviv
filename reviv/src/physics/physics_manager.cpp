@@ -34,16 +34,19 @@ void PhysicsManager::iInit()
 Collider* PhysicsManager::getCollidableFromEntity(Entity* pEntity)
 {
     RV_ASSERT(Scene::isEntityValid(pEntity), "entity not valid")
-    RV_ASSERT((/*pEntity->has<ColliderAabbComponent>() &&*/ !pEntity->has<ColliderSphereComponent>() && !pEntity->has<ColliderBoxComponent>())
-        || (/*!pEntity->has<ColliderAabbComponent>() &&*/ pEntity->has<ColliderSphereComponent>() && !pEntity->has<ColliderBoxComponent>()) 
-        || (/*!pEntity->has<ColliderAabbComponent>() &&*/ !pEntity->has<ColliderSphereComponent>() && pEntity->has<ColliderBoxComponent>())
-        || (/*!pEntity->has<ColliderAabbComponent>() &&*/ !pEntity->has<ColliderSphereComponent>() && !pEntity->has<ColliderBoxComponent>()), "entity can't have more than one collider component");
+    RV_ASSERT((pEntity->has<ColliderMeshComponent>() && !pEntity->has<ColliderSphereComponent>() && !pEntity->has<ColliderBoxComponent>())
+        || (!pEntity->has<ColliderMeshComponent>() && pEntity->has<ColliderSphereComponent>() && !pEntity->has<ColliderBoxComponent>()) 
+        || (!pEntity->has<ColliderMeshComponent>() && !pEntity->has<ColliderSphereComponent>() && pEntity->has<ColliderBoxComponent>())
+        || (!pEntity->has<ColliderMeshComponent>() && !pEntity->has<ColliderSphereComponent>() && !pEntity->has<ColliderBoxComponent>()), "entity can't have more than one collider component");
 
     if(pEntity->has<ColliderSphereComponent>())
         return &pEntity->get<ColliderSphereComponent>()->collider;
 
     if(pEntity->has<ColliderBoxComponent>())
         return &pEntity->get<ColliderBoxComponent>()->collider;
+
+    if(pEntity->has<ColliderMeshComponent>())
+        return &pEntity->get<ColliderMeshComponent>()->collider;
 
     return nullptr;
 }

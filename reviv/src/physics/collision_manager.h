@@ -10,6 +10,12 @@ class ColliderSphere;
 class ColliderBox;
 class ColliderMesh;
 
+struct SimplexHelpingStruct
+{
+    Vec3f points[4];
+    unsigned char size;
+};
+
 class CollisionPoints
 {
 public:
@@ -20,35 +26,24 @@ public:
     bool hasCollided;
 };
 
+class TransformComponent;
+
 class Collider
 {
 public:
     virtual ~Collider() = default;
+
     virtual CollisionPoints collide(Collider* pSecondCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) = 0;
+    virtual Vec3f findFurthestPoint(const Vec3f& direction, TransformComponent* pTransform) const = 0; // a.k.a. support function
 
     virtual CollisionPoints collideSphere(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) = 0;
     virtual CollisionPoints collideBox(ColliderBox* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) = 0;
     virtual CollisionPoints collideMesh(ColliderMesh* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) = 0;
 
+    TransformComponent* pTransformComponent;
+
 protected:
     Collider() = default;
-};
-
-class ColliderBox : public Collider
-{
-    virtual CollisionPoints collide(Collider* pSecondCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
-    virtual CollisionPoints collideSphere(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
-    virtual CollisionPoints collideBox(ColliderBox* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
-    virtual CollisionPoints collideMesh(ColliderMesh* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
-};
-
-class ColliderMesh : public Collider
-{
-    Mesh* pMesh;
-    virtual CollisionPoints collide(Collider* pSecondCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
-    virtual CollisionPoints collideSphere(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
-    virtual CollisionPoints collideBox(ColliderBox* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
-    virtual CollisionPoints collideMesh(ColliderMesh* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
 };
 
 class ColliderSphere : public Collider
@@ -58,12 +53,38 @@ public:
     ColliderSphere(float relativeRadius)
         : relativeRadius(relativeRadius) { }
 
+    virtual Vec3f findFurthestPoint(const Vec3f& direction, TransformComponent* pTransform) const override;
+
     virtual CollisionPoints collide(Collider* pSecondCollider, TransformComponent* pFirstTransform, TransformComponent* pOtherTransform) override;
     virtual CollisionPoints collideSphere(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
     virtual CollisionPoints collideBox(ColliderBox* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
     virtual CollisionPoints collideMesh(ColliderMesh* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
 
     float relativeRadius; // the radius gets scaled by the entitys respective transform
+};
+
+class ColliderBox : public Collider
+{
+public:
+    virtual Vec3f findFurthestPoint(const Vec3f& direction, TransformComponent* pTransform) const override;
+
+    virtual CollisionPoints collide(Collider* pSecondCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
+    virtual CollisionPoints collideSphere(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
+    virtual CollisionPoints collideBox(ColliderBox* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
+    virtual CollisionPoints collideMesh(ColliderMesh* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
+};
+
+class ColliderMesh : public Collider
+{
+public:
+    virtual Vec3f findFurthestPoint(const Vec3f& direction, TransformComponent* pTransform) const override;
+
+    Mesh* pMesh;
+
+    virtual CollisionPoints collide(Collider* pSecondCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
+    virtual CollisionPoints collideSphere(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
+    virtual CollisionPoints collideBox(ColliderBox* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
+    virtual CollisionPoints collideMesh(ColliderMesh* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
 };
 
 class CollisionManager
@@ -80,8 +101,13 @@ public:
     //void detectCollisionsBroadPhase(float dt);
     void detectCollisionsNarrowPhase(float dt);
 
+    static CollisionPoints gjk(Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform);
+    static bool gjkHandleSimplex(SimplexHelpingStruct* pSimplex, Vec3f* pDirection);
+    static Vec3f doSupportFunction(const Vec3f& direction, Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform);
+
     //TODO: maybe? place all this in Collider class, remove CollisionManager and so on... (in what file to put Collider? file collider.h)
     // similar goes for DynamicsManager?
+    // TODO: optimize all the stupid returns
     static CollisionPoints collideSphereSphere(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, ColliderSphere* pSecondCollider, TransformComponent* pSecondTransform);
     static CollisionPoints collideSphereBox(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, ColliderBox* pSecondCollider, TransformComponent* pSecondTransform);
     static CollisionPoints collideSphereMesh(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, ColliderMesh* pSecondCollider, TransformComponent* pSecondTransform);

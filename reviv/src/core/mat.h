@@ -102,6 +102,10 @@ namespace mat{
         float x[4];
     };
 
+    bool checkIfPointBelongsToLine(const Vec3f& linePoint1, const Vec3f& linePoint2, const Vec3f& point);
+    // not tested
+    //float calcPointToPlaneDistance(const Vec3f& point, const Vec3f& planePointA, const Vec3f& planePointB, const Vec3f& planePointC);
+
     Mat4 translate(Mat4 mtx, const Vec4f& vec);
     Mat4 scale(Mat4 mtx, const Vec4f& vec);
     Mat4 rotateX(float theta); // supposed to be roll
@@ -111,8 +115,11 @@ namespace mat{
     Mat4 multiply(const Mat4& first, const Mat4& second);
     Vec4f multiply(const Mat4& mtx, const Vec4f& vec);
 
+    float module(const Vec4f& vec);
     float module(const Vec3f& vec);
     float module(const Vec2f& vec);
+    float module(const Vec1f& vec);
+
     float dot(const Vec3f& first, const Vec3f& second);
     float dot(const Vec2f& first, const Vec2f& second);
     Vec3f projection(const Vec3f& first, const Vec3f& second);
@@ -135,6 +142,7 @@ namespace mat{
     Vec3f operator*(const float& scalar, const Vec3f& thing);
     Vec3f operator+(const Vec3f& first, const Vec3f& second);
 
+    Vec4f operator*(const Mat4& mtx, const Vec4f& vec);
     Vec4f operator/(const Vec4f& thing, const float& scalar);
     Vec4f operator/(const float& scalar, const Vec4f& thing);
 

@@ -12,12 +12,13 @@ void DynamicsManager::onUpdate(float dt)
         if(!itEntity->has<PhysicalComponent>())
             continue;
 
-        cout << "Updating dynamics for entity: " << itEntity->entityName << endl;
+        //cout << "Updating dynamics for entity: " << itEntity->entityName << endl;
 
         auto* pPhysical = &itEntity->get<PhysicalComponent>()->physical;
         auto* pTransform = itEntity->get<TransformComponent>();
 
-        pPhysical->force = pPhysical->mass * pPhysical->gravity * Vec3f(0, 0, -1);
+        pPhysical->force += pPhysical->mass * pPhysical->gravity * Vec3f(0, 0, -1);
+
         pPhysical->velocity += pPhysical->force / pPhysical->mass * dt;
         pTransform->position += pPhysical->velocity * dt;
 

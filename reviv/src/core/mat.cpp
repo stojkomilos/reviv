@@ -119,6 +119,11 @@ namespace mat{
         a[0][0] = a[1][1] = a[2][2] = a[3][3] = n;
     }
 
+    Vec4f operator*(const Mat4& mtx, const Vec4f& vec)
+    {
+        return multiply(mtx, vec);
+    }
+
     Vec3f operator*(const Vec3f& thing, const float& scalar)
     {
         Vec3f result(thing.a[0] * scalar, thing.a[1] * scalar, thing.a[2] * scalar);
@@ -144,6 +149,27 @@ namespace mat{
     {
         return thing / scalar;
     }
+
+    bool checkIfPointBelongsToLine(const Vec3f& linePoint1, const Vec3f& linePoint2, const Vec3f& point)// TODO: optimize if still used in GJK(https://stackoverflow.com/questions/17692922/check-is-a-point-x-y-is-between-two-points-drawn-on-a-straight-line)
+    {
+        float realLenght = module(linePoint1 - linePoint2);
+        float calcLength = module(linePoint1 - point) + module(linePoint2 - point); 
+
+        if(abs(realLenght - calcLength) < MAT_EPSILON)
+            return true;
+        return false;
+    }
+
+/*
+    WARNING: not tested
+    float calcPointToPlaneDistance(const Vec3f& point, const Vec3f& planePointA, const Vec3f& planePointB, const Vec3f& planePointC) // TODO: can be optimized for GJK, make another function, and take normal and a point(on plane?) as parameters instead of this
+    {
+        Vec3f abc = cross(planePointB - planePointA, planePointC - planePointA);
+        abc = abc / module(abc);
+        float result = dot(abc, point);
+        result += dot(abc, -planePointA);
+    }
+*/
 
     Mat4 translate(Mat4 mtx, const Vec4f& vec)
     {
@@ -267,14 +293,28 @@ namespace mat{
         return direction;
     }
 
+    float module(const Vec4f& vec)
+    {
+        assert(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1] + vec.a[2]*vec.a[2] + vec.a[3]*vec.a[3] > 0); // vector maybe of zero length
+        return sqrt(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1] + vec.a[2]*vec.a[2] + vec.a[3]*vec.a[3]);
+    }
+
     float module(const Vec3f& vec)
     {
+        assert(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1] + vec.a[2]*vec.a[2] > 0); // vector maybe of zero length
         return sqrt(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1] + vec.a[2]*vec.a[2]);
     }
 
     float module(const Vec2f& vec)
     {
+        assert(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1]); // vector maybe of zero length
         return sqrt(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1]);
+    }
+
+    float module(const Vec1f& vec)
+    {
+        assert(vec.a[0]*vec.a[0]); // vector maybe of zero length
+        return sqrt(vec.a[0]*vec.a[0]);
     }
 
     float dot(const Vec3f& first, const Vec3f& second)

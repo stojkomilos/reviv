@@ -67,6 +67,10 @@ general plan:
  - copy raycasting from old physics?
  - player motion with raycasting (works on uneven surfaces)
  - entity sliding na povrsinama radi tek kasnije
+
+** gjk
+
+initialDirection = normalize(s2.center - s1.center);
  
 
 ** ray casting

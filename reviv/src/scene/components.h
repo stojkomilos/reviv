@@ -122,6 +122,17 @@ public:
     virtual void log() const override { cout << componentTypeName << endl; ::log(collider); }
 };
 
+class ColliderMeshComponent : public SpecificComponent<ColliderMeshComponent>
+{
+public:
+    ColliderMesh collider;
+
+    template<class ...Args>
+    ColliderMeshComponent(Args&&... args) : collider(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("ColliderMeshComponent"); }
+
+    virtual void log() const override { cout << componentTypeName << endl; ::log(collider); }
+};
+
 /*
 template <class ComponentTemplate, class BasicTemplate>
 class ComponentTemplate : public SpecificComponent<ComponentTemplate>, public <BasicTemplate>
