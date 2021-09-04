@@ -83,10 +83,7 @@ public:
         prvo = Scene::createEntity("prvo");
         prvo->get<TransformComponent>()->position = {13, 2, 5.1};
         prvo->get<TransformComponent>()->rotation = Vec3f(rand() / 100.f, rand() / 100.f, rand() / 100.f);
-        prvo->get<TransformComponent>()->scale = {4, 0.3, 2};
-        //prvo->add<ModelComponent>(&AssetManager::get()->modelLoaderDodik, &RenderManager::get()->deffered.geometryPassShader);
-        //prvo->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->deffered.geometryPassShader);
-        prvo->add<ModelComponent>(&AssetManager::get()->modelLoaderCylinder, &RenderManager::get()->deffered.geometryPassShader);
+        prvo->add<ModelComponent>(&AssetManager::get()->modelLoaderDodik, &RenderManager::get()->deffered.geometryPassShader);
         prvo->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 0, 1));
         prvo->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.2f);
         prvo->add<PhysicalComponent>();
@@ -97,12 +94,8 @@ public:
 
         drugo = Scene::createEntity("Drugo");
         drugo->get<TransformComponent>()->position = {13, 0, 3};
-        //drugo->get<TransformComponent>()->position = prvo->get<TransformComponent>()->position + Vec3f(0, 0, 4);
         drugo->get<TransformComponent>()->rotation = Vec3f(rand() / 100.f, rand() / 100.f, rand() / 100.f);
-        //drugo->get<TransformComponent>()->scale = {1.7, 2, 1};
-        //drugo->add<ModelComponent>(&AssetManager::get()->modelLoaderHexagon, &RenderManager::get()->deffered.geometryPassShader);
-        drugo->add<ModelComponent>(&AssetManager::get()->modelLoaderCylinder, &RenderManager::get()->deffered.geometryPassShader);
-        //drugo->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->deffered.geometryPassShader);
+        drugo->add<ModelComponent>(&AssetManager::get()->modelLoaderHexagon, &RenderManager::get()->deffered.geometryPassShader);
         drugo->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 0, 1));
         drugo->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.2f);
         drugo->add<PhysicalComponent>();
@@ -130,15 +123,13 @@ public:
 
         trans->position += Time::getDelta() * Vec3f(0, 0, -1) * 0.1;
 
-        //Rotation firstRot = drugo->get<TransformComponent>()->rotation;
-        //Rotation secondRot = prvo->get<TransformComponent>()->rotation;
+        prvo->get<TransformComponent>()->rotation.yaw = Time::getTime();
+        prvo->get<TransformComponent>()->rotation.roll = Time::getTime() * 3.1;
+        prvo->get<TransformComponent>()->rotation.pitch = Time::getTime() * 0.3 + 0.7;
 
-        //drugo->get<TransformComponent>()->rotation.yaw += Time::getDelta();
-        //trans->rotation.roll += Time::getDelta();
-        //cout << "delta: " << Time::getDelta() << endl;
-        //drugo->get<TransformComponent>()->rotation.roll += Time::GetDelta();
-
-        //prvo->get<TransformComponent>()->rotation.yaw -= Time::getDelta();
+        drugo->get<TransformComponent>()->rotation.yaw = Time::getTime() * 0.7;
+        drugo->get<TransformComponent>()->rotation.roll = Time::getTime() * 1.3 + 0.333;
+        drugo->get<TransformComponent>()->rotation.pitch = Time::getTime() * 1.8 + 0.2;
 
     }
 };

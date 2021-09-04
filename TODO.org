@@ -86,6 +86,13 @@ organizacija:
 
 ** (blank) 
 
+danas:
+ - dodaj assert za prosli direction i newpoint u handleTriangle
+ - casey muratori check
+ - gjk distance and vector
+ - some other 3d implementation
+   
+
 general plan:
  1. double dispatch
  2. collision detection: sat/gjk

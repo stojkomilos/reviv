@@ -279,11 +279,7 @@ void logSpecificUniform(const ShaderUniformMap& shaderUniformMap, const std::str
         case ShaderDataType::SdtFloat4:         log(*(Vec4f*)value->ptr);     break;
         case ShaderDataType::SdtMat3:            log(*(Mat3*)value->ptr);       break;
         case ShaderDataType::SdtMat4:            log(*(Mat4*)value->ptr);       break;
-        case ShaderDataType::SdtInt1:             log(*(Vec1i*)value->ptr);       break;
-        case ShaderDataType::SdtInt2:            log(*(Vec2i*)value->ptr);       break;
-        case ShaderDataType::SdtInt3:            log(*(Vec3i*)value->ptr);       break;
-        case ShaderDataType::SdtInt4:            log(*(Vec4i*)value->ptr);       break;
-        case ShaderDataType::SdtBool:            log(*(bool*)value->ptr);       break;
+        case ShaderDataType::SdtInt1:             log(*(int*)value->ptr);       break;
         default: RV_ASSERT(false, "ERROR: ShaderUniformHelpingStruct data type not defined in log function");
     }
     cout << endl;

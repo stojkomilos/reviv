@@ -67,27 +67,6 @@ void log(const Vec4f& thing)
     cout << endl;
 }
 
-void log(const Vec1i& thing)
-{
-    cout << thing.x << endl;
-}
-
-void log(const Vec2i& thing)
-{
-    cout << thing.x << " " << thing.y << endl;
-}
-
-void log(const Vec3i& thing)
-{
-    cout << thing.x << " " << thing.y << " " << thing.z << endl;
-}
-
-void log(const Vec4i& thing)
-{
-    cout << thing.x << " " << thing.y << " " << thing.z << " " << thing.w << endl;
-}
-
-
 namespace mat{
 
     Vec2f::Vec2f(float x, float y) 
@@ -102,21 +81,14 @@ namespace mat{
     Vec4f::Vec4f(const Vec3f& vec, float scalar)
         : a {vec.a[0], vec.a[1], vec.a[2], scalar} {}
 
-    Vec1i::Vec1i(int x)
-        : x(x) {}
-
-    Vec2i::Vec2i(int x, int y)
-        : x(x), y(y) {}
-
-    Vec3i::Vec3i(int x, int y, int z)
-        : x(x), y(y), z(z) {}
-
-    Vec4i::Vec4i(int x, int y, int z, int w)
-        : x(x), y(y), z(z), w(w) {}
-
     Mat4::Mat4(float n)
     {
         a[0][0] = a[1][1] = a[2][2] = a[3][3] = n;
+    }
+
+    bool compare(const Vec3f& first, const Vec3f& second, float marginOfError)
+    {
+        return (abs(first.a[0] - second.a[0]) < marginOfError) && (abs(first.a[1] - second.a[1]) < marginOfError) && (abs(first.a[2] - second.a[2]) < marginOfError);
     }
 
     Vec4f operator*(const Mat4& mtx, const Vec4f& vec)

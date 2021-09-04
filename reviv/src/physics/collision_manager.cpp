@@ -64,7 +64,7 @@ void CollisionManager::detectCollisionsNarrowPhase(float dt)
                 collision.pEntity1->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1, 0, 0));
                 collision.pEntity2->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1, 0, 0));
                 cout << "collision depth: " << collision.collisionPoints.depth << endl;
-                //collision.pEntity2->get<TransformComponent>()->position += (collision.collisionPoints.depth + 0.00001f) * collision.collisionPoints.normal;
+                collision.pEntity2->get<TransformComponent>()->position += (collision.collisionPoints.depth + 0.00001f) * collision.collisionPoints.normal;
             }
             else {
                 collision.pEntity1->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 1, 0));

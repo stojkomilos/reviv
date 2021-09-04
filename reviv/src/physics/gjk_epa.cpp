@@ -33,13 +33,11 @@ namespace gjkEpa
 
         direction = -simplex.points[0];
 
-        cout << "GJK START: -------" << endl;
         while(true)
         {
             Vec3f newPoint = doSupportFunction(direction, pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
 
-            if(dot(direction, newPoint) < 0.005)
-            //if(!sDir(direction, newPoint))
+            if(!sDir(direction, newPoint))
             {
                 break;
             }
@@ -53,23 +51,15 @@ namespace gjkEpa
             simplex.size++;
 
 #ifdef RV_DEBUG
-            cout << "MODULE----: " << endl;
             for(int i=0; i<simplex.size; i++)
                 for(int j=i+1; j<simplex.size; j++)
                 {
-                    cout << "A: ";
-                    log(simplex.points[i]);
-                    cout << "B: ";
-                    log(simplex.points[j]);
-                    cout << "module=" << module(simplex.points[i] - simplex.points[j]) << endl << endl;
-
                     RV_ASSERT(module(simplex.points[i] - simplex.points[j]) > 0.001f, "");
                 }
-            cout << "-------" << endl;
 #endif
             if(gjkHandleSimplex(&simplex, &direction))
             {
-                //result = doEpa(&simplex, pFirstTransform, pFirstCollider, pSecondTransform, pSecondCollider);
+                result = doEpa(&simplex, pFirstTransform, pFirstCollider, pSecondTransform, pSecondCollider);
                 result.hasCollided = true;
                 break;
             }
@@ -88,36 +78,17 @@ namespace gjkEpa
         Vec3f ao = -a;
         Vec3f bo = -b;
 
-
-        // TODO: what about this stuff
-        if(getDistancePointLine({0, 0, 0}, a, b) < 0.001f)
-        {
-            cout << endl;
-            RV_ASSERT(false, ""); // temp-ish
-        }
-
         RV_ASSERT(!sDir(-ab, ao), "invalid origin location");
-
-        cout << "handleLine: ";
 
         if(sDir(-ab, bo))
         {
             *pDirection = cross(cross(ab, ao), ab);
-
-            cout << "p1: ";
-            log(pSimplex->points[0]);
-            cout << " p2: ";
-            log(pSimplex->points[1]);
-            cout << " dir: ";
-            log(*pDirection);
-            cout << "1" << endl;
         }
         else {
             pSimplex->points[0] = pSimplex->points[1];
             pSimplex->size = 1;
             *pDirection = -pSimplex->points[0];
 
-            cout << "2" << endl;
             RV_ASSERT(sDir(ab, bo), "invalid origin location"); // redundant?
         }
     }
@@ -144,23 +115,9 @@ namespace gjkEpa
         Vec3f acPerp = cross(abc, ac);
         Vec3f bcPerp = cross(bc, abc);
 
-        bool isBehindAB = sDir(ao, ab) && sDir(bo, -ab) && sDir(cross(abc, -ab), ao);
-        if(isBehindAB)
-        {
-            cout << "!NOT AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA!" << endl; // TODO: ovo se calluje nekad (mozda nije bug?)
-            RV_ASSERT(false, "invalid origin location"); // region behind ab(my naming convention)
-        }
-
-        RV_ASSERT(!sDir(ab, bo) && !sDir(-ab, ao), ""); // zadrzi
-
-        bool assertHelp = !sDir(-ac, ao) && !sDir(-bc, bo) && !sDir(cross(ab, abc), ao);
-        if(!assertHelp)
-        {
-            cout << "fuck" << endl;
-            //RV_ASSERT(, "origin not in the 3 voronoi regions that it should be in"); // zadrzi
-        }
-
-        cout << "handleTriangle: ";
+        RV_ASSERT(!(sDir(ao, ab) && sDir(bo, -ab) && sDir(cross(abc, -ab), ao)), "invalid origin location"); // region behind ab(my naming convention)
+        //RV_ASSERT(!sDir(ab, bo) && !sDir(-ab, ao), ""); // can sometimes get triggered because of floating point innacuracies
+        RV_ASSERT(!(sDir(-ac, ao) && sDir(co, cross(abc, ac))) && !(sDir(-bc, bo) && sDir(co, cross(bc, abc))) && !sDir(cross(ab, abc), ao), "origin not in the 3 voronoi regions that it should be in");
 
         if(sDir(acPerp, ao))
         {
@@ -171,52 +128,21 @@ namespace gjkEpa
                 *pDirection = cross(cross(ac, ao), ac);
 
                 RV_ASSERT(sDir(*pDirection, ao) && sDir(ao, ac) && sDir(co, -ac), "");
-                Vec3f tempAcPerp = cross(cross(ab, ac), ac);
-                RV_ASSERT(sDir(tempAcPerp, ao) && sDir(tempAcPerp, co) && sDir(tempAcPerp, *pDirection), "");
-
-                cout << "p1: ";
-                log(pSimplex->points[0]);
-                cout << " p2: ";
-                log(pSimplex->points[1]);
-                cout << " p3: ";
-                log(pSimplex->points[2]);
-                cout << " dir: ";
-                log(*pDirection);
-                cout << "1" << endl;
+                RV_ASSERT(sDir(acPerp, ao) && sDir(acPerp, co) && sDir(acPerp, *pDirection), "");
             }
-            else {   
-                pSimplex->size = 1;
-                pSimplex->points[0] = pSimplex->points[2];
-
-                RV_ASSERT(sDir(*pDirection, co), ""); // must be before direction change
-                cout << "2" << endl;
-
-                *pDirection = -pSimplex->points[0];
+            else {
+                pSimplex->size = 2;
+                pSimplex->points[0] = pSimplex->points[1];
+                pSimplex->points[1] = pSimplex->points[2];
+                gjkHandleLine(pSimplex, pDirection);
             }
         }
         else if(sDir(bcPerp, bo))
         {
-            if(sDir(-bc, co))
-            {
-                pSimplex->size = 2;
-                // potencijalni debug: obrni ovo (ne kod, nego tacke, crtaj!)
-                pSimplex->points[0] = pSimplex->points[1];
-                pSimplex->points[1] = pSimplex->points[2];
-
-                *pDirection = cross(bc, cross(bo, bc));
-
-                RV_ASSERT(sDir(*pDirection, bo) && sDir(bo, bc) && sDir(co, -bc), "");
-                cout << "3" << endl;
-            }
-            else {
-                pSimplex->points[0] = pSimplex->points[2];
-                pSimplex->size = 1;
-
-                RV_ASSERT(sDir(*pDirection, co), ""); // must be before direction change
-                cout << "4" << endl;
-
-                *pDirection = -pSimplex->points[0];
-            }
+            pSimplex->size = 2;
+            pSimplex->points[0] = pSimplex->points[1];
+            pSimplex->points[1] = pSimplex->points[2];
+            gjkHandleLine(pSimplex, pDirection);
         }
         else { // is "inside" the triangle projection
             if(sDir(ao, abc)) // is "above"
@@ -224,26 +150,12 @@ namespace gjkEpa
                 *pDirection = abc;
 
                 RV_ASSERT(sDir(*pDirection, ao), "");
-
-                    RV_ASSERT(!sDir(-*pDirection, ao), ""); // temp
-                    RV_ASSERT(!sDir(*pDirection, -ao), "");
-                    RV_ASSERT(sDir(*pDirection, ao), "");
-
-                cout << "5" << endl;
             }
             else { // is "below"
                 *pDirection = -abc;
                 pSimplex->points[0] = b;
                 pSimplex->points[1] = a;
                 pSimplex->points[2] = c;
-
-                RV_ASSERT(sDir(*pDirection, ao), ""); // redundant, can be removed
-
-                    RV_ASSERT(!sDir(-*pDirection, ao), ""); // temp
-                    RV_ASSERT(!sDir(*pDirection, -ao), "");
-                    RV_ASSERT(sDir(*pDirection, ao), "");
-
-                cout << "6" << endl;
             }
         }
 
@@ -299,126 +211,109 @@ namespace gjkEpa
         bool isBcd = sDir(bcd, bo);
 
         RV_ASSERT(!(isAbd && isAdc && isBcd), ""); // detected that origin is in voronoi regions of all 3 sides
-        //cout << "Bool handleTetrahedron: isAbd: " << isAbd << "  isAdc: " << isAdc << "  isBcd: " << isBcd << endl;
 
-        // potential optimization: after the edge (not face) voronoi regions, calculate direction here immidiately and continue the main gjk loop, as you /might/ know the origin is in the slab region of the line
-        // potential optimization: same as the one above, but for the pure face voronoi regions. It seems to me that all cases in gjkHandleTetrahedron don't have to call other gjkHandle* functions, but can just set the direction right then and there
+        RV_ASSERT(!(isAbd && isAdc && isBcd), ""); // impossible geometrically that all 3 of theese are true. check on paper
 
-        cout << "handleTetrahedron: ";
-        if(isAbd) 
+        if(isAbd && !isAdc && !isBcd)
         {
-            if(isAdc)
-            {
-                pSimplex->size = 2;
-                pSimplex->points[1] = pSimplex->points[3];
-                *pDirection = cross(cross(pSimplex->points[1] - pSimplex->points[0], -pSimplex->points[0]), pSimplex->points[1] - pSimplex->points[0]);
-
-                RV_ASSERT(sDir(*pDirection, -pSimplex->points[0]) && !sDir(pSimplex->points[1] - pSimplex->points[0], -pSimplex->points[1]) && !sDir(pSimplex->points[0] - pSimplex->points[1], -pSimplex->points[0]), "origin not in slab region, and it should be");
-                RV_ASSERT(sDir(*pDirection, -pSimplex->points[0]) && sDir(*pDirection, -pSimplex->points[1]), "");
-                cout << "1" << endl;
-
-                return false;
-            }
-            else if(isBcd)
-            {
-                pSimplex->size = 2;
-                    //pSimplex->points[0] = pSimplex->points[3];
-                pSimplex->points[0] = pSimplex->points[1];
-                pSimplex->points[1] = pSimplex->points[3];
-                *pDirection = cross(cross(pSimplex->points[1] - pSimplex->points[0], -pSimplex->points[0]), pSimplex->points[1] - pSimplex->points[0]);
-
-                RV_ASSERT(sDir(*pDirection, -pSimplex->points[0]) && !sDir(pSimplex->points[1] - pSimplex->points[0], -pSimplex->points[1]) && !sDir(pSimplex->points[0] - pSimplex->points[1], -pSimplex->points[0]), "origin not in slab region, and it should be");
-                cout << "2" << endl;
-
-                return false;
-            }
-            else {
-                pSimplex->size = 3;
-                pSimplex->points[2] = pSimplex->points[3];
-                *pDirection = cross(pSimplex->points[1] - pSimplex->points[0], pSimplex->points[2] - pSimplex->points[0]);
-
-                RV_ASSERT(sDir(-pSimplex->points[0], *pDirection), "");
-                RV_ASSERT(!sDir(-pSimplex->points[0],
-                    cross(pSimplex->points[1] - pSimplex->points[0], 
-                        cross(pSimplex->points[1] - pSimplex->points[0], pSimplex->points[2] - pSimplex->points[0]))), ""); // abPerp region
-                RV_ASSERT(!sDir(-pSimplex->points[0],
-                    cross(pSimplex->points[0] - pSimplex->points[2], 
-                        cross(pSimplex->points[1] - pSimplex->points[0], pSimplex->points[2] - pSimplex->points[0]))), ""); // acPerp region
-                RV_ASSERT(!sDir(-pSimplex->points[1],
-                    cross(pSimplex->points[2] - pSimplex->points[1], 
-                        cross(pSimplex->points[1] - pSimplex->points[0], pSimplex->points[2] - pSimplex->points[0]))), ""); // bcPerp region
-                cout << "3" << endl;
-
-                return false;
-            }
-        }
-        else if(isAdc)
-        {
-            RV_ASSERT(!isAbd, "this case should already be done");
-            if(isBcd)
-            {
-                pSimplex->size = 2;
-                pSimplex->points[0] = pSimplex->points[2];
-                pSimplex->points[1] = pSimplex->points[3];
-                *pDirection = cross(cross(pSimplex->points[1] - pSimplex->points[0], -pSimplex->points[0]), pSimplex->points[1] - pSimplex->points[0]);
-
-                RV_ASSERT(sDir(*pDirection, -pSimplex->points[0]) && !sDir(pSimplex->points[1] - pSimplex->points[0], -pSimplex->points[1]) && !sDir(pSimplex->points[0] - pSimplex->points[1], -pSimplex->points[0]), "origin not in slab region, and it should be");
-                cout << "4" << endl;
-
-                return false;
-            }
-            else {
-                pSimplex->size = 3;
-                pSimplex->points[0] = pSimplex->points[2];
-                pSimplex->points[1] = a;
-                pSimplex->points[2] = pSimplex->points[3];
-
-                *pDirection = cross(pSimplex->points[1] - pSimplex->points[0], pSimplex->points[2] - pSimplex->points[0]);
-
-                RV_ASSERT(sDir(-pSimplex->points[0], *pDirection), "");
-                RV_ASSERT(!sDir(-pSimplex->points[0],
-                    cross(pSimplex->points[1] - pSimplex->points[0], 
-                        cross(pSimplex->points[1] - pSimplex->points[0], pSimplex->points[2] - pSimplex->points[0]))), ""); // abPerp region
-                RV_ASSERT(!sDir(-pSimplex->points[0],
-                    cross(pSimplex->points[0] - pSimplex->points[2], 
-                        cross(pSimplex->points[1] - pSimplex->points[0], pSimplex->points[2] - pSimplex->points[0]))), ""); // acPerp region
-                RV_ASSERT(!sDir(-pSimplex->points[1],
-                    cross(pSimplex->points[2] - pSimplex->points[1], 
-                        cross(pSimplex->points[1] - pSimplex->points[0], pSimplex->points[2] - pSimplex->points[0]))), ""); // bcPerp region
-                cout << "5" << endl;
-
-                return false;
-            }
-        }
-        else if(isBcd)
-        {
-            RV_ASSERT(!isAbd && !isAdc, "theese cases should have already been handled");
-
             pSimplex->size = 3;
-            pSimplex->points[0] = pSimplex->points[1];
-            pSimplex->points[1] = pSimplex->points[2];
+
             pSimplex->points[2] = pSimplex->points[3];
 
-            *pDirection = cross(pSimplex->points[1] - pSimplex->points[0], pSimplex->points[2] - pSimplex->points[0]);
-
-            RV_ASSERT(sDir(-pSimplex->points[0], *pDirection), "");
-            RV_ASSERT(!sDir(-pSimplex->points[0],
-                cross(pSimplex->points[1] - pSimplex->points[0], 
-                    cross(pSimplex->points[1] - pSimplex->points[0], pSimplex->points[2] - pSimplex->points[0]))), ""); // abPerp region
-            RV_ASSERT(!sDir(-pSimplex->points[0],
-                cross(pSimplex->points[0] - pSimplex->points[2], 
-                    cross(pSimplex->points[1] - pSimplex->points[0], pSimplex->points[2] - pSimplex->points[0]))), ""); // acPerp region
-            RV_ASSERT(!sDir(-pSimplex->points[1],
-                cross(pSimplex->points[2] - pSimplex->points[1], 
-                    cross(pSimplex->points[1] - pSimplex->points[0], pSimplex->points[2] - pSimplex->points[0]))), ""); // bcPerp region
-            cout << "6" << endl;
-            
+            gjkHandleTriangle(pSimplex, pDirection);
             return false;
         }
 
+        if(!isAbd && isAdc && !isBcd)
+        {
+            pSimplex->size = 3;
+
+            pSimplex->points[0] = c;
+            pSimplex->points[1] = a;
+            pSimplex->points[2] = d;
+
+            gjkHandleTriangle(pSimplex, pDirection);
+            return false;
+        }
+
+        if(!isAbd && !isAdc && isBcd)
+        {
+            pSimplex->size = 3;
+
+            pSimplex->points[0] = b;
+            pSimplex->points[1] = c;
+            pSimplex->points[2] = d;
+
+            gjkHandleTriangle(pSimplex, pDirection);
+            return false;
+        }
+
+        /// 2-cases
+
+        if(isAbd && isAdc && !isBcd)
+        {
+            if(sDir(cross(ad, abd), doo))
+            {
+                pSimplex->size = 3;
+                pSimplex->points[2] = pSimplex->points[3];
+            }
+            else {
+                pSimplex->size = 3;
+
+                pSimplex->points[0] = c;
+                pSimplex->points[1] = a;
+                pSimplex->points[2] = d;
+            }
+            gjkHandleTriangle(pSimplex, pDirection);
+            return false;
+        }
+
+        if(isAbd && !isAdc && isBcd)
+        {
+            if(sDir(cross(bd, abd), doo))
+            {
+                pSimplex->size = 3;
+                pSimplex->points[2] = pSimplex->points[3];
+            }
+            else {
+                pSimplex->size = 3;
+
+                pSimplex->points[0] = b;
+                pSimplex->points[1] = c;
+                pSimplex->points[2] = d;
+            }
+            gjkHandleTriangle(pSimplex, pDirection);
+            return false;
+        }
+
+
+        if(!isAbd && isAdc && isBcd)
+        {
+            if(sDir(cross(cd, adc), doo))
+            {
+                pSimplex->size = 3;
+
+                pSimplex->points[0] = c;
+                pSimplex->points[1] = a;
+                pSimplex->points[2] = d;
+
+            }
+            else {
+                pSimplex->size = 3;
+
+                pSimplex->points[0] = b;
+                pSimplex->points[1] = c;
+                pSimplex->points[2] = d;
+                
+            }
+
+            gjkHandleTriangle(pSimplex, pDirection);
+            return false;
+        }
+
+
         RV_ASSERT(!isAdc && !isAbd && !isBcd, "");
         RV_ASSERT(sDir(cross(ab, ac), ao) && sDir(-abd, ao) && sDir(-adc, ao) && sDir(-bcd, bo), "point not inside simplex, but it should be");
-        cout << "7, COLLISION" << endl;
 
         return true;
     }
@@ -465,6 +360,15 @@ namespace gjkEpa
 
         while(true)
         {
+
+#ifdef RV_DEBUG
+    for(int i=0; i<vertices.size(); i++)
+        for(int j=i+1; j<vertices.size(); j++)
+        {
+            RV_ASSERT(module(vertices[i] - vertices[j]) > 0.001f, "");
+        }
+#endif
+
             std::vector<Vec3f> normals;
             // calculate normals
             epaCalculateFaceNormals(&normals, vertices, &faces);
@@ -475,23 +379,42 @@ namespace gjkEpa
 
             epaGetNearestFace(&tempMinFaceDistance, &tempIndexMinFace, faces, normals, vertices);
 
-
             Vec3f supportPoint = doSupportFunction(normals[tempIndexMinFace], 
                 pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
 
-            if(abs(dot(supportPoint, normals[tempIndexMinFace]) - tempMinFaceDistance) > 0.0001f)
+            if(abs(dot(normals[tempIndexMinFace], supportPoint) - tempMinFaceDistance) > 0.0001f)
             { 
                 // invalid face
 
-                vertices.push_back(supportPoint);
+                int indexNewVertex = -1;
+
+                //for(int i=0; i<4; i++)
+                for(int i=0; i<4; i++)
+                    if(compare(supportPoint, vertices[i], 0.001f))
+                    {
+                        indexNewVertex = i;
+                        cout << "indexNewVertex: " << indexNewVertex << endl;
+                        break;
+                    }
+
+                if(indexNewVertex == -1)
+                {
+                    vertices.push_back(supportPoint);
+                    indexNewVertex = vertices.size() - 1;
+                }
+
+                cout << "adding supportPoint: ";
+                log(supportPoint);
 
                 std::vector<Edge> edges;
                 std::vector<unsigned int> facesToErase;
 
+                RV_ASSERT(faces.size() == normals.size(), "");
+
                 // invalidate all faces pointing in the same half plane as supportPoint
                 for(int i=0; i<faces.size(); i++)
                 {
-                    if(dot(normals[i], supportPoint) > 0)
+                    if(dot(normals[i], supportPoint - vertices[faces[i].a]) > 0)
                     {
                         epaAddEdgeIfUnique(&edges, {faces[i].a, faces[i].b});
                         epaAddEdgeIfUnique(&edges, {faces[i].b, faces[i].c});
@@ -512,7 +435,7 @@ namespace gjkEpa
                 // add new faces from unique edges
                 for(int i=0; i<edges.size(); i++)
                 {
-                    faces.push_back({edges[i].a, edges[i].b, vertices.size()-1});
+                    faces.push_back({edges[i].a, edges[i].b, indexNewVertex});
                 }
 
             }
@@ -566,7 +489,7 @@ namespace gjkEpa
             {
                 RV_ASSERT(indexToErase == -1, ""); // TODO: ovo se calluje nekad
                 indexToErase = i;
-                // TODO: add break
+                break;
             }
         }
         if(indexToErase == -1)
@@ -582,7 +505,7 @@ namespace gjkEpa
     {
         for(int i=0; i<faces.size(); i++)
         {
-            float distanceToFace = dot(vertices[faces[i].a], normals[i]);
+            float distanceToFace = dot(normals[i], vertices[faces[i].a]);
 
             if(distanceToFace < *pTempMinFaceDistance)
             {
