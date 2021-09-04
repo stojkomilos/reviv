@@ -1,494 +1,80 @@
-#include"collision_manager.h"
-
-#include<cfloat>
-
-#include"physics_manager.h"
-#include"scene/components.h"
-
-Vec3f CollisionManager::doSupportFunction(const Vec3f& direction, Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform)
-{
-    return pFirstCollider->findFurthestPoint(direction, pFirstTransform) - pSecondCollider->findFurthestPoint(-direction, pSecondTransform);
-}
-
-CollisionPoints CollisionManager::gjk(Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform) 
-{
-    if(module(pFirstTransform->position - pSecondTransform->position) < 1.9) // temp
-    {
-        cout << "SHOULD BE COLLIDING";
-        cout << endl;
-    }
-
-    // TODO: template this so that it does not use dynamic dispatch every time. also requires templating every time you call gjk, which is fine
-
-    Vec3f direction = pSecondTransform->position - pFirstTransform->position;
-
-    Vec3f point1 = doSupportFunction(direction, pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
-
-    SimplexHelpingStruct simplex;
-    simplex.points[0] = point1;
-    simplex.size = 1;
-
-    CollisionPoints collisionPoints;
-    collisionPoints.hasCollided = false;
-
-    if(dot(direction, simplex.points[0]) <= 0)
-    {
-        cout << "reseno na startu" << endl;
-        return collisionPoints;
-    }
-    else // temp
-    {
-        cout << endl;
-        //RV_ASSERT(false, "");
-    }
-
-    direction = -simplex.points[0];
-    //direction = -direction;
-
-    while(true)
-    {
-        Vec3f newPoint = doSupportFunction(direction, pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
-
-        if(dot(direction, newPoint) < 0.0001f) // temp
-        {
-            cout << "dot < 0.0001f" << endl;
-        }
-
-        if(dot(direction, newPoint) <= 0.0) // mozda < umesto <=
-        {
-            collisionPoints.hasCollided = false;
-            break;
-        }
-
-        if(simplex.size == 4)
-        {
-            simplex.points[0] = simplex.points[1];
-            simplex.points[1] = simplex.points[2];
-            simplex.points[2] = simplex.points[3];
-
-            simplex.points[3] = newPoint;
-        }
-        else {
-            RV_ASSERT(simplex.size >= 0 && simplex.size <= 3, "unrecognized simplex size");
-            simplex.points[simplex.size] = newPoint;
-            simplex.size++;
-        }
-
-        if(gjkHandleSimplex(&simplex, &direction))
-        {
-            collisionPoints.hasCollided = true;
-            break;
-        }
-    }
-
-    return collisionPoints;
-}
-
-// checks if 2 vectors are pointing in the same direction / same half-plane
-inline static bool sDir(const Vec3f& first, const Vec3f& second) { return dot(first, second) > 0; } 
-
-static bool gjkHandlePoint(SimplexHelpingStruct* pSimplex, Vec3f* pDirection)
-{
-    RV_ASSERT(pSimplex->size == 1, "invalid simplex size");
-    *pDirection = -pSimplex->points[0];
-    return false;
-}
-
-static bool gjkHandleLine(SimplexHelpingStruct* pSimplex, Vec3f* pDirection)
-{
-    RV_ASSERT(pSimplex->size == 2, "invalid simplex size");
-
-    Vec3f a = pSimplex->points[0];
-    Vec3f b = pSimplex->points[1];
-    Vec3f ab = b - a;
-    Vec3f ao = -a;
-
-    RV_ASSERT(pSimplex->size == 2, "invalid simplex size");
-
-    if(checkIfPointBelongsToLine(a, b, Vec3f(0, 0, 0))) //TODO: mozda temp, testiraj puno
-    {
-        RV_ASSERT(false, ""); // temp, if breaks here -> keep it maybe?
-        return true;
-    }
-        
-    if(sDir(ab, ao))
-    {
-        *pDirection = cross(cross(ab, ao), ab);
-        return false;
-    }
-    else {
-        pSimplex->points[0] = pSimplex->points[1];
-        pSimplex->size--;
-        return false;
-    }
-
-}
-
-static bool gjkHandleTriangle(SimplexHelpingStruct* pSimplex, Vec3f* pDirection)
-{
-    RV_ASSERT(pSimplex->size == 3, "invalid simplex size");
-
-    Vec3f a = pSimplex->points[0];
-    Vec3f b = pSimplex->points[1];
-    Vec3f c = pSimplex->points[2];
-
-    Vec3f ab = b - a;
-    Vec3f ac = c - a;
-
-    Vec3f bc = c - b;
-
-    Vec3f ao = -a;
-    Vec3f bo = -b;
-    Vec3f co = -c;
-
-    Vec3f abc = cross(ab, ac);
-
-    Vec3f acPerp = cross(abc, ac);
-    Vec3f bcPerp = cross(abc, -bc);
-
-    if(sDir(abc, cross(ab, ao)) && sDir(abc, cross(bc, bo)) && sDir(abc, cross(-ac, co))) // temp
-    {
-        cout << "kao nasao u 2 dimenzije?" << endl;
-    }
-    if(sDir(acPerp, ao))
-    {
-        if(sDir(-ac, co))
-        {
-            pSimplex->size = 2;
-            pSimplex->points[1] = pSimplex->points[2];
-            gjkHandleLine(pSimplex, pDirection);
-            return false;
-        }
-        else {   
-            pSimplex->size = 2;
-            pSimplex->points[2] = pSimplex->points[1];
-            gjkHandleLine(pSimplex, pDirection);
-            return false;
-        }
-    }
-    else if(sDir(bcPerp, bo))
-    {
-        if(sDir(-bc, co))
-        {
-            pSimplex->size = 2;
-            gjkHandleLine(pSimplex, pDirection);
-            return false;
-        }
-        else { // zadrazava A i B, mozda lose
-            pSimplex->size = 2;
-            gjkHandleLine(pSimplex, pDirection);
-            return false;
-        }
-    }
-    else { // is "inside" the triangle projection
-        if(sDir(ao, abc)) // is "above"
-        {
-            *pDirection = abc;
-            RV_ASSERT(sDir(*pDirection, ao), "");
-        }
-        else { // is "below"
-            *pDirection = -abc;
-            RV_ASSERT(sDir(*pDirection, ao), "");
-        }
-        cout << "HAHA!" << endl;
-        return false;
-    }
-}
-
-static bool gjkHandleTetrahedron(SimplexHelpingStruct *pSimplex, Vec3f* pDirection)
-{
- Vec3f a = pSimplex->points[0];
-    Vec3f b = pSimplex->points[1];
-    Vec3f c = pSimplex->points[2];
-    Vec3f d = pSimplex->points[3];
-
-    Vec3f ab = b - a;
-    Vec3f ac = c - a;
-    Vec3f ad = d - a;
-
-    Vec3f bc = c - b;
-    Vec3f bd = d - b;
-
-    Vec3f cd = d - c;
-
-    Vec3f abc = cross(ab, ac); // treba samo kod triangle dela
-
-    Vec3f acPerp = cross(abc, ac);
-    Vec3f bcPerp = cross(abc, -bc);
-
-    Vec3f ao = -a;
-    Vec3f bo = -b;
-    Vec3f co = -c;
-    Vec3f doo = -d;
-
-}
-
-bool CollisionManager::gjkHandleSimplex(SimplexHelpingStruct* pSimplex, Vec3f* pDirection)
-{
-    RV_ASSERT(pSimplex->size != 1, "simplex of unexpected size"); // maybe not
-
-    switch (pSimplex->size)
-    {
-        case 1:
-            return gjkHandlePoint(pSimplex, pDirection);
-            break;
-        case 2:
-            return gjkHandleLine(pSimplex, pDirection);
-            break;
-        case 3:
-            return gjkHandleTriangle(pSimplex, pDirection);
-            break;
-        case 4:
-            return gjkHandleTetrahedron(pSimplex, pDirection);
-        default:
-            RV_ASSERT(false, ""); // should not be in here
-            break;
-    }
-
-    RV_ASSERT(false, ""); // shouldn't be here
-}
-
-void CollisionManager::onUpdateDetectCollisions(float dt)
-{
-    //detectCollisionsBroadPhase(dt);
-    detectCollisionsNarrowPhase(dt);
-}
-
-//void CollisionManager::detectCollisionsBroadPhase(float dt)
-//{
-//
-//}
-
-void CollisionManager::detectCollisionsNarrowPhase(float dt)
-{
-    for(unsigned int i=0; i<Scene::getEntityList()->size(); i++)
-    {
-
-        Entity* pFirst = &(*Scene::getEntityList())[i];
-
-        if(!Scene::isEntityValid(pFirst))
-            continue;
-
-        Collider* pColliderFirst = PhysicsManager::get()->getCollidableFromEntity(pFirst);
-        if(pColliderFirst == nullptr)
-            continue;
-
-        for(unsigned int j=i+1; j<Scene::getEntityList()->size(); j++)
-        {
-            Entity* pSecond = &(*Scene::getEntityList())[j];
-
-            if(!Scene::isEntityValid(pSecond))
-                continue;
-
-            Collider* pColliderSecond = PhysicsManager::get()->getCollidableFromEntity(pSecond);
-            if(pColliderSecond == nullptr)
-                continue;
-
-            if(PhysicsManager::get()->getCollidableFromEntity(pSecond) == nullptr)
-                continue;
-
-            //cout << "Checking collision for: " << pFirst->entityName << " | " << pSecond->entityName << endl;
-
-            CollisionPoints collisionPoints = pColliderFirst->collide(pColliderSecond, pFirst->get<TransformComponent>(), pSecond->get<TransformComponent>());
-            if(collisionPoints.hasCollided)
-            {
-                cout << "collision detected" << endl;
-                //RV_ASSERT(false, ""); //temp
-            }
-            Collision collision;
-            collision.pEntity1 = pFirst;
-            collision.pEntity2 = pSecond;
-            collision.collisionPoints = collisionPoints; //TODO: unnecessaraly creating collisionPoints and collision, and also unnecessarily copying collisionPoints to collision
-
-            if(collision.collisionPoints.hasCollided)
-            {
-                collision.pEntity1->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1, 0, 0));
-                collision.pEntity2->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1, 0, 0));
-            }
-            else {
-                collision.pEntity1->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 1, 0));
-                collision.pEntity2->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 1, 0));
-            }
-
-            //PhysicsManager::coll
-        }
-    }
-}
-
-CollisionPoints CollisionManager::collideSphereSphere(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, ColliderSphere* pSecondCollider, TransformComponent* pSecondTransform)
-{
-    RV_ASSERT(pFirstCollider->relativeRadius - 1.f < 0.0001f, ""); //temp
-    RV_ASSERT(pSecondCollider->relativeRadius - 1.f < 0.0001f, ""); //temp
-
-    RV_ASSERT((pFirstTransform->scale.a[0] == pFirstTransform->scale.a[1]) && (pFirstTransform->scale.a[1]  == pFirstTransform->scale.a[2]), "is not actually a sphere");
-    RV_ASSERT((pSecondTransform->scale.a[0] == pSecondTransform->scale.a[1]) && (pSecondTransform->scale.a[1]  == pSecondTransform->scale.a[2]), "is not actually a sphere");
-
-
-    CollisionPoints collisionPoints;
-    if(module(pFirstTransform->position - pSecondTransform->position) <= pFirstTransform->scale.a[0] + pSecondTransform->scale.a[0])
-    {
-        collisionPoints.hasCollided = true;
-    }
-    else
-    {
-        collisionPoints.hasCollided = false;
-    }
-
-    return collisionPoints;
-}
-
-Vec3f ColliderSphere::findFurthestPoint(const Vec3f& direction, TransformComponent* pTransform) const
-{
-    RV_ASSERT((pTransform->scale.a[0] == pTransform->scale.a[1]) && (pTransform->scale.a[1]  == pTransform->scale.a[2]), "is not actually a sphere");
-
-    return direction * relativeRadius * pTransform->scale.a[0];
-}
-
-Vec3f ColliderBox::findFurthestPoint(const Vec3f& direction, TransformComponent* pTransform) const
-{
-    RV_ASSERT(false, ""); // temp, can be implemented
-}
-
-Vec3f ColliderMesh::findFurthestPoint(const Vec3f& direction, TransformComponent* pTransform) const
-{
-    Mat4 worldMatrix = pTransform->getTransform();
-
-    Vec3f result;
-
-    float max = -FLT_MAX;
-    for(int i=0; i<pMesh->m_Vertices.size(); i++) // potential optimization: put all vertex data in memory consequently for better cache coherency
-    {
-        Vec4f tempPosVec4f = worldMatrix * Vec4f(pMesh->m_Vertices[i].position, 1.f);
-        Vec3f tempPosVec3f = {tempPosVec4f.a[0], tempPosVec4f.a[1], tempPosVec4f.a[2]};
-        float tempDot = dot(tempPosVec3f, direction);
-        if(tempDot > max)
-        {
-            max = tempDot;
-            result = tempPosVec3f;
-        }
-    }
-
-    return result;
-}
-
-Vec3f supportFunction(const Vec3f& direction, Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform)
-{
-    Vec3f a = pFirstCollider->findFurthestPoint(direction, pFirstTransform);
-    Vec3f b = pSecondCollider->findFurthestPoint(-direction, pSecondTransform);
-    return a - b;
-}
-
-CollisionPoints CollisionManager::collideSphereBox(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, ColliderBox* pSecondCollider, TransformComponent* pSecondTransform)
-{
-    RV_ASSERT(false, ""); // temp
-
-}
-
-CollisionPoints CollisionManager::collideSphereMesh(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, ColliderMesh* pSecondCollider, TransformComponent* pSecondTransform)
-{
-    RV_ASSERT(false, ""); // temp
-
-}
-
-CollisionPoints CollisionManager::collideBoxMesh(ColliderBox* pFirstCollider, TransformComponent* pFirstTransform, ColliderMesh* pSecondCollider, TransformComponent* pSecondTransform)
-{
-    RV_ASSERT(false, ""); // temp
-
-}
-
-CollisionPoints CollisionManager::collideBoxBox(ColliderBox* pFirstCollider, TransformComponent* pFirstTransform, ColliderBox* pSecondCollider, TransformComponent* pSecondTransform)
-{
-    RV_ASSERT(false, ""); // temp
-
-}
-
-CollisionPoints CollisionManager::collideMeshMesh(ColliderMesh* pFirstCollider, TransformComponent* pFirstTransform, ColliderMesh* pSecondCollider, TransformComponent* pSecondTransform)
-{
-    cout << endl;
-    return CollisionManager::gjk(pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
-}
-
-void CollisionManager::onUpdateResolveCollisions(float dt)
-{
-
-}
-
-void log(const Collider& collider)
-{ }
-
-void log(const ColliderSphere& collider)
-{
-    cout << "relatvieRadius: " << collider.relativeRadius << endl;
-    log((Collider&)collider);
-}
-
-void log(const ColliderBox& collider)
-{
-    log((Collider&)collider);
-}
-
-CollisionPoints ColliderSphere::collide(Collider* pSecondCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform)
-{
-    return pSecondCollider->collideSphere(this, pFirstTransform, pSecondTransform);
-}
-
-CollisionPoints ColliderBox::collide(Collider* pSecondCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform)
-{
-    return pSecondCollider->collideBox(this, pFirstTransform, pSecondTransform);
-}
-
-CollisionPoints ColliderMesh::collide(Collider* pSecondCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform)
-{
-    return pSecondCollider->collideMesh(this, pFirstTransform, pSecondTransform);
-}
-
-// ------------
-
-CollisionPoints ColliderSphere::collideSphere(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform)
-{
-    return CollisionManager::collideSphereSphere(this, pSecondTransform, pFirstCollider, pFirstTransform);
-}
-
-CollisionPoints ColliderSphere::collideBox(ColliderBox* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform)
-{
-    return CollisionManager::collideSphereBox(this, pSecondTransform, pFirstCollider, pFirstTransform);
-}
-
-CollisionPoints ColliderSphere::collideMesh(ColliderMesh* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform)
-{
-    return CollisionManager::collideSphereMesh(this, pSecondTransform, pFirstCollider, pFirstTransform);
-}
-
-
-
-
-CollisionPoints ColliderBox::collideSphere(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform)
-{
-    return CollisionManager::collideSphereBox(pFirstCollider, pFirstTransform, this, pSecondTransform);
-}
-
-CollisionPoints ColliderBox::collideBox(ColliderBox* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform)
-{
-    return CollisionManager::collideBoxBox(this, pSecondTransform, pFirstCollider, pFirstTransform);
-}
-
-CollisionPoints ColliderBox::collideMesh(ColliderMesh* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform)
-{
-    return CollisionManager::collideBoxMesh(this, pSecondTransform, pFirstCollider, pFirstTransform);
-}
-
-
-CollisionPoints ColliderMesh::collideSphere(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform)
-{
-    return CollisionManager::collideSphereMesh(pFirstCollider, pFirstTransform, this, pSecondTransform);
-}
-
-CollisionPoints ColliderMesh::collideBox(ColliderBox* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform)
-{
-    return CollisionManager::collideBoxMesh(pFirstCollider, pFirstTransform, this, pSecondTransform);
-}
-
-CollisionPoints ColliderMesh::collideMesh(ColliderMesh* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform)
-{
-    return CollisionManager::collideMeshMesh(pFirstCollider, pFirstTransform, this, pSecondTransform);
-}
+0.   old_idx: 24   distance: 0.33   version: V1   rank_ukupno: 5.066288705E-9   rank_levo: 0.00004116116889721273684210526316   rank_desno: 0.00004727648132728883333333333333
+fact opened the door to a headless federal government that , as the OP article points out , only created the crevasse that brought from the time that Ronald Reagan was hired to change the US paradigm ==> to US electing Donald J Trump as a president
+----------------------------------------
+1.   old_idx: 14   distance: 0.39   version: V1   rank_ukupno: 3.508947961E-9   rank_levo: 0.00004642442338719588888888888889   rank_desno: 0.0000490096289007346
+to face its toughest test yet Thursday , as James Comey , the former FBI Director , testifies before Congress about the conversations that led to his unceremonious firing last month ==> Share President Trump 's presidency
+----------------------------------------
+2.   old_idx: 19   distance: 0.37   version: V1   rank_ukupno: 3.158898494E-9   rank_levo: 0.00005544637834315036363636363636   rank_desno: 0.000040039564869822
+to cause further uncertainty for the Middle East 's real estate market , at least in the short term ==> The recent election of Donald Trump as the 45th president of the United States of America
+----------------------------------------
+3.   old_idx: 16   distance: 0.39   version: V1   rank_ukupno: 2.721418495E-9   rank_levo: 0.00004433922628619513043478260870   rank_desno: 0.00003414311757601633333333333333
+ke people stop , think and reflect , the man who helped shape the unique brand of Bill Clinton 's political stagecraft brings audiences on a multi - media guided tour through the Age of Optics ==> to the election of Donald Trump
+----------------------------------------
+4.   old_idx: 10   distance: 0.41   version: V1   rank_ukupno: 1.455880757E-9   rank_levo: 0.000044168680284026375   rank_desno: 0.00003495469370065266666666666667
+The two party system , the electoral college , and the vast disconnect between rural working class voters and educated college youths / big cities ==> Trump to get elected
+----------------------------------------
+5.   old_idx: 2   distance: 0.59   version: V1   rank_ukupno: 1.280666968E-9   rank_levo: 0.000037628672266198125   rank_desno: 0.000039985371486008
+A Trump win in either of the toss - up states of Virginia or North Carolina ==> in Donald Trump being the next president
+----------------------------------------
+6.   old_idx: 21   distance: 0.34   version: V1   rank_ukupno: 1.221869367E-9   rank_levo: 0.0000403560827271792   rank_desno: 0.000059910472429200
+to sanction Iran from exporting oil which has triggered global anxiety across the world market ==> US President Trump
+----------------------------------------
+7.   old_idx: 5   distance: 0.52   version: V1   rank_ukupno: 1.185984034E-9   rank_levo: 0.00004185731088818116666666666667   rank_desno: 0.0000416683734746965
+As the Daily Beast points out though , Kasich could negatively impact the number of people who vote for Trump ==> Trump to lose the general election
+----------------------------------------
+8.   old_idx: 6   distance: 0.49   version: V1   rank_ukupno: 1.179188714E-9   rank_levo: 0.00002775113171635585714285714286   rank_desno: 0.000028943578284459
+to leave a massive near $ 20 trillion debt crisis for his successor ==> Trump President Obama
+----------------------------------------
+9.   old_idx: 22   distance: 0.34   version: V1   rank_ukupno: 1.126698755E-9   rank_levo: 0.0000608049924663342   rank_desno: 0.0000300764745932074
+to flesh out the new US foreign policy ==> The numerous visits Donald Trump is making
+----------------------------------------
+10.   old_idx: 4   distance: 0.53   version: V1   rank_ukupno: 1.014475121E-9   rank_levo: 0.00002577979289272433333333333333   rank_desno: 0.0000304742061232406
+This reinvention of politics as entertainment ==> Donald Trump to become a presidential candidate
+----------------------------------------
+11.   old_idx: 7   distance: 0.46   version: V1   rank_ukupno: 1.014009761E-9   rank_levo: 0.00003340314711954114285714285714   rank_desno: 0.00002350684035341633333333333333
+Di satanic elite , anything to stop dis election and ==> Donald Trump to be in defeat
+----------------------------------------
+12.   old_idx: 13   distance: 0.39   version: V1   rank_ukupno: 1.006651184E-9   rank_levo: 0.00002141213095264757142857142857   rank_desno: 0.000033169954376495
+to demonize immigrants and spread the myth that they are criminals and threats to the public ==> This Donald Trump Act
+----------------------------------------
+13.   old_idx: 23   distance: 0.34   version: V1   rank_ukupno: 9.84142524E-10   rank_levo: 0.00005066505614732858333333333333   rank_desno: 0.000033811734192558
+to visit Texas on Tuesday as a show of support for the people affected by this massive and still developing weather event ==> President Trump
+----------------------------------------
+14.   old_idx: 0   distance: 0.65   version: V1   rank_ukupno: 9.59164916E-10   rank_levo: 0.00004770243533166333333333333333   rank_desno: 0.00003264390933448766666666666667
+Ivanka Trump 's left - of - center positions ==> trouble for President Trump
+----------------------------------------
+15.   old_idx: 12   distance: 0.4   version: V1   rank_ukupno: 9.22974405E-10   rank_levo: 0.00004339573351573125   rank_desno: 0.00003456221602965075
+The economic insecurity of US voters ==> to the election of Donald Trump as president
+----------------------------------------
+16.   old_idx: 15   distance: 0.39   version: V1   rank_ukupno: 9.21599485E-10   rank_levo: 0.000027885449640142875   rank_desno: 0.000033811734192558
+to impose a second round of tariffs related to intellectual property3 , as are China4 ==> President Trump
+----------------------------------------
+17.   old_idx: 17   distance: 0.37   version: V1   rank_ukupno: 9.16055890E-10   rank_levo: 0.000054122802660397   rank_desno: 0.00004697352309626166666666666667
+that could cause very serious national security problems for our Country ==> problems for President Trump
+----------------------------------------
+18.   old_idx: 11   distance: 0.4   version: V1   rank_ukupno: 8.45338283E-10   rank_levo: 0.000049662359384377   rank_desno: 0.00003113541788746666666666666667
+The strong feelings of the American middle class ==> to the rise of Donald Trump
+----------------------------------------
+19.   old_idx: 8   distance: 0.45   version: V1   rank_ukupno: 8.42239733E-10   rank_levo: 0.000017988723495406   rank_desno: 0.00003113541788746666666666666667
+The repeated betrayals of Republican leaders ==> to the rise of Donald Trump
+----------------------------------------
+20.   old_idx: 26   distance: 0.3   version: V1   rank_ukupno: 7.43230737E-10   rank_levo: 0.00003358449169837228571428571429   rank_desno: 0.000033811734192558
+to visit Florida and areas affected by Hurricane Michael on Monday ==> President Trump
+----------------------------------------
+21.   old_idx: 9   distance: 0.44   version: V1   rank_ukupno: 7.24254287E-10   rank_levo: 0.00001924528648661733333333333333   rank_desno: 0.00003113541788746666666666666667
+A backlash against political correctness ==> to the rise of Donald Trump
+----------------------------------------
+22.   old_idx: 25   distance: 0.31   version: V1   rank_ukupno: 6.59309528E-10   rank_levo: 0.00002383378975209733333333333333   rank_desno: 0.00003414311757601633333333333333
+Fatigue with America - bashing ==> to the election of Donald Trump
+----------------------------------------
+23.   old_idx: 1   distance: 0.61   version: V1   rank_ukupno: 6.56938283E-10   rank_levo: 0.00003504748669010536363636363636   rank_desno: 0.00005389519210900633333333333333
+to be released on Tuesday and small excerpts alone have caused chaos and terror among the Trump administration ==> Trump in the White House
+----------------------------------------
+24.   old_idx: 20   distance: 0.36   version: V1   rank_ukupno: 4.68577498E-10   rank_levo: 0.0000245600116567795   rank_desno: 0.00004823710865284775
+Florida rally ==> Trump 's plunge into politics
+----------------------------------------
+25.   old_idx: 18   distance: 0.37   version: V1   rank_ukupno: 4.23826526E-10   rank_levo: 0.0001235298668196873333333333333   rank_desno: 0.000026851520107995
+One news expert ==> that Trump is turning
+----------------------------------------
+26.   old_idx: 3   distance: 0.57   version: V1   rank_ukupno: 3.42303786E-10   rank_levo: 0.00004225883188757121739130434783   rank_desno: 0.000031803956994562
+As CNN first reported , the U.S. intercepted discussions of Russian officials bragging about cultivating relationships with Trump campaign aides , including Trump 's first national security adviser Michael Flynn ==> Trump himself

@@ -150,6 +150,7 @@ namespace mat{
         return thing / scalar;
     }
 
+    // NOT TESTED
     bool checkIfPointBelongsToLine(const Vec3f& linePoint1, const Vec3f& linePoint2, const Vec3f& point)// TODO: optimize if still used in GJK(https://stackoverflow.com/questions/17692922/check-is-a-point-x-y-is-between-two-points-drawn-on-a-straight-line)
     {
         float realLenght = module(linePoint1 - linePoint2);
@@ -158,6 +159,27 @@ namespace mat{
         if(abs(realLenght - calcLength) < MAT_EPSILON)
             return true;
         return false;
+    }
+
+    // NOT TESTED
+    float getDistancePointLine(const Vec3f& point, const Vec3f& lineA, const Vec3f& lineB)
+    {
+        Vec3f ab = lineB - lineA;
+        Vec3f aPoint = point - lineA;
+
+        Vec3f linePerp = cross(cross(ab, aPoint), ab);
+        linePerp = linePerp / module(linePerp);
+
+        float perpDistance = dot(linePerp, aPoint);
+
+        Vec3f bPoint = point - lineB;
+        if(dot(ab, bPoint) > 0) // on B half space
+            return std::min(perpDistance, module(bPoint));
+
+        if(dot(ab, aPoint) < 0)  // on A half space
+            return std::min(perpDistance, module(aPoint));
+
+        return perpDistance; // in the "slab" region
     }
 
 /*
@@ -307,13 +329,13 @@ namespace mat{
 
     float module(const Vec2f& vec)
     {
-        assert(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1]); // vector maybe of zero length
+        assert(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1] > 0); // vector maybe of zero length
         return sqrt(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1]);
     }
 
     float module(const Vec1f& vec)
     {
-        assert(vec.a[0]*vec.a[0]); // vector maybe of zero length
+        assert(vec.a[0]*vec.a[0] > 0); // vector maybe of zero length
         return sqrt(vec.a[0]*vec.a[0]);
     }
 

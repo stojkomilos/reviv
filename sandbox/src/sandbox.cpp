@@ -1,10 +1,12 @@
 #include<reviv.h>
 
-Entity *player, *camera, *stanic, *light, *platform, *sphere, *cube;
+Entity *player, *camera, *stanic, *light, *platform, *sphere;
 Entity* map;
 
 Entity *secondSphere;
-Entity *secondCube;
+Entity *prvo;
+Entity *drugo;
+Entity *debugLine;
 
 Entity* sun;
 Entity* secondSun;
@@ -30,6 +32,9 @@ public:
         player = Scene::getPlayerEntity();
         player->get<TransformComponent>()->position = {0, 0, 3};
 
+        debugLine = Scene::createEntity("DebugLine");
+        debugLine->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->shaderMonochroma);
+
         if(useMap)
         {
             map = Scene::createEntity("Sponza");
@@ -41,12 +46,17 @@ public:
         }
 
         platform = Scene::createEntity("Platform");
-        platform->get<TransformComponent>()->scale = {50, 14, 0.4};
+        //platform->get<TransformComponent>()->scale = {50, 14, 0.4};
+        platform->get<TransformComponent>()->scale = {10, 10, 10};
         platform->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->deffered.geometryPassShader);
         platform->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1, 1, 0));
         platform->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.5f);
         auto* pPlatformPhysical = platform->add<PhysicalComponent>();
+        //auto* pPlatformCollider = platform->add<ColliderMeshComponent>();
         pPlatformPhysical->physical.gravity = 0.0;
+        //pPlatformCollider->collider.pTransformComponent = platform->get<TransformComponent>();
+        //pPlatformCollider->collider.pMesh = platform->get<ModelComponent>()->model.pMeshes[0];
+
         //auto* pPlatformCollider = platform->add<ColliderBoxComponent>();
 
         sphere = Scene::createEntity("Sphere");
@@ -70,59 +80,65 @@ public:
 
         srand(1);
 
-        cube = Scene::createEntity("Cube");
-        cube->get<TransformComponent>()->position = {10, 0, 3};
-        cube->get<TransformComponent>()->rotation = Vec3f(rand() / 100.f, rand() / 100.f, rand() / 100.f);
-        cube->get<TransformComponent>()->scale = {1.7, 2, 1};
-        cube->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->deffered.geometryPassShader);
-        cube->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 0, 1));
-        cube->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.2f);
-        cube->add<PhysicalComponent>();
-        auto* pPhysicalCube = &cube->get<PhysicalComponent>()->physical;
-        auto* pColliderCube = cube->add<ColliderMeshComponent>();
-        pPhysicalCube->gravity = 0.0;
-        pColliderCube->collider.pMesh = cube->get<ModelComponent>()->model.pMeshes[0]; // TODO: automate this somehow
+        prvo = Scene::createEntity("prvo");
+        prvo->get<TransformComponent>()->position = {13, 2, 5.1};
+        prvo->get<TransformComponent>()->rotation = Vec3f(rand() / 100.f, rand() / 100.f, rand() / 100.f);
+        prvo->get<TransformComponent>()->scale = {4, 0.3, 2};
+        //prvo->add<ModelComponent>(&AssetManager::get()->modelLoaderDodik, &RenderManager::get()->deffered.geometryPassShader);
+        //prvo->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->deffered.geometryPassShader);
+        prvo->add<ModelComponent>(&AssetManager::get()->modelLoaderCylinder, &RenderManager::get()->deffered.geometryPassShader);
+        prvo->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 0, 1));
+        prvo->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.2f);
+        prvo->add<PhysicalComponent>();
+        auto* pPhysicalPrvo = &prvo->get<PhysicalComponent>()->physical;
+        pPhysicalPrvo->gravity = 0.0;
+        auto* pColliderPrvo = prvo->add<ColliderMeshComponent>();
+        pColliderPrvo->collider.pMesh = prvo->get<ModelComponent>()->model.pMeshes[0];
 
-        secondCube = Scene::createEntity("SecondCube");
-        secondCube->get<TransformComponent>()->position = {13, 0, 3.8};
-        secondCube->get<TransformComponent>()->rotation = Vec3f(rand() / 100.f, rand() / 100.f, rand() / 100.f);
-        secondCube->get<TransformComponent>()->scale = {1, 0.3, 3};
-        secondCube->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->deffered.geometryPassShader);
-        secondCube->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 0, 1));
-        secondCube->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.2f);
-        secondCube->add<PhysicalComponent>();
-        auto* pPhysicalSecondCube = &secondCube->get<PhysicalComponent>()->physical;
-        pPhysicalSecondCube->gravity = 0.0;
-        auto* pColliderSecondCube = secondCube->add<ColliderMeshComponent>();
-        pColliderSecondCube->collider.pMesh = secondCube->get<ModelComponent>()->model.pMeshes[0];
+        drugo = Scene::createEntity("Drugo");
+        drugo->get<TransformComponent>()->position = {13, 0, 3};
+        //drugo->get<TransformComponent>()->position = prvo->get<TransformComponent>()->position + Vec3f(0, 0, 4);
+        drugo->get<TransformComponent>()->rotation = Vec3f(rand() / 100.f, rand() / 100.f, rand() / 100.f);
+        //drugo->get<TransformComponent>()->scale = {1.7, 2, 1};
+        //drugo->add<ModelComponent>(&AssetManager::get()->modelLoaderHexagon, &RenderManager::get()->deffered.geometryPassShader);
+        drugo->add<ModelComponent>(&AssetManager::get()->modelLoaderCylinder, &RenderManager::get()->deffered.geometryPassShader);
+        //drugo->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->deffered.geometryPassShader);
+        drugo->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 0, 1));
+        drugo->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.2f);
+        drugo->add<PhysicalComponent>();
+        auto* pPhysicalDrugo = &drugo->get<PhysicalComponent>()->physical;
+        auto* pColliderDrugo = drugo->add<ColliderMeshComponent>();
+        pPhysicalDrugo->gravity = 0.0;
+        pColliderDrugo->collider.pMesh = drugo->get<ModelComponent>()->model.pMeshes[0]; // TODO: automate this somehow
+
     }
 
     void onUpdate() override
     {
-        auto* trans = secondCube->get<TransformComponent>();
+        auto* trans = prvo->get<TransformComponent>();
 
+        float drugoSpeed = 5.f;
         if(Input::isKeyPressed(RV_KEY_UP))
-            trans->position += Time::getDelta() * Vec3f(0, 0, 1);
+            trans->position += Time::getDelta() * Vec3f(0, 0, 1) * drugoSpeed;
         if(Input::isKeyPressed(RV_KEY_DOWN))
-            trans->position += Time::getDelta() * Vec3f(0, 0, -1);
+            trans->position += Time::getDelta() * Vec3f(0, 0, -1) * drugoSpeed;
 
         if(Input::isKeyPressed(RV_KEY_LEFT))
-            trans->position += Time::getDelta() * Vec3f(0, 1, 0);
+            trans->position += Time::getDelta() * Vec3f(0, 1, 0) * drugoSpeed;
         if(Input::isKeyPressed(RV_KEY_RIGHT))
-            trans->position += Time::getDelta() * Vec3f(0, -1, 0);
+            trans->position += Time::getDelta() * Vec3f(0, -1, 0) * drugoSpeed;
 
-        //Rotation firstRot = cube->get<TransformComponent>()->rotation;
-        //Rotation secondRot = secondCube->get<TransformComponent>()->rotation;
+        trans->position += Time::getDelta() * Vec3f(0, 0, -1) * 0.1;
 
-        //cube->get<TransformComponent>()->rotation.yaw += Time::getDelta();
-        trans->rotation.yaw += Time::getDelta();
-        cout << "delta: " << Time::getDelta() << endl;
-        //cube->get<TransformComponent>()->rotation.roll += Time::GetDelta();
+        //Rotation firstRot = drugo->get<TransformComponent>()->rotation;
+        //Rotation secondRot = prvo->get<TransformComponent>()->rotation;
 
-        //secondCube->get<TransformComponent>()->rotation.yaw -= Time::getDelta();
+        //drugo->get<TransformComponent>()->rotation.yaw += Time::getDelta();
+        //trans->rotation.roll += Time::getDelta();
+        //cout << "delta: " << Time::getDelta() << endl;
+        //drugo->get<TransformComponent>()->rotation.roll += Time::GetDelta();
 
-
-
+        //prvo->get<TransformComponent>()->rotation.yaw -= Time::getDelta();
 
     }
 };

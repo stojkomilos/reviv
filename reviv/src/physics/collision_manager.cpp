@@ -5,320 +5,13 @@
 #include"physics_manager.h"
 #include"scene/components.h"
 
-Vec3f CollisionManager::doSupportFunction(const Vec3f& direction, Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform)
-{
-    return pFirstCollider->findFurthestPoint(direction, pFirstTransform) - pSecondCollider->findFurthestPoint(-direction, pSecondTransform);
-}
-
-CollisionPoints CollisionManager::gjk(Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform) 
-{
-    if(module(pFirstTransform->position - pSecondTransform->position) < 1.9) // temp
-    {
-        cout << "SHOULD BE COLLIDING";
-        cout << endl;
-    }
-
-    // TODO: template this so that it does not use dynamic dispatch every time. also requires templating every time you call gjk, which is fine
-
-    Vec3f direction = pSecondTransform->position - pFirstTransform->position;
-
-    Vec3f point1 = doSupportFunction(direction, pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
-
-    SimplexHelpingStruct simplex;
-    simplex.points[0] = point1;
-    simplex.size = 1;
-
-    CollisionPoints collisionPoints;
-    collisionPoints.hasCollided = false;
-
-    if(dot(direction, simplex.points[0]) <= 0)
-    {
-        cout << "reseno na startu" << endl;
-        return collisionPoints;
-    }
-    else // temp
-    {
-        cout << endl;
-        //RV_ASSERT(false, "");
-    }
-
-    direction = -simplex.points[0];
-    //direction = -direction;
-
-    while(true)
-    {
-        Vec3f newPoint = doSupportFunction(direction, pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
-        if(dot(direction, newPoint) <= 0.0) // mozda < umesto <=
-        {
-            collisionPoints.hasCollided = false;
-            break;
-        }
-
-        if(simplex.size == 4)
-        {
-            simplex.points[0] = simplex.points[1];
-            simplex.points[1] = simplex.points[2];
-            simplex.points[2] = simplex.points[3];
-
-            simplex.points[3] = newPoint;
-        }
-        else {
-            RV_ASSERT(simplex.size >= 0 && simplex.size <= 3, "unrecognized simplex size");
-            simplex.points[simplex.size] = newPoint;
-            simplex.size++;
-        }
-
-        if(gjkHandleSimplex(&simplex, &direction))
-        {
-            collisionPoints.hasCollided = true;
-            cout << "breakPls?" << endl;
-            break;
-        }
-    }
-
-    return collisionPoints;
-}
-
-// checks if 2 vectors are pointing in the same direction / same half-plane
-inline static bool sDir(const Vec3f& first, const Vec3f& second) { return dot(first, second) > 0; } 
-
-static bool gjkHandlePoint(SimplexHelpingStruct* pSimplex, Vec3f* pDirection)
-{
-    RV_ASSERT(pSimplex->size == 1, "invalid simplex size");
-    *pDirection = -pSimplex->points[0];
-    return false;
-}
-
-static bool gjkHandleLine(SimplexHelpingStruct* pSimplex, Vec3f* pDirection)
-{
-    RV_ASSERT(pSimplex->size == 2, "invalid simplex size");
-
-    Vec3f a = pSimplex->points[0];
-    Vec3f b = pSimplex->points[1];
-    Vec3f ab = b - a;
-    Vec3f ao = -a;
-
-    RV_ASSERT(pSimplex->size == 2, "invalid simplex size");
-
-    if(checkIfPointBelongsToLine(a, b, Vec3f(0, 0, 0))) //TODO: mozda temp, testiraj puno
-    {
-        RV_ASSERT(false, ""); // temp, if breaks here -> keep it maybe?
-        return true;
-    }
-        
-    if(sDir(ab, ao))
-    {
-        *pDirection = cross(cross(ab, ao), ab);
-    }
-    else {
-        pSimplex->points[0] = pSimplex->points[1];
-        pSimplex->size--;
-        gjkHandlePoint(pSimplex, pDirection);
-    }
-
-    return false;
-}
-
-static bool gjkHandleTriangle(SimplexHelpingStruct* pSimplex, Vec3f* pDirection)
-{
-    RV_ASSERT(pSimplex->size == 3, "invalid simplex size");
-
-    Vec3f a = pSimplex->points[0];
-    Vec3f b = pSimplex->points[1];
-    Vec3f c = pSimplex->points[2];
-
-    Vec3f ab = b - a;
-    Vec3f ac = c - a;
-
-    Vec3f bc = c - b;
-
-    Vec3f ao = -a;
-    Vec3f bo = -b;
-    Vec3f co = -c;
-
-    Vec3f abc = cross(ab, ac);
-
-    Vec3f acPerp = cross(abc, ac);
-    Vec3f bcPerp = cross(abc, -bc);
-
-    if(sDir(abc, cross(ab, ao)) && sDir(abc, cross(bc, bo)) && sDir(abc, cross(-ac, co))) // temp
-    {
-        cout << "kao nasao u 2 dimenzije?" << endl;
-    }
-    if(sDir(acPerp, ao))
-    {
-        if(sDir(-ac, co))
-        {
-            pSimplex->size = 2;
-            pSimplex->points[1] = pSimplex->points[2];
-            //gjkHandleLine(pSimplex, pDirection);
-        }
-        else {   
-            pSimplex->size = 2;
-            pSimplex->points[1] = pSimplex->points[2];
-            gjkHandleLine(pSimplex, pDirection);
-        }
-        return false;
-    }
-    else if(sDir(bcPerp, bo))
-    {
-        if(sDir(-bc, co))
-        {
-            pSimplex->size = 2;
-            pSimplex->points[0] = pSimplex->points[1];
-            pSimplex->points[1] = pSimplex->points[2];
-            //return gjkHandleLine(pSimplex, pDirection);
-            //gjkHandleLine(pSimplex, pDirection);
-        }
-        else {
-            pSimplex->points[0] = pSimplex->points[1];
-            pSimplex->points[1] = pSimplex->points[2];
-            pSimplex->size = 2;
-            gjkHandleLine(pSimplex, pDirection);
-        }
-        return false;
-    }
-    else { // is "inside" the triangle projection
-        if(sDir(ao, abc)) // is "above"
-        {
-            *pDirection = abc;
-            RV_ASSERT(sDir(*pDirection, ao), "");
-        }
-        else { // is "below"
-            *pDirection = -abc;
-            pSimplex->points[0] = b;
-            pSimplex->points[1] = a;
-            pSimplex->points[2] = c;
-            //RV_ASSERT(sDir(*pDirection, ao), "");
-        }
-        cout << "HAHA!" << endl;
-        return false;
-    }
-}
-
-static bool gjkHandleTetrahedron(SimplexHelpingStruct *pSimplex, Vec3f* pDirection)
-{
-    Vec3f a = pSimplex->points[0];
-    Vec3f b = pSimplex->points[1];
-    Vec3f c = pSimplex->points[2];
-    Vec3f d = pSimplex->points[3];
-
-    Vec3f ab = b - a;
-    Vec3f ac = c - a;
-    Vec3f ad = d - a;
-
-    Vec3f bc = c - b;
-    Vec3f bd = d - b;
-
-    Vec3f cd = d - c;
-
-    Vec3f abc = cross(ab, ac); // treba samo kod triangle dela
-
-    Vec3f acPerp = cross(abc, ac);
-    Vec3f bcPerp = cross(abc, -bc);
-
-    Vec3f ao = -a;
-    Vec3f bo = -b;
-    Vec3f co = -c;
-    Vec3f doo = -d;
-
-
-    Vec3f abd = cross(ab, ad);
-    Vec3f acd = cross(ad, ac);
-    Vec3f bcd = cross(bc, bd);
-
-    if(module(a - b) < 0.0001f || module(a - c) < 0.0001f || module(a - d) < 0.0001f || module(b - c) < 0.0001f || module(b - d) < 0.0001f || module(c - d) < 0.0001f)
-    {
-        cout << endl;
-    }
-
-
-    cout << "a: ";
-    log(a);
-
-    cout << "b: ";
-    log(b);
-
-    cout << "c: ";
-    log(c);
-
-    cout << "d: ";
-    log(d);
-    cout << endl << endl;
-
-    RV_ASSERT(sDir(*pDirection, ao), "invalid origin position");
-
-    //RV_ASSERT(!sDir(acPerp, ao), ""); // all 3 temp
-    //RV_ASSERT(!sDir(bcPerp, bo), "");
-    //RV_ASSERT((sDir(abc, cross(ab, ao)) && sDir(abc, cross(bc, bo)) && sDir(abc, cross(-ac, co))), "");
-
-
-    if(sDir(abd, ao))
-    {
-        pSimplex->points[2] = pSimplex->points[3];
-        pSimplex->size--;
-        gjkHandleTriangle(pSimplex, pDirection);
-        return false;
-    }
-
-    if(sDir(acd, ao))
-    {
-        pSimplex->points[1] = pSimplex->points[2];
-        pSimplex->points[2] = pSimplex->points[3];
-        pSimplex->size--;
-        gjkHandleTriangle(pSimplex, pDirection);
-        return false;
-    }
-
-    if(sDir(bcd, bo))
-    {
-        pSimplex->points[0] = pSimplex->points[1];
-        pSimplex->points[1] = pSimplex->points[2];
-        pSimplex->points[2] = pSimplex->points[3];
-        pSimplex->size--;
-        gjkHandleTriangle(pSimplex, pDirection);
-        return false;
-    }
-
-    cout << "FOOKING FOUND IT NIGGERFAGGOT" << endl;
-    return true;
-}
-
-bool CollisionManager::gjkHandleSimplex(SimplexHelpingStruct* pSimplex, Vec3f* pDirection)
-{
-    RV_ASSERT(pSimplex->size != 1, "simplex of unexpected size"); // maybe not
-
-    switch (pSimplex->size)
-    {
-        case 1:
-            return gjkHandlePoint(pSimplex, pDirection);
-            break;
-        case 2:
-            return gjkHandleLine(pSimplex, pDirection);
-            break;
-        case 3:
-            return gjkHandleTriangle(pSimplex, pDirection);
-            break;
-        case 4:
-            return gjkHandleTetrahedron(pSimplex, pDirection);
-        default:
-            RV_ASSERT(false, ""); // should not be in here
-            break;
-    }
-
-    RV_ASSERT(false, ""); // shouldn't be here
-}
+#include"gjk_epa.h"
 
 void CollisionManager::onUpdateDetectCollisions(float dt)
 {
     //detectCollisionsBroadPhase(dt);
     detectCollisionsNarrowPhase(dt);
 }
-
-//void CollisionManager::detectCollisionsBroadPhase(float dt)
-//{
-//
-//}
 
 void CollisionManager::detectCollisionsNarrowPhase(float dt)
 {
@@ -355,6 +48,11 @@ void CollisionManager::detectCollisionsNarrowPhase(float dt)
             {
                 cout << "collision detected" << endl;
                 //RV_ASSERT(false, ""); //temp
+                Entity* pDebugLine = Scene::getEntity("DebugLine");
+                pDebugLine->get<TransformComponent>()->position = {7, 5, 3};
+                pDebugLine->get<TransformComponent>()->scale = collisionPoints.normal;
+                pDebugLine->get<TransformComponent>()->rotation.yaw = degreesToRadians(90);
+                //pDebugLine->get<TransformComponent>()->rotation = mat::
             }
             Collision collision;
             collision.pEntity1 = pFirst;
@@ -365,13 +63,13 @@ void CollisionManager::detectCollisionsNarrowPhase(float dt)
             {
                 collision.pEntity1->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1, 0, 0));
                 collision.pEntity2->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1, 0, 0));
+                cout << "collision depth: " << collision.collisionPoints.depth << endl;
+                //collision.pEntity2->get<TransformComponent>()->position += (collision.collisionPoints.depth + 0.00001f) * collision.collisionPoints.normal;
             }
             else {
                 collision.pEntity1->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 1, 0));
                 collision.pEntity2->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 1, 0));
             }
-
-            //PhysicsManager::coll
         }
     }
 }
@@ -412,6 +110,8 @@ Vec3f ColliderBox::findFurthestPoint(const Vec3f& direction, TransformComponent*
 
 Vec3f ColliderMesh::findFurthestPoint(const Vec3f& direction, TransformComponent* pTransform) const
 {
+    RV_ASSERT(pMesh != nullptr, "mesh pointer not set");
+
     Mat4 worldMatrix = pTransform->getTransform();
 
     Vec3f result;
@@ -432,41 +132,29 @@ Vec3f ColliderMesh::findFurthestPoint(const Vec3f& direction, TransformComponent
     return result;
 }
 
-Vec3f supportFunction(const Vec3f& direction, Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform)
-{
-    Vec3f a = pFirstCollider->findFurthestPoint(direction, pFirstTransform);
-    Vec3f b = pSecondCollider->findFurthestPoint(-direction, pSecondTransform);
-    return a - b;
-}
-
 CollisionPoints CollisionManager::collideSphereBox(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, ColliderBox* pSecondCollider, TransformComponent* pSecondTransform)
 {
-    RV_ASSERT(false, ""); // temp
-
+    RV_ASSERT(false, ""); // to be implemented
 }
 
 CollisionPoints CollisionManager::collideSphereMesh(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, ColliderMesh* pSecondCollider, TransformComponent* pSecondTransform)
 {
-    RV_ASSERT(false, ""); // temp
-
+    RV_ASSERT(false, ""); // to be implemented
 }
 
 CollisionPoints CollisionManager::collideBoxMesh(ColliderBox* pFirstCollider, TransformComponent* pFirstTransform, ColliderMesh* pSecondCollider, TransformComponent* pSecondTransform)
 {
-    RV_ASSERT(false, ""); // temp
-
+    RV_ASSERT(false, ""); // to be implemented
 }
 
 CollisionPoints CollisionManager::collideBoxBox(ColliderBox* pFirstCollider, TransformComponent* pFirstTransform, ColliderBox* pSecondCollider, TransformComponent* pSecondTransform)
 {
-    RV_ASSERT(false, ""); // temp
-
+    RV_ASSERT(false, ""); // to be implemented
 }
 
 CollisionPoints CollisionManager::collideMeshMesh(ColliderMesh* pFirstCollider, TransformComponent* pFirstTransform, ColliderMesh* pSecondCollider, TransformComponent* pSecondTransform)
 {
-    cout << endl;
-    return CollisionManager::gjk(pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
+    return gjkEpa::doGjkDetectCollision(pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
 }
 
 void CollisionManager::onUpdateResolveCollisions(float dt)
@@ -500,6 +188,7 @@ CollisionPoints ColliderBox::collide(Collider* pSecondCollider, TransformCompone
 
 CollisionPoints ColliderMesh::collide(Collider* pSecondCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform)
 {
+    RV_ASSERT(pMesh != nullptr, "mesh pointer not set");
     return pSecondCollider->collideMesh(this, pFirstTransform, pSecondTransform);
 }
 
@@ -520,7 +209,7 @@ CollisionPoints ColliderSphere::collideMesh(ColliderMesh* pFirstCollider, Transf
     return CollisionManager::collideSphereMesh(this, pSecondTransform, pFirstCollider, pFirstTransform);
 }
 
-
+// -
 
 
 CollisionPoints ColliderBox::collideSphere(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform)
@@ -538,6 +227,7 @@ CollisionPoints ColliderBox::collideMesh(ColliderMesh* pFirstCollider, Transform
     return CollisionManager::collideBoxMesh(this, pSecondTransform, pFirstCollider, pFirstTransform);
 }
 
+// -
 
 CollisionPoints ColliderMesh::collideSphere(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform)
 {

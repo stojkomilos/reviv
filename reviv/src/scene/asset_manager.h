@@ -18,6 +18,11 @@ public:
     ModelLoader modelLoaderSphere;
     ModelLoader modelLoaderQuad2D;
 
+    ModelLoader modelLoaderDodik;
+    ModelLoader modelLoaderHexagon;
+    ModelLoader modelLoaderStar;
+    ModelLoader modelLoaderCylinder;
+
     Shader shaderTexture;
 
     // Material data available here: http://devernay.free.fr/cours/opengl/materials.html

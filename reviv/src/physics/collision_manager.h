@@ -10,12 +10,6 @@ class ColliderSphere;
 class ColliderBox;
 class ColliderMesh;
 
-struct SimplexHelpingStruct
-{
-    Vec3f points[4];
-    unsigned char size;
-};
-
 class CollisionPoints
 {
 public:
@@ -34,7 +28,7 @@ public:
     virtual ~Collider() = default;
 
     virtual CollisionPoints collide(Collider* pSecondCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) = 0;
-    virtual Vec3f findFurthestPoint(const Vec3f& direction, TransformComponent* pTransform) const = 0; // a.k.a. support function
+    virtual Vec3f findFurthestPoint(const Vec3f& direction, TransformComponent* pTransform) const = 0; // a.k.a. support function. used for gjk collision detection
 
     virtual CollisionPoints collideSphere(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) = 0;
     virtual CollisionPoints collideBox(ColliderBox* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) = 0;
@@ -79,7 +73,7 @@ class ColliderMesh : public Collider
 public:
     virtual Vec3f findFurthestPoint(const Vec3f& direction, TransformComponent* pTransform) const override;
 
-    Mesh* pMesh;
+    Mesh* pMesh = nullptr;
 
     virtual CollisionPoints collide(Collider* pSecondCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
     virtual CollisionPoints collideSphere(ColliderSphere* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) override;
@@ -100,10 +94,6 @@ public:
     void onUpdateResolveCollisions(float dt);
     //void detectCollisionsBroadPhase(float dt);
     void detectCollisionsNarrowPhase(float dt);
-
-    static CollisionPoints gjk(Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform);
-    static bool gjkHandleSimplex(SimplexHelpingStruct* pSimplex, Vec3f* pDirection);
-    static Vec3f doSupportFunction(const Vec3f& direction, Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform);
 
     //TODO: maybe? place all this in Collider class, remove CollisionManager and so on... (in what file to put Collider? file collider.h)
     // similar goes for DynamicsManager?

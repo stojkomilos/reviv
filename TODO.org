@@ -2,6 +2,37 @@
 
 ** 
 
+pre faksa new features:
+  - basic physics (collision detection, response)
+  - cascaded shadow maps, multipass shadow maps
+  - bloom
+  - antialiasing
+  - layers
+  -----------
+  game i paralelno sa game:
+   - scripting (videcu sta mi treba ako pravim igru u isto vreme)
+   - events
+   - partice system za krv (krv koja izlece kad pogodis neprijatelje) (cherno ima video-e valjda)
+  --------
+
+pre faksa fix:
+ - crash
+ - virtual machine compile windows 10
+ - gjk, epa optimization, works correct
+ - most TODO comments
+ - remove a LOT useless comments
+
+mozda jednoga dana:
+ - broad phase collision detection (e.g. spatial hashing, k-d tree or oct tree....)
+ - animation. physics based animation (growth game gdc talk)
+ - blending
+ - multithreading
+ - maybe: some basic fluid simulation thing, some basic cloth simulation thing
+ - voxel world optimization stuff
+ - sound (openAL, miniaudio(hazel uses it, probably more minimal))
+ - multiplayer (thinmatrix?)
+ - ssao
+
 ideja:
  renderSceneToFramebuffer(Framebuffer* pFramebuffer, bool isShadowsOn)
 moze se koristiti za ogledala, portale itd... i za renderovanje obicne scene. (zahteva funkciju shadowsRenderPass ili tako nesto)
@@ -72,6 +103,7 @@ general plan:
 
 initialDirection = normalize(s2.center - s1.center);
  
+Note also that if the GJK algorithm is applied to the vertex sets of nonconvex polyhedra, it will compute the smallest distance between the convex hulls of these nonconvex polyhedra.
 
 ** ray casting
 

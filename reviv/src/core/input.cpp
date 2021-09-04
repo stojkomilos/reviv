@@ -121,7 +121,7 @@ void Input::doPlayerControllerPolling()
         moveDirection += -rightDirection;
 
 
-    if(pressedW || pressedS || pressedD || pressedA)
+    if(pressedW || pressedS || pressedD || pressedA) // TODO: fix. what i know: still sometimes does module(Vec3f(0, 0, 0))
     {
         Vec3f horizontalPlaneDelta = moveDirection / module(moveDirection) * speed * Time::getDelta();
         *playerPos += horizontalPlaneDelta;

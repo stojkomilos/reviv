@@ -102,9 +102,18 @@ namespace mat{
         float x[4];
     };
 
+    // NOT TESTED
     bool checkIfPointBelongsToLine(const Vec3f& linePoint1, const Vec3f& linePoint2, const Vec3f& point);
-    // not tested
-    //float calcPointToPlaneDistance(const Vec3f& point, const Vec3f& planePointA, const Vec3f& planePointB, const Vec3f& planePointC);
+
+    // NOT TESTED
+    float getDistancePointLine(const Vec3f& point, const Vec3f& lineA, const Vec3f& lineB);
+
+    inline bool sign(float a)
+    { 
+        if(a>0) 
+            return true; 
+        return false; 
+    }
 
     Mat4 translate(Mat4 mtx, const Vec4f& vec);
     Mat4 scale(Mat4 mtx, const Vec4f& vec);

@@ -8,6 +8,11 @@ void AssetManager::init()
     modelLoaderSphere.load("assets/models/sphere.fbx");
     modelLoaderQuad2D.load("assets/models/quad_2d.obj");
 
+    modelLoaderDodik.load("assets/models/dodik.glb");
+    modelLoaderHexagon.load("assets/models/hexagon.glb");
+    modelLoaderStar.load("assets/models/star.glb");
+    modelLoaderCylinder.load("assets/models/cylinder.glb");
+
     shaderTexture.init("assets/shaders/texture.vs", "assets/shaders/texture.fs");
 }
 
