@@ -6,6 +6,11 @@ using std::cin; using std::cout; using std::endl;
 
 namespace mat{
 
+    class Mat1;
+    class Mat2;
+    class Mat3;
+    class Mat4;
+
     class Vec1f
     {
     public:
@@ -54,6 +59,7 @@ namespace mat{
         Mat3() = default;
         Mat3(float n);
         Mat3(const Mat3&) = default;
+        Mat3(const Mat4& upperLeft); // copies the upper left part of the Mat4 into the Mat3
         bool operator==(const Mat3&) = delete;
     };
 
@@ -93,6 +99,16 @@ namespace mat{
     Mat4 rotateY(float theta); // supposed to be pitch
     Mat4 rotateZ(float theta); // supposed to be yaw
 
+    // not tested
+    Mat3 transpose(const Mat3& mtx);
+
+    float getDeterminant(const Mat3& mtx);
+    Mat3 getInverse(const Mat3& mtx);
+
+
+    Mat4 multiply(const Mat4& first, const Mat4& second); // TODO: maybe canbe templated (so the user just does multiply(thing, thing2) without knowing that it is even templated)
+    Vec4f multiply(const Mat4& mtx, const Vec4f& vec);
+
     Mat4 multiply(const Mat4& first, const Mat4& second);
     Vec4f multiply(const Mat4& mtx, const Vec4f& vec);
 
@@ -127,6 +143,8 @@ namespace mat{
     Vec4f operator/(const Vec4f& thing, const float& scalar);
     Vec4f operator/(const float& scalar, const Vec4f& thing);
 
+    Vec3f operator*(const Mat3& mtx, const Vec3f& vec);
+    Mat3 operator*(const Mat3& first, const Mat3& second);
 
     class Rotation
     {
@@ -138,8 +156,10 @@ namespace mat{
         Rotation(const Vec3f& initRotation) 
             : roll(initRotation.a[0]), pitch(initRotation.a[1]), yaw(initRotation.a[2]) {}
     };
-
+    Rotation lookAtGetRotation(const Vec3f& eyePosition, const Vec3f& targetPosition);
     Vec3f getDirectionFromRotation(const Rotation& rotation);
+    Vec3f getDirectionFromRotation(const Rotation& rotation);
+
     float degreesToRadians(float angleInDegrees);
     float radiansToDegrees(float angleInRadians);
 

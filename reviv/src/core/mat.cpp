@@ -86,6 +86,13 @@ namespace mat{
         a[0][0] = a[1][1] = a[2][2] = a[3][3] = n;
     }
 
+    Mat3::Mat3(const Mat4& upperLeft)
+    {
+        for(int i=0; i<3; i++)
+            for(int j=0; j<3; j++)
+                a[i][j] = upperLeft.a[i][j];
+    }
+
     bool compare(const Vec3f& first, const Vec3f& second, float marginOfError)
     {
         return (abs(first.a[0] - second.a[0]) < marginOfError) && (abs(first.a[1] - second.a[1]) < marginOfError) && (abs(first.a[2] - second.a[2]) < marginOfError);
@@ -262,6 +269,44 @@ namespace mat{
         return mtx;
     }
 
+    float getDeterminant(const Mat3& mtx)
+    {
+        return mtx.a[0][0] * (mtx.a[1][1] * mtx.a[2][2] - mtx.a[2][1] * mtx.a[1][2])
+            -  mtx.a[0][1] * (mtx.a[1][0] * mtx.a[2][2] - mtx.a[2][0] * mtx.a[1][2])
+            +  mtx.a[0][2] * (mtx.a[1][0] * mtx.a[2][1] - mtx.a[2][0] * mtx.a[1][1]);
+    }
+
+    Mat3 transpose(const Mat3& mtx)
+    {
+        Mat3 result;
+
+        for(int i=0; i<3; i++)
+            for(int j=0; j<3; j++)
+                result.a[i][j] = mtx.a[j][i];
+
+        return result;
+    }
+
+    Mat3 getInverse(const Mat3& mtx)
+    {
+        float invDet = 1 / getDeterminant(mtx);
+        Mat3 result;
+
+        result.a[0][0] = +(mtx.a[1][1] * mtx.a[2][2] - mtx.a[2][1] * mtx.a[1][2]) * invDet;
+        result.a[1][0] = -(mtx.a[1][0] * mtx.a[2][2] - mtx.a[2][0] * mtx.a[1][2]) * invDet;
+        result.a[2][0] = +(mtx.a[1][0] * mtx.a[2][1] - mtx.a[2][0] * mtx.a[1][1]) * invDet;
+
+        result.a[0][1] = -(mtx.a[0][1] * mtx.a[2][2] - mtx.a[2][1] * mtx.a[0][2]) * invDet;
+        result.a[1][1] = +(mtx.a[0][0] * mtx.a[2][2] - mtx.a[2][0] * mtx.a[0][2]) * invDet;
+        result.a[2][1] = -(mtx.a[0][0] * mtx.a[2][1] - mtx.a[2][0] * mtx.a[0][1]) * invDet;
+
+        result.a[0][2] = +(mtx.a[0][1] * mtx.a[1][2] - mtx.a[1][1] * mtx.a[0][2]) * invDet;
+        result.a[1][2] = -(mtx.a[0][0] * mtx.a[1][2] - mtx.a[1][0] * mtx.a[0][2]) * invDet;
+        result.a[2][2] = +(mtx.a[0][0] * mtx.a[1][1] - mtx.a[1][0] * mtx.a[0][1]) * invDet;
+
+        return result;
+    }
+
     Vec4f multiply(const Mat4& mtx, const Vec4f& vec)
     {
         Vec4f rez;
@@ -269,6 +314,21 @@ namespace mat{
         {                
             rez.a[i] = 0;
             for(int j=0; j<4; j++)
+            {                    
+                rez.a[i] += mtx.a[i][j] * vec.a[j];
+            }
+        }
+
+        return rez;
+    }
+
+    Vec3f multiply(const Mat3& mtx, const Vec3f& vec)
+    {
+        Vec3f rez;
+        for(int i=0; i<3; i++)
+        {                
+            rez.a[i] = 0;
+            for(int j=0; j<3; j++)
             {                    
                 rez.a[i] += mtx.a[i][j] * vec.a[j];
             }
@@ -396,6 +456,17 @@ namespace mat{
 
         return first;
     }
+    Rotation lookAtGetRotation(const Vec3f& eyePosition, const Vec3f& targetPosition)
+    {
+        Rotation rotation;
+        float distance = module(eyePosition - targetPosition);
+
+        rotation.pitch = asin((targetPosition.a[2] - eyePosition.a[2]) / distance);
+        rotation.roll = 0;
+        rotation.yaw = atan2(targetPosition.a[1] - eyePosition.a[1], targetPosition.a[0] - eyePosition.a[0]);
+
+        return rotation;
+    }
 
     Vec3f operator/(const Vec3f& first, float scalar)
     {
@@ -429,7 +500,31 @@ namespace mat{
 
         return result;
     }
-};
+
+    Mat3 multiply(const Mat3& first, const Mat3& second)
+    {
+        Mat3 result;
+        for(int i=0; i<3; i++)
+            for(int j=0; j<3; j++)
+            {
+                result.a[i][j] = 0;
+                for(int k=0; k<3; k++)
+                    result.a[i][j] += first.a[i][k] * second.a[k][j];
+            }
+
+        return result;
+    }
+
+    Vec3f operator*(const Mat3& mtx, const Vec3f& vec)
+    {
+        return multiply(mtx, vec);
+    }
+
+    Mat3 operator*(const Mat3& first, const Mat3& second)
+    {
+        return multiply(first, second);
+    }
+}
 
 /*
     Vec3f normalise(Vec3f vec) // NOTE: should be avoided because module of

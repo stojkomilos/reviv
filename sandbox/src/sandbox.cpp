@@ -103,14 +103,13 @@ public:
         auto* pColliderDrugo = drugo->add<ColliderMeshComponent>();
         pPhysicalDrugo->gravity = 0.0;
         pColliderDrugo->collider.pMesh = drugo->get<ModelComponent>()->model.pMeshes[0]; // TODO: automate this somehow
-
     }
 
     void onUpdate() override
     {
         auto* trans = prvo->get<TransformComponent>();
 
-        float drugoSpeed = 5.f;
+        float drugoSpeed = 1.f;
         if(Input::isKeyPressed(RV_KEY_UP))
             trans->position += Time::getDelta() * Vec3f(0, 0, 1) * drugoSpeed;
         if(Input::isKeyPressed(RV_KEY_DOWN))
@@ -121,8 +120,9 @@ public:
         if(Input::isKeyPressed(RV_KEY_RIGHT))
             trans->position += Time::getDelta() * Vec3f(0, -1, 0) * drugoSpeed;
 
-        trans->position += Time::getDelta() * Vec3f(0, 0, -1) * 0.1;
+        //trans->position += Time::getDelta() * Vec3f(0, 0, -1) * 0.1;
 
+/*
         prvo->get<TransformComponent>()->rotation.yaw = Time::getTime();
         prvo->get<TransformComponent>()->rotation.roll = Time::getTime() * 3.1;
         prvo->get<TransformComponent>()->rotation.pitch = Time::getTime() * 0.3 + 0.7;
@@ -130,6 +130,8 @@ public:
         drugo->get<TransformComponent>()->rotation.yaw = Time::getTime() * 0.7;
         drugo->get<TransformComponent>()->rotation.roll = Time::getTime() * 1.3 + 0.333;
         drugo->get<TransformComponent>()->rotation.pitch = Time::getTime() * 1.8 + 0.2;
+*/
+
 
     }
 };

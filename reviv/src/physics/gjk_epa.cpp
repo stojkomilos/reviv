@@ -442,6 +442,62 @@ namespace gjkEpa
             else { // valid face
                 result.depth = tempMinFaceDistance;
                 result.normal = normals[tempIndexMinFace] / module(normals[tempIndexMinFace]);
+
+                Mat3 mtx;
+
+                mtx.a[0][0] = vertices[faces[tempIndexMinFace].a].a[0];
+                mtx.a[0][1] = vertices[faces[tempIndexMinFace].b].a[0];
+                mtx.a[0][2] = vertices[faces[tempIndexMinFace].c].a[0];
+
+                mtx.a[1][0] = vertices[faces[tempIndexMinFace].a].a[1];
+                mtx.a[1][1] = vertices[faces[tempIndexMinFace].b].a[1];
+                mtx.a[1][2] = vertices[faces[tempIndexMinFace].c].a[1];
+
+                mtx.a[2][0] = vertices[faces[tempIndexMinFace].a].a[2];
+                mtx.a[2][1] = vertices[faces[tempIndexMinFace].b].a[2];
+                mtx.a[2][2] = vertices[faces[tempIndexMinFace].c].a[2];
+
+                Vec3f p;
+                p = normals[tempIndexMinFace] * tempMinFaceDistance;
+
+                Vec3f barycentricCoordinates = getInverse(mtx) * p;
+
+                Vec3f points[2][3];
+
+                points[0][0] = pFirstCollider->findFurthestPoint(vertices[faces[tempIndexMinFace].a], pFirstTransform);
+                points[0][1] = pFirstCollider->findFurthestPoint(vertices[faces[tempIndexMinFace].b], pFirstTransform);
+                points[0][2] = pFirstCollider->findFurthestPoint(vertices[faces[tempIndexMinFace].c], pFirstTransform);
+
+                points[1][0] = pSecondCollider->findFurthestPoint(vertices[faces[tempIndexMinFace].a], pSecondTransform);
+                points[1][1] = pSecondCollider->findFurthestPoint(vertices[faces[tempIndexMinFace].b], pSecondTransform);
+                points[1][2] = pSecondCollider->findFurthestPoint(vertices[faces[tempIndexMinFace].c], pSecondTransform);
+
+                Mat3 tempMat;
+                Vec3f furthestVectors[2];
+
+                for(int i=0; i<2; i++)
+                {
+                    tempMat.a[0][0] = points[i][0].a[0];
+                    tempMat.a[0][1] = points[i][1].a[0];
+                    tempMat.a[0][2] = points[i][2].a[0];
+
+                    tempMat.a[1][0] = points[i][0].a[1];
+                    tempMat.a[1][1] = points[i][1].a[1];
+                    tempMat.a[1][2] = points[i][2].a[1];
+
+                    tempMat.a[2][0] = points[i][0].a[2];
+                    tempMat.a[2][1] = points[i][1].a[2];
+                    tempMat.a[2][2] = points[i][2].a[2];
+
+                    furthestVectors[i] = tempMat * barycentricCoordinates;
+                }
+
+                //furthestVectors[0] = pFirstTransform->getTransform() * furthestVectors[0];
+                //furthestVectors[1] = pSecondTransform->getTransform() * furthestVectors[1];
+
+                result.firstPoint = furthestVectors[0];
+                result.secondPoint = furthestVectors[2];
+
                 break;
             }
         }
