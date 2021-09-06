@@ -27,5 +27,6 @@ void Skybox::onUpdate()
     RenderCommand::drawElements(cubeModel.meshes[0]);
 
     glDepthFunc(GL_LESS);
-    glEnable(GL_CULL_FACE);
+    // TODO: vrati
+    //glEnable(GL_CULL_FACE);
 }

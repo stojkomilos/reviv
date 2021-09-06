@@ -42,7 +42,7 @@ public:
     //Shader screenShader;
     //Shader depthTestShader;
 
-    Shader shaderDefferedBlinnPhong;
+    Shader shaderDefferedLighting;
     Shader shaderMonochroma;
     Material materialDefferedBlinnPhong; // special material, bind sort of environment stuff actually
     Deffered deffered;

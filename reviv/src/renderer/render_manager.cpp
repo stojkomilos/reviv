@@ -11,8 +11,8 @@ void RenderManager::renderSceneToFramebuffer(Framebuffer* pFrameBuffer)
     //shadowMapRenderPass();
     defferedGeometryRenderPass();
     defferedLightingRenderPass();
-    //defferedMonochromaRenderPass();
-    //skybox.onUpdate();
+    defferedMonochromaRenderPass();
+    skybox.onUpdate();
 }
 
 void RenderManager::iInit()
@@ -26,15 +26,15 @@ void RenderManager::iInit()
     skyboxFaces.push_back("assets/textures/skybox/top.jpg");
     skyboxFaces.push_back("assets/textures/skybox/front.jpg");
     skyboxFaces.push_back("assets/textures/skybox/back.jpg");
-    //skybox.init(skyboxFaces);
+    skybox.init(skyboxFaces);
 
     deffered.init(Application::get()->getWindowWidth(), Application::get()->getWindowHeight());
 
-    directionalShadowMapShader.init("assets/shaders/shadow_map.vs", "assets/shaders/shadow_map.fs");
-    omnidirectionalShadowMapShader.init("assets/shaders/omnidirectional_shadow_map_6times.vs", "assets/shaders/omnidirectional_shadow_map_6times.fs");
+    //directionalShadowMapShader.init("assets/shaders/shadow_map.vs", "assets/shaders/shadow_map.fs");
+    //omnidirectionalShadowMapShader.init("assets/shaders/omnidirectional_shadow_map_6times.vs", "assets/shaders/omnidirectional_shadow_map_6times.fs");
 
-    shaderDefferedBlinnPhong.init("assets/shaders/deffered_blinn_phong.vs", "assets/shaders/deffered_blinn_phong.fs");
-    materialDefferedBlinnPhong.setShader(&shaderDefferedBlinnPhong);
+    shaderDefferedLighting.init("assets/shaders/deffered_blinn_phong.vs", "assets/shaders/deffered_blinn_phong.fs");
+    materialDefferedBlinnPhong.setShader(&shaderDefferedLighting);
     materialDefferedBlinnPhong.setTexture("u_gPosition", deffered.gPosition);
     materialDefferedBlinnPhong.setTexture("u_gNormal", deffered.gNormal);
     materialDefferedBlinnPhong.setTexture("u_gAlbedoSpecular", deffered.gAlbedoSpecular);
@@ -222,15 +222,17 @@ void RenderManager::defferedGeometryRenderPass()
             Model* pModel = &itEntity->get<ModelComponent>()->model;
             TransformComponent* pTransformComponent = itEntity->get<TransformComponent>();
 
-
-            if(pModel->flags.isCullFaceOn == true)
-                glEnable(GL_CULL_FACE);
-            else glDisable(GL_CULL_FACE);
+            glDisable(GL_CULL_FACE);
+            // TODO:
+            //if(pModel->flags.isCullFaceOn == true)
+            //    glEnable(GL_CULL_FACE);
+            //else glDisable(GL_CULL_FACE);
 
             for(unsigned int i=0; i < pModel->pMeshes.size(); i++)
             {
                 if(pModel->pMaterials[0]->pShader == &deffered.geometryPassShader)
                 {
+                    cout << "Geometry deffered pass for entity: " << itEntity->entityName << endl;
                     bindEnvironmentAndMaterial(pModel->pMaterials[i]->pShader, &environment, pModel->pMaterials[i]);
                     pModel->pMaterials[i]->pShader->uploadUniformMat4("u_ModelMatrix", pTransformComponent->getTransform());
                     pModel->pMeshes[i]->vao.bind();
@@ -245,7 +247,9 @@ void RenderManager::defferedLightingRenderPass()
 {
         deffered.gBuffer.unbind();
         glViewport(0, 0, Application::get()->getWindowWidth(), Application::get()->getWindowHeight());
-        bindEnvironmentAndMaterial(&shaderDefferedBlinnPhong, &environment, &materialDefferedBlinnPhong);
+        bindEnvironmentAndMaterial(&shaderDefferedLighting, &environment, &materialDefferedBlinnPhong);
+
+        glDisable(GL_CULL_FACE);
 
         RenderCommand::setClearColor(Vec4f(1.f, 0.f, 1.f, 1.f));
         RenderCommand::clear();
