@@ -7,12 +7,6 @@ using std::cin; using std::cout; using std::endl;
 class Time
 {
 public:
-    static void init() { get()->iInit(); }
-    static void onUpdate() { get()->iOnUpdate(); }
-    static float getTime() { return get()->igetTime(); } // returns time since the start of rendering
-    static float getDelta() { return get()->iGetDelta(); } // returns time in dt in seconds
-    static float isOneSecond() { return get()->iIsOneSecond(); }
-    static float getLoopCounter() { return get()->gameLoopCounter; }
 
     static Time* get()
     {
@@ -21,11 +15,13 @@ public:
     }
 
 private:
-    void iInit();
-    void iOnUpdate();
-    float iGetDelta();
-    float igetTime();
-    bool iIsOneSecond();
+    void init();
+    void onUpdate();
+    float getDelta(); // returns time in dt in seconds
+    float getTime(); // returns time since the start of rendering
+    bool isOneSecond();
+
+    float getLoopCounter() { return get()->gameLoopCounter; }
     unsigned long long gameLoopCounter = 0;
 
     bool m_OneSecond = false;

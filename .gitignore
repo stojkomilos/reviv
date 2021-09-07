@@ -69,3 +69,8 @@ sandbox/assets/models/*
 !sandbox/assets/models/sphere.obj
 !sandbox/assets/models/sphere.fbx
 !sandbox/assets/models/quad_2d.obj
+
+!sandbox/assets/models/hexagon.glb
+!sandbox/assets/models/cylinder.glb
+!sandbox/assets/models/star.glb
+!sandbox/assets/models/dodik.glb

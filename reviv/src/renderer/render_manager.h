@@ -21,12 +21,6 @@ public:
     RenderManager(const RenderManager&) = delete;
     RenderManager& operator=(const RenderManager&) = delete;
     
-    static void init() { get()->iInit(); }
-    static void onUpdate() { get()->iOnUpdate(); }
-    static void shutdown() { get()->iShutdown(); }
-
-    static void onEvent(Event* event);
-    
     static RenderManager* get()
     {
         static RenderManager instance;
@@ -54,9 +48,9 @@ public:
 private:
     RenderManager() = default;
 
-    void iInit();
-    void iOnUpdate();
-    void iShutdown();
+    void init();
+    void onUpdate();
+    void shutdown();
 
     void renderSceneToFramebuffer(Framebuffer* pFrameBuffer);
 

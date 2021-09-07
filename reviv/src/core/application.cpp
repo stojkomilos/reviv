@@ -50,12 +50,12 @@ void Application::initEngine()
     Input::disableCursor();        // For the first person 3d camera controller
     Input::useRawMouseMotion();
 
-    PhysicsManager::init();
-    RenderManager::init();
+    PhysicsManager::get()->init();
+    RenderManager::get()->init();
 
     AssetManager::get()->init();
-    GameStuffManager::init();
-    Time::init(); // must be last (so that physics doesn't start before everything is loaded)
+    GameStuffManager::get()->init();
+    Time::get()->init(); // must be last (so that physics doesn't start before everything is loaded)
 }
 
 void Application::run()

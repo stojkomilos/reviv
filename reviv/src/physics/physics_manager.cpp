@@ -5,7 +5,7 @@
 #include"scene/scene.h"
 #include"scene/components.h"
 
-void PhysicsManager::iOnUpdate(float dt)
+void PhysicsManager::onUpdate(float dt)
 {
     alignPositionAndRotation(*Scene::getPlayerEntity(), Scene::getCameraEntity());
 
@@ -27,7 +27,7 @@ void PhysicsManager::onUpdateResolveCollisions(float dt)
 
 }
 
-void PhysicsManager::iInit()
+void PhysicsManager::init()
 {
 }
 

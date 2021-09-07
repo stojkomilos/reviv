@@ -14,9 +14,6 @@ public:
     PhysicsManager(const PhysicsManager&) = delete;
     PhysicsManager& operator=(const PhysicsManager&) = delete;
 
-    static void init() { get()->iInit(); }
-    static void onUpdate(float dt) { get()->iOnUpdate(dt); }
-
     static PhysicsManager* get()
     {
         static PhysicsManager instance;
@@ -28,8 +25,9 @@ public:
     Collider* getCollidableFromEntity(Entity* pEntity);
 private:
     PhysicsManager() = default;
-    void iInit();
-    void iOnUpdate(float dt);
+
+    void init();
+    void onUpdate(float dt);
 
     void onUpdateDetectCollisions(float dt);
     void onUpdateDynamics(float dt);

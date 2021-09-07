@@ -12,12 +12,8 @@ public:
         return &instance;
     }
 
-    static void init() { get()->iInit(); }
-    static void onUpdate() { get()->iOnUpdate(); }
-
     Weather weather;
 
-private:
-    void iInit();
-    void iOnUpdate();
+    void init();
+    void onUpdate();
 };

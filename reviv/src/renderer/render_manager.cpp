@@ -1,6 +1,6 @@
 #include"render_manager.h"
 
-void RenderManager::iOnUpdate()
+void RenderManager::onUpdate()
 {
     renderSceneToFramebuffer(&defaultFramebuffer);
 }
@@ -15,9 +15,9 @@ void RenderManager::renderSceneToFramebuffer(Framebuffer* pFrameBuffer)
     skybox.onUpdate();
 }
 
-void RenderManager::iInit()
+void RenderManager::init()
 {
-    RenderCommand::init();
+    RenderCommand::get()->init();
 
     std::vector<std::string> skyboxFaces;
     skyboxFaces.push_back("assets/textures/skybox/right.jpg"); // the order of theese makes no sense within the context of the world coordinate system, but it is used because opengl incorectly rotates the cube map textures within this coordinate system
