@@ -122,7 +122,6 @@ void Environment::setShadowMap(Entity* pEntity, Light* pLight, const std::string
 void Environment::bind(Shader* shader)
 {
     shader->bind();
-    shader->environmentTextureUniformCounter = 0;
 
     for(auto it = shader->uniformNames.begin(); it != shader->uniformNames.end(); it++)
     {
@@ -133,14 +132,16 @@ void Environment::bind(Shader* shader)
             {
                 if(*it == iteratorUniformMap.first)
                 {
-                    //cout << "Environment texture: " << *it << " slot: " << shader->environmentTextureUniformCounter << endl;
+                    cout << "Environment texture: " << *it << " slot: " << shader->textureUniformCounter << endl;
                     RV_ASSERT(shader != &RenderManager::getInstance()->directionalShadowMapShader, ""); // temp, can be removed
                     RV_ASSERT(shader != &RenderManager::getInstance()->omnidirectionalShadowMapShader, ""); // temp, can be removed
 
-                    shaderUniformMap.set(*it, (int)(shader->environmentTextureUniformCounter));
-                    iteratorUniformMap.second->bind(shader->environmentTextureUniformCounter);
+                    RV_ASSERT(iteratorUniformMap.second->isInited == true, "setting a environment texture that is not inited");
 
-                    shader->environmentTextureUniformCounter++;
+                    shaderUniformMap.set(*it, (int)(shader->textureUniformCounter));
+                    iteratorUniformMap.second->bind(shader->textureUniformCounter);
+
+                    shader->textureUniformCounter++;
                     isTexture = true;
                     break;
                 }

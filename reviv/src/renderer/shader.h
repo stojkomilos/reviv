@@ -35,8 +35,7 @@ public:
 
     unsigned char lastUsed = 0;
 
-    unsigned int environmentTextureUniformCounter = 0; // always bind enviroment first, and then after bind material
-    unsigned int materialTextureUniformCounter = 0;
+    unsigned int textureUniformCounter = 0; // always bind enviroment first, and then after bind material
     
 private:
     void checkCompileErrors(GLuint shader, std::string type);

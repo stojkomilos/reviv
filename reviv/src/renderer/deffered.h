@@ -22,4 +22,6 @@ public:
     Framebuffer gBuffer;
     Texture2D gPosition, gNormal, gAlbedoSpecular;
     Texture2D gDepth;
+
+    unsigned int rboDepth;
 };

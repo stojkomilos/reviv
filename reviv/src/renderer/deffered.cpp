@@ -22,7 +22,6 @@ void Deffered::initGBuffer(unsigned int gBufferWidth, unsigned int gBufferHeight
 
     gPosition.init();
     gPosition.bind(0);
-
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Width, m_Height, 0, GL_RGBA, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -45,6 +44,12 @@ void Deffered::initGBuffer(unsigned int gBufferWidth, unsigned int gBufferHeight
     unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 }; // promeniti?
     glDrawBuffers(3, attachments); // TODO: mozda povecati?
 
+    // TODO: ?
+    //glGenRenderbuffers(1, &rboDepth);
+    //glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+    //glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_Width, m_Height);
+    //glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+
     RV_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "incomplete framebuffer");
 
     gBuffer.unbind();
@@ -54,10 +59,10 @@ void Deffered::resize(unsigned int gBufferWidth, unsigned int gBufferHeight)
 {
     gBuffer.~Framebuffer();
 
-    gPosition.~Texture();
-    gNormal.~Texture();
-    gAlbedoSpecular.~Texture();
-    gDepth.~Texture();
+    gPosition.~Texture2D();
+    gNormal.~Texture2D();
+    gAlbedoSpecular.~Texture2D();
+    gDepth.~Texture2D();
 
     initGBuffer(gBufferWidth, gBufferHeight);
 }

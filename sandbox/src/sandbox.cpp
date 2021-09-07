@@ -60,6 +60,8 @@ public:
 
         dirLight = Scene::createEntity("dirLight");
         auto* pDirComp = dirLight->add<DirectionalLightComponent>();
+        dirLight->get<TransformComponent>()->position = {0, 0, 20};
+        dirLight->get<TransformComponent>()->rotation.pitch = degreesToRadians(-90);
 
     }
 

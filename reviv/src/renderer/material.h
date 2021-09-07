@@ -23,7 +23,6 @@ public:
 
     void setShader(Shader* inShader);
     void bindShader();
-    void bind();
 
     inline void setTexture(const std::string& textureUniformName, const Texture& texture) { shaderUniformMap.setTexture(textureUniformName, texture); }
 
@@ -37,6 +36,9 @@ public:
 
     Shader* pShader = nullptr;
     ShaderUniformMap shaderUniformMap;
+private:
+    void bind(); // NOTE: don't call bind() on it's own. You MUST use the RenderManager wrappers
+    friend class RenderManager;
 };
 
 void log(const Material& material);

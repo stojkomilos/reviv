@@ -15,6 +15,7 @@ void main()
 {
     gPosition = v_FragPos;
 
+    // TODO: don't normalize here, but rather normalize in deffered lighting pass. performance reasons
     gNormal = normalize(v_Normal);
 
     gAlbedoSpecular.rgb = u_Diffuse.rgb;

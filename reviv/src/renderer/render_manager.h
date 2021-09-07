@@ -44,11 +44,12 @@ public:
 
     Shader shaderDefferedLighting;
     Shader shaderMonochroma;
-    Material materialDefferedBlinnPhong; // special material, bind sort of environment stuff actually
+    Material materialDefferedLighting; // special material, bind sort of environment stuff actually
     Deffered deffered;
 
     void bindEnvironmentAndMaterial(Shader* shader, Environment* environment, Material* material);
     void bindEnvironment(Shader* shader, Environment* environment);
+    void bindMaterial(Shader* shader, Material* material);
 
 private:
     RenderManager() = default;

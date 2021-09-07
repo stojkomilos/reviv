@@ -34,10 +34,10 @@ void RenderManager::iInit()
     //omnidirectionalShadowMapShader.init("assets/shaders/omnidirectional_shadow_map_6times.vs", "assets/shaders/omnidirectional_shadow_map_6times.fs");
 
     shaderDefferedLighting.init("assets/shaders/deffered_blinn_phong.vs", "assets/shaders/deffered_blinn_phong.fs");
-    materialDefferedBlinnPhong.setShader(&shaderDefferedLighting);
-    materialDefferedBlinnPhong.setTexture("u_gPosition", deffered.gPosition);
-    materialDefferedBlinnPhong.setTexture("u_gNormal", deffered.gNormal);
-    materialDefferedBlinnPhong.setTexture("u_gAlbedoSpecular", deffered.gAlbedoSpecular);
+    materialDefferedLighting.setShader(&shaderDefferedLighting);
+    materialDefferedLighting.setTexture("u_gPosition", deffered.gPosition);
+    materialDefferedLighting.setTexture("u_gNormal", deffered.gNormal);
+    materialDefferedLighting.setTexture("u_gAlbedoSpecular", deffered.gAlbedoSpecular);
 
     defaultFramebuffer.id = 0;
     defaultFramebuffer.isInited = true;
@@ -53,12 +53,10 @@ void RenderManager::beginScene()
         && Scene::getCameraEntity()->has<TransformComponent>(),
         "submitted entity is supposed to be a camera, but does NOT have required components");
 
-    if(!Input::isKeyPressed(RV_KEY_P)) // TODO: remove
-    {
-        camera->setViewMatrix(
-            Scene::getCameraEntity()->get<TransformComponent>()->position,
-            Scene::getCameraEntity()->get<TransformComponent>()->rotation);
-    }
+    camera->setViewMatrix(
+        Scene::getCameraEntity()->get<TransformComponent>()->position,
+        Scene::getCameraEntity()->get<TransformComponent>()->rotation);
+    camera->setPerspectiveProjection(degreesToRadians(90), Application::get()->getWindowRatio());
 
     environment.set("ue_ViewMatrix", camera->viewMatrix);
     environment.set("ue_ProjectionMatrix", camera->projectionMatrix);
@@ -68,6 +66,7 @@ void RenderManager::beginScene()
     environment.setLights();
 }
 
+/*
 void RenderManager::shadowMapRenderPass()
 {
 
@@ -195,6 +194,7 @@ void RenderManager::shadowMapRenderPass()
         }
     }
 }
+*/
 
 //righ
 //left
@@ -211,6 +211,8 @@ void RenderManager::defferedGeometryRenderPass()
 
     RenderCommand::setClearColor(Vec4f(0.f, 0.f, 0.f, 1.f));
     RenderCommand::clear();
+
+    log(environment);
 
     for(auto itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
     {
@@ -230,10 +232,12 @@ void RenderManager::defferedGeometryRenderPass()
 
             for(unsigned int i=0; i < pModel->pMeshes.size(); i++)
             {
-                if(pModel->pMaterials[0]->pShader == &deffered.geometryPassShader)
+                if(pModel->pMaterials[i]->pShader == &deffered.geometryPassShader)
                 {
-                    cout << "Geometry deffered pass for entity: " << itEntity->entityName << endl;
-                    bindEnvironmentAndMaterial(pModel->pMaterials[i]->pShader, &environment, pModel->pMaterials[i]);
+                    //cout << "---" << endl;
+                    //cout << "Geometry deffered pass for entity: " << itEntity->entityName << " . modelMatrix: ";
+                    log(pTransformComponent->getTransform());
+                    bindEnvironmentAndMaterial(&deffered.geometryPassShader, &environment, pModel->pMaterials[i]);
                     pModel->pMaterials[i]->pShader->uploadUniformMat4("u_ModelMatrix", pTransformComponent->getTransform());
                     pModel->pMeshes[i]->vao.bind();
                     RenderCommand::drawElements(*pModel->pMeshes[i]);
@@ -247,7 +251,7 @@ void RenderManager::defferedLightingRenderPass()
 {
         deffered.gBuffer.unbind();
         glViewport(0, 0, Application::get()->getWindowWidth(), Application::get()->getWindowHeight());
-        bindEnvironmentAndMaterial(&shaderDefferedLighting, &environment, &materialDefferedBlinnPhong);
+        bindEnvironmentAndMaterial(&shaderDefferedLighting, &environment, &materialDefferedLighting);
 
         glDisable(GL_CULL_FACE);
 
@@ -296,6 +300,7 @@ void RenderManager::defferedMonochromaRenderPass()
 
 void RenderManager::bindEnvironmentAndMaterial(Shader* shader, Environment* environment, Material* material)
 {
+    shader->textureUniformCounter = 0;
     RV_ASSERT(shader == material->pShader, "specified shader is not the the same shader that the material owns");
     shader->bind();
     environment->bind(shader); // MUST bind environment before material
@@ -304,8 +309,17 @@ void RenderManager::bindEnvironmentAndMaterial(Shader* shader, Environment* envi
 
 void RenderManager::bindEnvironment(Shader* shader, Environment* environment)
 {
+    shader->textureUniformCounter = 0;
     shader->bind();
     environment->bind(shader);
+}
+
+void RenderManager::bindMaterial(Shader* shader, Material* material)
+{
+    shader->textureUniformCounter = 0;
+    RV_ASSERT(shader == material->pShader, "shader given and the materials shader are not the same shader");
+    shader->bind();
+    material->bind();
 }
 
 void RenderManager::onEvent(Event* event)
@@ -314,6 +328,7 @@ void RenderManager::onEvent(Event* event)
     if(event->m_Type == EventTypeWindowResize)
     {
         EventWindowResize* resizeEvent = (EventWindowResize*) event;
+
         getInstance()->deffered.resize(resizeEvent->m_Width, resizeEvent->m_Height);
     }
 

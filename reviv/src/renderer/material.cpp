@@ -17,18 +17,20 @@ void Material::bind()
 {
     pShader->bind();
 
-    //RV_ASSERT(pShader->environmentTextureUniformCounter > 0, "potential error: environment has not set any textures so far. Maybe you forgot that you HAVE to bind an environment before you bind a material? Maybe this is not an error");
-
-    pShader->materialTextureUniformCounter = pShader->environmentTextureUniformCounter + 1;
-
+    cout << "texture shader: " << pShader->filePathVertex << endl;
     for(auto const& it : shaderUniformMap.textureMap)
     {
         //pShader->uploadUniform1i(textureUniformNames[i], i);
-        set(it.first, (int)pShader->materialTextureUniformCounter);
-        it.second->bind((int)pShader->materialTextureUniformCounter);
+        RV_ASSERT(it.second->isInited == true, "material setting a texture that is not inited");
+
+        set(it.first, (int)pShader->textureUniformCounter);
+        it.second->bind((int)pShader->textureUniformCounter);
         
-        pShader->materialTextureUniformCounter++;
+        cout << "texture uniformName: " << it.first << " counter: " << pShader->textureUniformCounter << endl;
+
+        pShader->textureUniformCounter++;
     }
+    cout << "------";
 
     shaderUniformMap.uploadAllUniforms(*pShader);
 }

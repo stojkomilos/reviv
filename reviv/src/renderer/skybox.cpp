@@ -1,4 +1,5 @@
 #include"skybox.h"
+#include"render_manager.h"
 
 void Skybox::init(const std::vector<std::string>& filePaths)
 {
@@ -15,7 +16,8 @@ void Skybox::onUpdate()
     glDisable(GL_CULL_FACE);
     glDepthFunc(GL_LEQUAL);
     
-    material.bind();
+    RenderManager::getInstance()->bindMaterial(material.pShader, &material);
+
     auto* pCamera = &Scene::getCameraEntity()->get<CameraComponent>()->camera;
     Mat4 skyboxViewMatrix;
     skyboxViewMatrix = pCamera->viewMatrix;

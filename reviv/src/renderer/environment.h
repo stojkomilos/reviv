@@ -12,8 +12,6 @@ class Environment
 public:
     ShaderUniformMap shaderUniformMap;
 
-    void bind(Shader* shader);
-
     void setLights();
     void setShadowMap(Entity* pEntity, Light* pLight, const std::string& uniformNameLight);
 
@@ -32,6 +30,7 @@ public:
 
 private:
     Environment() = default;
+    void bind(Shader* shader); // NOTE: don't call bind() on it's own. You MUST use the RenderManager wrappers
     friend class RenderManager;
 };
 

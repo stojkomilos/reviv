@@ -89,8 +89,7 @@ void main()
     
     if(d_Normal == vec3(0, 0, 0))
     {
-        // TODO: vratiti
-        //discard;
+        discard;
     }
 
     //for(int i=0; i<NR_POINT_LIGHT; i++)
@@ -103,7 +102,8 @@ void main()
         result += calculateDirectionalLight(i);
     }
 
-    result = result * 0.001f + normalize(d_FragPosition);
+    //result = result * 0.001f + texture(u_TestTexture, v_TexCoords).rgb;
+    //result = result * 0.001f + normalize(d_Normal) + d_FragPosition + d_MaterialDiffuse + vec3(d_MaterialSpecular, d_MaterialSpecular, d_MaterialSpecular);
     FragColor = vec4(result, 1);
 }
 
