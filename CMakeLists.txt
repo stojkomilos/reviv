@@ -1,35 +1,54 @@
-# good resource - https://codevion.github.io/#!cpp/cmake.md
-# bash: "cmake --help-command <any cmake command, e.g. link_directories>
-
 cmake_minimum_required(VERSION 3.18)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-project(reviv VERSION 1.0)
+project(reviv)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+# Set a default build type if none was specified
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to 'Debug' as none was specified.")
+  set(CMAKE_BUILD_TYPE
+      Debug
+      CACHE STRING "Choose the type of build." FORCE)
+  # Set the possible values of build type for cmake-gui, ccmake
+  set_property(
+    CACHE CMAKE_BUILD_TYPE
+    PROPERTY STRINGS
+             "Debug"
+             "Release")
+endif()
 
-# -Werror -> treat warnings as errors
-# -Wall
+# Generate compile_commands.json to make it easier to work with clang based tools
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-file(GLOB_RECURSE SRC_FILES "src/*.c"
-    "src/*.cpp"
-    "dependencies/glad.c"
-    "dependencies/stb_image.cpp")
+# --- Set output directory
+set(MY_EXECUTABLE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}-${CMAKE_SYSTEM_NAME}")
 
-add_executable(${PROJECT_NAME} ${SRC_FILES})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY   "${MY_EXECUTABLE_OUTPUT_DIRECTORY}" CACHE PATH "Directory of the output executable" FORCE)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY   "${MY_EXECUTABLE_OUTPUT_DIRECTORY}" CACHE PATH "Directory of the output executable" FORCE)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY   "${MY_EXECUTABLE_OUTPUT_DIRECTORY}" CACHE PATH "Directory of the output executable" FORCE)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/include)
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${MY_EXECUTABLE_OUTPUT_DIRECTORY}" CACHE PATH "Directory of the output executable" FORCE)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG   "${MY_EXECUTABLE_OUTPUT_DIRECTORY}" CACHE PATH "Directory of the output executable" FORCE)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG   "${MY_EXECUTABLE_OUTPUT_DIRECTORY}" CACHE PATH "Directory of the output executable" FORCE)
 
-target_link_libraries(${PROJECT_NAME} GL wayland-client pthread dl)
-target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/lib/libglfw3.a GL wayland-client pthread dl)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE   "${MY_EXECUTABLE_OUTPUT_DIRECTORY}" CACHE PATH "Directory of the output executable" FORCE)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE   "${MY_EXECUTABLE_OUTPUT_DIRECTORY}" CACHE PATH "Directory of the output executable" FORCE)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE   "${MY_EXECUTABLE_OUTPUT_DIRECTORY}" CACHE PATH "Directory of the output executable" FORCE)
+# ---<
 
-# Archive: ===
-#   link_directories(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/lib)
-#   find_library(glfw3_library ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/lib/libglfw3.a REQUIRED)
-#   find_library(GL_library GL REQUIRED)
-#   find_library(wayland-client_library wayland-client REQUIRED)
-#   find_library(pthread_library pthread REQUIRED)
-#   find_library(dl_library dl REQUIRED)
-#   target_link_libraries(${PROJECT_NAME} PUBLIC glfw3 ${GL_library} ${wayland-client_library} ${pthread_library} ${dl_library})
+# Enable link time optimization if it's Release mode (must be before "add_library" or "add_executable")
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+    message(STATUS "=====> Release mode ${PROJECT_NAME}: enabling LTO")
+endif()
+
+# "Add" other cmake projects to current project
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/reviv) # Library before dependency
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/sandbox)
+
+if(MSVC) # Set sandbox as the default Visual Studio project
+    set(VS_STARTUP_PROJECT "sandbox")
+endif()
+
+# PUBLIC -> svi projekti koji ukljuce taj imaju to
+# PRIVATE -> samo taj projekat ima to
+# INTERFACE -> svi projekti koji ukljuce taj projekat imaju to, ali /sam taj/ projekat /nema/

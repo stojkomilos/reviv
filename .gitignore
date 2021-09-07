@@ -5,7 +5,7 @@
 *.slo
 *.lo
 *.o
-*.obj
+#*.obj - used for 3d (or 2d) models
 
 # Precompiled Headers
 *.gch
@@ -31,9 +31,41 @@
 *.out
 *.app
 
-build/**
-!build/build.sh
-!build/radi.sh
-!build/clean.sh
 
-.vscode/
+# Cmake stuff
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+
+# Vscode stuff
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# Local History for Visual Studio Code
+.history/
+
+build/
+
+ltximg/
+**/ltximg/
+
+sandbox/assets/models/*
+!sandbox/assets/models/weapon.obj
+!sandbox/assets/models/cube.obj
+!sandbox/assets/models/cube.fbx
+!sandbox/assets/models/sphere.obj
+!sandbox/assets/models/sphere.fbx
+!sandbox/assets/models/quad_2d.obj

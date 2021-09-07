@@ -1,10 +1,31 @@
-# reviv2
-reviv2
+* Building from source
 
+** Dependencies:
 
-glfw:
-    Compile for =wayland=
-    You will also need the extra-cmake-modules-git
-    "cmake -DGLFW_USE_WAYLAND=ON ../glfw"
+- =cmake=
+- all the =glfw= dependencies (see [[https://www.glfw.org/docs/latest/compile.html][here]])
 
-    potencijalno arch linux paketi: /glfw/ /glfw-wayland/ /glfw-doc/
+* Build Instructions
+
+Dependencies:
+ - =cmake=
+ - all the =glfw= dependencies (see [[https://www.glfw.org/docs/latest/compile.html][here]])
+
+Download with: =git clone --recursive https://github.com/infernotnt/reviv2=
+ 
+** Windows
+
+Just run scripts/Build-Release-Windows.bat and you're done.
+
+** Linux
+
+#+begin_src bash
+  mkdir build
+  cd build
+  cmake ../reviv2 -DCMAKE_BUILD_TYPE=Release
+  cmake --build . -j4
+#+end_src
+
+If you're using /Wayland/ on /Linux/, it should automatically get detected and =glfw= will compile for Wayland.
+
+After building, the executable is in =bin/Release-OS= directory. You can delete the static library files. You only need the executable and the =assets= folder.
