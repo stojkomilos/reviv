@@ -45,12 +45,14 @@ public:
     void bindEnvironment(Shader* shader, Environment* environment);
     void bindMaterial(Shader* shader, Material* material);
 
-private:
-    RenderManager() = default;
+    void onEvent(Event* event);
 
     void init();
     void onUpdate();
     void shutdown();
+
+private:
+    RenderManager() = default;
 
     void renderSceneToFramebuffer(Framebuffer* pFrameBuffer);
 

@@ -13,7 +13,7 @@ Application::Application(const std::string& applicationName /* = "Reviv App" */ 
     s_Instance = this;
 }
 
-void Application::iOnEvent(Event* event)
+void Application::onEvent(Event* event)
 {
     switch(event->m_Type)
     {
@@ -47,8 +47,8 @@ void Application::initEngine()
 
     window.init(true, !RV_DEBUG, 1600, 900, applicationName);              // window.init() must go before RenderManager::init()
 
-    Input::disableCursor();        // For the first person 3d camera controller
-    Input::useRawMouseMotion();
+    Input::get()->disableCursor();        // For the first person 3d camera controller
+    Input::get()->useRawMouseMotion();
 
     PhysicsManager::get()->init();
     RenderManager::get()->init();
@@ -70,15 +70,15 @@ void Application::run()
     {
         onUpdate();                     // game defined onUpdate function
 
-        Time::onUpdate();
-        Input::onUpdate();
-        GameStuffManager::onUpdate();
-        PhysicsManager::onUpdate(Time::getDelta());             //TODO: maybe goes before rendermanager? probably doesn't matter too much
-        RenderManager::onUpdate();
+        Time::get()->onUpdate();
+        Input::get()->onUpdate();
+        GameStuffManager::get()->onUpdate();
+        PhysicsManager::get()->onUpdate(Time::get()->getDelta());             //TODO: maybe goes before rendermanager? probably doesn't matter too much
+        RenderManager::get()->onUpdate();
         window.onUpdate();              // update the glfw window
     }
 
-    RenderManager::shutdown();
+    RenderManager::get()->shutdown();
     window.shutdown();
 }
 

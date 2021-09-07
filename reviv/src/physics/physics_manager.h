@@ -23,11 +23,11 @@ public:
     std::vector<Collision> collisions;
 
     Collider* getCollidableFromEntity(Entity* pEntity);
-private:
-    PhysicsManager() = default;
 
     void init();
     void onUpdate(float dt);
+private:
+    PhysicsManager() = default;
 
     void onUpdateDetectCollisions(float dt);
     void onUpdateDynamics(float dt);

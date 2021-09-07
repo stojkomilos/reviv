@@ -2,27 +2,27 @@
 
 void logMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParams);
 
-void RenderCommand::iDrawArrays(const Mesh& mesh)
+void RenderCommand::drawArrays(const Mesh& mesh)
 {
     glDrawArrays(GL_TRIANGLES, 0, mesh.m_Vertices.size());
 }
 
-void RenderCommand::iDrawElements(const Mesh& mesh)
+void RenderCommand::drawElements(const Mesh& mesh)
 {
     glDrawElements(GL_TRIANGLES, mesh.m_Indices.size(), GL_UNSIGNED_INT, 0);
 }
 
-void RenderCommand::iSetClearColor(const Vec4f& color)
+void RenderCommand::setClearColor(const Vec4f& color)
 {
     glClearColor(color.a[0], color.a[1], color.a[2], color.a[3]);
 }
 
-void RenderCommand::iClear()
+void RenderCommand::clear()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void RenderCommand::iInit()
+void RenderCommand::init()
 {
 
 #if RV_DEBUG

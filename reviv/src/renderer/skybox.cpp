@@ -26,7 +26,7 @@ void Skybox::onUpdate()
     material.pShader->uploadUniformMat4("u_ProjectionMatrix", pCamera->projectionMatrix);
 
     cubeModel.meshes[0].vao.bind();
-    RenderCommand::drawElements(cubeModel.meshes[0]);
+    RenderCommand::get()->drawElements(cubeModel.meshes[0]);
 
     glDepthFunc(GL_LESS);
     // TODO: vrati

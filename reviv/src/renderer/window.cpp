@@ -18,7 +18,7 @@ static void GlfwErrorCallback(int error, const char* description)
 
 void Window::onUpdate()
 {
-    if(Input::isKeyPressed(RV_KEY_Q))
+    if(Input::get()->isKeyPressed(RV_KEY_Q))
     {
         EventWindowClose event;
         EventDispatcher::dispatch(&event);

@@ -5,7 +5,7 @@
 
 #include<GLFW/glfw3.h>
 
-void Time::iInit()
+void Time::init()
 {
     RV_ASSERT(isInited == false, "already initialized");
     isInited = true;
@@ -13,7 +13,7 @@ void Time::iInit()
     runLoopStartTime = glfwGetTime();
 }
 
-void Time::iOnUpdate()
+void Time::onUpdate()
 {
     RV_ASSERT(isInited == true, "not initialized");
 
@@ -42,21 +42,21 @@ void Time::iOnUpdate()
 
 }
 
-bool Time::iIsOneSecond()
+bool Time::isOneSecond()
 {
     RV_ASSERT(isInited == true, "not initialized");
 
     return m_OneSecond;
 }
 
-float Time::igetTime()
+float Time::getTime()
 {
     RV_ASSERT(isInited == true, "not initialized");
 
     return time;
 }
 
-float Time::iGetDelta()
+float Time::getDelta()
 {
     RV_ASSERT(isInited == true, "not initialized");
 

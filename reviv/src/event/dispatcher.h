@@ -12,14 +12,14 @@ public:
         switch(event->m_Type)
         {
             case(EventType::EventTypeWindowClose):
-                Application::onEvent(event);
+                Application::get()->onEvent(event);
                 break;
             case(EventType::EventTypeWindowResize):
-                Application::onEvent(event);
-                RenderManager::onEvent(event);
+                Application::get()->onEvent(event);
+                RenderManager::get()->onEvent(event);
                 break;
             case(EventType::EventTypeMouseMoved):
-                Input::onEvent(event);
+                Input::get()->onEvent(event);
                 break;
             default:
                 RV_ASSERT(false, "Event type not supported by the event dispatcher");

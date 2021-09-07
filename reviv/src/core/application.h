@@ -15,7 +15,7 @@ public:
     Application(const Application&) = delete;
     Application& operator=(const Application&) = delete;
 
-    static void onEvent(Event* event) { get()->iOnEvent(event); }
+    void onEvent(Event* event);
     static Application* get()
     {
         return s_Instance;
@@ -36,7 +36,6 @@ protected:
     virtual void initAfterEngine() = 0;
     virtual void onUpdate() = 0;
 
-
     void run();
 
     void initEngine();
@@ -46,7 +45,6 @@ private:
     static Application* s_Instance;
     std::string applicationName;
     Window window;
-    void iOnEvent(Event* event);
 
     void onEventWindowClose(Event* event);
     void onEventWindowResize(Event* event);

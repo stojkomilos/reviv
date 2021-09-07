@@ -13,15 +13,16 @@ public:
         static Time instance;
         return &instance;
     }
-
-private:
     void init();
     void onUpdate();
+
     float getDelta(); // returns time in dt in seconds
     float getTime(); // returns time since the start of rendering
     bool isOneSecond();
 
     float getLoopCounter() { return get()->gameLoopCounter; }
+
+private:
     unsigned long long gameLoopCounter = 0;
 
     bool m_OneSecond = false;

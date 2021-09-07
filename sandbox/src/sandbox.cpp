@@ -103,15 +103,15 @@ public:
         auto* trans = prvo->get<TransformComponent>();
 
         float drugoSpeed = 1.f;
-        if(Input::isKeyPressed(RV_KEY_UP))
-            trans->position += Time::getDelta() * Vec3f(0, 0, 1) * drugoSpeed;
-        if(Input::isKeyPressed(RV_KEY_DOWN))
-            trans->position += Time::getDelta() * Vec3f(0, 0, -1) * drugoSpeed;
+        if(Input::get()->isKeyPressed(RV_KEY_UP))
+            trans->position += Time::get()->getDelta() * Vec3f(0, 0, 1) * drugoSpeed;
+        if(Input::get()->isKeyPressed(RV_KEY_DOWN))
+            trans->position += Time::get()->getDelta() * Vec3f(0, 0, -1) * drugoSpeed;
 
-        if(Input::isKeyPressed(RV_KEY_LEFT))
-            trans->position += Time::getDelta() * Vec3f(0, 1, 0) * drugoSpeed;
-        if(Input::isKeyPressed(RV_KEY_RIGHT))
-            trans->position += Time::getDelta() * Vec3f(0, -1, 0) * drugoSpeed;
+        if(Input::get()->isKeyPressed(RV_KEY_LEFT))
+            trans->position += Time::get()->getDelta() * Vec3f(0, 1, 0) * drugoSpeed;
+        if(Input::get()->isKeyPressed(RV_KEY_RIGHT))
+            trans->position += Time::get()->getDelta() * Vec3f(0, -1, 0) * drugoSpeed;
 
         //trans->position += Time::getDelta() * Vec3f(0, 0, -1) * 0.1;
 
@@ -128,17 +128,17 @@ public:
 
 
         TransformComponent* plTrans = Scene::getPlayerEntity()->get<TransformComponent>();
-        if(Input::isKeyPressed(RV_KEY_1))
+        if(Input::get()->isKeyPressed(RV_KEY_1))
             plTrans->rotation = lookAtGetRotation(plTrans->position, plTrans->position + Vec3f(1, 0, 0));
-        if(Input::isKeyPressed(RV_KEY_2))
+        if(Input::get()->isKeyPressed(RV_KEY_2))
             plTrans->rotation = lookAtGetRotation(plTrans->position, plTrans->position + Vec3f(-1, 0, 0));
-        if(Input::isKeyPressed(RV_KEY_3))
+        if(Input::get()->isKeyPressed(RV_KEY_3))
             plTrans->rotation = lookAtGetRotation(plTrans->position, plTrans->position + Vec3f(0, 1, 0));
-        if(Input::isKeyPressed(RV_KEY_4))
+        if(Input::get()->isKeyPressed(RV_KEY_4))
             plTrans->rotation = lookAtGetRotation(plTrans->position, plTrans->position + Vec3f(0, -1, 0));
-        if(Input::isKeyPressed(RV_KEY_5))
+        if(Input::get()->isKeyPressed(RV_KEY_5))
             plTrans->rotation = lookAtGetRotation(plTrans->position, plTrans->position + Vec3f(0, 0, 1));
-        if(Input::isKeyPressed(RV_KEY_6))
+        if(Input::get()->isKeyPressed(RV_KEY_6))
             plTrans->rotation = lookAtGetRotation(plTrans->position, plTrans->position + Vec3f(0, 0, -1));
 
     }

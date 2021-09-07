@@ -207,10 +207,10 @@ void RenderManager::defferedGeometryRenderPass()
 {
     deffered.gBuffer.bind();
     glViewport(0, 0, deffered.m_Width, deffered.m_Height);
-    RV_ASSERT(Time::getLoopCounter() <= 1 || (Application::get()->getWindowWidth() == deffered.m_Width && Application::get()->getWindowHeight() == deffered.m_Height), "gBuffer for deffered rendering does not have the same width or height as the actual window");
+    RV_ASSERT(Time::get()->getLoopCounter() <= 1 || (Application::get()->getWindowWidth() == deffered.m_Width && Application::get()->getWindowHeight() == deffered.m_Height), "gBuffer for deffered rendering does not have the same width or height as the actual window");
 
-    RenderCommand::setClearColor(Vec4f(0.f, 0.f, 0.f, 1.f));
-    RenderCommand::clear();
+    RenderCommand::get()->setClearColor(Vec4f(0.f, 0.f, 0.f, 1.f));
+    RenderCommand::get()->clear();
 
     log(environment);
 
@@ -240,7 +240,7 @@ void RenderManager::defferedGeometryRenderPass()
                     bindEnvironmentAndMaterial(&deffered.geometryPassShader, &environment, pModel->pMaterials[i]);
                     pModel->pMaterials[i]->pShader->uploadUniformMat4("u_ModelMatrix", pTransformComponent->getTransform());
                     pModel->pMeshes[i]->vao.bind();
-                    RenderCommand::drawElements(*pModel->pMeshes[i]);
+                    RenderCommand::get()->drawElements(*pModel->pMeshes[i]);
                 }
             }
         }
@@ -255,10 +255,10 @@ void RenderManager::defferedLightingRenderPass()
 
         glDisable(GL_CULL_FACE);
 
-        RenderCommand::setClearColor(Vec4f(1.f, 0.f, 1.f, 1.f));
-        RenderCommand::clear();
+        RenderCommand::get()->setClearColor(Vec4f(1.f, 0.f, 1.f, 1.f));
+        RenderCommand::get()->clear();
         AssetManager::get()->modelLoaderQuad2D.meshes[0].vao.bind();
-        RenderCommand::drawElements(AssetManager::get()->modelLoaderQuad2D.meshes[0]);
+        RenderCommand::get()->drawElements(AssetManager::get()->modelLoaderQuad2D.meshes[0]);
 }
 
 void RenderManager::defferedMonochromaRenderPass()
@@ -291,7 +291,7 @@ void RenderManager::defferedMonochromaRenderPass()
 
                     pModel->pMeshes[i]->vao.bind();
 
-                    RenderCommand::drawElements(*pModel->pMeshes[i]);
+                    RenderCommand::get()->drawElements(*pModel->pMeshes[i]);
                 }
             }
         }
@@ -333,7 +333,7 @@ void RenderManager::onEvent(Event* event)
 
 }
 
-void RenderManager::iShutdown() 
+void RenderManager::shutdown() 
 {
 }
 

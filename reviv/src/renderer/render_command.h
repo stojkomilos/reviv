@@ -17,12 +17,13 @@ public:
         return &instance;
     }
 
-private:
-    RenderCommand() = default;
-
     void init();
     void drawArrays(const Mesh& mesh);
     void drawElements(const Mesh& mesh);
     void setClearColor(const Vec4f& color);
     void clear();
+
+private:
+    RenderCommand() = default;
+
 };
