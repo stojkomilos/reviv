@@ -16,7 +16,7 @@ void ModelLoader::load(const std::string& filePath)
 
     std::string directory = filePath.substr(0, filePath.find_last_of('/'));
 
-    cout << "Number of meshes: " << m_Scene->mNumMeshes << endl;
+    //cout << "Number of meshes: " << m_Scene->mNumMeshes << endl;
     meshes.reserve(m_Scene->mNumMeshes);
 
     processNode(m_Scene->mRootNode);

@@ -132,9 +132,9 @@ void Environment::bind(Shader* shader)
             {
                 if(*it == iteratorUniformMap.first)
                 {
-                    cout << "Environment texture: " << *it << " slot: " << shader->textureUniformCounter << endl;
-                    RV_ASSERT(shader != &RenderManager::getInstance()->directionalShadowMapShader, ""); // temp, can be removed
-                    RV_ASSERT(shader != &RenderManager::getInstance()->omnidirectionalShadowMapShader, ""); // temp, can be removed
+                    //cout << "Environment texture: " << *it << " slot: " << shader->textureUniformCounter << endl;
+                    RV_ASSERT(shader != &RenderManager::get()->directionalShadowMapShader, ""); // temp, can be removed
+                    RV_ASSERT(shader != &RenderManager::get()->omnidirectionalShadowMapShader, ""); // temp, can be removed
 
                     RV_ASSERT(iteratorUniformMap.second->isInited == true, "setting a environment texture that is not inited");
 

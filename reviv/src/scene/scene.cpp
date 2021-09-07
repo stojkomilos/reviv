@@ -1,4 +1,5 @@
 #include"scene.h"
+#include"components.h"
 
 Entity* Scene::iCreateEntity(const std::string& entityName)
 {
@@ -100,4 +101,29 @@ void Scene::projectPosition(const Entity& entity)
     auto afterNdc = afterProjection / afterProjection.a[3];
     log(afterNdc);
     cout << "End of projecting position------------------" << endl;
+}
+
+void Scene::iRemoveEntity(Entity* pEntity)
+{
+    RV_ASSERT(pEntity->valid == true, "entity already not valid");
+    pEntity->valid = false;
+}
+
+bool Scene::iIsEntityValid(Entity* pEntity)
+{
+#ifdef RV_DEBUG
+    bool sceneHas = false;
+    for(auto itEntity = getEntityList()->begin(); itEntity != getEntityList()->end() ; itEntity++)
+    {
+        if(&(*itEntity) == pEntity)
+        {
+            sceneHas = true;
+            break;
+        }
+    }
+    RV_ASSERT(sceneHas == true, "entity does not belong to this scene");
+
+#endif
+
+    return pEntity->valid;
 }

@@ -11,18 +11,18 @@
 class Input
 {
 public:
-    static void onUpdate() { getInstance()->iOnUpdate(); }
-    static bool isKeyPressed(int keycode) { return getInstance()->iIsKeyPressed(keycode); }
-    static bool isMouseButtonPressed(int mousecode) { return getInstance()->iIsMouseButtonPressed(mousecode); }
-    static Vec2f getMousePosition(){ return getInstance()->iGetMousePosition(); }
+    static void onUpdate() { get()->iOnUpdate(); }
+    static bool isKeyPressed(int keycode) { return get()->iIsKeyPressed(keycode); }
+    static bool isMouseButtonPressed(int mousecode) { return get()->iIsMouseButtonPressed(mousecode); }
+    static Vec2f getMousePosition(){ return get()->iGetMousePosition(); }
 
-    static void useRawMouseMotion() { getInstance()->iUseRawMouseMotion(); }
-    static void disableCursor() { getInstance()->iDisableCursor(); }
-    static void hideCursor() { getInstance()->iHideCursor(); }
-    static void useNormalCursor() { getInstance()->iUseNormalCursor(); }
-    static Vec2f getCursorPosition() { return getInstance()->iGetCursorPosition(); }
+    static void useRawMouseMotion() { get()->iUseRawMouseMotion(); }
+    static void disableCursor() { get()->iDisableCursor(); }
+    static void hideCursor() { get()->iHideCursor(); }
+    static void useNormalCursor() { get()->iUseNormalCursor(); }
+    static Vec2f getCursorPosition() { return get()->iGetCursorPosition(); }
 
-    static void onEvent(Event* event) { getInstance()->iOnEvent(event); }
+    static void onEvent(Event* event) { get()->iOnEvent(event); }
 
 private:
     Input() = default;
@@ -43,7 +43,7 @@ private:
     void doPlayerControllerOnEventMouseMoved(Event* event);
     void doPlayerControllerPolling();
 
-    static Input* getInstance()
+    static Input* get()
     {
         static Input instance;
         return &instance;

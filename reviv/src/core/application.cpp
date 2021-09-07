@@ -55,6 +55,7 @@ void Application::initEngine()
 
     AssetManager::get()->init();
     GameStuffManager::init();
+    Time::init(); // must be last (so that physics doesn't start before everything is loaded)
 }
 
 void Application::run()
@@ -71,8 +72,8 @@ void Application::run()
 
         Time::onUpdate();
         Input::onUpdate();
-        PhysicsManager::onUpdate();
-        //GameStuffManager::onUpdate();
+        GameStuffManager::onUpdate();
+        PhysicsManager::onUpdate(Time::getDelta());             //TODO: maybe goes before rendermanager? probably doesn't matter too much
         RenderManager::onUpdate();
         window.onUpdate();              // update the glfw window
     }

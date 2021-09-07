@@ -6,6 +6,11 @@ using std::cin; using std::cout; using std::endl;
 
 namespace mat{
 
+    class Mat1;
+    class Mat2;
+    class Mat3;
+    class Mat4;
+
     class Vec1f
     {
     public:
@@ -13,6 +18,7 @@ namespace mat{
         Vec1f() = default;
         Vec1f(float x);
         Vec1f(const Vec1f&) = default;
+        bool operator==(const Vec1f&) = delete;
     };
 
     class Vec2f
@@ -21,16 +27,18 @@ namespace mat{
         float a[2];
         Vec2f() = default;
         Vec2f(float x, float y);
+        bool operator==(const Vec2f&) = delete;
         Vec2f(const Vec2f&) = default;
     };
 
     class Vec3f
     {
     public:
-        float a[3];
         Vec3f() = default;
         Vec3f(float x, float y, float z);
         Vec3f(const Vec3f&) = default;
+        bool operator==(const Vec3f&) = delete;
+        float a[3];
     };
 
     class Vec4f
@@ -40,6 +48,7 @@ namespace mat{
         Vec4f() = default;
         Vec4f(float x, float y, float z, float w);
         Vec4f(const Vec4f&) = default;
+        bool operator==(const Vec4f&) = delete;
         Vec4f(const Vec3f& vec, float scalar);
     };
 
@@ -50,6 +59,8 @@ namespace mat{
         Mat3() = default;
         Mat3(float n);
         Mat3(const Mat3&) = default;
+        Mat3(const Mat4& upperLeft); // copies the upper left part of the Mat4 into the Mat3
+        bool operator==(const Mat3&) = delete;
     };
 
     class Mat4
@@ -59,42 +70,7 @@ namespace mat{
         Mat4() = default;
         Mat4(float n);
         Mat4(const Mat4&) = default;
-    };
-
-    class Vec1i
-    {
-    public:
-        int x;
-        Vec1i() = default;
-        Vec1i(int x);
-        Vec1i(const Vec1i&) = default;
-    };
-
-    class Vec2i
-    {
-    public:
-        int x, y;
-        Vec2i() = default;
-        Vec2i(int x, int y);
-        Vec2i(const Vec2i&) = default;
-    };
-
-    class Vec3i
-    {
-    public:
-        int x, y, z;
-        Vec3i() = default;
-        Vec3i(int x, int y, int z);
-        Vec3i(const Vec3i&) = default;
-    };
-
-    class Vec4i
-    {
-    public:
-        int x, y, z, w;
-        Vec4i() = default;
-        Vec4i(int x, int y, int z, int w);
-        Vec4i(const Vec4i&) = default;
+        bool operator==(const Mat4&) = delete;
     };
     
     struct Quaternion
@@ -102,17 +78,45 @@ namespace mat{
         float x[4];
     };
 
+    bool compare(const Vec3f& first, const Vec3f& second, float marginOfError);
+
+    // NOT TESTED
+    bool checkIfPointBelongsToLine(const Vec3f& linePoint1, const Vec3f& linePoint2, const Vec3f& point);
+
+    // NOT TESTED
+    float getDistancePointLine(const Vec3f& point, const Vec3f& lineA, const Vec3f& lineB);
+
+    inline bool sign(float a)
+    { 
+        if(a>0) 
+            return true; 
+        return false; 
+    }
+
     Mat4 translate(Mat4 mtx, const Vec4f& vec);
     Mat4 scale(Mat4 mtx, const Vec4f& vec);
     Mat4 rotateX(float theta); // supposed to be roll
     Mat4 rotateY(float theta); // supposed to be pitch
     Mat4 rotateZ(float theta); // supposed to be yaw
 
+    // not tested
+    Mat3 transpose(const Mat3& mtx);
+
+    float getDeterminant(const Mat3& mtx);
+    Mat3 getInverse(const Mat3& mtx);
+
+
+    Mat4 multiply(const Mat4& first, const Mat4& second); // TODO: maybe canbe templated (so the user just does multiply(thing, thing2) without knowing that it is even templated)
+    Vec4f multiply(const Mat4& mtx, const Vec4f& vec);
+
     Mat4 multiply(const Mat4& first, const Mat4& second);
     Vec4f multiply(const Mat4& mtx, const Vec4f& vec);
 
+    float module(const Vec4f& vec);
     float module(const Vec3f& vec);
     float module(const Vec2f& vec);
+    float module(const Vec1f& vec);
+
     float dot(const Vec3f& first, const Vec3f& second);
     float dot(const Vec2f& first, const Vec2f& second);
     Vec3f projection(const Vec3f& first, const Vec3f& second);
@@ -135,9 +139,12 @@ namespace mat{
     Vec3f operator*(const float& scalar, const Vec3f& thing);
     Vec3f operator+(const Vec3f& first, const Vec3f& second);
 
+    Vec4f operator*(const Mat4& mtx, const Vec4f& vec);
     Vec4f operator/(const Vec4f& thing, const float& scalar);
     Vec4f operator/(const float& scalar, const Vec4f& thing);
 
+    Vec3f operator*(const Mat3& mtx, const Vec3f& vec);
+    Mat3 operator*(const Mat3& first, const Mat3& second);
 
     class Rotation
     {
@@ -150,8 +157,9 @@ namespace mat{
             : roll(initRotation.a[0]), pitch(initRotation.a[1]), yaw(initRotation.a[2]) {}
     };
     Rotation lookAtGetRotation(const Vec3f& eyePosition, const Vec3f& targetPosition);
-
     Vec3f getDirectionFromRotation(const Rotation& rotation);
+    Vec3f getDirectionFromRotation(const Rotation& rotation);
+
     float degreesToRadians(float angleInDegrees);
     float radiansToDegrees(float angleInRadians);
 
@@ -172,11 +180,6 @@ void log(const Vec1f& thing);
 void log(const Vec2f& thing);
 void log(const Vec3f& thing);
 void log(const Vec4f& thing);
-
-void log(const Vec1i& thing);
-void log(const Vec2i& thing);
-void log(const Vec3i& thing);
-void log(const Vec4i& thing);
 
 void log(const Mat3& thing);
 void log(const Mat4& thing);

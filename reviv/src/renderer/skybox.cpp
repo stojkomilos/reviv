@@ -16,7 +16,7 @@ void Skybox::onUpdate()
     glDisable(GL_CULL_FACE);
     glDepthFunc(GL_LEQUAL);
     
-    RenderManager::getInstance()->bindMaterial(material.pShader, &material);
+    RenderManager::get()->bindMaterial(material.pShader, &material);
 
     auto* pCamera = &Scene::getCameraEntity()->get<CameraComponent>()->camera;
     Mat4 skyboxViewMatrix;

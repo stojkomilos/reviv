@@ -67,27 +67,6 @@ void log(const Vec4f& thing)
     cout << endl;
 }
 
-void log(const Vec1i& thing)
-{
-    cout << thing.x << endl;
-}
-
-void log(const Vec2i& thing)
-{
-    cout << thing.x << " " << thing.y << endl;
-}
-
-void log(const Vec3i& thing)
-{
-    cout << thing.x << " " << thing.y << " " << thing.z << endl;
-}
-
-void log(const Vec4i& thing)
-{
-    cout << thing.x << " " << thing.y << " " << thing.z << " " << thing.w << endl;
-}
-
-
 namespace mat{
 
     Vec2f::Vec2f(float x, float y) 
@@ -102,21 +81,26 @@ namespace mat{
     Vec4f::Vec4f(const Vec3f& vec, float scalar)
         : a {vec.a[0], vec.a[1], vec.a[2], scalar} {}
 
-    Vec1i::Vec1i(int x)
-        : x(x) {}
-
-    Vec2i::Vec2i(int x, int y)
-        : x(x), y(y) {}
-
-    Vec3i::Vec3i(int x, int y, int z)
-        : x(x), y(y), z(z) {}
-
-    Vec4i::Vec4i(int x, int y, int z, int w)
-        : x(x), y(y), z(z), w(w) {}
-
     Mat4::Mat4(float n)
     {
         a[0][0] = a[1][1] = a[2][2] = a[3][3] = n;
+    }
+
+    Mat3::Mat3(const Mat4& upperLeft)
+    {
+        for(int i=0; i<3; i++)
+            for(int j=0; j<3; j++)
+                a[i][j] = upperLeft.a[i][j];
+    }
+
+    bool compare(const Vec3f& first, const Vec3f& second, float marginOfError)
+    {
+        return (abs(first.a[0] - second.a[0]) < marginOfError) && (abs(first.a[1] - second.a[1]) < marginOfError) && (abs(first.a[2] - second.a[2]) < marginOfError);
+    }
+
+    Vec4f operator*(const Mat4& mtx, const Vec4f& vec)
+    {
+        return multiply(mtx, vec);
     }
 
     Vec3f operator*(const Vec3f& thing, const float& scalar)
@@ -144,6 +128,49 @@ namespace mat{
     {
         return thing / scalar;
     }
+
+    // NOT TESTED
+    bool checkIfPointBelongsToLine(const Vec3f& linePoint1, const Vec3f& linePoint2, const Vec3f& point)// TODO: optimize if still used in GJK(https://stackoverflow.com/questions/17692922/check-is-a-point-x-y-is-between-two-points-drawn-on-a-straight-line)
+    {
+        float realLenght = module(linePoint1 - linePoint2);
+        float calcLength = module(linePoint1 - point) + module(linePoint2 - point); 
+
+        if(abs(realLenght - calcLength) < MAT_EPSILON)
+            return true;
+        return false;
+    }
+
+    // NOT TESTED
+    float getDistancePointLine(const Vec3f& point, const Vec3f& lineA, const Vec3f& lineB)
+    {
+        Vec3f ab = lineB - lineA;
+        Vec3f aPoint = point - lineA;
+
+        Vec3f linePerp = cross(cross(ab, aPoint), ab);
+        linePerp = linePerp / module(linePerp);
+
+        float perpDistance = dot(linePerp, aPoint);
+
+        Vec3f bPoint = point - lineB;
+        if(dot(ab, bPoint) > 0) // on B half space
+            return std::min(perpDistance, module(bPoint));
+
+        if(dot(ab, aPoint) < 0)  // on A half space
+            return std::min(perpDistance, module(aPoint));
+
+        return perpDistance; // in the "slab" region
+    }
+
+/*
+    WARNING: not tested
+    float calcPointToPlaneDistance(const Vec3f& point, const Vec3f& planePointA, const Vec3f& planePointB, const Vec3f& planePointC) // TODO: can be optimized for GJK, make another function, and take normal and a point(on plane?) as parameters instead of this
+    {
+        Vec3f abc = cross(planePointB - planePointA, planePointC - planePointA);
+        abc = abc / module(abc);
+        float result = dot(abc, point);
+        result += dot(abc, -planePointA);
+    }
+*/
 
     Mat4 translate(Mat4 mtx, const Vec4f& vec)
     {
@@ -242,6 +269,44 @@ namespace mat{
         return mtx;
     }
 
+    float getDeterminant(const Mat3& mtx)
+    {
+        return mtx.a[0][0] * (mtx.a[1][1] * mtx.a[2][2] - mtx.a[2][1] * mtx.a[1][2])
+            -  mtx.a[0][1] * (mtx.a[1][0] * mtx.a[2][2] - mtx.a[2][0] * mtx.a[1][2])
+            +  mtx.a[0][2] * (mtx.a[1][0] * mtx.a[2][1] - mtx.a[2][0] * mtx.a[1][1]);
+    }
+
+    Mat3 transpose(const Mat3& mtx)
+    {
+        Mat3 result;
+
+        for(int i=0; i<3; i++)
+            for(int j=0; j<3; j++)
+                result.a[i][j] = mtx.a[j][i];
+
+        return result;
+    }
+
+    Mat3 getInverse(const Mat3& mtx)
+    {
+        float invDet = 1 / getDeterminant(mtx);
+        Mat3 result;
+
+        result.a[0][0] = +(mtx.a[1][1] * mtx.a[2][2] - mtx.a[2][1] * mtx.a[1][2]) * invDet;
+        result.a[1][0] = -(mtx.a[1][0] * mtx.a[2][2] - mtx.a[2][0] * mtx.a[1][2]) * invDet;
+        result.a[2][0] = +(mtx.a[1][0] * mtx.a[2][1] - mtx.a[2][0] * mtx.a[1][1]) * invDet;
+
+        result.a[0][1] = -(mtx.a[0][1] * mtx.a[2][2] - mtx.a[2][1] * mtx.a[0][2]) * invDet;
+        result.a[1][1] = +(mtx.a[0][0] * mtx.a[2][2] - mtx.a[2][0] * mtx.a[0][2]) * invDet;
+        result.a[2][1] = -(mtx.a[0][0] * mtx.a[2][1] - mtx.a[2][0] * mtx.a[0][1]) * invDet;
+
+        result.a[0][2] = +(mtx.a[0][1] * mtx.a[1][2] - mtx.a[1][1] * mtx.a[0][2]) * invDet;
+        result.a[1][2] = -(mtx.a[0][0] * mtx.a[1][2] - mtx.a[1][0] * mtx.a[0][2]) * invDet;
+        result.a[2][2] = +(mtx.a[0][0] * mtx.a[1][1] - mtx.a[1][0] * mtx.a[0][1]) * invDet;
+
+        return result;
+    }
+
     Vec4f multiply(const Mat4& mtx, const Vec4f& vec)
     {
         Vec4f rez;
@@ -249,6 +314,21 @@ namespace mat{
         {                
             rez.a[i] = 0;
             for(int j=0; j<4; j++)
+            {                    
+                rez.a[i] += mtx.a[i][j] * vec.a[j];
+            }
+        }
+
+        return rez;
+    }
+
+    Vec3f multiply(const Mat3& mtx, const Vec3f& vec)
+    {
+        Vec3f rez;
+        for(int i=0; i<3; i++)
+        {                
+            rez.a[i] = 0;
+            for(int j=0; j<3; j++)
             {                    
                 rez.a[i] += mtx.a[i][j] * vec.a[j];
             }
@@ -267,15 +347,28 @@ namespace mat{
         return direction;
     }
 
+    float module(const Vec4f& vec)
+    {
+        assert(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1] + vec.a[2]*vec.a[2] + vec.a[3]*vec.a[3] > 0); // vector maybe of zero length
+        return sqrt(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1] + vec.a[2]*vec.a[2] + vec.a[3]*vec.a[3]);
+    }
+
     float module(const Vec3f& vec)
     {
-        //assert(vec.a[0] != 0 || vec.a[1] != 0 || vec.a[2] != 0);
+        assert(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1] + vec.a[2]*vec.a[2] > 0); // vector maybe of zero length
         return sqrt(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1] + vec.a[2]*vec.a[2]);
     }
 
     float module(const Vec2f& vec)
     {
+        assert(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1] > 0); // vector maybe of zero length
         return sqrt(vec.a[0]*vec.a[0] + vec.a[1]*vec.a[1]);
+    }
+
+    float module(const Vec1f& vec)
+    {
+        assert(vec.a[0]*vec.a[0] > 0); // vector maybe of zero length
+        return sqrt(vec.a[0]*vec.a[0]);
     }
 
     float dot(const Vec3f& first, const Vec3f& second)
@@ -395,6 +488,30 @@ namespace mat{
             }
 
         return result;
+    }
+
+    Mat3 multiply(const Mat3& first, const Mat3& second)
+    {
+        Mat3 result;
+        for(int i=0; i<3; i++)
+            for(int j=0; j<3; j++)
+            {
+                result.a[i][j] = 0;
+                for(int k=0; k<3; k++)
+                    result.a[i][j] += first.a[i][k] * second.a[k][j];
+            }
+
+        return result;
+    }
+
+    Vec3f operator*(const Mat3& mtx, const Vec3f& vec)
+    {
+        return multiply(mtx, vec);
+    }
+
+    Mat3 operator*(const Mat3& first, const Mat3& second)
+    {
+        return multiply(first, second);
     }
 
     Rotation lookAtGetRotation(const Vec3f& eyePosition, const Vec3f& targetPosition)

@@ -98,24 +98,6 @@ ComponentId SpecificComponent<T>::getId() const
     return id;
 }
 
-template <class T, class... Args>
-T* Entity::add(Args&&... args)
-{
-
-#if RV_DEBUG
-    for(unsigned int i=0; i<components.size(); i++)
-        if(((T*)components[i])->getId() == T::id)
-        {
-            RV_ASSERT(false, "One entity can't have more than 1 of the same component type");
-        }
-#endif
-
-    Component* result = new T(std::forward<Args>(args)...);
-    components.pushBack(result);
-    return (T*)result;
-
-}
-
 template <class T>
 bool Entity::has() const
 {
@@ -128,6 +110,26 @@ bool Entity::has() const
         }
     }
     return false;
+}
+
+template <class T, class... Args>
+T* Entity::add(Args&&... args)
+{
+
+    RV_ASSERT(has<T>() == false, "One entity can't have more than 1 of the same component type");
+
+//
+//    for(unsigned int i=0; i<components.size(); i++)
+//        if(((T*)components[i])->getId() == T::id)
+//        {
+//            RV_ASSERT(false, "One entity can't have more than 1 of the same component type");
+//        }
+//#endif
+
+    Component* result = new T(std::forward<Args>(args)...);
+    components.pushBack(result);
+    return (T*)result;
+
 }
 
 template <class T>
