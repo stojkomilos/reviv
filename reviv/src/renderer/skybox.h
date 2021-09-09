@@ -6,13 +6,14 @@
 #include"camera.h"
 #include"scene/scene.h"
 #include"render_command.h"
+#include"framebuffer.h"
 
 class Skybox
 {
 public:
     Skybox() = default;
     void init(const std::vector<std::string>& filePaths);
-    void onUpdate();
+    void onUpdate(Framebuffer* pFramebuffer);
 
     TextureCubeMap textureCubeMap;
     ModelLoader cubeModel;

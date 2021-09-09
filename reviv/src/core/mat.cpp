@@ -181,13 +181,31 @@ namespace mat{
         return mtx;
     }
 
-    Mat4 scale(Mat4 mtx, const Vec4f& vec)
+    Mat4 scale(const Vec4f& vec)
     {            
-        for(int i=0; i<4; i++)
-            for(int j=0; j<3; j++)
-                mtx.a[i][j] *= vec.a[i];
+        Mat4 result;
 
-        return mtx;
+        result.a[0][0] = vec.a[0];
+        result.a[0][1] = 0;
+        result.a[0][2] = 0;
+        result.a[0][3] = 0;
+
+        result.a[1][0] = 0;
+        result.a[1][1] = vec.a[1];
+        result.a[1][2] = 0;
+        result.a[1][3] = 0;
+
+        result.a[2][0] = 0;
+        result.a[2][1] = 0;
+        result.a[2][2] = vec.a[2];
+        result.a[2][3] = 0;
+
+        result.a[3][0] = 0;
+        result.a[3][1] = 0;
+        result.a[3][2] = 0;
+        result.a[3][3] = vec.a[3];
+
+        return result;
     }
 
     Mat4 rotateX(float theta) // supposed to be roll
@@ -507,6 +525,11 @@ namespace mat{
     Vec3f operator*(const Mat3& mtx, const Vec3f& vec)
     {
         return multiply(mtx, vec);
+    }
+
+    Mat4 operator*(const Mat4& first, const Mat4& second)
+    {
+        return multiply(first, second);
     }
 
     Mat3 operator*(const Mat3& first, const Mat3& second)

@@ -21,13 +21,15 @@ public:
     Rotation rotation = Vec3f(0, 0, 0);
     Vec3f scale = {1.f, 1.f, 1.f};
 
-    Mat4 getTransform() const
+    Mat4 getTransform() const // potential optimization
     {
-        //Mat4 result(1);
-        Mat4 result = multiply(rotateZ(rotation.yaw), multiply(rotateY(rotation.pitch), rotateX(rotation.roll)));
-        //Mat4 result = rotateZ(rotation.yaw);
-        result = translate(result, Vec4f(position, 0));
-        result = mat::scale(result, Vec4f(this->scale, 1));
+        Mat4 result = mat::scale(Vec4f(scale, 1));
+        result = (rotateX(rotation.roll) * result);
+        result = rotateY(rotation.pitch) * result;
+        result = rotateZ(rotation.yaw) * result;
+        //result = rotateZ(rotation.yaw) * (rotateY(rotation.pitch) * (rotateX(rotation.roll) * result));
+        result = mat::translate(result, Vec4f(position, 0));
+
         return result;
     }
 

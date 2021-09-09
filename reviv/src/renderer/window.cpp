@@ -4,11 +4,6 @@
 #include"event/dispatcher.h"
 #include"event/event.h"
 
-//static void framebufferSizeCallback(GLFWwindow* window, int width, int height)
-//{ 
-//    glViewport(0, 0, width, height);
-//}
-
 static void GlfwErrorCallback(int error, const char* description)
 {
     // Ignoring common, maybe unavoidable erros on wayland, glfw still works even when they occur

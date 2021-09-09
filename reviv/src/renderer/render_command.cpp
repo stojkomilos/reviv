@@ -22,6 +22,11 @@ void RenderCommand::clear()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+void RenderCommand::setViewport(int x, int y, int width, int height)
+{
+    glViewport(x, y, width, height);
+}
+
 void RenderCommand::init()
 {
 
@@ -37,11 +42,6 @@ void RenderCommand::init()
     glEnable(GL_DEPTH_TEST);
 
     //glEnable(GL_MULTISAMPLE); // for MSAA anti-aliasing
-
-    //glDepthFunc(GL_LESS);
-
-    //glEnable(GL_);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     int nrAttributes;
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);

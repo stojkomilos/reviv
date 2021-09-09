@@ -8,40 +8,44 @@
 namespace gjkEpa
 {
 
-    Vec3f doSupportFunction(const Vec3f& direction, Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform)
+    SupportFunctionVertex doSupportFunction(const Vec3f& direction, Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform)
     {
-        return pFirstCollider->findFurthestPoint(direction, pFirstTransform) - pSecondCollider->findFurthestPoint(-direction, pSecondTransform);
+        SupportFunctionVertex result;
+        result.vertexFirst = pFirstCollider->findFurthestPoint(direction, pFirstTransform);
+        result.vertexDifference = result.vertexFirst - pSecondCollider->findFurthestPoint(-direction, pSecondTransform);
+
+        return result;
     }
 
     CollisionPoints doGjkDetectCollision(Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform)
     {
         Vec3f direction = pSecondTransform->position - pFirstTransform->position;
 
-        Vec3f point1 = doSupportFunction(direction, pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
+        SupportFunctionVertex newPoint = doSupportFunction(direction, pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
 
         SimplexHelpingStruct simplex;
-        simplex.points[0] = point1;
+        simplex.points[0] = newPoint;
         simplex.size = 1;
 
         CollisionPoints result;
         result.hasCollided = false;
 
-        if(!sDir(direction, simplex.points[0]))
+        if(!sDir(direction, simplex.points[0].vertexDifference))
         {
             return result;
         }
 
-        direction = -simplex.points[0];
+        direction = -simplex.points[0].vertexDifference;
 
         while(true)
         {
-            Vec3f newPoint = doSupportFunction(direction, pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
+            newPoint = doSupportFunction(direction, pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
 
-            if(!sDir(direction, newPoint))
+            if(!sDir(direction, newPoint.vertexDifference))
             {
                 break;
             }
-            if(module(newPoint) < 0.0001f)
+            if(module(newPoint.vertexDifference) < 0.0001f)
             {
                 RV_ASSERT(false, "");
             }
@@ -54,7 +58,7 @@ namespace gjkEpa
             for(int i=0; i<simplex.size; i++)
                 for(int j=i+1; j<simplex.size; j++)
                 {
-                    RV_ASSERT(module(simplex.points[i] - simplex.points[j]) > 0.001f, "");
+                    RV_ASSERT(module(simplex.points[i].vertexDifference - simplex.points[j].vertexDifference) > 0.001f, "");
                 }
 #endif
             if(gjkHandleSimplex(&simplex, &direction))
@@ -72,8 +76,8 @@ namespace gjkEpa
     {
         RV_ASSERT(pSimplex->size == 2, "invalid simplex size");
 
-        Vec3f a = pSimplex->points[0];
-        Vec3f b = pSimplex->points[1];
+        Vec3f a = pSimplex->points[0].vertexDifference;
+        Vec3f b = pSimplex->points[1].vertexDifference;
         Vec3f ab = b - a;
         Vec3f ao = -a;
         Vec3f bo = -b;
@@ -87,7 +91,7 @@ namespace gjkEpa
         else {
             pSimplex->points[0] = pSimplex->points[1];
             pSimplex->size = 1;
-            *pDirection = -pSimplex->points[0];
+            *pDirection = -pSimplex->points[0].vertexDifference;
 
             RV_ASSERT(sDir(ab, bo), "invalid origin location"); // redundant?
         }
@@ -97,9 +101,9 @@ namespace gjkEpa
     {
         RV_ASSERT(pSimplex->size == 3, "invalid simplex size");
 
-        Vec3f a = pSimplex->points[0];
-        Vec3f b = pSimplex->points[1];
-        Vec3f c = pSimplex->points[2];
+        Vec3f a = pSimplex->points[0].vertexDifference;
+        Vec3f b = pSimplex->points[1].vertexDifference;
+        Vec3f c = pSimplex->points[2].vertexDifference;
 
         Vec3f ab = b - a;
         Vec3f ac = c - a;
@@ -153,9 +157,10 @@ namespace gjkEpa
             }
             else { // is "below"
                 *pDirection = -abc;
-                pSimplex->points[0] = b;
-                pSimplex->points[1] = a;
-                pSimplex->points[2] = c;
+                SupportFunctionVertex help = pSimplex->points[0];
+                pSimplex->points[0] = pSimplex->points[1];
+                pSimplex->points[1] = help;
+                //pSimplex->points[2] = c;
             }
         }
 
@@ -163,10 +168,10 @@ namespace gjkEpa
 
     bool gjkHandleTetrahedron(SimplexHelpingStruct *pSimplex, Vec3f* pDirection)
     {
-        Vec3f a = pSimplex->points[0];
-        Vec3f b = pSimplex->points[1];
-        Vec3f c = pSimplex->points[2];
-        Vec3f d = pSimplex->points[3];
+        Vec3f a = pSimplex->points[0].vertexDifference;
+        Vec3f b = pSimplex->points[1].vertexDifference;
+        Vec3f c = pSimplex->points[2].vertexDifference;
+        Vec3f d = pSimplex->points[3].vertexDifference;
 
         Vec3f ab = b - a;
         Vec3f ac = c - a;
@@ -228,9 +233,10 @@ namespace gjkEpa
         {
             pSimplex->size = 3;
 
-            pSimplex->points[0] = c;
-            pSimplex->points[1] = a;
-            pSimplex->points[2] = d;
+            SupportFunctionVertex help = pSimplex->points[0];
+            pSimplex->points[0] = pSimplex->points[2];
+            pSimplex->points[1] = help;
+            pSimplex->points[2] = pSimplex->points[3];
 
             gjkHandleTriangle(pSimplex, pDirection);
             return false;
@@ -240,9 +246,9 @@ namespace gjkEpa
         {
             pSimplex->size = 3;
 
-            pSimplex->points[0] = b;
-            pSimplex->points[1] = c;
-            pSimplex->points[2] = d;
+            pSimplex->points[0] = pSimplex->points[1];
+            pSimplex->points[1] = pSimplex->points[2];
+            pSimplex->points[2] = pSimplex->points[3];
 
             gjkHandleTriangle(pSimplex, pDirection);
             return false;
@@ -260,9 +266,9 @@ namespace gjkEpa
             else {
                 pSimplex->size = 3;
 
-                pSimplex->points[0] = c;
-                pSimplex->points[1] = a;
-                pSimplex->points[2] = d;
+                pSimplex->points[1] = pSimplex->points[0];
+                pSimplex->points[0] = pSimplex->points[2];
+                pSimplex->points[2] = pSimplex->points[3];
             }
             gjkHandleTriangle(pSimplex, pDirection);
             return false;
@@ -278,9 +284,9 @@ namespace gjkEpa
             else {
                 pSimplex->size = 3;
 
-                pSimplex->points[0] = b;
-                pSimplex->points[1] = c;
-                pSimplex->points[2] = d;
+                pSimplex->points[0] = pSimplex->points[1];
+                pSimplex->points[1] = pSimplex->points[2];
+                pSimplex->points[2] = pSimplex->points[3];
             }
             gjkHandleTriangle(pSimplex, pDirection);
             return false;
@@ -293,17 +299,17 @@ namespace gjkEpa
             {
                 pSimplex->size = 3;
 
-                pSimplex->points[0] = c;
-                pSimplex->points[1] = a;
-                pSimplex->points[2] = d;
+                pSimplex->points[1] = pSimplex->points[0];
+                pSimplex->points[0] = pSimplex->points[2];
+                pSimplex->points[2] = pSimplex->points[3];
 
             }
             else {
                 pSimplex->size = 3;
 
-                pSimplex->points[0] = b;
-                pSimplex->points[1] = c;
-                pSimplex->points[2] = d;
+                pSimplex->points[0] = pSimplex->points[1];
+                pSimplex->points[1] = pSimplex->points[2];
+                pSimplex->points[2] = pSimplex->points[3];
                 
             }
 
@@ -344,7 +350,7 @@ namespace gjkEpa
     CollisionPoints doEpa(SimplexHelpingStruct* pSimplex, TransformComponent* pFirstTransform, Collider* pFirstCollider, TransformComponent* pSecondTransform, Collider* pSecondCollider)
     {
         std::vector<Face> faces;        // all theese can be put as dynamics arrays into Collider structure for performance
-        std::vector<Vec3f> vertices;
+        std::vector<SupportFunctionVertex> vertices;
 
         faces.push_back({0, 1, 2});
         faces.push_back({0, 1, 3});
@@ -365,7 +371,7 @@ namespace gjkEpa
     for(int i=0; i<vertices.size(); i++)
         for(int j=i+1; j<vertices.size(); j++)
         {
-            RV_ASSERT(module(vertices[i] - vertices[j]) > 0.001f, "");
+            RV_ASSERT(module(vertices[i].vertexDifference - vertices[j].vertexDifference) > 0.001f, "");
         }
 #endif
 
@@ -379,10 +385,10 @@ namespace gjkEpa
 
             epaGetNearestFace(&tempMinFaceDistance, &tempIndexMinFace, faces, normals, vertices);
 
-            Vec3f supportPoint = doSupportFunction(normals[tempIndexMinFace], 
+            SupportFunctionVertex supportPoint = doSupportFunction(normals[tempIndexMinFace], 
                 pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
 
-            if(abs(dot(normals[tempIndexMinFace], supportPoint) - tempMinFaceDistance) > 0.0001f)
+            if(abs(dot(normals[tempIndexMinFace], supportPoint.vertexDifference) - tempMinFaceDistance) > 0.0001f)
             { 
                 // invalid face
 
@@ -390,7 +396,7 @@ namespace gjkEpa
 
                 //for(int i=0; i<4; i++)
                 for(int i=0; i<4; i++)
-                    if(compare(supportPoint, vertices[i], 0.001f))
+                    if(compare(supportPoint.vertexDifference, vertices[i].vertexDifference, 0.001f))
                     {
                         indexNewVertex = i;
                         cout << "indexNewVertex: " << indexNewVertex << endl;
@@ -403,9 +409,6 @@ namespace gjkEpa
                     indexNewVertex = vertices.size() - 1;
                 }
 
-                cout << "adding supportPoint: ";
-                log(supportPoint);
-
                 std::vector<Edge> edges;
                 std::vector<unsigned int> facesToErase;
 
@@ -414,7 +417,7 @@ namespace gjkEpa
                 // invalidate all faces pointing in the same half plane as supportPoint
                 for(int i=0; i<faces.size(); i++)
                 {
-                    if(dot(normals[i], supportPoint - vertices[faces[i].a]) > 0)
+                    if(dot(normals[i], supportPoint.vertexDifference - vertices[faces[i].a].vertexDifference) > 0)
                     {
                         epaAddEdgeIfUnique(&edges, {faces[i].a, faces[i].b});
                         epaAddEdgeIfUnique(&edges, {faces[i].b, faces[i].c});
@@ -430,8 +433,6 @@ namespace gjkEpa
                     faces.erase(faces.begin() + facesToErase[i] - i);
                 }
 
-                cout << "facesToErase.size(): " << facesToErase.size() << " edges.size(): " << edges.size() << endl;
-
                 // add new faces from unique edges
                 for(int i=0; i<edges.size(); i++)
                 {
@@ -445,17 +446,13 @@ namespace gjkEpa
 
                 Mat3 mtx;
 
-                mtx.a[0][0] = vertices[faces[tempIndexMinFace].a].a[0];
-                mtx.a[0][1] = vertices[faces[tempIndexMinFace].b].a[0];
-                mtx.a[0][2] = vertices[faces[tempIndexMinFace].c].a[0];
+                for(int i=0; i<3; i++)
+                {
+                    mtx.a[i][0] = vertices[faces[tempIndexMinFace].a].vertexDifference.a[i];
+                    mtx.a[i][1] = vertices[faces[tempIndexMinFace].b].vertexDifference.a[i];
+                    mtx.a[i][2] = vertices[faces[tempIndexMinFace].c].vertexDifference.a[i];
 
-                mtx.a[1][0] = vertices[faces[tempIndexMinFace].a].a[1];
-                mtx.a[1][1] = vertices[faces[tempIndexMinFace].b].a[1];
-                mtx.a[1][2] = vertices[faces[tempIndexMinFace].c].a[1];
-
-                mtx.a[2][0] = vertices[faces[tempIndexMinFace].a].a[2];
-                mtx.a[2][1] = vertices[faces[tempIndexMinFace].b].a[2];
-                mtx.a[2][2] = vertices[faces[tempIndexMinFace].c].a[2];
+                }
 
                 Vec3f p;
                 p = normals[tempIndexMinFace] * tempMinFaceDistance;
@@ -464,13 +461,13 @@ namespace gjkEpa
 
                 Vec3f points[2][3];
 
-                points[0][0] = pFirstCollider->findFurthestPoint(vertices[faces[tempIndexMinFace].a], pFirstTransform);
-                points[0][1] = pFirstCollider->findFurthestPoint(vertices[faces[tempIndexMinFace].b], pFirstTransform);
-                points[0][2] = pFirstCollider->findFurthestPoint(vertices[faces[tempIndexMinFace].c], pFirstTransform);
+                points[0][0] = vertices[faces[tempIndexMinFace].a].vertexFirst;
+                points[0][1] = vertices[faces[tempIndexMinFace].b].vertexFirst;
+                points[0][2] = vertices[faces[tempIndexMinFace].c].vertexFirst;
 
-                points[1][0] = pSecondCollider->findFurthestPoint(vertices[faces[tempIndexMinFace].a], pSecondTransform);
-                points[1][1] = pSecondCollider->findFurthestPoint(vertices[faces[tempIndexMinFace].b], pSecondTransform);
-                points[1][2] = pSecondCollider->findFurthestPoint(vertices[faces[tempIndexMinFace].c], pSecondTransform);
+                points[1][0] = vertices[faces[tempIndexMinFace].a].vertexFirst - vertices[faces[tempIndexMinFace].a].vertexDifference;
+                points[1][1] = vertices[faces[tempIndexMinFace].b].vertexFirst - vertices[faces[tempIndexMinFace].b].vertexDifference;
+                points[1][2] = vertices[faces[tempIndexMinFace].c].vertexFirst - vertices[faces[tempIndexMinFace].c].vertexDifference;
 
                 Mat3 tempMat;
                 Vec3f furthestVectors[2];
@@ -496,7 +493,7 @@ namespace gjkEpa
                 //furthestVectors[1] = pSecondTransform->getTransform() * furthestVectors[1];
 
                 result.firstPoint = furthestVectors[0];
-                result.secondPoint = furthestVectors[2];
+                result.secondPoint = furthestVectors[1];
 
                 break;
             }
@@ -505,12 +502,12 @@ namespace gjkEpa
         return result;
     }
 
-    void epaCalculateFaceNormals(std::vector<Vec3f>* pNormals, const std::vector<Vec3f>& vertices, std::vector<Face>* pFaces)
+    void epaCalculateFaceNormals(std::vector<Vec3f>* pNormals, const std::vector<SupportFunctionVertex>& vertices, std::vector<Face>* pFaces)
     {
         for(int i=0; i<pFaces->size(); i++)
         {
-            Vec3f ab = vertices[(*pFaces)[i].b] - vertices[(*pFaces)[i].a];
-            Vec3f ac = vertices[(*pFaces)[i].c] - vertices[(*pFaces)[i].a];
+            Vec3f ab = vertices[(*pFaces)[i].b].vertexDifference - vertices[(*pFaces)[i].a].vertexDifference;
+            Vec3f ac = vertices[(*pFaces)[i].c].vertexDifference - vertices[(*pFaces)[i].a].vertexDifference;
             Vec3f normal = cross(ab, ac);
 
             if(module(normal) < 0.0001f)
@@ -521,10 +518,10 @@ namespace gjkEpa
 
             normal = normal / module(normal);
 
-            if(dot(normal, vertices[(*pFaces)[i].b]) < 0)
+            if(dot(normal, vertices[(*pFaces)[i].b].vertexDifference) < 0)
             {
                 normal = -normal;
-                cout << "Reversing normal" << endl;
+                //cout << "Reversing normal" << endl;
 
                 int help = (*pFaces)[i].a;
                 (*pFaces)[i].a = (*pFaces)[i].b;
@@ -557,11 +554,11 @@ namespace gjkEpa
         }
     }
 
-    void epaGetNearestFace(float* pTempMinFaceDistance, unsigned int* pTempIndexMinFace, const std::vector<Face>& faces, const std::vector<Vec3f>& normals, const std::vector<Vec3f>& vertices)
+    void epaGetNearestFace(float* pTempMinFaceDistance, unsigned int* pTempIndexMinFace, const std::vector<Face>& faces, const std::vector<Vec3f>& normals, const std::vector<SupportFunctionVertex>& vertices)
     {
         for(int i=0; i<faces.size(); i++)
         {
-            float distanceToFace = dot(normals[i], vertices[faces[i].a]);
+            float distanceToFace = dot(normals[i], vertices[faces[i].a].vertexDifference);
 
             if(distanceToFace < *pTempMinFaceDistance)
             {

@@ -11,8 +11,10 @@ void Skybox::init(const std::vector<std::string>& filePaths)
     material.setTexture("u_CubeMap", textureCubeMap);
 }
 
-void Skybox::onUpdate()
+void Skybox::onUpdate(Framebuffer* pFramebuffer)
 {
+    pFramebuffer->bind();
+
     glDisable(GL_CULL_FACE);
     glDepthFunc(GL_LEQUAL);
     
@@ -29,6 +31,4 @@ void Skybox::onUpdate()
     RenderCommand::get()->drawElements(cubeModel.meshes[0]);
 
     glDepthFunc(GL_LESS);
-    // TODO: vrati
-    //glEnable(GL_CULL_FACE);
 }

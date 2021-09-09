@@ -18,10 +18,9 @@ public:
     unsigned int m_Width;
     unsigned int m_Height;
 
-    Shader geometryPassShader;
     Framebuffer gBuffer;
     Texture2D gPosition, gNormal, gAlbedoSpecular;
-    Texture2D gDepth;
+    //Texture2D gDepth;
 
-    unsigned int rboDepth;
+    unsigned int rboDepth; // TODO?: make into class
 };

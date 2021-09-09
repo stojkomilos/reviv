@@ -22,8 +22,7 @@ public:
     ModelLoader modelLoaderHexagon;
     ModelLoader modelLoaderStar;
     ModelLoader modelLoaderCylinder;
-
-    Shader shaderTexture;
+    ModelLoader modelLoaderTorus;
 
     // Material data available here: http://devernay.free.fr/cours/opengl/materials.html
     //Material materialEmerald,

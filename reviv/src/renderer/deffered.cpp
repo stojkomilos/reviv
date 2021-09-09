@@ -4,7 +4,6 @@
 void Deffered::init(unsigned int gBufferWidth, unsigned int gBufferHeight)
 {
     initGBuffer(gBufferWidth, gBufferHeight);
-    geometryPassShader.init("assets/shaders/deffered_geometry.vs", "assets/shaders/deffered_geometry.fs");
 }
 
 void Deffered::initGBuffer(unsigned int gBufferWidth, unsigned int gBufferHeight)
@@ -15,10 +14,10 @@ void Deffered::initGBuffer(unsigned int gBufferWidth, unsigned int gBufferHeight
     gBuffer.init();
     gBuffer.bind();
 
-    gDepth.init();
-    gDepth.bind(0);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, m_Width, m_Height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL); // using stencil even though i don't use it because of driver comptability sutff
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, gDepth.id, 0);
+    //gDepth.init();
+    //gDepth.bind(0);
+    //glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, m_Width, m_Height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL); // using stencil even though i don't use it because of driver comptability sutff
+    //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, gDepth.id, 0);
 
     gPosition.init();
     gPosition.bind(0);
@@ -45,10 +44,10 @@ void Deffered::initGBuffer(unsigned int gBufferWidth, unsigned int gBufferHeight
     glDrawBuffers(3, attachments); // TODO: mozda povecati?
 
     // TODO: ?
-    //glGenRenderbuffers(1, &rboDepth);
-    //glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
-    //glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_Width, m_Height);
-    //glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+    glGenRenderbuffers(1, &rboDepth);
+    glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_Width, m_Height);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
 
     RV_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "incomplete framebuffer");
 
@@ -62,7 +61,7 @@ void Deffered::resize(unsigned int gBufferWidth, unsigned int gBufferHeight)
     gPosition.~Texture2D();
     gNormal.~Texture2D();
     gAlbedoSpecular.~Texture2D();
-    gDepth.~Texture2D();
+    //gDepth.~Texture2D();
 
     initGBuffer(gBufferWidth, gBufferHeight);
 }

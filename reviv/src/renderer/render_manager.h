@@ -1,18 +1,11 @@
 #pragma once
 
-#include"core/mat.h"
-#include"renderer/render_command.h"
-#include"scene/scene.h"
-#include"scene/asset_manager.h"
 #include"framebuffer.h"
 #include"skybox.h"
-#include"core/time.h"
-#include"core/application.h"
 #include"renderer/deffered.h"
 #include"environment.h"
 
 #include"game_stuff/weather.h"
-
 
 class RenderManager
 {
@@ -28,17 +21,20 @@ public:
     }
 
     Skybox skybox;
+    Shader shaderDefferedGeometry; // currently deffered geometry shader
     Shader directionalShadowMapShader;
     Shader omnidirectionalShadowMapShader;
+    Shader shaderDefferedLighting;
+    Shader shaderMonochroma;
+    Shader shaderBlend;
 
     //Framebuffer screenFramebuffer;
     Framebuffer defaultFramebuffer;
     //Shader screenShader;
     //Shader depthTestShader;
-
-    Shader shaderDefferedLighting;
-    Shader shaderMonochroma;
+    
     Material materialDefferedLighting; // special material, bind sort of environment stuff actually
+
     Deffered deffered;
 
     void bindEnvironmentAndMaterial(Shader* shader, Environment* environment, Material* material);
@@ -51,18 +47,30 @@ public:
     void onUpdate();
     void shutdown();
 
+    struct EntityDistance
+    {
+        Entity* pEntity;
+        float distance;
+    };
+
 private:
     RenderManager() = default;
 
-    void renderSceneToFramebuffer(Framebuffer* pFrameBuffer);
+    void renderSceneToFramebuffer(Framebuffer* pFramebuffer);
 
     void shadowMapRenderPass();
     void defferedGeometryRenderPass();
-    void defferedLightingRenderPass();
-    void defferedMonochromaRenderPass();
+    void defferedLightingRenderPass(Framebuffer *pFramebuffer);
+    void forwardMonochromaRenderPass(Framebuffer *pFramebuffer);
+    void forwardBlendRenderPass(Framebuffer *pFramebuffer);
+
+    void copyDefferedDepthToFramebuffer(Framebuffer* pFramebuffer);
 
     void beginScene();
-    void bindEnvironment(const Shader& shader);
+
 
     Environment environment;
+
+    void sortTransparentObjectsByDistance();
+    stls::StableVector<EntityDistance> transparentEntityList; // used to render the transparent models by their distance
 };

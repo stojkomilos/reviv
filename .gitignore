@@ -74,3 +74,6 @@ sandbox/assets/models/*
 !sandbox/assets/models/cylinder.glb
 !sandbox/assets/models/star.glb
 !sandbox/assets/models/dodik.glb
+!sandbox/assets/models/torus.glb
+!sandbox/assets/models/cube.glb
+!sandbox/assets/models/capsule.glb

@@ -53,5 +53,4 @@ struct ShaderUniformHelpingStruct
 
     bool operator==(const ShaderUniformHelpingStruct& other) const = delete;
     bool operator!=(const ShaderUniformHelpingStruct& other) const = delete;
-
 };

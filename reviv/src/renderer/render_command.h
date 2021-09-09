@@ -22,6 +22,7 @@ public:
     void drawElements(const Mesh& mesh);
     void setClearColor(const Vec4f& color);
     void clear();
+    void setViewport(int x, int y, int width, int height);
 
 private:
     RenderCommand() = default;

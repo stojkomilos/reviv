@@ -4,7 +4,7 @@
 
 void AssetManager::init()
 {
-    modelLoaderCube.load("assets/models/cube.fbx");
+    modelLoaderCube.load("assets/models/cube.glb");
     modelLoaderSphere.load("assets/models/sphere.fbx");
     modelLoaderQuad2D.load("assets/models/quad_2d.obj");
 
@@ -12,8 +12,7 @@ void AssetManager::init()
     modelLoaderHexagon.load("assets/models/hexagon.glb");
     modelLoaderStar.load("assets/models/star.glb");
     modelLoaderCylinder.load("assets/models/cylinder.glb");
-
-    shaderTexture.init("assets/shaders/texture.vs", "assets/shaders/texture.fs");
+    modelLoaderTorus.load("assets/models/torus.glb");
 }
 
 /*

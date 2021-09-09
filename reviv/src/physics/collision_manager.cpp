@@ -7,6 +7,8 @@
 
 #include"gjk_epa.h"
 
+#include"renderer/render_manager.h" // temp
+
 void CollisionManager::onUpdateDetectCollisions(float dt)
 {
     //detectCollisionsBroadPhase(dt);
@@ -46,14 +48,14 @@ void CollisionManager::detectCollisionsNarrowPhase(float dt)
             CollisionPoints collisionPoints = pColliderFirst->collide(pColliderSecond, pFirst->get<TransformComponent>(), pSecond->get<TransformComponent>());
             if(collisionPoints.hasCollided)
             {
-                cout << "collision detected" << endl;
-                //RV_ASSERT(false, ""); //temp
+                //cout << "collision detected" << endl;
                 Entity* pDebugLine = Scene::getEntity("DebugLine");
                 //pDebugLine->get<TransformComponent>()->position = Scene::getPlayerEntity()->get<TransformComponent>()->position + 2.f * getDirectionFromRotation(Scene::getPlayerEntity()->get<TransformComponent>()->rotation);
-                pDebugLine->get<TransformComponent>()->position = collisionPoints.firstPoint;
-                pDebugLine->get<TransformComponent>()->rotation = lookAtGetRotation(Vec3f(0, 0, 0), collisionPoints.normal);
+                //pDebugLine->get<TransformComponent>()->position = (collisionPoints.firstPoint + collisionPoints.secondPoint) / 2;
+                pDebugLine->get<TransformComponent>()->position = (collisionPoints.firstPoint + collisionPoints.secondPoint) / 2;
+                pDebugLine->get<TransformComponent>()->rotation = lookAtGetRotation(Vec3f(0, 0, 0), -collisionPoints.normal);
                 //pDebugLine->get<TransformComponent>()->rotation = lookAtGetRotation(collisionPoints.firstPoint, collisionPoints.secondPoint);
-                pDebugLine->get<TransformComponent>()->scale = {collisionPoints.depth/2, 0.01f, 0.01f};
+                pDebugLine->get<TransformComponent>()->scale = {collisionPoints.depth, 0.05f, 0.05f};
                 //pDebugLine->get<TransformComponent>()->rotation.yaw = degreesToRadians(90);
                 //pDebugLine->get<TransformComponent>()->rotation = mat::
             }
@@ -64,12 +66,18 @@ void CollisionManager::detectCollisionsNarrowPhase(float dt)
 
             if(collision.collisionPoints.hasCollided)
             {
-                collision.pEntity1->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1, 0, 0));
-                collision.pEntity2->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1, 0, 0));
-                cout << "collision depth: " << collision.collisionPoints.depth << endl;
+                //cout << "collision depth: " << collision.collisionPoints.depth << endl;
+
                 //collision.pEntity2->get<TransformComponent>()->position += (collision.collisionPoints.depth + 0.00001f) * collision.collisionPoints.normal;
+                collision.pEntity1->get<ModelComponent>()->model.pMaterials[0]->reset(&RenderManager::get()->shaderBlend);
+                collision.pEntity2->get<ModelComponent>()->model.pMaterials[0]->reset(&RenderManager::get()->shaderBlend);
+
+                collision.pEntity1->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec4f(1, 0, 0, 0.65));
+                collision.pEntity2->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec4f(0, 0, 1, 0.65));
             }
             else {
+                collision.pEntity1->get<ModelComponent>()->model.pMaterials[0]->reset(&RenderManager::get()->shaderDefferedGeometry);
+                collision.pEntity2->get<ModelComponent>()->model.pMaterials[0]->reset(&RenderManager::get()->shaderDefferedGeometry);
                 collision.pEntity1->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 1, 0));
                 collision.pEntity2->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 1, 0));
             }

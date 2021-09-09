@@ -40,6 +40,8 @@ public:
 
     float gravity = 9.81f;
 
+    void projectPosition(const Entity& entity); // for debug
+
 private:
     Scene() : entityList(5000000) { }
 
@@ -57,6 +59,4 @@ private:
     Entity* iSetPlayerEntity(Entity* pNewPlayerEntity);
 
     inline float iGetGravity() { return gravity; }
-
-    void projectPosition(const Entity& entity); // for debug
 };

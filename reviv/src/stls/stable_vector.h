@@ -48,6 +48,22 @@ public:
         return ptr;
     }
 
+/*
+    // not tested
+    StableVectorIterator operator+(int offset)
+    {
+        StableVectorIterator result;
+        result.ptr = ptr + offset;
+    }
+
+    // not tested
+    StableVectorIterator operator-(int offset)
+    {
+        StableVectorIterator result;
+        result.ptr = ptr - offset;
+    }
+*/
+
 private:
     ValueType* ptr;
 };
@@ -79,6 +95,8 @@ namespace stls
         unsigned int size() const;
         void reserve(unsigned int size);
         T& back();
+
+        void clear();
 
         Iterator begin() const
         {
@@ -187,6 +205,16 @@ namespace stls
     unsigned int StableVector<T>::size() const
     {
         return currentSize;
+    }
+
+    template<class T>
+    void StableVector<T>::clear()
+    {
+        for(int i=0; i<currentSize; i++)
+        {
+            (*this)[i].~T();
+        }
+        currentSize = 0;
     }
 
     template<class T>

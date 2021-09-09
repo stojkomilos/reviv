@@ -24,6 +24,8 @@ public:
     void setShader(Shader* inShader);
     void bindShader();
 
+    void reset(Shader* inShader); // sets shader to the new one and deletes the ShaderUniformMap
+
     inline void setTexture(const std::string& textureUniformName, const Texture& texture) { shaderUniformMap.setTexture(textureUniformName, texture); }
 
     inline void set(const std::string& uniformName, const Mat4& mat4) { shaderUniformMap.set(uniformName, mat4); }

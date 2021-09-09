@@ -183,10 +183,6 @@ void ShaderUniformMap::uploadAllUniforms(const Shader& shader) const
     for(const auto& [uniformName, help] : map)
     {
         uploadUniform(shader, uniformName);
-        if(uniformName == "u_gPosition")
-        {
-            cout << "nah" << endl;
-        }
     }
 }
 

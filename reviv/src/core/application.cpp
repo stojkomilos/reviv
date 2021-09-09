@@ -56,6 +56,8 @@ void Application::initEngine()
     AssetManager::get()->init();
     GameStuffManager::get()->init();
     Time::get()->init(); // must be last (so that physics doesn't start before everything is loaded)
+
+    cout << "Completed initializing reviv engine" << endl;
 }
 
 void Application::run()
@@ -64,7 +66,10 @@ void Application::run()
 
     initBeforeEngine();                 // game defined init funciton
     initEngine();                       // engine defined init function
+
+    cout << "Initializing application" << endl;
     initAfterEngine();                  // game defined init funciton
+    cout << "Completed initializing application" << endl;
 
     while(m_IsRunning)
     {

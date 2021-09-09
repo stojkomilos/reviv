@@ -122,7 +122,7 @@ void Input::doPlayerControllerPolling()
         moveDirection += -rightDirection;
 
 
-    if(pressedW || pressedS || pressedD || pressedA) // TODO: fix. what i know: still sometimes does module(Vec3f(0, 0, 0))
+    if((pressedW != pressedS) || (pressedA != pressedD))
     {
         Vec3f horizontalPlaneDelta = moveDirection / (module(moveDirection) + RV_EPSILON) * speed * Time::get()->getDelta(); // TODO: the + RV_EPSILON thing is probably responsible for a movement bug
         *playerPos += horizontalPlaneDelta;

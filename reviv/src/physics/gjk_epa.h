@@ -13,14 +13,20 @@
 namespace gjkEpa
 {
 
+    struct SupportFunctionVertex
+    {
+        Vec3f vertexDifference;
+        Vec3f vertexFirst; // used for EPA
+    };
+
     struct SimplexHelpingStruct
     {
-        Vec3f points[4];
+        SupportFunctionVertex points[4];
         unsigned char size;
     };
 
     // used for both, gjk anmd epa
-    Vec3f doSupportFunction(const Vec3f& direction, Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform);
+    SupportFunctionVertex doSupportFunction(const Vec3f& direction, Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform);
 
     // the function to call from outside
     CollisionPoints doGjkDetectCollision(Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform);
@@ -47,7 +53,7 @@ namespace gjkEpa
     };
 
     CollisionPoints doEpa(SimplexHelpingStruct* pSimplex, TransformComponent* pFirstTransform, Collider* pFirstCollider, TransformComponent* pSecondTransform, Collider* pSecondCollider);
-    void epaCalculateFaceNormals(std::vector<Vec3f>* pNormals, const std::vector<Vec3f>& vertices, std::vector<Face>* pFaces);
-    void epaGetNearestFace(float* pTempMinFaceDistance, unsigned int* pTempIndexMinFace, const std::vector<Face>& faces, const std::vector<Vec3f>& normals, const std::vector<Vec3f>& vertices);
+    void epaCalculateFaceNormals(std::vector<Vec3f>* pNormals, const std::vector<SupportFunctionVertex>& vertices, std::vector<Face>* pFaces);
+    void epaGetNearestFace(float* pTempMinFaceDistance, unsigned int* pTempIndexMinFace, const std::vector<Face>& faces, const std::vector<Vec3f>& normals, const std::vector<SupportFunctionVertex>& vertices);
     void epaAddEdgeIfUnique(std::vector<Edge>* uniqueEdges, const Edge& edge);
 }

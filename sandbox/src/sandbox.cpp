@@ -8,13 +8,16 @@ Entity *prvo;
 Entity *drugo;
 Entity *debugLine;
 
-ModelLoader modelLoaderBackpack, modelLoaderMap;
+ModelLoader modelLoaderMap;
 
 Entity *dirLight;
+Entity *transWindow;
 
 bool useMap = false;
 
 Perlin2D perlin;
+
+Texture2D textureWindow;
 
 class Sandbox : public Application
 {
@@ -26,7 +29,6 @@ public:
 
     void initAfterEngine() override
     {
-
         player = Scene::getPlayerEntity();
         player->get<TransformComponent>()->position = {0, 0, 3};
 
@@ -38,6 +40,14 @@ public:
         dirLight->add<DirectionalLightComponent>();
         dirLight->get<TransformComponent>()->rotation.pitch = degreesToRadians(-90);
 
+        transWindow = Scene::createEntity("Window");
+        transWindow->get<TransformComponent>()->position = {5, 0, 4};
+        //transWindow->get<TransformComponent>()->scale = {10, 10, 10};
+        transWindow->add<ModelComponent>(&AssetManager::get()->modelLoaderQuad2D, &RenderManager::get()->shaderBlend);
+        //transWindow->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->shaderBlend);
+        transWindow->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec4f(0, 0, 1, 0.3));
+        //transWindow->get<ModelComponent>()->model.pMaterials[0]->setTexture("u_Texture", )
+
         if(useMap)
         {
             map = Scene::createEntity("Sponza");
@@ -45,38 +55,35 @@ public:
             map->get<TransformComponent>()->scale = {0.005f, 0.005f, 0.005f};
             map->get<TransformComponent>()->rotation.roll = degreesToRadians(90);
             modelLoaderMap.load("assets/sponza/scene.gltf");
-            map->add<ModelComponent>(&modelLoaderMap, &RenderManager::get()->deffered.geometryPassShader);
+            map->add<ModelComponent>(&modelLoaderMap, &RenderManager::get()->shaderDefferedGeometry);
         }
 
         platform = Scene::createEntity("Platform");
         platform->get<TransformComponent>()->scale = {50, 14, 0.4};
-        platform->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->deffered.geometryPassShader);
+        //platform->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->deffered.geometryPassShader);
+        platform->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->shaderDefferedGeometry);
         platform->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1, 1, 0));
         platform->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.5f);
-        auto* pPlatformPhysical = platform->add<PhysicalComponent>();
-        //auto* pPlatformCollider = platform->add<ColliderMeshComponent>();
-        pPlatformPhysical->physical.gravity = 0.0;
-        //pPlatformCollider->collider.pTransformComponent = platform->get<TransformComponent>();
-        //pPlatformCollider->collider.pMesh = platform->get<ModelComponent>()->model.pMeshes[0];
-
-        //auto* pPlatformCollider = platform->add<ColliderBoxComponent>();
 
         sphere = Scene::createEntity("Sphere");
-        sphere->get<TransformComponent>()->position = {10, 6, 20};
-        sphere->add<ModelComponent>(&AssetManager::get()->modelLoaderSphere, &RenderManager::get()->deffered.geometryPassShader);
-        sphere->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1, 0, 0));
-        sphere->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.2f);
+        sphere->get<TransformComponent>()->position = {10, 2, 5};
+        sphere->add<ModelComponent>(&AssetManager::get()->modelLoaderSphere, &RenderManager::get()->shaderBlend);
+        sphere->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec4f(0, 1, 0, 0.7));
+        //sphere->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1, 0, 0));
+        //sphere->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.2f);
         auto* pSpherePhysical = sphere->add<PhysicalComponent>();
+        pSpherePhysical->physical.gravity = 0.0;
         //auto* pSphereCollider = sphere->add<ColliderSphereComponent>();
         //pSpherePhysical->physical.velocity = Vec3f{7, -3, 1.2};
-        pSpherePhysical->physical.velocity = Vec3f{0, 0, 1.2};
+        //pSpherePhysical->physical.velocity = Vec3f{0, 0, 9.81};
 
         srand(1);
 
         prvo = Scene::createEntity("prvo");
         prvo->get<TransformComponent>()->position = {13, 2, 5.1};
         prvo->get<TransformComponent>()->rotation = Vec3f(rand() / 100.f, rand() / 100.f, rand() / 100.f);
-        prvo->add<ModelComponent>(&AssetManager::get()->modelLoaderDodik, &RenderManager::get()->deffered.geometryPassShader);
+        prvo->add<ModelComponent>(&AssetManager::get()->modelLoaderDodik, &RenderManager::get()->shaderDefferedGeometry);
+        //prvo->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->shaderDefferedGeometry);
         prvo->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 0, 1));
         prvo->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.2f);
         prvo->add<PhysicalComponent>();
@@ -88,7 +95,8 @@ public:
         drugo = Scene::createEntity("Drugo");
         drugo->get<TransformComponent>()->position = {13, 0, 3};
         drugo->get<TransformComponent>()->rotation = Vec3f(rand() / 100.f, rand() / 100.f, rand() / 100.f);
-        drugo->add<ModelComponent>(&AssetManager::get()->modelLoaderHexagon, &RenderManager::get()->deffered.geometryPassShader);
+        drugo->add<ModelComponent>(&AssetManager::get()->modelLoaderHexagon, &RenderManager::get()->shaderDefferedGeometry);
+        //drugo->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->shaderDefferedGeometry);
         drugo->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 0, 1));
         drugo->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.2f);
         drugo->add<PhysicalComponent>();
@@ -100,6 +108,8 @@ public:
 
     void onUpdate() override
     {
+        //Scene::get()->projectPosition(*transWindow);
+
         auto* trans = prvo->get<TransformComponent>();
 
         float drugoSpeed = 1.f;
