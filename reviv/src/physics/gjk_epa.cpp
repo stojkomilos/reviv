@@ -457,7 +457,7 @@ namespace gjkEpa
                 Vec3f p;
                 p = normals[tempIndexMinFace] * tempMinFaceDistance;
 
-                Vec3f barycentricCoordinates = getInverse(mtx) * p;
+                Vec3f barycentricCoordinates = inverse(mtx) * p;
 
                 Vec3f points[2][3];
 

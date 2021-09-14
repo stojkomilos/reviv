@@ -29,11 +29,15 @@ public:
 
     void initAfterEngine() override
     {
+
         player = Scene::getPlayerEntity();
         player->get<TransformComponent>()->position = {0, 0, 3};
 
         debugLine = Scene::createEntity("DebugLine");
         debugLine->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->shaderMonochroma);
+        debugLine->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec3f(0, 1, 0));
+        //debugLine->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 1, 0));
+        //debugLine->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 10.f);
 
         dirLight = Scene::createEntity("dirLight");
         dirLight->get<TransformComponent>()->position = {0, 0, 20};
@@ -92,7 +96,7 @@ public:
         auto* pColliderPrvo = prvo->add<ColliderMeshComponent>();
         pColliderPrvo->collider.pMesh = prvo->get<ModelComponent>()->model.pMeshes[0];
 
-        drugo = Scene::createEntity("Drugo");
+        drugo = Scene::createEntity("drugo");
         drugo->get<TransformComponent>()->position = {13, 0, 3};
         drugo->get<TransformComponent>()->rotation = Vec3f(rand() / 100.f, rand() / 100.f, rand() / 100.f);
         drugo->add<ModelComponent>(&AssetManager::get()->modelLoaderHexagon, &RenderManager::get()->shaderDefferedGeometry);

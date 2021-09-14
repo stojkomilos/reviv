@@ -17,17 +17,3 @@ private:
 };
 
 class TransformComponent;
-
-class PhysicalDynamic
-{
-public:
-    PhysicalDynamic();
-
-    float mass;
-    Vec3f velocity;
-    Vec3f force;
-
-    float gravity;
-};
-
-void log(const PhysicalDynamic physical);

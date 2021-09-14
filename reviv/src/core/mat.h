@@ -52,6 +52,63 @@ namespace mat{
         Vec4f(const Vec3f& vec, float scalar);
     };
 
+    class MatN // NOTE: dynamically alocated
+    {
+    public:
+        MatN(unsigned int height, unsigned int width);
+        ~MatN();
+
+        MatN(const MatN&) = delete;
+        MatN& operator=(const MatN& other) = delete;
+        MatN& operator==(const MatN& other) = delete;
+
+        inline float get(unsigned int indexHeight, unsigned int indexWidth) const
+        {
+            return *(pData + TwoDimIndexToLinearIndex(indexHeight, indexWidth));
+        }
+        inline float* getPtr(unsigned int indexHeight, unsigned int indexWidth)
+        {
+            return (pData + TwoDimIndexToLinearIndex(indexHeight, indexWidth));
+        }
+
+        unsigned int height = 0;
+        unsigned int width = 0;
+
+    private:
+        inline unsigned int TwoDimIndexToLinearIndex(unsigned int indexHeight, unsigned int indexWidth) const
+        {
+            assert(indexHeight < height);
+            assert(indexWidth < width);
+            assert(indexHeight >= 0);
+            assert(indexHeight >= 0);
+            assert(indexWidth >= 0);
+            assert(pData != nullptr);
+
+            return indexHeight * width + indexWidth;
+        };
+        float* pData = nullptr;
+    };
+
+    void multiply(MatN* pResult, const MatN& first, const MatN& second);
+
+    class Mat1
+    {
+    public:
+        float a[1][1];
+        Mat1() = default;
+        Mat1(const Mat1&) = default;
+        bool operator==(const Mat1&) = delete;
+    };
+
+    class Mat2
+    {
+    public:
+        float a[2][2];
+        Mat2() = default;
+        Mat2(const Mat2&) = default;
+        bool operator==(const Mat2&) = delete;
+    };
+
     class Mat3
     {
     public:
@@ -99,11 +156,14 @@ namespace mat{
     Mat4 rotateY(float theta); // supposed to be pitch
     Mat4 rotateZ(float theta); // supposed to be yaw
 
+    float getDeterminant(const Mat3& mtx);
+
+    Mat1 transpose(const Mat1& mtx);
     // not tested
     Mat3 transpose(const Mat3& mtx);
 
-    float getDeterminant(const Mat3& mtx);
-    Mat3 getInverse(const Mat3& mtx);
+    Mat1 inverse(const Mat1& mtx);
+    Mat3 inverse(const Mat3& mtx);
 
     Mat4 multiply(const Mat4& first, const Mat4& second); // TODO: maybe canbe templated (so the user just does multiply(thing, thing2) without knowing that it is even templated)
     Mat3 multiply(const Mat3& first, const Mat3& second);
@@ -181,8 +241,11 @@ void log(const Vec2f& thing);
 void log(const Vec3f& thing);
 void log(const Vec4f& thing);
 
+void log(const MatN& thing);
+
 void log(const Mat3& thing);
 void log(const Mat4& thing);
 
-//void log(const bool& thing);
+void log(const bool& thing);
+void log(const int thing);
 void log(const Rotation& thing);

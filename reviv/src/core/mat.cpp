@@ -4,68 +4,6 @@ const Mat4 identity(1);
 
 #define MAT_EPSILON 0.00001f
 
-void log(const bool& thing)
-{
-    assert(false); // Error: using this overloaded function log means that something went wrong
-
-    if(thing == true)
-    {
-        cout << "true";
-    }
-    else
-    {
-        cout << "false";
-    }
-    cout << endl;
-}
-
-
-void log(const Rotation& thing)
-{
-    cout << "pitch=" << thing.pitch << " yaw=" << thing.yaw << " roll=" << thing.roll << endl;
-}
-
-void log(const Mat4& thing)
-{
-    for(int i=0; i<4; i++)
-    {
-        for(int j=0; j<4; j++)
-            cout << thing.a[i][j] << " ";
-        cout << endl;
-    }
-}
-
-void log(const Mat3& thing)
-{
-    for(int i=0; i<3; i++)
-    {
-        for(int j=0; j<3; j++)
-            cout << thing.a[i][j] << " ";
-        cout << endl;
-    }
-}
-
-void log(const Vec1f& thing) {
-    cout << thing.a[0] << endl;
-}
-
-void log(const Vec2f& thing) {
-    cout << thing.a[0] << " " << thing.a[1] << endl;
-}
-
-void log(const Vec3f& thing)
-{
-    for(int i=0; i<3; i++)
-        cout << thing.a[i] << " ";
-    cout << endl;
-}
-
-void log(const Vec4f& thing)
-{
-    for(int i=0; i<4; i++)
-        cout << thing.a[i] << " ";
-    cout << endl;
-}
 
 namespace mat{
 
@@ -294,6 +232,30 @@ namespace mat{
             +  mtx.a[0][2] * (mtx.a[1][0] * mtx.a[2][1] - mtx.a[2][0] * mtx.a[1][1]);
     }
 
+    MatN::MatN(unsigned int height, unsigned int width)
+        : height(height), width(width)
+    {
+        assert(pData == nullptr);
+        pData = new float[height * width];
+    }
+
+    MatN::~MatN()
+    {
+        delete[] pData;
+    }
+
+    Mat1 transpose(const Mat1& mtx)
+    {
+        return mtx;
+    }
+
+    Mat1 inverse(const Mat1& mtx)
+    {
+        Mat1 result;
+        result.a[0][0] = 1.f / mtx.a[0][0];
+        return result;
+    }
+
     Mat3 transpose(const Mat3& mtx)
     {
         Mat3 result;
@@ -305,7 +267,7 @@ namespace mat{
         return result;
     }
 
-    Mat3 getInverse(const Mat3& mtx)
+    Mat3 inverse(const Mat3& mtx)
     {
         float invDet = 1 / getDeterminant(mtx);
         Mat3 result;
@@ -549,3 +511,82 @@ namespace mat{
         return rotation;
     }
 };
+
+void log(const bool& thing)
+{
+    assert(false); // Error: using this overloaded function log means that something went wrong
+
+    if(thing == true)
+    {
+        cout << "true";
+    }
+    else
+    {
+        cout << "false";
+    }
+    cout << endl;
+}
+
+void log(const int thing)
+{
+    assert(false); // temp
+    cout << thing << endl;
+}
+
+
+void log(const Rotation& thing)
+{
+    cout << "pitch=" << thing.pitch << " yaw=" << thing.yaw << " roll=" << thing.roll << endl;
+}
+
+void log(const Mat4& thing)
+{
+    for(int i=0; i<4; i++)
+    {
+        for(int j=0; j<4; j++)
+            cout << thing.a[i][j] << " ";
+        cout << endl;
+    }
+}
+
+void log(const Mat3& thing)
+{
+    for(int i=0; i<3; i++)
+    {
+        for(int j=0; j<3; j++)
+            cout << thing.a[i][j] << " ";
+        cout << endl;
+    }
+}
+
+void log(const Vec1f& thing) {
+    cout << thing.a[0] << endl;
+}
+
+void log(const Vec2f& thing) {
+    cout << thing.a[0] << " " << thing.a[1] << endl;
+}
+
+void log(const Vec3f& thing)
+{
+    for(int i=0; i<3; i++)
+        cout << thing.a[i] << " ";
+    cout << endl;
+}
+
+void log(const Vec4f& thing)
+{
+    for(int i=0; i<4; i++)
+        cout << thing.a[i] << " ";
+    cout << endl;
+}
+
+void log(const MatN& thing)
+{
+    for(int i=0; i<thing.height; i++)
+    {
+        for(int j=0; j<thing.width; j++)
+            cout << thing.get(i, j) << " ";
+        cout << endl;
+    }
+}

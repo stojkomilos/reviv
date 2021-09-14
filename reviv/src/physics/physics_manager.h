@@ -35,4 +35,22 @@ private:
     void onUpdateResolveCollisions(float dt);
 
     void alignPositionAndRotation(const Entity& parentEntity, Entity* childEntity);
+
+    void calculateNewVelocitiesAndForces(float dt);
+    void iterateConstrainst(float dt);
+    void calculateNewPositionsAndVelocities(float dt);
 };
+
+class PhysicalDynamic
+{
+public:
+    PhysicalDynamic();
+
+    float mass;
+    Vec3f velocity;
+    Vec3f force;
+
+    float gravity;
+};
+
+void log(const PhysicalDynamic& physical);

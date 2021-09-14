@@ -28,8 +28,8 @@ void RenderManager::renderSceneToFramebuffer(Framebuffer* pFramebuffer)
     copyDefferedDepthToFramebuffer(pFramebuffer);
 
     forwardMonochromaRenderPass(pFramebuffer);
-    forwardBlendRenderPass(pFramebuffer);
     skybox.onUpdate(pFramebuffer);
+    forwardBlendRenderPass(pFramebuffer);
 }
 
 void RenderManager::init()
