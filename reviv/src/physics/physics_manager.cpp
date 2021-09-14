@@ -74,12 +74,77 @@ void PhysicsManager::calculateNewVelocitiesAndForces(float dt)
 
 void PhysicsManager::iterateConstrainst(float dt)
 {
-    int nrConstraintIterations = 1;
+    Entity* pFirst = Scene::getEntity("prvo");
+    Entity* pSecond = Scene::getEntity("drugo");
+
+    // set positions
+
+    MatN positions(12, 1);
+    *positions.getPtr(0, 0) = pFirst->get<TransformComponent>()->position.a[0];
+    *positions.getPtr(1, 0) = pFirst->get<TransformComponent>()->position.a[1];
+    *positions.getPtr(2, 0) = pFirst->get<TransformComponent>()->position.a[2];
+
+    *positions.getPtr(3, 0) = 0;
+    *positions.getPtr(4, 0) = 0;
+    *positions.getPtr(5, 0) = 0;
+
+    *positions.getPtr(6, 0) = pSecond->get<TransformComponent>()->position.a[0];
+    *positions.getPtr(7, 0) = pSecond->get<TransformComponent>()->position.a[1];
+    *positions.getPtr(8, 0) = pSecond->get<TransformComponent>()->position.a[2];
+
+    *positions.getPtr(9, 0) = 0;
+    *positions.getPtr(10, 0) = 0;
+    *positions.getPtr(11, 0) = 0;
+
+    // set velocities
+
     MatN velocities(12, 1);
+
+    *velocities.getPtr(0, 0) = pFirst->get<PhysicalComponent>()->physical.velocity.a[0];
+    *velocities.getPtr(1, 0) = pFirst->get<PhysicalComponent>()->physical.velocity.a[1];
+    *velocities.getPtr(2, 0) = pFirst->get<PhysicalComponent>()->physical.velocity.a[2];
+
+    *velocities.getPtr(3, 0) = 0;
+    *velocities.getPtr(4, 0) = 0;
+    *velocities.getPtr(5, 0) = 0;
+
+    *velocities.getPtr(6, 0) = pSecond->get<PhysicalComponent>()->physical.velocity.a[0];
+    *velocities.getPtr(7, 0) = pSecond->get<PhysicalComponent>()->physical.velocity.a[1];
+    *velocities.getPtr(8, 0) = pSecond->get<PhysicalComponent>()->physical.velocity.a[2];
+
+    *velocities.getPtr(9, 0)  = 0;
+    *velocities.getPtr(10, 0) = 0;
+    *velocities.getPtr(11, 0) = 0;
+
+    // set masses and moments of inertia
+    
+    MatN mass(12, 12);
+
+    for(int i=0; i<mass.height; i++)
+        for(int j=0; j<mass.width; j++)
+            *mass.getPtr(i, j) = 0;
+
+    *mass.getPtr(0, 0) = pFirst->get<PhysicalComponent>()->physical.mass;
+    *mass.getPtr(1, 1) = pFirst->get<PhysicalComponent>()->physical.mass;
+    *mass.getPtr(2, 2) = pFirst->get<PhysicalComponent>()->physical.mass;
+
+    *mass.getPtr(6, 6) = pSecond->get<PhysicalComponent>()->physical.mass;
+    *mass.getPtr(7, 7) = pSecond->get<PhysicalComponent>()->physical.mass;
+    *mass.getPtr(8, 8) = pSecond->get<PhysicalComponent>()->physical.mass;
+
+    Vec3f firstPosition = pFirst->get<TransformComponent>()->position;
+    Vec3f secondPosition = pSecond->get<TransformComponent>()->position;
+
+    int nrConstraintIterations = 1;
+    float constraintDistnace = 5.f;
     for(int constraintIteration=0; constraintIteration < nrConstraintIterations; constraintIteration++)
     {
-        Entity* pFirst = Scene::getEntity("prvo");
-        Entity* pSecond = Scene::getEntity("drugo");
+        Vec3f positionDifference = firstPosition - secondPosition;
+        if(abs(dot(positionDifference, positionDifference) - constraintDistnace * constraintDistnace) > 0.00001f)
+        {
+            cout << "constraint broken. distance: " << module(firstPosition - secondPosition) << endl;
+            
+        }
     }
 }
 

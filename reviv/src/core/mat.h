@@ -55,27 +55,27 @@ namespace mat{
     class MatN // NOTE: dynamically alocated
     {
     public:
-        MatN(unsigned int height, unsigned int width);
+        MatN(int height, int width);
         ~MatN();
 
         MatN(const MatN&) = delete;
         MatN& operator=(const MatN& other) = delete;
         MatN& operator==(const MatN& other) = delete;
 
-        inline float get(unsigned int indexHeight, unsigned int indexWidth) const
+        inline float get(int indexHeight, int indexWidth) const
         {
             return *(pData + TwoDimIndexToLinearIndex(indexHeight, indexWidth));
         }
-        inline float* getPtr(unsigned int indexHeight, unsigned int indexWidth)
+        inline float* getPtr(int indexHeight, int indexWidth)
         {
             return (pData + TwoDimIndexToLinearIndex(indexHeight, indexWidth));
         }
 
-        unsigned int height = 0;
-        unsigned int width = 0;
+        int height = 0;
+        int width = 0;
 
     private:
-        inline unsigned int TwoDimIndexToLinearIndex(unsigned int indexHeight, unsigned int indexWidth) const
+        inline unsigned int TwoDimIndexToLinearIndex(int indexHeight, int indexWidth) const
         {
             assert(indexHeight < height);
             assert(indexWidth < width);
@@ -90,6 +90,7 @@ namespace mat{
     };
 
     void multiply(MatN* pResult, const MatN& first, const MatN& second);
+    void transpose(MatN* pResult, const MatN& mtx);
 
     class Mat1
     {

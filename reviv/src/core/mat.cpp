@@ -232,16 +232,42 @@ namespace mat{
             +  mtx.a[0][2] * (mtx.a[1][0] * mtx.a[2][1] - mtx.a[2][0] * mtx.a[1][1]);
     }
 
-    MatN::MatN(unsigned int height, unsigned int width)
+    MatN::MatN(int height, int width)
         : height(height), width(width)
     {
         assert(pData == nullptr);
+        assert(height >= 0 && width >= 0);
+
         pData = new float[height * width];
     }
 
     MatN::~MatN()
     {
         delete[] pData;
+    }
+
+    void multiply(MatN* pResult, const MatN& first, const MatN& second)
+    {
+        assert(first.width == second.height);
+        assert(pResult->height == first.height && pResult->width == second.width);
+
+        for(int i=0; i<first.height; i++)
+            for(int j=0; j<second.width; j++)
+            {
+                *pResult->getPtr(i, j) = 0;
+                for(int k=0; k<first.width; k++)
+                    *pResult->getPtr(i, j) += first.get(i, k) * second.get(k, j);
+            }
+    }
+
+    void transpose(MatN* pResult, const MatN& mtx)
+    {
+        assert(pResult->height == mtx.width && pResult->width == mtx.height);
+        assert(pResult != &mtx);
+
+        for(int i=0; i<mtx.height; i++)
+            for(int j=0; j<mtx.width; j++)
+                *pResult->getPtr(i, j) = mtx.get(j, i);
     }
 
     Mat1 transpose(const Mat1& mtx)

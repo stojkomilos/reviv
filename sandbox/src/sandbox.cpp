@@ -84,7 +84,7 @@ public:
         srand(1);
 
         prvo = Scene::createEntity("prvo");
-        prvo->get<TransformComponent>()->position = {13, 2, 5.1};
+        prvo->get<TransformComponent>()->position = {13, 2, 10};
         prvo->get<TransformComponent>()->rotation = Vec3f(rand() / 100.f, rand() / 100.f, rand() / 100.f);
         prvo->add<ModelComponent>(&AssetManager::get()->modelLoaderDodik, &RenderManager::get()->shaderDefferedGeometry);
         //prvo->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->shaderDefferedGeometry);
@@ -97,7 +97,7 @@ public:
         pColliderPrvo->collider.pMesh = prvo->get<ModelComponent>()->model.pMeshes[0];
 
         drugo = Scene::createEntity("drugo");
-        drugo->get<TransformComponent>()->position = {13, 0, 3};
+        drugo->get<TransformComponent>()->position = {13, 4, 10};
         drugo->get<TransformComponent>()->rotation = Vec3f(rand() / 100.f, rand() / 100.f, rand() / 100.f);
         drugo->add<ModelComponent>(&AssetManager::get()->modelLoaderHexagon, &RenderManager::get()->shaderDefferedGeometry);
         //drugo->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->shaderDefferedGeometry);
@@ -113,6 +113,26 @@ public:
     void onUpdate() override
     {
         //Scene::get()->projectPosition(*transWindow);
+
+        MatN matNFirst(3, 4);
+        MatN matNSecond(4, 2);
+        MatN matNResult(3, 2);
+
+        for(int i=0; i<3; i++)
+            for(int j=0; j<4; j++)
+                *matNFirst.getPtr(i, j) = rand() / (RAND_MAX * 1.f);
+
+        for(int i=0; i<4; i++)
+            for(int j=0; j<2; j++)
+                *matNSecond.getPtr(i, j) = rand() / (RAND_MAX * 1.f);
+
+        cout << "matNFirst: " << endl;
+        log(matNFirst);
+        cout << "matNSecond: " << endl;
+        log(matNSecond);
+        multiply(&matNResult, matNFirst, matNSecond);
+        cout << "matNResult: " << endl;
+        log(matNResult);
 
         auto* trans = prvo->get<TransformComponent>();
 
