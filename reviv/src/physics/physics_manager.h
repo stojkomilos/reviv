@@ -7,6 +7,8 @@
 #include"physics/collision_manager.h"
 #include"physics/dynamics_manager.h"
 
+#include"physics/constraint.h"
+
 class PhysicsManager
 {
 public:
@@ -21,6 +23,7 @@ public:
     }
 
     std::vector<Collision> collisions;
+    std::vector<Constraint*> constraints;
 
     Collider* getCollidableFromEntity(Entity* pEntity);
 
@@ -49,6 +52,7 @@ public:
     float mass;
     Vec3f velocity;
     Vec3f force;
+    Vec3f torque;
 
     float gravity;
 };

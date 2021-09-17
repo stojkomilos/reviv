@@ -40,7 +40,7 @@ public:
 
     float gravity = 9.81f;
 
-    void projectPosition(const Entity& entity); // for debug
+    void debugProjectPosition(const Entity& entity);
 
 private:
     Scene() : entityList(5000000) { }

@@ -88,7 +88,7 @@ public:
         prvo->get<TransformComponent>()->rotation = Vec3f(rand() / 100.f, rand() / 100.f, rand() / 100.f);
         prvo->add<ModelComponent>(&AssetManager::get()->modelLoaderDodik, &RenderManager::get()->shaderDefferedGeometry);
         //prvo->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->shaderDefferedGeometry);
-        prvo->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 0, 1));
+        prvo->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(1, 0, 0));
         prvo->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.2f);
         prvo->add<PhysicalComponent>();
         auto* pPhysicalPrvo = &prvo->get<PhysicalComponent>()->physical;
@@ -97,23 +97,30 @@ public:
         pColliderPrvo->collider.pMesh = prvo->get<ModelComponent>()->model.pMeshes[0];
 
         drugo = Scene::createEntity("drugo");
-        drugo->get<TransformComponent>()->position = {13, 4, 10};
+        drugo->get<TransformComponent>()->position = {13, 6, 9};
+        //drugo->get<TransformComponent>()->position = {13, 7, 10};
         drugo->get<TransformComponent>()->rotation = Vec3f(rand() / 100.f, rand() / 100.f, rand() / 100.f);
         drugo->add<ModelComponent>(&AssetManager::get()->modelLoaderHexagon, &RenderManager::get()->shaderDefferedGeometry);
         //drugo->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->shaderDefferedGeometry);
-        drugo->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 0, 1));
+        drugo->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3f(0, 1, 0));
         drugo->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.2f);
         drugo->add<PhysicalComponent>();
         auto* pPhysicalDrugo = &drugo->get<PhysicalComponent>()->physical;
         auto* pColliderDrugo = drugo->add<ColliderMeshComponent>();
-        pPhysicalDrugo->gravity = 0.0;
+        pPhysicalDrugo->gravity = 9.81f;
         pColliderDrugo->collider.pMesh = drugo->get<ModelComponent>()->model.pMeshes[0]; // TODO: automate this somehow
+
+        ConstraintDistance* constraint = new ConstraintDistance;
+        PhysicsManager::get()->constraints.push_back(constraint);
+        constraint->pFirst = prvo;
+        constraint->pSecond = drugo;
     }
 
     void onUpdate() override
     {
         //Scene::get()->projectPosition(*transWindow);
 
+/*
         MatN matNFirst(3, 4);
         MatN matNSecond(4, 2);
         MatN matNResult(3, 2);
@@ -133,6 +140,7 @@ public:
         multiply(&matNResult, matNFirst, matNSecond);
         cout << "matNResult: " << endl;
         log(matNResult);
+*/
 
         auto* trans = prvo->get<TransformComponent>();
 

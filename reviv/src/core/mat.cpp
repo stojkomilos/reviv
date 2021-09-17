@@ -241,6 +241,14 @@ namespace mat{
         pData = new float[height * width];
     }
 
+    MatN::MatN(int height, int width, float fillInValue)
+        : MatN(height, width)
+    {
+        for(int i=0; i<height; i++)
+            for(int j=0; j<width; j++)
+                *getPtr(i, j) = fillInValue;
+    }
+
     MatN::~MatN()
     {
         delete[] pData;
@@ -260,14 +268,179 @@ namespace mat{
             }
     }
 
+    void multiply(MatN* pResult, const MatN& mtx, float scalar)
+    {
+        assert(pResult->height == mtx.height && pResult->width == mtx.width);
+
+        for(int i=0; i<mtx.height; i++)
+            for(int j=0; j<mtx.width; j++)
+                *pResult->getPtr(i, j) = mtx.get(i, j) * scalar;
+    }
+
+    void solveGaussSeidel(MatN* pX, const MatN& a, const MatN& b, int iterationLimit)
+    {
+        assert(pX->width == 1); // x is not a vector
+
+        assert(a.width == a.height); // a needs to be a square matrix for there to be an inverse matrix
+
+        for(int iteration = 0; iteration < iterationLimit; iteration++)
+        {
+            for(int i=0; i<pX->height; i++)
+            {
+                if(a.get(i, i) == 0.f)
+                    continue;
+
+                float sum=0;
+                for(int j=0; j<pX->height; j++)
+                    //if(i != j)
+                    sum += a.get(i, j) * pX->get(j, 0);
+
+                *pX->getPtr(i, 0) += (b.get(i, 0) - sum) / a.get(i, i);
+            }
+
+            // TODO: handle this if
+            if(0)
+            {
+                cout << "Gauss-Siedel iteration: " << iteration << "/" << iterationLimit << endl;
+
+                MatN result(b.height, b.width);
+                multiply(&result, a, *pX);
+
+                MatN difference(b.height, b.width);
+                subtract(&difference, b, result);
+                float percentDifference = module(difference) / module(b);
+
+                cout << "percentDifference: " << percentDifference << endl;
+            }
+        }
+    }
+
+    void debugGaussSeidelTest()
+    {
+
+        MatN testA(2, 2);
+        for(int i=0; i<testA.height; i++)
+            for(int j=0; j<testA.width; j++)
+                *testA.getPtr(i, j) = rand() / (RAND_MAX * 0.5f) - 1.f;
+
+        MatN testXResult(testA.width, 1);
+        for(int i=0; i<testXResult.height; i++)
+            for(int j=0; j<testXResult.width; j++)
+                *testXResult.getPtr(i, j) = rand() / (RAND_MAX * 0.5f) - 1.f;
+
+        MatN testXInit(testXResult.height, testXResult.width);
+        for(int i=0; i<testXInit.height; i++)
+            for(int j=0; j<testXInit.width; j++)
+                *testXInit.getPtr(i, j) = rand() / (RAND_MAX * 0.5f) - 1.f;
+
+        MatN testB(testA.height, testXInit.width);
+        multiply(&testB, testA, testXResult);
+
+        for(int nrGaussIterations=0; nrGaussIterations < 10; nrGaussIterations++)
+        {
+            MatN testX(testXInit.height, testXInit.width);
+            for(int i=0; i<testXInit.height; i++)
+                for(int j=0; j<testXInit.width; j++)
+                    *testX.getPtr(i, j) = testXInit.get(i, j);
+
+            cout << "staring testX: " << endl;
+            log(testX);
+
+            solveGaussSeidel(&testX, testA, testB, nrGaussIterations);
+
+            MatN testXDifference(testX.height, testX.width);
+            subtract(&testXDifference, testX, testXResult);
+
+            cout << "nrGaussIterations: " << nrGaussIterations << "error: " << module(testXDifference) / module(testXResult) << endl;
+
+            if(0)
+            {
+                cout << "a: " << endl;
+                log(testA);
+
+                cout << "\ntestXResult: " << endl;
+                log(testXResult);
+
+                cout << "\ntestXInit: " << endl;
+                log(testXInit);
+
+                cout << "\ntestX: " << endl;
+                log(testX);
+
+                cout << "\ntestXDifference: " << endl;
+                log(testXDifference);
+            }
+        }
+    }
+
+    void MatN::setToIdentity()
+    {
+        assert(width == height); // only square matrices can be identity matrices
+        for(int i=0; i<height; i++)
+            for(int j=0; j<width; j++)
+                if(i != j)
+                    *getPtr(i, j) = 0;
+                else *getPtr(i, i) = 1;
+    }
+
     void transpose(MatN* pResult, const MatN& mtx)
     {
         assert(pResult->height == mtx.width && pResult->width == mtx.height);
         assert(pResult != &mtx);
 
-        for(int i=0; i<mtx.height; i++)
-            for(int j=0; j<mtx.width; j++)
+        for(int i=0; i<pResult->height; i++)
+            for(int j=0; j<pResult->width; j++)
                 *pResult->getPtr(i, j) = mtx.get(j, i);
+    }
+
+    void inverse(MatN* pResult, const MatN& mtx)
+    {
+        assert(false);
+    }
+
+    float module(const MatN& mtx)
+    {
+        assert(mtx.width == 1);
+        float result = 0.f;
+
+        for(int i=0; i<mtx.height; i++)
+            result += mtx.get(i, 0) * mtx.get(i, 0);
+
+        return sqrt(result);
+    }
+
+    void MatN::setTo(const MatN& other)
+    {
+        assert(height == other.height && width == other.width);
+        for(int i=0; i<height; i++)
+            for(int j=0; j<width; j++)
+                *getPtr(i, j) = other.get(i, j);
+    }
+
+    MatN::MatN(const MatN& other)
+        : MatN(other.height, other.width)
+    {
+        setTo(other);
+    }
+
+    void add(MatN* pResult, const MatN& first, const MatN& second)
+    {
+        assert(pResult->height == first.height && pResult->width == first.width);
+        assert(second.height == first.height && second.width == first.width);
+
+        for(int i=0; i<first.height; i++)
+            for(int j=0; j<first.width; j++)
+                *pResult->getPtr(i, j) = first.get(i, j) + second.get(i, j);
+    }
+
+    void subtract(MatN* pResult, const MatN& first, const MatN& second)
+    {
+        assert(pResult->height == first.height && pResult->width == first.width);
+        assert(second.height == first.height && second.width == first.width);
+
+        for(int i=0; i<first.height; i++)
+            for(int j=0; j<first.width; j++)
+                *pResult->getPtr(i, j) = first.get(i, j) - second.get(i, j);
     }
 
     Mat1 transpose(const Mat1& mtx)

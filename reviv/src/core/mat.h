@@ -56,11 +56,17 @@ namespace mat{
     {
     public:
         MatN(int height, int width);
+        MatN(int height, int width, float fillInValue);
         ~MatN();
 
-        MatN(const MatN&) = delete;
+        // not tested
+        MatN(const MatN& other);
+
         MatN& operator=(const MatN& other) = delete;
         MatN& operator==(const MatN& other) = delete;
+
+        void setToIdentity();
+        void setTo(const MatN& other);
 
         inline float get(int indexHeight, int indexWidth) const
         {
@@ -90,7 +96,17 @@ namespace mat{
     };
 
     void multiply(MatN* pResult, const MatN& first, const MatN& second);
+    void multiply(MatN* pResult, const MatN& mtx, float scalar);
+
     void transpose(MatN* pResult, const MatN& mtx);
+    void inverse(MatN* pResult, const MatN& mtx);
+
+    void solveGaussSeidel(MatN* pX, const MatN& a, const MatN& b, int iterationLimit); // solved Ax=b with gauss seidel. can't solve all matrices
+    void debugGaussSeidelTest();
+
+    float module(const MatN& mtx);
+    void add(MatN* pResult, const MatN& first, const MatN& second);
+    void subtract(MatN* pResult, const MatN& first, const MatN& second);
 
     class Mat1
     {

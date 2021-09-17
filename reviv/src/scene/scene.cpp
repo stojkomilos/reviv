@@ -75,7 +75,7 @@ Entity* Scene::iSetPlayerEntity(Entity* pNewPlayerEntity)
     return pPlayerEntity;
 }
 
-void Scene::projectPosition(const Entity& entity)
+void Scene::debugProjectPosition(const Entity& entity)
 { 
     cout << "Projecting Position of: " << entity.entityName << "-----------" << endl;
 
