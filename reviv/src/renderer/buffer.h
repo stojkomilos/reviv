@@ -7,9 +7,9 @@
 
 struct Vertex
 {
-    Vec3f position;
-    Vec3f normal;
-    Vec2f texCoords;
+    Vec3 position;
+    Vec3 normal;
+    Vec2 texCoords;
 };
 
 enum class ShaderDataType

@@ -18,7 +18,7 @@ void RenderManager::renderSceneToFramebuffer(Framebuffer* pFramebuffer)
 
     pFramebuffer->bind();
     RenderCommand::get()->setViewport(0, 0, Application::get()->getWindowWidth(), Application::get()->getWindowHeight());
-    RenderCommand::get()->setClearColor(Vec4f(1.f, 0.f, 1.f, 1.f));
+    RenderCommand::get()->setClearColor(Vec4(1.f, 0.f, 1.f, 1.f));
     RenderCommand::get()->clear();
 
     //shadowMapRenderPass();
@@ -61,7 +61,7 @@ void RenderManager::init()
     shaderDefferedGeometry.init("assets/shaders/deffered_geometry.vs", "assets/shaders/deffered_geometry.fs");
 
     //materialDefault.setShader(shaderDefferedLighting);
-    //materialDefault.set("u_Diffuse", Vec3f(0.2, 0.2, 0.2));
+    //materialDefault.set("u_Diffuse", Vec3(0.2, 0.2, 0.2));
     //materialDefault.set("u_Specular", (float)0.5f);
 
     shaderMonochroma.init("assets/shaders/monochroma.vs", "assets/shaders/monochroma.fs");
@@ -110,7 +110,7 @@ void RenderManager::defferedGeometryRenderPass()
     RenderCommand::get()->setViewport(0, 0, deffered.m_Width, deffered.m_Height);
     RV_ASSERT(Time::get()->getLoopCounter() <= 1 || (Application::get()->getWindowWidth() == deffered.m_Width && Application::get()->getWindowHeight() == deffered.m_Height), "gBuffer for deffered rendering does not have the same width or height as the actual window");
 
-    RenderCommand::get()->setClearColor(Vec4f(0.f, 0.f, 0.f, 1.f));
+    RenderCommand::get()->setClearColor(Vec4(0.f, 0.f, 0.f, 1.f));
     RenderCommand::get()->clear();
 
     for(auto itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
@@ -237,7 +237,7 @@ void RenderManager::forwardBlendRenderPass(Framebuffer* pFramebuffer)
 void RenderManager::sortTransparentObjectsByDistance()
 {
     transparentEntityList.clear();
-    Vec3f cameraPosition = Scene::getCameraEntity()->get<TransformComponent>()->position;
+    Vec3 cameraPosition = Scene::getCameraEntity()->get<TransformComponent>()->position;
 
     for(auto itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
     {
@@ -393,25 +393,25 @@ void RenderManager::shadowMapRenderPass()
                     tempCamera.setPerspectiveProjection(degreesToRadians(90), 1.f);
                     omnidirectionalShadowMapShader.uploadUniformMat4("u_ShadowProjectionMatrix", tempCamera.projectionMatrix);
 
-                    Vec3f lightPos = itLight->get<TransformComponent>()->position;
-                    std::vector<Vec3f> shadowDirections;
+                    Vec3 lightPos = itLight->get<TransformComponent>()->position;
+                    std::vector<Vec3> shadowDirections;
 
                     if(1) // moj
                     {
-                        shadowDirections.push_back(Vec3f(0, -1, 0));
-                        shadowDirections.push_back(Vec3f(0, 1, 0));
-                        shadowDirections.push_back(Vec3f(0, 0, -1));
-                        shadowDirections.push_back(Vec3f(0, 0, 1));
-                        shadowDirections.push_back(Vec3f(1, 0, 0));
-                        shadowDirections.push_back(Vec3f(-1, 0, 0));
+                        shadowDirections.push_back(Vec3(0, -1, 0));
+                        shadowDirections.push_back(Vec3(0, 1, 0));
+                        shadowDirections.push_back(Vec3(0, 0, -1));
+                        shadowDirections.push_back(Vec3(0, 0, 1));
+                        shadowDirections.push_back(Vec3(1, 0, 0));
+                        shadowDirections.push_back(Vec3(-1, 0, 0));
                     }
                     else {
-                        shadowDirections.push_back(Vec3f(1, 0, 0));
-                        shadowDirections.push_back(Vec3f(-1, 0, 0));
-                        shadowDirections.push_back(Vec3f(0, 1.0, 0));
-                        shadowDirections.push_back(Vec3f(0, -1.0, 0));
-                        shadowDirections.push_back(Vec3f(0, 0, 1.0));
-                        shadowDirections.push_back(Vec3f(0, 0, -1.0));
+                        shadowDirections.push_back(Vec3(1, 0, 0));
+                        shadowDirections.push_back(Vec3(-1, 0, 0));
+                        shadowDirections.push_back(Vec3(0, 1.0, 0));
+                        shadowDirections.push_back(Vec3(0, -1.0, 0));
+                        shadowDirections.push_back(Vec3(0, 0, 1.0));
+                        shadowDirections.push_back(Vec3(0, 0, -1.0));
                     }
 
                     for(int face=0; face<6; face++)
@@ -547,25 +547,25 @@ void RenderManager::shadowMapRenderPass() //TODO: ukloniti ovaj ogroman komentar
                     tempCamera.setPerspectiveProjection(degreesToRadians(90), 1.f);
                     omnidirectionalShadowMapShader.uploadUniformMat4("u_ShadowProjectionMatrix", tempCamera.projectionMatrix);
 
-                    Vec3f lightPos = itLight->get<TransformComponent>()->position;
-                    std::vector<Vec3f> shadowDirections;
+                    Vec3 lightPos = itLight->get<TransformComponent>()->position;
+                    std::vector<Vec3> shadowDirections;
 
                     if(1) // moj
                     {
-                        shadowDirections.push_back(Vec3f(0, -1, 0));
-                        shadowDirections.push_back(Vec3f(0, 1, 0));
-                        shadowDirections.push_back(Vec3f(0, 0, -1));
-                        shadowDirections.push_back(Vec3f(0, 0, 1));
-                        shadowDirections.push_back(Vec3f(1, 0, 0));
-                        shadowDirections.push_back(Vec3f(-1, 0, 0));
+                        shadowDirections.push_back(Vec3(0, -1, 0));
+                        shadowDirections.push_back(Vec3(0, 1, 0));
+                        shadowDirections.push_back(Vec3(0, 0, -1));
+                        shadowDirections.push_back(Vec3(0, 0, 1));
+                        shadowDirections.push_back(Vec3(1, 0, 0));
+                        shadowDirections.push_back(Vec3(-1, 0, 0));
                     }
                     else {
-                        shadowDirections.push_back(Vec3f(1, 0, 0));
-                        shadowDirections.push_back(Vec3f(-1, 0, 0));
-                        shadowDirections.push_back(Vec3f(0, 1.0, 0));
-                        shadowDirections.push_back(Vec3f(0, -1.0, 0));
-                        shadowDirections.push_back(Vec3f(0, 0, 1.0));
-                        shadowDirections.push_back(Vec3f(0, 0, -1.0));
+                        shadowDirections.push_back(Vec3(1, 0, 0));
+                        shadowDirections.push_back(Vec3(-1, 0, 0));
+                        shadowDirections.push_back(Vec3(0, 1.0, 0));
+                        shadowDirections.push_back(Vec3(0, -1.0, 0));
+                        shadowDirections.push_back(Vec3(0, 0, 1.0));
+                        shadowDirections.push_back(Vec3(0, 0, -1.0));
                     }
 
                     for(int face=0; face<6; face++)

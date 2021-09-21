@@ -20,7 +20,7 @@ public:
     void init();
     void drawArrays(const Mesh& mesh);
     void drawElements(const Mesh& mesh);
-    void setClearColor(const Vec4f& color);
+    void setClearColor(const Vec4& color);
     void clear();
     void setViewport(int x, int y, int width, int height);
 

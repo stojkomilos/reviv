@@ -32,7 +32,6 @@ public:
 protected:
     Application(const std::string& applicationName = "Reviv App");
 
-    virtual void initBeforeEngine() = 0;
     virtual void initAfterEngine() = 0;
     virtual void onUpdate() = 0;
 

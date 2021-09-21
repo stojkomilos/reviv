@@ -138,28 +138,22 @@ int Shader::getUniformLocation(const std::string& uniformName) const
     return location;
 }
 
-//void Shader::uploadUniform1ui(const std::string& name, unsigned int a) const
-//{
-//    int location = getUniformLocation(name);
-//    glUniform1ui(location, a);
-//}
-
-void Shader::uploadUniformMat4(const std::string& name, const Mat4& matrix) const
+void Shader::uploadUniformMat4(const std::string& name, const Mat<4,4>& matrix) const
 {
     int location = getUniformLocation(name);
-    glUniformMatrix4fv(location, 1, GL_TRUE, (float*)&matrix);
+    glUniformMatrix4fv(location, 1, GL_TRUE, (const float*)matrix.getPtr(0, 0));
 }
 
-void Shader::uploadUniform3f(const std::string& name, const Vec3f& vec) const
+void Shader::uploadUniform3f(const std::string& name, const Vec3& vec) const
 {
     int location = getUniformLocation(name);
-    glUniform3f(location, vec.a[0], vec.a[1], vec.a[2]);
+    glUniform3f(location, vec.get(0, 0), vec.get(1, 0), vec.get(2, 0));
 }
 
-void Shader::uploadUniform4f(const std::string& name, const Vec4f& vec) const
+void Shader::uploadUniform4f(const std::string& name, const Vec4& vec) const
 {
     int location = getUniformLocation(name);
-    glUniform4f(location, vec.a[0], vec.a[1], vec.a[2], vec.a[3]);
+    glUniform4f(location, vec.get(0, 0), vec.get(1, 0), vec.get(2, 0), vec.get(3, 0));
 }
 
 void Shader::uploadUniform1i(const std::string& name, int a) const

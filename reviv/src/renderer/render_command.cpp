@@ -12,9 +12,9 @@ void RenderCommand::drawElements(const Mesh& mesh)
     glDrawElements(GL_TRIANGLES, mesh.m_Indices.size(), GL_UNSIGNED_INT, 0);
 }
 
-void RenderCommand::setClearColor(const Vec4f& color)
+void RenderCommand::setClearColor(const Vec4& color)
 {
-    glClearColor(color.a[0], color.a[1], color.a[2], color.a[3]);
+    glClearColor(color.get(0, 0), color.get(1, 0), color.get(2, 0), color.get(3, 0));
 }
 
 void RenderCommand::clear()

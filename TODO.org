@@ -137,7 +137,7 @@ Game engine book:
 
           Entity* pEntity; // which entity did we hit
 
-          Vec3f normal; // surface normal at contact
+          Vec3 normal; // surface normal at contact
 
         // other info
       };

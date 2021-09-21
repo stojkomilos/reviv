@@ -21,9 +21,9 @@ void Skybox::onUpdate(Framebuffer* pFramebuffer)
     RenderManager::get()->bindMaterial(material.pShader, &material);
 
     auto* pCamera = &Scene::getCameraEntity()->get<CameraComponent>()->camera;
-    Mat4 skyboxViewMatrix;
+    Mat<4,4> skyboxViewMatrix;
     skyboxViewMatrix = pCamera->viewMatrix;
-    skyboxViewMatrix.a[0][3] = skyboxViewMatrix.a[1][3] = skyboxViewMatrix.a[2][3] = 0;
+    *skyboxViewMatrix.getPtr(0, 3) = *skyboxViewMatrix.getPtr(1, 3) = *skyboxViewMatrix.getPtr(2, 3) = 0;
     material.pShader->uploadUniformMat4("u_SkyboxViewMatrix", skyboxViewMatrix);
     material.pShader->uploadUniformMat4("u_ProjectionMatrix", pCamera->projectionMatrix);
 

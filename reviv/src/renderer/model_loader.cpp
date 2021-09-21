@@ -54,23 +54,23 @@ void ModelLoader::addMesh(aiMesh* loaderMesh, Mesh* pMesh)
 
     for(unsigned int i=0; i < loaderMesh->mNumVertices; i++)
     {
-        vertex.position.a[0] = loaderMesh->mVertices[i].x;
-        vertex.position.a[1] = loaderMesh->mVertices[i].y;
-        vertex.position.a[2] = loaderMesh->mVertices[i].z;
+        *vertex.position.getPtr(0, 0) = loaderMesh->mVertices[i].x;
+        *vertex.position.getPtr(1, 0) = loaderMesh->mVertices[i].y;
+        *vertex.position.getPtr(2, 0) = loaderMesh->mVertices[i].z;
 
-        vertex.normal.a[0] = loaderMesh->mNormals[i].x;
-        vertex.normal.a[1] = loaderMesh->mNormals[i].y;
-        vertex.normal.a[2] = loaderMesh->mNormals[i].z;
+        *vertex.normal.getPtr(0, 0) = loaderMesh->mNormals[i].x;
+        *vertex.normal.getPtr(1, 0) = loaderMesh->mNormals[i].y;
+        *vertex.normal.getPtr(2, 0) = loaderMesh->mNormals[i].z;
 
         if(loaderMesh->mTextureCoords[0])
         {
-            vertex.texCoords.a[0] = loaderMesh->mTextureCoords[0][i].x;
-            vertex.texCoords.a[1] = loaderMesh->mTextureCoords[0][i].y;
+            *vertex.texCoords.getPtr(0, 0) = loaderMesh->mTextureCoords[0][i].x;
+            *vertex.texCoords.getPtr(1, 0) = loaderMesh->mTextureCoords[0][i].y;
         }
         else 
         {
-            vertex.texCoords.a[0] = 0;
-            vertex.texCoords.a[1] = 0; //TODO:
+            *vertex.texCoords.getPtr(0, 0) = 0;
+            *vertex.texCoords.getPtr(1, 0) = 0; //TODO:
             RV_ASSERT(false, "");
         }
 

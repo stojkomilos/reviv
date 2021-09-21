@@ -19,7 +19,7 @@ bool Input::isMouseButtonPressed(int mousecode)
     return glfwGetMouseButton(Application::get()->getWindow()->pWindow, mousecode) == GLFW_PRESS;
 }
 
-Vec2f Input::getMousePosition()
+Vec2 Input::getMousePosition()
 {
     double x, y;
     glfwGetCursorPos(Application::get()->getWindow()->pWindow, &x, &y);
@@ -49,7 +49,7 @@ void Input::useNormalCursor()
     glfwSetInputMode(Application::get()->getWindow()->pWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL); // Reverts the effects of GLFW_CURSOR_DISABLED && GLFW_CURSOR_HIDDEN
 }
 
-Vec2f Input::getCursorPosition()
+Vec2 Input::getCursorPosition()
 {
     return m_MousePosition;
 }
@@ -76,21 +76,21 @@ void Input::onEventMouseMoved(Event* event)
 void Input::doPlayerControllerOnEventMouseMoved(Event* event)
 {
 
-    static Vec2f oldMousePosition = ((EventMouseMoved*)event)->m_Position;
-    Vec2f deltaMouse = subtract(((EventMouseMoved*)event)->m_Position, oldMousePosition);
+    static Vec2 oldMousePosition = ((EventMouseMoved*)event)->m_Position;
+    Vec2 deltaMouse = subtract(((EventMouseMoved*)event)->m_Position, oldMousePosition);
     oldMousePosition = ((EventMouseMoved*)event)->m_Position;
 
 
-    Scene::getPlayerEntity()->get<TransformComponent>()->rotation.yaw -= deltaMouse.a[0] * sensitivity;
-    Scene::getPlayerEntity()->get<TransformComponent>()->rotation.pitch -= deltaMouse.a[1] * sensitivity;
+    *Scene::getPlayerEntity()->get<TransformComponent>()->rotation.getPtr(2, 0) -= deltaMouse.get(0, 0) * sensitivity;
+    *Scene::getPlayerEntity()->get<TransformComponent>()->rotation.getPtr(1, 0) -= deltaMouse.get(1, 0) * sensitivity;
 
-    if (Scene::getPlayerEntity()->get<TransformComponent>()->rotation.pitch >= degreesToRadians(90))
+    if (Scene::getPlayerEntity()->get<TransformComponent>()->rotation.get(1, 0) >= degreesToRadians(90))
     {
-        Scene::getPlayerEntity()->get<TransformComponent>()->rotation.pitch = degreesToRadians(90);
+        *Scene::getPlayerEntity()->get<TransformComponent>()->rotation.getPtr(1, 0) = degreesToRadians(90);
     }
-    else if (Scene::getPlayerEntity()->get<TransformComponent>()->rotation.pitch <= degreesToRadians(-90))
+    else if (Scene::getPlayerEntity()->get<TransformComponent>()->rotation.get(1, 0) <= degreesToRadians(-90))
     {
-        Scene::getPlayerEntity()->get<TransformComponent>()->rotation.pitch = degreesToRadians(-90);
+        *Scene::getPlayerEntity()->get<TransformComponent>()->rotation.getPtr(1, 0) = degreesToRadians(-90);
     }
 }
 
@@ -101,10 +101,10 @@ void Input::doPlayerControllerPolling()
     float speed = 6;
     float verticalSpeed = speed;
 
-    Vec3f* playerPos = &player->get<TransformComponent>()->position;
-    Vec3f moveDirection(0, 0, 0);
-    Vec3f aimDirection = getDirectionFromRotation(player->get<TransformComponent>()->rotation);
-    Vec3f rightDirection = cross(aimDirection, Vec3f(0, 0, 1));
+    Vec3* playerPos = &player->get<TransformComponent>()->position;
+    Vec3 moveDirection(0, 0, 0);
+    Vec3 aimDirection = getDirectionFromRotation(player->get<TransformComponent>()->rotation);
+    Vec3 rightDirection = cross(aimDirection, Vec3(0, 0, 1));
 
     bool pressedW = isKeyPressed(RV_KEY_W);
     bool pressedS = isKeyPressed(RV_KEY_S);
@@ -114,28 +114,28 @@ void Input::doPlayerControllerPolling()
     if(pressedW && !pressedS)
         moveDirection += aimDirection;
     else if(!pressedW && pressedS)
-        moveDirection += -aimDirection;
+        moveDirection -= aimDirection;
 
     if(pressedD && !pressedA)
         moveDirection += rightDirection;
     else if(!pressedD && pressedA)
-        moveDirection += -rightDirection;
+        moveDirection -= rightDirection;
 
 
     if((pressedW != pressedS) || (pressedA != pressedD))
     {
-        Vec3f horizontalPlaneDelta = moveDirection / (module(moveDirection) + RV_EPSILON) * speed * Time::get()->getDelta(); // TODO: the + RV_EPSILON thing is probably responsible for a movement bug
+        Vec3 horizontalPlaneDelta = moveDirection / (module(moveDirection) + RV_EPSILON) * speed * Time::get()->getDelta(); // TODO: the + RV_EPSILON thing is probably responsible for a movement bug
         *playerPos += horizontalPlaneDelta;
     }
 
-    Vec3f verticalDelta(0,0,0);
+    Vec3 verticalDelta(0,0,0);
     bool pressedSpace = isKeyPressed(RV_KEY_SPACE);
     bool pressedLeftShift = isKeyPressed(RV_KEY_LEFT_SHIFT);
 
     if(pressedSpace && !pressedLeftShift)
-        verticalDelta = verticalSpeed * Vec3f(0, 0, 1) * Time::get()->getDelta();
+        verticalDelta = verticalSpeed * Vec3(0, 0, 1) * Time::get()->getDelta();
         else if(!pressedSpace && pressedLeftShift)
-            verticalDelta = -verticalSpeed * Vec3f(0, 0, 1) * Time::get()->getDelta();
+            verticalDelta = -verticalSpeed * Vec3(0, 0, 1) * Time::get()->getDelta();
 
     *playerPos += verticalDelta;
     

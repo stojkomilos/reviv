@@ -43,6 +43,8 @@ void Application::initEngine()
     RV_ASSERT(sizeof(double) == 8, "");
     RV_ASSERT(sizeof(bool) == 1, "");
 
+    RV_ASSERT(sizeof(Mat<4,4>) == sizeof(float) * 16, "invalid matrix size. there can be NO other data Mat<> instances except the matrix data itself");
+
     cout << "Initializing Reviv engine" << endl;
 
     window.init(true, !RV_DEBUG, 1600, 900, applicationName);              // window.init() must go before RenderManager::init()
@@ -64,7 +66,6 @@ void Application::run()
 {
     m_IsRunning = true;
 
-    initBeforeEngine();                 // game defined init funciton
     initEngine();                       // engine defined init function
 
     cout << "Initializing application" << endl;

@@ -6,67 +6,390 @@ using std::cin; using std::cout; using std::endl;
 
 namespace mat{
 
-    class Mat1;
-    class Mat2;
-    class Mat3;
-    class Mat4;
+    float random(float lowerLimit, float upperLimit);
 
-    class Vec1f
+    template<int HEIGHT, int WIDTH>
+    class Mat
     {
     public:
-        float a[1];
-        Vec1f() = default;
-        Vec1f(float x);
-        Vec1f(const Vec1f&) = default;
-        bool operator==(const Vec1f&) = delete;
+        Mat();
+
+        Mat(float x);
+        Mat(float x, float y);
+        Mat(float x, float y, float z);
+        Mat(float x, float y, float z, float w);
+        Mat(const Mat<HEIGHT-1, 1>& other, float scalar);
+
+        Mat(const Mat<HEIGHT, WIDTH>& other);
+        const Mat<HEIGHT, WIDTH>& operator=(const Mat<HEIGHT, WIDTH>& other);
+
+        void setTo(const Mat<HEIGHT, WIDTH>& other);
+        void randomize(float lowerLimit, float upperLimit);
+        void setToIdentity();
+        void fill(float n);
+
+        void add(const Mat<HEIGHT, WIDTH>& other);
+        void subtract(const Mat<HEIGHT, WIDTH>& other);
+        void multiply(float scalar);
+
+        template <size_t OTHER_WIDTH>
+        void multiply(const Mat<HEIGHT, OTHER_WIDTH>& other);
+
+        constexpr size_t getHeight() { return HEIGHT; } // needs constexpr getter for templates
+        constexpr size_t getWidth() { return WIDTH; }
+
+        inline float get(int column, int row) const
+        {
+            assert(column >= 0);
+            assert(row >= 0);
+            assert(column < HEIGHT);
+            assert(row < WIDTH);
+            return data[column][row];
+        }
+        inline float* getPtr(int column, int row)
+        {
+            assert(column >= 0);
+            assert(row >= 0);
+            assert(column < HEIGHT);
+            assert(row < WIDTH);
+            return &data[column][row];
+        }
+
+        inline const float* getPtr(int column, int row) const
+        {
+            assert(column >= 0);
+            assert(row >= 0);
+            assert(column < HEIGHT);
+            assert(row < WIDTH);
+            return &data[column][row];
+        }
+
+        static const size_t height = HEIGHT;
+        static const size_t width = WIDTH;
+    private:
+        float data[HEIGHT][WIDTH];
     };
 
-    class Vec2f
-    {
-    public:
-        float a[2];
-        Vec2f() = default;
-        Vec2f(float x, float y);
-        bool operator==(const Vec2f&) = delete;
-        Vec2f(const Vec2f&) = default;
-    };
+    using Vec1 = Mat<1, 1>;
+    using Vec2 = Mat<2, 1>;
+    using Vec3 = Mat<3, 1>;
+    using Vec4 = Mat<4, 1>;
 
-    class Vec3f
-    {
-    public:
-        Vec3f() = default;
-        Vec3f(float x, float y, float z);
-        Vec3f(const Vec3f&) = default;
-        bool operator==(const Vec3f&) = delete;
-        float a[3];
-    };
+    Vec3 lookAtGetRotation(const Vec3& eyePosition, const Vec3& targetPosition);
+    Vec3 getDirectionFromRotation(const Vec3& rotation);
+    Vec3 getDirectionFromRotation(const Vec3& rotation);
 
-    class Vec4f
-    {
-    public:
-        float a[4];
-        Vec4f() = default;
-        Vec4f(float x, float y, float z, float w);
-        Vec4f(const Vec4f&) = default;
-        bool operator==(const Vec4f&) = delete;
-        Vec4f(const Vec3f& vec, float scalar);
-    };
+    float degreesToRadians(float angleInDegrees);
+    float radiansToDegrees(float angleInRadians);
 
-    class MatN // NOTE: dynamically alocated
+    Mat<4, 4> rotateX(float theta); // supposed to be roll
+    Mat<4, 4> rotateY(float theta); // supposed to be pitch
+    Mat<4, 4> rotateZ(float theta); // supposed to be yaw
+
+    Mat<3,3> inverse(const Mat<3,3>& mtx);
+    float getDeterminant(const Mat<3,3>& mtx);
+    Vec3 cross(const Vec3& first, const Vec3& second);
+
+    // NOT TESTED
+    bool checkIfPointBelongsToLine(const Vec3& linePoint1, const Vec3& linePoint2, const Vec3& point);
+
+    // NOT TESTED
+    float getDistancePointLine(const Vec3& point, const Vec3& lineA, const Vec3& lineB);
+
+    inline bool sign(float a)
+    { 
+        if(a>0) 
+            return true; 
+        return false; 
+    }
+
+    Mat<4, 4> translate(Mat<4, 4> mtx, const Vec4& vec);
+
+
+    template<int HEIGHT, int WIDTH>
+    Mat<HEIGHT, WIDTH>::Mat(float x)
+        : Mat()
+    {
+        assert(HEIGHT == 1 && WIDTH == 1); // Mat is not a 1-dimensional vector
+        data[0][0] = x;
+    }
+
+    template<int HEIGHT, int WIDTH>
+    Mat<HEIGHT, WIDTH>::Mat(float x, float y)
+        : Mat()
+    {
+        assert(HEIGHT == 2 && WIDTH == 1); // Mat is not a 1-dimensional vector
+        data[0][0] = x;
+        data[1][0] = y;
+    }
+
+    template<int HEIGHT, int WIDTH>
+    Mat<HEIGHT, WIDTH>::Mat(float x, float y, float z)
+        : Mat()
+    {
+        assert(HEIGHT == 3 && WIDTH == 1); // Mat is not a 1-dimensional vector
+        data[0][0] = x;
+        data[1][0] = y;
+        data[2][0] = z;
+    }
+
+    template<int HEIGHT, int WIDTH>
+    Mat<HEIGHT, WIDTH>::Mat(float x, float y, float z, float w)
+        : Mat()
+    {
+        assert(HEIGHT == 4 && WIDTH == 1); // Mat is not a 1-dimensional vector
+        data[0][0] = x;
+        data[1][0] = y;
+        data[2][0] = z;
+        data[3][0] = z;
+    }
+
+    template<int HEIGHT, int WIDTH>
+    Mat<HEIGHT, WIDTH>::Mat(const Mat<HEIGHT-1, 1>& other, float scalar)
+        : Mat()
+    {
+        assert(WIDTH == 1 && other.width == 1); // this sort of constructor can only be used with vectors
+
+        for(int i=0; i<HEIGHT-1; i++)
+            data[i][0] = other.get(i, 0);
+
+        data[HEIGHT-1][0] = scalar;
+    }
+
+    template<int HEIGHT, int WIDTH>
+    void Mat<HEIGHT, WIDTH>::setTo(const Mat<HEIGHT, WIDTH>& other)
+    {
+        for(int i=0; i<HEIGHT; i++)
+            for(int j=0; j<WIDTH; j++)
+                data[i][j] = other.get(i, j);
+    }
+
+    template<int HEIGHT, int WIDTH>
+    const Mat<HEIGHT, WIDTH>& Mat<HEIGHT, WIDTH>::operator=(const Mat<HEIGHT, WIDTH>& other)
+    {
+        setTo(other);
+        return *this;
+    }
+
+    template<int HEIGHT, int WIDTH>
+    Mat<HEIGHT, WIDTH>::Mat(const Mat<HEIGHT, WIDTH>& other)
+        : Mat()
+    {
+        setTo(other);
+    }
+
+    template<int HEIGHT, int WIDTH>
+    Mat<HEIGHT, WIDTH> operator+(const Mat<HEIGHT, WIDTH>& first, const Mat<HEIGHT, WIDTH>& second)
+    {
+        return add(first, second);
+    }
+    
+    template<int HEIGHT, int WIDTH>
+    Mat<HEIGHT, WIDTH> operator-(const Mat<HEIGHT, WIDTH>& first, const Mat<HEIGHT, WIDTH>& second)
+    {
+        return subtract(first, second);
+    }
+
+    template<int HEIGHT, int WIDTH>
+    Mat<HEIGHT, WIDTH> operator*(const Mat<HEIGHT, WIDTH>& mtx, float scalar)
+    {
+        return multiply(mtx, scalar);
+    }
+
+    template<int HEIGHT, int WIDTH>
+    Mat<HEIGHT, WIDTH> operator*(float scalar, const Mat<HEIGHT, WIDTH>& mtx)
+    {
+        return multiply(mtx, scalar);
+    }
+
+    template<int HEIGHT, int WIDTH>
+    Mat<HEIGHT, WIDTH> operator/(const Mat<HEIGHT, WIDTH>& mtx, float scalar)
+    {
+        return multiply(mtx, 1.f/scalar);
+    }
+
+    template<int HEIGHT, int WIDTH>
+    Mat<HEIGHT, WIDTH> operator-(const Mat<HEIGHT, WIDTH>& mtx)
+    {
+        return multiply(mtx, -1.f);
+    }
+
+    template<int FIRST_HEIGHT, int FIRST_WIDTH, int SECOND_WIDTH>
+    Mat<FIRST_HEIGHT, SECOND_WIDTH> operator*(const Mat<FIRST_HEIGHT, FIRST_WIDTH>& first, const Mat<FIRST_WIDTH, SECOND_WIDTH>& second)
+    {
+        return multiply(first, second);
+    }
+
+    template<int HEIGHT, int WIDTH>
+    Mat<HEIGHT, WIDTH>& operator+=(Mat<HEIGHT, WIDTH>& first, const Mat<HEIGHT, WIDTH>& second)
+    {
+        first.add(second);
+        return first;
+    }
+
+    template<int HEIGHT, int WIDTH>
+    Mat<HEIGHT, WIDTH>& operator-=(Mat<HEIGHT, WIDTH>& first, const Mat<HEIGHT, WIDTH>& second)
+    {
+        first.subtract(second);
+        return first;
+    }
+
+    template<int HEIGHT, int WIDTH>
+    Mat<HEIGHT, WIDTH>& operator*=(Mat<HEIGHT, WIDTH>& mtx, float scalar)
+    {
+        mtx.multiply(scalar);
+        return mtx;
+    }
+
+    template<int HEIGHT, int WIDTH>
+    Mat<HEIGHT, WIDTH>::Mat()
+    {
+        assert(HEIGHT > 0);
+        assert(WIDTH > 0);
+    }
+
+    template<int HEIGHT, int WIDTH>
+    void Mat<HEIGHT, WIDTH>::setToIdentity()
+    {
+        assert(HEIGHT == WIDTH); // (probably) can't have non square identity matrices
+        for(int i=0; i<HEIGHT; i++)
+            for(int j=0; j<WIDTH; j++)
+                if(i!=j)
+                    data[i][j] = 0;
+                else data[i][j] = 1;
+    }
+
+    template<int HEIGHT, int WIDTH>
+    void Mat<HEIGHT, WIDTH>::fill(float n)
+    {
+        for(int i=0; i<HEIGHT; i++)
+            for(int j=0; j<WIDTH; j++)
+                data[i][j] = n;
+    }
+
+    template <int HEIGHT, int WIDTH>
+    void Mat<HEIGHT, WIDTH>::add(const Mat<HEIGHT, WIDTH>& other)
+    {
+        for(int i=0; i<HEIGHT; i++)
+            for(int j=0; j<WIDTH; j++)
+                data[i][j] += other.get(i, j);
+    }
+
+    template <int HEIGHT, int WIDTH>
+    void Mat<HEIGHT, WIDTH>::subtract(const Mat<HEIGHT, WIDTH>& other)
+    {
+        for(int i=0; i<HEIGHT; i++)
+            for(int j=0; j<WIDTH; j++)
+                data[i][j] -= other.get(i, j);
+    }
+
+    template <int HEIGHT, int WIDTH>
+    void Mat<HEIGHT, WIDTH>::multiply(float scalar)
+    {
+        for(int i=0; i<HEIGHT; i++)
+            for(int j=0; j<WIDTH; j++)
+                data[i][j] *= scalar;
+    }
+
+    template<int HEIGHT, int WIDTH>
+    void Mat<HEIGHT, WIDTH>::randomize(float lowerLimit, float upperLimit)
+    {
+        for(int i=0; i<HEIGHT; i++)
+            for(int j=0; j<WIDTH; j++)
+                *getPtr(i, j) = random(lowerLimit, upperLimit);
+    }
+    
+    template<int HEIGHT>
+    float module(const Mat<HEIGHT, 1>& mtx)
+    {
+        float result = 0.f;
+        for(int i=0; i<HEIGHT; i++)
+            result += mtx.get(i, 0) * mtx.get(i, 0);
+
+        return sqrt(result);
+    }
+
+    template<int HEIGHT, int WIDTH>
+    Mat<WIDTH, HEIGHT> transpose(const Mat<HEIGHT, WIDTH>& mtx)
+    {
+        Mat<WIDTH, HEIGHT> result;
+
+        for(int i=0; i<HEIGHT; i++)
+            for(int j=0; j<WIDTH; j++)
+                *result.getPtr(j, i) = mtx.get(i, j);
+
+        return result;
+    }
+
+    template<int HEIGHT, int WIDTH>
+    Mat<HEIGHT, WIDTH> add(const Mat<HEIGHT, WIDTH>& first, const Mat<HEIGHT, WIDTH>& second)
+    {
+        Mat<HEIGHT, WIDTH> result;
+
+        for(int i=0; i<HEIGHT; i++)
+            for(int j=0; j<WIDTH; j++)
+                *result.getPtr(i, j) = first.get(i, j) + second.get(i, j);
+
+        return result;
+    }
+
+    template<int HEIGHT, int WIDTH>
+    Mat<HEIGHT, WIDTH> subtract(const Mat<HEIGHT, WIDTH>& first, const Mat<HEIGHT, WIDTH>& second)
+    {
+        Mat<HEIGHT, WIDTH> result;
+
+        for(int i=0; i<HEIGHT; i++)
+            for(int j=0; j<WIDTH; j++)
+                *result.getPtr(i, j) = first.get(i, j) - second.get(i, j);
+
+        return result;
+    }
+
+    template<int HEIGHT, int WIDTH>
+    Mat<HEIGHT, WIDTH> multiply(const Mat<HEIGHT, WIDTH>& mtx, float scalar)
+    {
+
+        Mat<HEIGHT, WIDTH> result;
+
+        for(int i=0; i<HEIGHT; i++)
+            for(int j=0; j<WIDTH; j++)
+                *result.getPtr(i, j) = mtx.get(i, j) * scalar;
+
+        return result;
+    }
+
+    template<int FIRST_HEIGHT, int FIRST_WIDTH, int SECOND_WIDTH>
+    Mat<FIRST_HEIGHT, SECOND_WIDTH> multiply(const Mat<FIRST_HEIGHT, FIRST_WIDTH>& first, const Mat<FIRST_WIDTH, SECOND_WIDTH>& second)
+    {
+
+        Mat<FIRST_HEIGHT, SECOND_WIDTH> result;
+
+        for(int i=0; i<FIRST_HEIGHT; i++)
+            for(int j=0; j<SECOND_WIDTH; j++)
+            {
+                *result.getPtr(i, j) = 0;
+                for(int k=0; k<FIRST_WIDTH; k++)
+                    *result.getPtr(i, j) += first.get(i, k) * second.get(k, j);
+            }
+
+        return result;
+    }
+
+    class MatHeap // NOTE: dynamically alocated
     {
     public:
-        MatN(int height, int width);
-        MatN(int height, int width, float fillInValue);
-        ~MatN();
+        MatHeap(int height, int width);
+        MatHeap(int height, int width, float fillInValue);
+        ~MatHeap();
 
         // not tested
-        MatN(const MatN& other);
+        MatHeap(const MatHeap& other);
 
-        MatN& operator=(const MatN& other) = delete;
-        MatN& operator==(const MatN& other) = delete;
+        MatHeap& operator=(const MatHeap& other) = delete;
+        MatHeap& operator==(const MatHeap& other) = delete;
 
         void setToIdentity();
-        void setTo(const MatN& other);
+        void setTo(const MatHeap& other);
 
         inline float get(int indexHeight, int indexWidth) const
         {
@@ -95,150 +418,93 @@ namespace mat{
         float* pData = nullptr;
     };
 
-    void multiply(MatN* pResult, const MatN& first, const MatN& second);
-    void multiply(MatN* pResult, const MatN& mtx, float scalar);
-
-    void transpose(MatN* pResult, const MatN& mtx);
-    void inverse(MatN* pResult, const MatN& mtx);
-
-    void solveGaussSeidel(MatN* pX, const MatN& a, const MatN& b, int iterationLimit); // solved Ax=b with gauss seidel. can't solve all matrices
-    void debugGaussSeidelTest();
-
-    float module(const MatN& mtx);
-    void add(MatN* pResult, const MatN& first, const MatN& second);
-    void subtract(MatN* pResult, const MatN& first, const MatN& second);
-
-    class Mat1
+    template<int FIRST_HEIGHT, int FIRST_WIDTH, int SECOND_HEIGHT, int SECOND_WIDTH>
+    void solveGaussSeidel(Mat<FIRST_HEIGHT, FIRST_WIDTH>* pX, const Mat<SECOND_HEIGHT, SECOND_WIDTH>& a,    // solved Ax=b with gauss seidel. can't solve all matrices
+        const Mat<FIRST_HEIGHT, SECOND_WIDTH>& b, int iterationLimit)
     {
-    public:
-        float a[1][1];
-        Mat1() = default;
-        Mat1(const Mat1&) = default;
-        bool operator==(const Mat1&) = delete;
-    };
+        assert(pX->width == 1); // x is not a vector
 
-    class Mat2
-    {
-    public:
-        float a[2][2];
-        Mat2() = default;
-        Mat2(const Mat2&) = default;
-        bool operator==(const Mat2&) = delete;
-    };
+        assert(a.width == a.height); // a needs to be a square matrix for there to be an inverse matrix
 
-    class Mat3
-    {
-    public:
-        float a[3][3];
-        Mat3() = default;
-        Mat3(float n);
-        Mat3(const Mat3&) = default;
-        Mat3(const Mat4& upperLeft); // copies the upper left part of the Mat4 into the Mat3
-        bool operator==(const Mat3&) = delete;
-    };
+        for(int iteration = 0; iteration < iterationLimit; iteration++)
+        {
+            for(int i=0; i<pX->height; i++)
+            {
+                if(a.get(i, i) == 0.f)
+                    continue;
 
-    class Mat4
-    {
-    public:
-        float a[4][4];
-        Mat4() = default;
-        Mat4(float n);
-        Mat4(const Mat4&) = default;
-        bool operator==(const Mat4&) = delete;
-    };
-    
-    struct Quaternion
-    {
-        float x[4];
-    };
+                float sum=0;
+                for(int j=0; j<pX->height; j++)
+                    //if(i != j)
+                    sum += a.get(i, j) * pX->get(j, 0);
 
-    bool compare(const Vec3f& first, const Vec3f& second, float marginOfError);
+                *pX->getPtr(i, 0) += (b.get(i, 0) - sum) / a.get(i, i);
+            }
 
-    // NOT TESTED
-    bool checkIfPointBelongsToLine(const Vec3f& linePoint1, const Vec3f& linePoint2, const Vec3f& point);
+            // TODO: handle this if
+/*
+            if(0)
+            {
+                cout << "Gauss-Siedel iteration: " << iteration << "/" << iterationLimit << endl;
 
-    // NOT TESTED
-    float getDistancePointLine(const Vec3f& point, const Vec3f& lineA, const Vec3f& lineB);
+                Mat<b.getHeight(), b.getWidth()> result = a * (*pX);
+                multiply(&result, a, *pX);
 
-    inline bool sign(float a)
-    { 
-        if(a>0) 
-            return true; 
-        return false; 
+                Mat<b.getHeight(), b.getWidth()> difference = b - result;
+                float percentDifference = module(difference) / module(b);
+
+                cout << "percentDifference: " << percentDifference << endl;
+            }
+*/
+        }
     }
 
-    Mat4 translate(Mat4 mtx, const Vec4f& vec);
-    Mat4 scale(const Vec4f& vec);
-    Mat4 rotateX(float theta); // supposed to be roll
-    Mat4 rotateY(float theta); // supposed to be pitch
-    Mat4 rotateZ(float theta); // supposed to be yaw
+    void debugGaussSeidelTest();
 
-    float getDeterminant(const Mat3& mtx);
-
-    Mat1 transpose(const Mat1& mtx);
-    // not tested
-    Mat3 transpose(const Mat3& mtx);
-
-    Mat1 inverse(const Mat1& mtx);
-    Mat3 inverse(const Mat3& mtx);
-
-    Mat4 multiply(const Mat4& first, const Mat4& second); // TODO: maybe canbe templated (so the user just does multiply(thing, thing2) without knowing that it is even templated)
-    Mat3 multiply(const Mat3& first, const Mat3& second);
-    Vec4f multiply(const Mat4& mtx, const Vec4f& vec);
-    Vec3f multiplyScalar(Vec3f vec, float scalar);
-    Vec3f multiplyScalar(Vec3f vec, int intiger);
-
-    float module(const Vec4f& vec);
-    float module(const Vec3f& vec);
-    float module(const Vec2f& vec);
-    float module(const Vec1f& vec);
-
-    Vec3f cross(const Vec3f& first, const Vec3f& second);
-    float dot(const Vec3f& first, const Vec3f& second);
-    float dot(const Vec2f& first, const Vec2f& second);
-    Vec3f projection(const Vec3f& first, const Vec3f& second);
-
-    Vec3f add(const Vec3f& a, const Vec3f& b);
-    Vec2f subtract(const Vec2f& first, const Vec2f& second);
-    Vec3f subtract(const Vec3f& first, const Vec3f& second);
-
-    Mat4 operator*(const Mat4& first, const Mat4& second);
-    Mat3 operator*(const Mat3& first, const Mat3& second);
-    Vec3f operator*(const Vec3f& thing, const float& scalar);
-    Vec3f operator*(const float& scalar, const Vec3f& thing);
-    Vec4f operator*(const Mat4& mtx, const Vec4f& vec);
-    Vec3f operator*(const Mat3& mtx, const Vec3f& vec);
-
-    Vec4f operator/(const Vec4f& thing, const float& scalar);
-    Vec4f operator/(const float& scalar, const Vec4f& thing);
-    Vec3f operator/(const Vec3f& vec, float scalar);
-
-    Vec3f operator+(const Vec3f& first, const Vec3f& second);
-    Vec3f operator-(const Vec3f& first, const Vec3f& second);
-    Vec3f operator-(const Vec3f& first);
-    Vec2f operator-(const Vec2f& first, const Vec2f& second);
-
-    Vec3f& operator+=(Vec3f& first, const Vec3f& second);
-    Vec3f& operator*=(Vec3f& first, float second);
-
-
-
-    class Rotation
+    template<int HEIGHT, int WIDTH>
+    bool compare(const Mat<HEIGHT, WIDTH>& first, const Mat<HEIGHT, WIDTH>& second, float marginOfError)
     {
-    public:
-        float roll, pitch, yaw;
+        for(int i=0; i<HEIGHT; i++)
+            for(int j=0; j<WIDTH; j++)
+                if(abs(first.get(i, j) - second.get(i, j)) > marginOfError)
+                    return false;
+        return true;
+    }
 
-        Rotation() = default;
-        Rotation(const Rotation&) = default;
-        Rotation(const Vec3f& initRotation) 
-            : roll(initRotation.a[0]), pitch(initRotation.a[1]), yaw(initRotation.a[2]) {}
-    };
-    Rotation lookAtGetRotation(const Vec3f& eyePosition, const Vec3f& targetPosition);
-    Vec3f getDirectionFromRotation(const Rotation& rotation);
-    Vec3f getDirectionFromRotation(const Rotation& rotation);
+    template<int HEIGHT>
+    Mat<HEIGHT, HEIGHT> scale(const Mat<HEIGHT, 1>& vec)
+    {            
+        Mat<HEIGHT, HEIGHT> result;
 
-    float degreesToRadians(float angleInDegrees);
-    float radiansToDegrees(float angleInRadians);
+        for(int i=0; i<HEIGHT; i++)
+            for(int j=0; j<HEIGHT; j++)
+                if(i != j)
+                    *result.getPtr(i, j) = 0.f;
+                else *result.getPtr(i, i) = vec.get(i, 0);
+
+        return result;
+    }
+
+    template<int HEIGHT>
+    float dot(const Mat<HEIGHT, 1>& first, const Mat<HEIGHT, 1>& second)
+    {
+        float result = 0.f;
+        for(int i=0; i<HEIGHT; i++)
+            result += first.get(i, 0) * second.get(i, 0);
+
+        return result;
+    }
+
+    float module(const MatHeap& mtx);
+    void add(MatHeap* pResult, const MatHeap& first, const MatHeap& second);
+    void subtract(MatHeap* pResult, const MatHeap& first, const MatHeap& second);
+    void multiply(MatHeap* pResult, const MatHeap& first, const MatHeap& second);
+    void multiply(MatHeap* pResult, const MatHeap& mtx, float scalar);
+
+    void transpose(MatHeap* pResult, const MatHeap& mtx);
+    void inverse(MatHeap* pResult, const MatHeap& mtx);
+
+
 
 /*
     Quaternion conjugate(Quaternion quaternion);
@@ -251,18 +517,31 @@ namespace mat{
 
 using namespace mat;
 
-extern const Mat4 identity;
+void log(const MatHeap& thing);
 
-void log(const Vec1f& thing);
-void log(const Vec2f& thing);
-void log(const Vec3f& thing);
-void log(const Vec4f& thing);
+//void log(const bool& thing);
+//void log(const int thing);
+//void log(const Rotation& thing);
 
-void log(const MatN& thing);
-
-void log(const Mat3& thing);
-void log(const Mat4& thing);
-
-void log(const bool& thing);
-void log(const int thing);
-void log(const Rotation& thing);
+template<int HEIGHT, int WIDTH>
+void log(const Mat<HEIGHT, WIDTH>& mtx)
+{
+    if(WIDTH == 1)
+    {
+        if(HEIGHT == 1)
+            cout << "x: " << mtx.get(0, 0) << endl;
+        else if(HEIGHT == 2)
+            cout << "x: " << mtx.get(0, 0) << " y: " << mtx.get(1, 0) << endl;
+        else if(HEIGHT == 3)
+            cout << "x: " << mtx.get(0, 0) << " y: " << mtx.get(1, 0) << " z: " << mtx.get(2, 0) << endl;
+        else if(HEIGHT == 4)
+            cout << "x: " << mtx.get(0, 0) << " y: " << mtx.get(1, 0) << " z: " << mtx.get(2, 0) << " w: " << mtx.get(3, 0) << endl;
+        return ;
+    }
+    for(int i=0; i<HEIGHT; i++)
+    {
+        for(int j=0; j<WIDTH; j++)
+            cout << mtx.get(i, j) << " ";
+        cout << endl;
+    }
+}

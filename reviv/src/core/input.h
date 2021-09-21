@@ -22,12 +22,12 @@ public:
 
     bool isKeyPressed(int keycode);
     bool isMouseButtonPressed(int mousecode);
-    Vec2f getMousePosition();
+    Vec2 getMousePosition();
     void useRawMouseMotion();
     void disableCursor();
     void hideCursor(); 
     void useNormalCursor();
-    Vec2f getCursorPosition();
+    Vec2 getCursorPosition();
 
     void onEventMouseMoved(Event* event);
     void doPlayerControllerOnEventMouseMoved(Event* event);
@@ -38,5 +38,5 @@ public:
 private:
     Input() = default;
 
-    Vec2f m_MousePosition;
+    Vec2 m_MousePosition;
 };

@@ -9,26 +9,24 @@
 #include"core/mat.h"
 #include"renderer/light.h"
 #include"physics/physics_manager.h"
-#include"physics/collision_manager.h"
-#include"physics/dynamics_manager.h"
+#include"physics/collision.h"
 
 class TransformComponent : public SpecificComponent<TransformComponent>
 {
 public:
     TransformComponent() { static bool isFirstInit = runOnFirstInit("TransformComponent"); }
 
-    Vec3f position = {0.f, 0.f, 0.f};
-    Rotation rotation = Vec3f(0, 0, 0);
-    Vec3f scale = {1.f, 1.f, 1.f};
+    Vec3 position = {0.f, 0.f, 0.f};
+    Vec3 rotation = {0.f, 0.f, 0.f};
+    Vec3 scale = {1.f, 1.f, 1.f};
 
-    Mat4 getTransform() const // potential optimization
+    Mat<4,4> getTransform() const // potential optimization
     {
-        Mat4 result = mat::scale(Vec4f(scale, 1));
-        result = (rotateX(rotation.roll) * result);
-        result = rotateY(rotation.pitch) * result;
-        result = rotateZ(rotation.yaw) * result;
-        //result = rotateZ(rotation.yaw) * (rotateY(rotation.pitch) * (rotateX(rotation.roll) * result));
-        result = mat::translate(result, Vec4f(position, 0));
+        Mat<4, 4> result = mat::scale(Vec4(scale, 1));
+        result = (rotateX(rotation.get(0, 0)) * result);
+        result = rotateY(rotation.get(1, 0)) * result;
+        result = rotateZ(rotation.get(2, 0)) * result;
+        result = mat::translate(result, Vec4(position, 0));
 
         return result;
     }
@@ -95,8 +93,6 @@ public:
 
     template<class ...Args>
     PhysicalComponent(Args&&... args) : physical(std::forward<Args>(args)...) { static bool isFirstInit = runOnFirstInit("PhysicalComponent"); }
-
-    //PhysicalComponent(TransformComponent* pTransformComponent) : physical(pTransformComponent) { static bool isFirstInit = runOnFirstInit("PhysicalComponent"); }
 
     virtual void log() const override { cout << componentTypeName << endl; ::log(physical); }
 };

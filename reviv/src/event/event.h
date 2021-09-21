@@ -56,10 +56,10 @@ public:
 class EventMouseMoved : public Event
 {
 public:
-    EventMouseMoved(const Vec2f& position)
+    EventMouseMoved(const Vec2& position)
         : Event(EventTypeMouseMoved), m_Position(position)
     {}
 
     virtual std::string getName() override { return "EventMouseMoved"; }
-    Vec2f m_Position;
+    Vec2 m_Position;
 };

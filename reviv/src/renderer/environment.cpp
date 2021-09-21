@@ -56,7 +56,7 @@ void Environment::setLights()
             set(uniformNameLight + ".quadratic", ((PointLight*)pLight)->quadratic);
         }
         else {
-            Vec3f direction = getDirectionFromRotation(itEntity->get<TransformComponent>()->rotation);
+            Vec3 direction = getDirectionFromRotation(itEntity->get<TransformComponent>()->rotation);
             set(uniformNameLight + ".direction", direction);
         }
 

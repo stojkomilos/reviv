@@ -16,9 +16,9 @@ public:
     void uploadUniform(const Shader& shader, const std::string& existingUniformName) const;
     void uploadAllUniforms(const Shader& shader) const;
     
-    void set(const std::string& uniformName, const Mat4& mat4);
-    void set(const std::string& uniformName, const Vec4f& vec4f);
-    void set(const std::string& uniformName, const Vec3f& vec3f);
+    void set(const std::string& uniformName, const Mat<4,4>& mat4);
+    void set(const std::string& uniformName, const Vec4& vec4);
+    void set(const std::string& uniformName, const Vec3& vec3);
     void set(const std::string& uniformName, int n);
     void set(const std::string& uniformName, unsigned int n);
     void set(const std::string& uniformName, float n);

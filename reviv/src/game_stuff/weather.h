@@ -20,7 +20,7 @@ private:
     float m_TotalTimeInHours;
     std::string m_baseNameEntities;
 
-    Vec3f sunDirection;
+    Vec3 sunDirection;
     Entity* pSunModel;
     Entity* pSunDirectionalLight;
 };

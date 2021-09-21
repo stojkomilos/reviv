@@ -8,33 +8,33 @@ ShaderUniformMap::~ShaderUniformMap()
     }
 }
 
-void ShaderUniformMap::set(const std::string& uniformName, const Vec3f& vec3f)
+void ShaderUniformMap::set(const std::string& uniformName, const Vec3& vec3)
 {
     auto it = map.find(uniformName);
     if(it == map.end())
     {
         ShaderUniformHelpingStruct* foo = &map[uniformName];
-        foo->ptr = new Vec3f(vec3f);
+        foo->ptr = new Vec3(vec3);
         foo->type = ShaderDataType::SdtFloat3;
     }
     else {
         RV_ASSERT(it->second.type == ShaderDataType::SdtFloat3, "");
-        *(Vec3f*)it->second.ptr = vec3f;
+        *(Vec3*)it->second.ptr = vec3;
     }
 }
 
-void ShaderUniformMap::set(const std::string& uniformName, const Vec4f& vec4f)
+void ShaderUniformMap::set(const std::string& uniformName, const Vec4& vec4)
 {
     auto it = map.find(uniformName);
     if(it == map.end())
     {
         ShaderUniformHelpingStruct* foo = &map[uniformName];
-        foo->ptr = new Vec4f(vec4f);
+        foo->ptr = new Vec4(vec4);
         foo->type = ShaderDataType::SdtFloat4;
     }
     else {
         RV_ASSERT(it->second.type == ShaderDataType::SdtFloat4, "");
-        *(Vec4f*)it->second.ptr = vec4f;
+        *(Vec4*)it->second.ptr = vec4;
     }
 }
 
@@ -120,12 +120,12 @@ void logSpecificUniform(const ShaderUniformMap& shaderUniformMap, const std::str
     cout << uniformName << ": " << endl;
     switch(value->type)
     {
-        case ShaderDataType::SdtFloat1:           log(*(Vec1f*)value->ptr);      break;
-        case ShaderDataType::SdtFloat2:          log(*(Vec2f*)value->ptr);      break;
-        case ShaderDataType::SdtFloat3:          log(*(Vec3f*)value->ptr);     break;
-        case ShaderDataType::SdtFloat4:         log(*(Vec4f*)value->ptr);     break;
-        case ShaderDataType::SdtMat3:            log(*(Mat3*)value->ptr);       break;
-        case ShaderDataType::SdtMat4:            log(*(Mat4*)value->ptr);       break;
+        case ShaderDataType::SdtFloat1:           log(*(Vec1*)value->ptr);      break;
+        case ShaderDataType::SdtFloat2:          log(*(Vec2*)value->ptr);      break;
+        case ShaderDataType::SdtFloat3:          log(*(Vec3*)value->ptr);     break;
+        case ShaderDataType::SdtFloat4:         log(*(Vec4*)value->ptr);     break;
+        case ShaderDataType::SdtMat3:            log(*(Mat<3,3>*)value->ptr);       break;
+        case ShaderDataType::SdtMat4:            log(*(Mat<4,4>*)value->ptr);       break;
         case ShaderDataType::SdtInt1:             log(*(int*)value->ptr);       break;
         case ShaderDataType::SdtBool:            log(*(bool*)value->ptr);       break;
         default: RV_ASSERT(false, "ERROR: ShaderUniformHelpingStruct data type not defined in log function");
@@ -149,7 +149,7 @@ void ShaderUniformMap::uploadUniform(const Shader& shader, const std::string& ex
     switch(help.type)
     {
         case ShaderDataType::SdtMat4:
-            shader.uploadUniformMat4(existingUniformName, *(Mat4*)(help.ptr));
+            shader.uploadUniformMat4(existingUniformName, *(Mat<4,4>*)(help.ptr));
             //cout << "material uniform: " << uniformName;
             //log(*(Mat4*)(help.ptr));
             break;
@@ -159,11 +159,11 @@ void ShaderUniformMap::uploadUniform(const Shader& shader, const std::string& ex
             break;
 
         case ShaderDataType::SdtFloat3:
-            shader.uploadUniform3f(existingUniformName, *(Vec3f*)(help.ptr));
+            shader.uploadUniform3f(existingUniformName, *(Vec3*)(help.ptr));
             break;
 
         case ShaderDataType::SdtFloat4:
-            shader.uploadUniform4f(existingUniformName, *(Vec4f*)(help.ptr));
+            shader.uploadUniform4f(existingUniformName, *(Vec4*)(help.ptr));
             break;
 
         case ShaderDataType::SdtInt1:
@@ -186,18 +186,18 @@ void ShaderUniformMap::uploadAllUniforms(const Shader& shader) const
     }
 }
 
-void ShaderUniformMap::set(const std::string& uniformName, const Mat4& mat4)
+void ShaderUniformMap::set(const std::string& uniformName, const Mat<4,4>& mat4)
 {
     auto it = map.find(uniformName);
     if(it == map.end())
     {
         ShaderUniformHelpingStruct* foo = &map[uniformName];
-        foo->ptr = new Mat4(mat4);
+        foo->ptr = new Mat<4,4>(mat4);
         foo->type = ShaderDataType::SdtMat4;
     }
     else {
         RV_ASSERT(it->second.type == ShaderDataType::SdtMat4, "");
-        *(Mat4*)it->second.ptr = mat4;
+        *(Mat<4,4>*)it->second.ptr = mat4;
     }
 }
 

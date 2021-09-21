@@ -86,7 +86,7 @@ void Scene::debugProjectPosition(const Entity& entity)
     log(entity.get<TransformComponent>()->getTransform());
 
     cout << "afterTransform" << endl;
-    auto afterTransform = multiply(entity.get<TransformComponent>()->getTransform(), Vec4f(0, 0, 0, 1));
+    auto afterTransform = multiply(entity.get<TransformComponent>()->getTransform(), Vec4(entity.get<TransformComponent>()->position, 1.f));
     log(afterTransform);
 
     cout << "afterView" << endl;
@@ -98,7 +98,7 @@ void Scene::debugProjectPosition(const Entity& entity)
     log(afterProjection);
 
     cout << "afterNdc" << endl;
-    auto afterNdc = afterProjection / afterProjection.a[3];
+    auto afterNdc = afterProjection / afterProjection.get(3, 0);
     log(afterNdc);
     cout << "End of projecting position------------------" << endl;
 }

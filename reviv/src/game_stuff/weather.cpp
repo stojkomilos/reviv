@@ -12,7 +12,7 @@ void Weather::init(const std::string& baseNameEntities, float timeInHours)
     pSunDirectionalLight = Scene::createEntity(baseNameEntities + "DirectionalLight");
     
     pSunModel->add<ModelComponent>(&AssetManager::get()->modelLoaderSphere, &RenderManager::get()->shaderMonochroma);
-    pSunModel->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec3f(1, 1, 0));
+    pSunModel->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec3(1, 1, 0));
 
     pSunDirectionalLight->add<DirectionalLightComponent>();
     pSunDirectionalLight->get<DirectionalLightComponent>()->light.getShadowMap()->width = 50;
@@ -46,11 +46,11 @@ void Weather::setSunModelPosition()
 
     sunDirection = {sin(angle), 0, -cos(angle)};
 
-    Vec3f cameraPosition = Scene::getCameraEntity()->get<TransformComponent>()->position;
+    Vec3 cameraPosition = Scene::getCameraEntity()->get<TransformComponent>()->position;
 
     float distanceFromCamera = Scene::getCameraEntity()->get<CameraComponent>()->camera.renderDistance - 10;
     pSunModel->get<TransformComponent>()->position = cameraPosition + sunDirection * distanceFromCamera;
-    pSunModel->get<TransformComponent>()->scale = Vec3f(1, 1, 1) * distanceFromCamera / 10; 
+    pSunModel->get<TransformComponent>()->scale = Vec3(1, 1, 1) * distanceFromCamera / 10; 
 }
 
 void Weather::setSunDirectionalLight()
@@ -59,11 +59,11 @@ void Weather::setSunDirectionalLight()
 
     sunDirection = {sin(angle), 0, -cos(angle)};
 
-    Vec3f cameraPosition = Scene::getCameraEntity()->get<TransformComponent>()->position;
+    Vec3 cameraPosition = Scene::getCameraEntity()->get<TransformComponent>()->position;
 
     float distanceFromCamera = 0.5f * pSunDirectionalLight->get<DirectionalLightComponent>()->light.getShadowMap()->renderDistance;
     pSunDirectionalLight->get<TransformComponent>()->position = cameraPosition + sunDirection * distanceFromCamera;
-    pSunDirectionalLight->get<TransformComponent>()->rotation.pitch = angle + 3.14f / 2.f;
-    pSunDirectionalLight->get<TransformComponent>()->rotation.yaw = 0;
-    pSunDirectionalLight->get<TransformComponent>()->rotation.roll = 0;
+    *pSunDirectionalLight->get<TransformComponent>()->rotation.getPtr(1, 0) = angle + 3.14f / 2.f;
+    *pSunDirectionalLight->get<TransformComponent>()->rotation.getPtr(2, 0) = 0;
+    *pSunDirectionalLight->get<TransformComponent>()->rotation.getPtr(1, 0) = 0;
 }

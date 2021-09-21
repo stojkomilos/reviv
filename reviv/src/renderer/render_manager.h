@@ -37,6 +37,8 @@ public:
 
     Deffered deffered;
 
+    Environment environment;
+
     void bindEnvironmentAndMaterial(Shader* shader, Environment* environment, Material* material);
     void bindEnvironment(Shader* shader, Environment* environment);
     void bindMaterial(Shader* shader, Material* material);
@@ -67,9 +69,6 @@ private:
     void copyDefferedDepthToFramebuffer(Framebuffer* pFramebuffer);
 
     void beginScene();
-
-
-    Environment environment;
 
     void sortTransparentObjectsByDistance();
     stls::StableVector<EntityDistance> transparentEntityList; // used to render the transparent models by their distance

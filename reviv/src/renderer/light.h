@@ -58,9 +58,9 @@ class Light
 public:
     virtual ~Light() = default;
 
-    Vec3f ambient;
-    Vec3f diffuse;
-    Vec3f specular;
+    Vec3 ambient;
+    Vec3 diffuse;
+    Vec3 specular;
 
     bool on = true;
     float intensity = 1.0f;
@@ -76,7 +76,7 @@ protected:
     Light(LightType lightType)
         : lightType(lightType) // TODO: pokusati staviti ove ostale stvari u member initazlier list, i onda sve to mozda u cpp file
     {
-        ambient = Vec3f(0.1f, 0.1f, 0.1f);
+        ambient = Vec3(0.1f, 0.1f, 0.1f);
         diffuse = {0.2, 0.2, 0.2};
         specular = {0.5, 0.5, 0.5};
         on = true;

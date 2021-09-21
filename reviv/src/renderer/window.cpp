@@ -71,7 +71,7 @@ static void closeCallback(GLFWwindow* pWindow)
 
 static void cursorPosCallback(GLFWwindow* pWindow, double xPosition, double yPosition)
 {
-    EventMouseMoved event(Vec2f(xPosition, yPosition));
+    EventMouseMoved event(Vec2(xPosition, yPosition));
     EventDispatcher::dispatch(&event);
 }
 

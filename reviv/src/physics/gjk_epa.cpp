@@ -3,12 +3,12 @@
 #include"scene/components.h"
 #include<cfloat>
 
-// TODO: optimization: smanji mnoogo korisititi -Vec3f, moze se obrnuti na cross productu i dot productu(sDir) free
+// TODO: optimization: smanji mnoogo korisititi -Vec3, moze se obrnuti na cross productu i dot productu(sDir) free
 
 namespace gjkEpa
 {
 
-    SupportFunctionVertex doSupportFunction(const Vec3f& direction, Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform)
+    SupportFunctionVertex doSupportFunction(const Vec3& direction, Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform)
     {
         SupportFunctionVertex result;
         result.vertexFirst = pFirstCollider->findFurthestPoint(direction, pFirstTransform);
@@ -17,9 +17,9 @@ namespace gjkEpa
         return result;
     }
 
-    CollisionPoints doGjkDetectCollision(Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform)
+    CollisionPoints doGjkBool(Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform)
     {
-        Vec3f direction = pSecondTransform->position - pFirstTransform->position;
+        Vec3 direction = pSecondTransform->position - pFirstTransform->position;
 
         SupportFunctionVertex newPoint = doSupportFunction(direction, pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
 
@@ -72,15 +72,15 @@ namespace gjkEpa
         return result;
     }
 
-    void gjkHandleLine(SimplexHelpingStruct* pSimplex, Vec3f* pDirection)
+    void gjkHandleLine(SimplexHelpingStruct* pSimplex, Vec3* pDirection)
     {
         RV_ASSERT(pSimplex->size == 2, "invalid simplex size");
 
-        Vec3f a = pSimplex->points[0].vertexDifference;
-        Vec3f b = pSimplex->points[1].vertexDifference;
-        Vec3f ab = b - a;
-        Vec3f ao = -a;
-        Vec3f bo = -b;
+        Vec3 a = pSimplex->points[0].vertexDifference;
+        Vec3 b = pSimplex->points[1].vertexDifference;
+        Vec3 ab = b - a;
+        Vec3 ao = -a;
+        Vec3 bo = -b;
 
         RV_ASSERT(!sDir(-ab, ao), "invalid origin location");
 
@@ -97,27 +97,27 @@ namespace gjkEpa
         }
     }
 
-    void gjkHandleTriangle(SimplexHelpingStruct* pSimplex, Vec3f* pDirection)
+    void gjkHandleTriangle(SimplexHelpingStruct* pSimplex, Vec3* pDirection)
     {
         RV_ASSERT(pSimplex->size == 3, "invalid simplex size");
 
-        Vec3f a = pSimplex->points[0].vertexDifference;
-        Vec3f b = pSimplex->points[1].vertexDifference;
-        Vec3f c = pSimplex->points[2].vertexDifference;
+        Vec3 a = pSimplex->points[0].vertexDifference;
+        Vec3 b = pSimplex->points[1].vertexDifference;
+        Vec3 c = pSimplex->points[2].vertexDifference;
 
-        Vec3f ab = b - a;
-        Vec3f ac = c - a;
+        Vec3 ab = b - a;
+        Vec3 ac = c - a;
 
-        Vec3f bc = c - b;
+        Vec3 bc = c - b;
 
-        Vec3f ao = -a;
-        Vec3f bo = -b;
-        Vec3f co = -c;
+        Vec3 ao = -a;
+        Vec3 bo = -b;
+        Vec3 co = -c;
 
-        Vec3f abc = cross(ab, ac);
+        Vec3 abc = cross(ab, ac);
 
-        Vec3f acPerp = cross(abc, ac);
-        Vec3f bcPerp = cross(bc, abc);
+        Vec3 acPerp = cross(abc, ac);
+        Vec3 bcPerp = cross(bc, abc);
 
         RV_ASSERT(!(sDir(ao, ab) && sDir(bo, -ab) && sDir(cross(abc, -ab), ao)), "invalid origin location"); // region behind ab(my naming convention)
         //RV_ASSERT(!sDir(ab, bo) && !sDir(-ab, ao), ""); // can sometimes get triggered because of floating point innacuracies
@@ -166,44 +166,44 @@ namespace gjkEpa
 
     }
 
-    bool gjkHandleTetrahedron(SimplexHelpingStruct *pSimplex, Vec3f* pDirection)
+    bool gjkHandleTetrahedron(SimplexHelpingStruct *pSimplex, Vec3* pDirection)
     {
-        Vec3f a = pSimplex->points[0].vertexDifference;
-        Vec3f b = pSimplex->points[1].vertexDifference;
-        Vec3f c = pSimplex->points[2].vertexDifference;
-        Vec3f d = pSimplex->points[3].vertexDifference;
+        Vec3 a = pSimplex->points[0].vertexDifference;
+        Vec3 b = pSimplex->points[1].vertexDifference;
+        Vec3 c = pSimplex->points[2].vertexDifference;
+        Vec3 d = pSimplex->points[3].vertexDifference;
 
-        Vec3f ab = b - a;
-        Vec3f ac = c - a;
-        Vec3f ad = d - a;
+        Vec3 ab = b - a;
+        Vec3 ac = c - a;
+        Vec3 ad = d - a;
 
-        Vec3f bc = c - b;
-        Vec3f bd = d - b;
+        Vec3 bc = c - b;
+        Vec3 bd = d - b;
 
-        Vec3f cd = d - c;
+        Vec3 cd = d - c;
 
-        Vec3f ao = -a;
-        Vec3f bo = -b;
-        Vec3f co = -c;
-        Vec3f doo = -d;
+        Vec3 ao = -a;
+        Vec3 bo = -b;
+        Vec3 co = -c;
+        Vec3 doo = -d;
 
 
-        Vec3f abd = cross(ab, ad);
-        Vec3f adc = cross(ad, ac);
-        Vec3f bcd = cross(bc, bd);
+        Vec3 abd = cross(ab, ad);
+        Vec3 adc = cross(ad, ac);
+        Vec3 bcd = cross(bc, bd);
 
         // probably can be removed
 
-        Vec3f abc = cross(ab, ac);
-        Vec3f acPerp = cross(abc, ac);
-        Vec3f bcPerp = cross(bc, abc);
+        Vec3 abc = cross(ab, ac);
+        Vec3 acPerp = cross(abc, ac);
+        Vec3 bcPerp = cross(bc, abc);
 
         RV_ASSERT(sDir(*pDirection, ao), "invalid origin position");
         RV_ASSERT(sDir(abc, ao), "invalid origin position");
 
 #ifdef RV_DEBUG // makes a point inside the simplex and checks the face normal directoins relative to the created point
-    Vec3f bcHalf = b + bc * 0.5;
-    Vec3f point = a + (bcHalf - a) * 0.5;
+    Vec3 bcHalf = b + bc * 0.5;
+    Vec3 point = a + (bcHalf - a) * 0.5;
     point = point + (d - point) * 0.5f;
     point = point - d;
     RV_ASSERT(sign(dot(abd, point)) == sign(dot(adc, point)) && sign(dot(adc, point)) == sign(dot(bcd, point)), "");
@@ -324,7 +324,7 @@ namespace gjkEpa
         return true;
     }
 
-    bool gjkHandleSimplex(SimplexHelpingStruct* pSimplex, Vec3f* pDirection)
+    bool gjkHandleSimplex(SimplexHelpingStruct* pSimplex, Vec3* pDirection)
     {
         RV_ASSERT(pSimplex->size != 1, "simplex of unexpected size"); // maybe not
 
@@ -375,7 +375,7 @@ namespace gjkEpa
         }
 #endif
 
-            std::vector<Vec3f> normals;
+            std::vector<Vec3> normals;
             // calculate normals
             epaCalculateFaceNormals(&normals, vertices, &faces);
 
@@ -444,22 +444,22 @@ namespace gjkEpa
                 result.depth = tempMinFaceDistance;
                 result.normal = normals[tempIndexMinFace] / module(normals[tempIndexMinFace]);
 
-                Mat3 mtx;
+                Mat<3,3> mtx;
 
                 for(int i=0; i<3; i++)
                 {
-                    mtx.a[i][0] = vertices[faces[tempIndexMinFace].a].vertexDifference.a[i];
-                    mtx.a[i][1] = vertices[faces[tempIndexMinFace].b].vertexDifference.a[i];
-                    mtx.a[i][2] = vertices[faces[tempIndexMinFace].c].vertexDifference.a[i];
+                    *mtx.getPtr(i, 0) = vertices[faces[tempIndexMinFace].a].vertexDifference.get(i, 0);
+                    *mtx.getPtr(i, 1) = vertices[faces[tempIndexMinFace].b].vertexDifference.get(i, 0);
+                    *mtx.getPtr(i, 2) = vertices[faces[tempIndexMinFace].c].vertexDifference.get(i, 0);
 
                 }
 
-                Vec3f p;
+                Vec3 p;
                 p = normals[tempIndexMinFace] * tempMinFaceDistance;
 
-                Vec3f barycentricCoordinates = inverse(mtx) * p;
+                Vec3 barycentricCoordinates = inverse(mtx) * p;
 
-                Vec3f points[2][3];
+                Vec3 points[2][3];
 
                 points[0][0] = vertices[faces[tempIndexMinFace].a].vertexFirst;
                 points[0][1] = vertices[faces[tempIndexMinFace].b].vertexFirst;
@@ -469,22 +469,23 @@ namespace gjkEpa
                 points[1][1] = vertices[faces[tempIndexMinFace].b].vertexFirst - vertices[faces[tempIndexMinFace].b].vertexDifference;
                 points[1][2] = vertices[faces[tempIndexMinFace].c].vertexFirst - vertices[faces[tempIndexMinFace].c].vertexDifference;
 
-                Mat3 tempMat;
-                Vec3f furthestVectors[2];
+                Mat<3,3> tempMat;
+                Vec3 furthestVectors[2];
 
                 for(int i=0; i<2; i++)
                 {
-                    tempMat.a[0][0] = points[i][0].a[0];
-                    tempMat.a[0][1] = points[i][1].a[0];
-                    tempMat.a[0][2] = points[i][2].a[0];
+                
+                    *tempMat.getPtr(0, 0) = points[i][0].get(0, 0);
+                    *tempMat.getPtr(0, 1) = points[i][1].get(0, 0);
+                    *tempMat.getPtr(0, 2) = points[i][2].get(0, 0);
 
-                    tempMat.a[1][0] = points[i][0].a[1];
-                    tempMat.a[1][1] = points[i][1].a[1];
-                    tempMat.a[1][2] = points[i][2].a[1];
+                    *tempMat.getPtr(1, 0) = points[i][0].get(1, 0);
+                    *tempMat.getPtr(1, 1) = points[i][1].get(1, 0);
+                    *tempMat.getPtr(1, 2) = points[i][2].get(1, 0);
 
-                    tempMat.a[2][0] = points[i][0].a[2];
-                    tempMat.a[2][1] = points[i][1].a[2];
-                    tempMat.a[2][2] = points[i][2].a[2];
+                    *tempMat.getPtr(2, 0) = points[i][0].get(2, 0);
+                    *tempMat.getPtr(2, 1) = points[i][1].get(2, 0);
+                    *tempMat.getPtr(2, 2) = points[i][2].get(2, 0);
 
                     furthestVectors[i] = tempMat * barycentricCoordinates;
                 }
@@ -502,13 +503,13 @@ namespace gjkEpa
         return result;
     }
 
-    void epaCalculateFaceNormals(std::vector<Vec3f>* pNormals, const std::vector<SupportFunctionVertex>& vertices, std::vector<Face>* pFaces)
+    void epaCalculateFaceNormals(std::vector<Vec3>* pNormals, const std::vector<SupportFunctionVertex>& vertices, std::vector<Face>* pFaces)
     {
         for(int i=0; i<pFaces->size(); i++)
         {
-            Vec3f ab = vertices[(*pFaces)[i].b].vertexDifference - vertices[(*pFaces)[i].a].vertexDifference;
-            Vec3f ac = vertices[(*pFaces)[i].c].vertexDifference - vertices[(*pFaces)[i].a].vertexDifference;
-            Vec3f normal = cross(ab, ac);
+            Vec3 ab = vertices[(*pFaces)[i].b].vertexDifference - vertices[(*pFaces)[i].a].vertexDifference;
+            Vec3 ac = vertices[(*pFaces)[i].c].vertexDifference - vertices[(*pFaces)[i].a].vertexDifference;
+            Vec3 normal = cross(ab, ac);
 
             if(module(normal) < 0.0001f)
             {
@@ -554,7 +555,7 @@ namespace gjkEpa
         }
     }
 
-    void epaGetNearestFace(float* pTempMinFaceDistance, unsigned int* pTempIndexMinFace, const std::vector<Face>& faces, const std::vector<Vec3f>& normals, const std::vector<SupportFunctionVertex>& vertices)
+    void epaGetNearestFace(float* pTempMinFaceDistance, unsigned int* pTempIndexMinFace, const std::vector<Face>& faces, const std::vector<Vec3>& normals, const std::vector<SupportFunctionVertex>& vertices)
     {
         for(int i=0; i<faces.size(); i++)
         {

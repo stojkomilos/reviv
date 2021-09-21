@@ -22,9 +22,9 @@ public:
     void bind() const;
 
     int getUniformLocation(const std::string& uniformName) const;
-    void uploadUniformMat4(const std::string& name, const Mat4& matrix) const;
-    void uploadUniform3f(const std::string& name, const Vec3f& a) const; //mogu se optimizovati koristecu drugu glUniform funkciju
-    void uploadUniform4f(const std::string& name, const Vec4f& a) const;
+    void uploadUniformMat4(const std::string& name, const Mat<4,4>& matrix) const;
+    void uploadUniform3f(const std::string& name, const Vec3& a) const; //mogu se optimizovati koristecu drugu glUniform funkciju
+    void uploadUniform4f(const std::string& name, const Vec4& a) const;
     void uploadUniform1i(const std::string& name, int a) const;
     void uploadUniform1f(const std::string& name, float a) const;
 

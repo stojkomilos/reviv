@@ -4,8 +4,7 @@
 #include"core/mat.h"
 #include"scene/scene.h"
 
-#include"physics/collision_manager.h"
-#include"physics/dynamics_manager.h"
+#include"physics/collision.h"
 
 #include"physics/constraint.h"
 
@@ -22,8 +21,8 @@ public:
         return &instance;
     }
 
-    std::vector<Collision> collisions;
-    std::vector<Constraint*> constraints;
+    std::vector<ConstraintPenetration> constraintsCollision;
+    std::vector<Constraint*> constraintsGeneral;
 
     Collider* getCollidableFromEntity(Entity* pEntity);
 
@@ -32,29 +31,44 @@ public:
 private:
     PhysicsManager() = default;
 
-    void onUpdateDetectCollisions(float dt);
-    void onUpdateDynamics(float dt);
-    void detectCollisionsNarrowPhase(float dt);
-    void onUpdateResolveCollisions(float dt);
+    void satisfyConstraintsCollision(float dt);
 
     void alignPositionAndRotation(const Entity& parentEntity, Entity* childEntity);
 
-    void calculateNewVelocitiesAndForces(float dt);
-    void iterateConstrainst(float dt);
-    void calculateNewPositionsAndVelocities(float dt);
+    void precalculateVelocitiesAndForces(float dt);
+    void satisfyConstraintsGeneral(float dt);
+    void calculateNewPositionsVelocitiesAndForces(float dt);
+
+    void doCollisionDetection(float dt);
+    void doCollisionDetectionNarrowPhase(float dt);
 };
 
 class PhysicalDynamic
 {
 public:
-    PhysicalDynamic();
+    PhysicalDynamic(float mass = 1.f);
 
-    float mass;
-    Vec3f velocity;
-    Vec3f force;
-    Vec3f torque;
+    inline float getMass() const { return mass; } // needs a getter and setter for automaticaly chaning inverseMass and inertiaTensor and inverseInertiaTensor
+    inline float getInverseMass() const { return inverseMass; }
+    inline const Mat<3,3>* getInverseInertiaTensor() const { return &inverseInertiaTensor; }
+
+    void setMass(float newMass);
+    
+    Vec3 velocity;
+    Vec3 angularVelocity;
+    Vec3 force;
+    Vec3 torque;
 
     float gravity;
+
+    bool fixedTranslation = false;
+    bool fixedRotation = false;
+
+private:
+    float mass;
+    float inverseMass;
+    Mat<3,3> inertiaTensor;
+    Mat<3,3> inverseInertiaTensor;
 };
 
 void log(const PhysicalDynamic& physical);
