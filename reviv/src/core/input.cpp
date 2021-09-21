@@ -81,16 +81,16 @@ void Input::doPlayerControllerOnEventMouseMoved(Event* event)
     oldMousePosition = ((EventMouseMoved*)event)->m_Position;
 
 
-    *Scene::getPlayerEntity()->get<TransformComponent>()->rotation.getPtr(2, 0) -= deltaMouse.get(0, 0) * sensitivity;
-    *Scene::getPlayerEntity()->get<TransformComponent>()->rotation.getPtr(1, 0) -= deltaMouse.get(1, 0) * sensitivity;
+    *Scene::getPlayerEntity()->get<TransformComponent>()->getRotationPtr()->getPtr(2, 0) -= deltaMouse.get(0, 0) * sensitivity;
+    *Scene::getPlayerEntity()->get<TransformComponent>()->getRotationPtr()->getPtr(1, 0) -= deltaMouse.get(1, 0) * sensitivity;
 
-    if (Scene::getPlayerEntity()->get<TransformComponent>()->rotation.get(1, 0) >= degreesToRadians(90))
+    if (Scene::getPlayerEntity()->get<TransformComponent>()->getRotation().get(1, 0) >= degreesToRadians(90))
     {
-        *Scene::getPlayerEntity()->get<TransformComponent>()->rotation.getPtr(1, 0) = degreesToRadians(90);
+        *Scene::getPlayerEntity()->get<TransformComponent>()->getRotationPtr()->getPtr(1, 0) = degreesToRadians(90);
     }
-    else if (Scene::getPlayerEntity()->get<TransformComponent>()->rotation.get(1, 0) <= degreesToRadians(-90))
+    else if (Scene::getPlayerEntity()->get<TransformComponent>()->getRotation().get(1, 0) <= degreesToRadians(-90))
     {
-        *Scene::getPlayerEntity()->get<TransformComponent>()->rotation.getPtr(1, 0) = degreesToRadians(-90);
+        *Scene::getPlayerEntity()->get<TransformComponent>()->getRotationPtr()->getPtr(1, 0) = degreesToRadians(-90);
     }
 }
 
@@ -101,9 +101,9 @@ void Input::doPlayerControllerPolling()
     float speed = 6;
     float verticalSpeed = speed;
 
-    Vec3* playerPos = &player->get<TransformComponent>()->position;
+    Vec3* playerPos = player->get<TransformComponent>()->getPositionPtr();
     Vec3 moveDirection(0, 0, 0);
-    Vec3 aimDirection = getDirectionFromRotation(player->get<TransformComponent>()->rotation);
+    Vec3 aimDirection = getDirectionFromRotation(player->get<TransformComponent>()->getRotation());
     Vec3 rightDirection = cross(aimDirection, Vec3(0, 0, 1));
 
     bool pressedW = isKeyPressed(RV_KEY_W);

@@ -81,14 +81,14 @@ void RenderManager::beginScene()
         "submitted entity is supposed to be a camera, but does NOT have required components");
 
     camera->setViewMatrix(
-        Scene::getCameraEntity()->get<TransformComponent>()->position,
-        Scene::getCameraEntity()->get<TransformComponent>()->rotation);
+        Scene::getCameraEntity()->get<TransformComponent>()->getPosition(),
+        Scene::getCameraEntity()->get<TransformComponent>()->getRotation());
     camera->setPerspectiveProjection(degreesToRadians(90), Application::get()->getWindowRatio());
 
     environment.set("ue_ViewMatrix", camera->viewMatrix);
     environment.set("ue_ProjectionMatrix", camera->projectionMatrix);
     
-    environment.set("ue_ViewPosition", Scene::getCameraEntity()->get<TransformComponent>()->position);
+    environment.set("ue_ViewPosition", Scene::getCameraEntity()->get<TransformComponent>()->getPosition());
 
     environment.setLights();
 }
@@ -237,7 +237,7 @@ void RenderManager::forwardBlendRenderPass(Framebuffer* pFramebuffer)
 void RenderManager::sortTransparentObjectsByDistance()
 {
     transparentEntityList.clear();
-    Vec3 cameraPosition = Scene::getCameraEntity()->get<TransformComponent>()->position;
+    Vec3 cameraPosition = Scene::getCameraEntity()->get<TransformComponent>()->getPosition();
 
     for(auto itEntity = Scene::getEntityList()->begin(); itEntity != Scene::getEntityList()->end(); itEntity++)
     {
@@ -255,7 +255,7 @@ void RenderManager::sortTransparentObjectsByDistance()
                 {
                     //cout << "Adding blendable entity to the distance list: " << itEntity->entityName << endl;
                     transparentEntityList.pushBack({&(*itEntity), 
-                        module(cameraPosition - itEntity->get<TransformComponent>()->position)});
+                        module(cameraPosition - itEntity->get<TransformComponent>()->getPosition())});
                     break;
                 }
             }

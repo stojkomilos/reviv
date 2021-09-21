@@ -19,7 +19,7 @@ namespace gjkEpa
 
     CollisionPoints doGjkBool(Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform)
     {
-        Vec3 direction = pSecondTransform->position - pFirstTransform->position;
+        Vec3 direction = pSecondTransform->getPosition() - pFirstTransform->getPosition();
 
         SupportFunctionVertex newPoint = doSupportFunction(direction, pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
 

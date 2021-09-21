@@ -34,6 +34,10 @@ public:
     virtual CollisionPoints collideBox(ColliderBox* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) = 0;
     virtual CollisionPoints collideMesh(ColliderMesh* pFirstCollider, TransformComponent* pFirstTransform, TransformComponent* pSecondTransform) = 0;
 
+    inline TransformComponent* getTransformComponent() { return pTransformComponent; }
+    inline const TransformComponent* getTransformComponent() const { return pTransformComponent; }
+
+private:
     TransformComponent* pTransformComponent;
 
 protected:

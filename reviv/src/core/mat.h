@@ -431,7 +431,10 @@ namespace mat{
             for(int i=0; i<pX->height; i++)
             {
                 if(a.get(i, i) == 0.f)
+                {
+                    cout << "JES" << endl;
                     continue;
+                }
 
                 float sum=0;
                 for(int j=0; j<pX->height; j++)
@@ -526,7 +529,7 @@ void log(const MatHeap& thing);
 template<int HEIGHT, int WIDTH>
 void log(const Mat<HEIGHT, WIDTH>& mtx)
 {
-    if(WIDTH == 1)
+    if(WIDTH == 1 && HEIGHT <= 4)
     {
         if(HEIGHT == 1)
             cout << "x: " << mtx.get(0, 0) << endl;

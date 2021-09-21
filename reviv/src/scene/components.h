@@ -16,10 +16,6 @@ class TransformComponent : public SpecificComponent<TransformComponent>
 public:
     TransformComponent() { static bool isFirstInit = runOnFirstInit("TransformComponent"); }
 
-    Vec3 position = {0.f, 0.f, 0.f};
-    Vec3 rotation = {0.f, 0.f, 0.f};
-    Vec3 scale = {1.f, 1.f, 1.f};
-
     Mat<4,4> getTransform() const // potential optimization
     {
         Mat<4, 4> result = mat::scale(Vec4(scale, 1));
@@ -31,7 +27,24 @@ public:
         return result;
     }
 
+    inline Vec3 getPosition() const { return position; }
+    inline Vec3 getRotation() const { return rotation; }
+    inline Vec3 getScale() const { return scale; }
+
+    inline Vec3* getPositionPtr() { return &position; }
+    inline Vec3* getRotationPtr() { return &rotation; }
+    inline Vec3* getScalePtr() { return &scale; }
+
+    //inline void setPosition(const Vec3& newPosition) { position = newPosition; }
+    //inline void getRotation(const Vec3& newRotation) { rotation = newRotation; }
+    //inline void getScale(const Vec3& newScale) { scale = newScale; }
+
     virtual void log() const override { cout << componentTypeName << endl; ::log(getTransform()); }
+
+private:
+    Vec3 position = {0.f, 0.f, 0.f};
+    Vec3 rotation = {0.f, 0.f, 0.f};
+    Vec3 scale = {1.f, 1.f, 1.f};
 };
 
 class CameraComponent : public SpecificComponent<CameraComponent>

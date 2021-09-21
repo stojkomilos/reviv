@@ -15,12 +15,12 @@ CollisionPoints CollisionManager::collideSphereSphere(ColliderSphere* pFirstColl
     RV_ASSERT(pFirstCollider->relativeRadius - 1.f < 0.0001f, ""); //temp
     RV_ASSERT(pSecondCollider->relativeRadius - 1.f < 0.0001f, ""); //temp
 
-    RV_ASSERT((pFirstTransform->scale.get(0, 0) == pFirstTransform->scale.get(1, 0)) && (pFirstTransform->scale.get(1, 0)  == pFirstTransform->scale.get(2, 0)), "is not actually a sphere");
-    RV_ASSERT((pSecondTransform->scale.get(0, 0) == pSecondTransform->scale.get(1, 0)) && (pSecondTransform->scale.get(1, 0)  == pSecondTransform->scale.get(2, 0)), "is not actually a sphere");
+    RV_ASSERT((pFirstTransform->getScale().get(0, 0) == pFirstTransform->getScale().get(1, 0)) && (pFirstTransform->getScale().get(1, 0)  == pFirstTransform->getScale().get(2, 0)), "is not actually a sphere");
+    RV_ASSERT((pSecondTransform->getScale().get(0, 0) == pSecondTransform->getScale().get(1, 0)) && (pSecondTransform->getScale().get(1, 0)  == pSecondTransform->getScale().get(2, 0)), "is not actually a sphere");
 
 
     CollisionPoints collisionPoints;
-    if(module(pFirstTransform->position - pSecondTransform->position) <= pFirstTransform->scale.get(0, 0) + pSecondTransform->scale.get(0, 0))
+    if(module(pFirstTransform->getPosition() - pSecondTransform->getPosition()) <= pFirstTransform->getScale().get(0, 0) + pSecondTransform->getScale().get(0, 0))
     {
         collisionPoints.hasCollided = true;
     }
@@ -34,9 +34,9 @@ CollisionPoints CollisionManager::collideSphereSphere(ColliderSphere* pFirstColl
 
 Vec3 ColliderSphere::findFurthestPoint(const Vec3& direction, TransformComponent* pTransform) const
 {
-    RV_ASSERT((pTransform->scale.get(0, 0) == pTransform->scale.get(1, 0)) && (pTransform->scale.get(1, 0)  == pTransform->scale.get(2, 0)), "is not actually a sphere");
+    RV_ASSERT((pTransform->getScale().get(0, 0) == pTransform->getScale().get(1, 0)) && (pTransform->getScale().get(1, 0)  == pTransform->getScale().get(2, 0)), "is not actually a sphere");
 
-    return direction * relativeRadius * pTransform->scale.get(0, 0);
+    return direction * relativeRadius * pTransform->getScale().get(0, 0);
 }
 
 Vec3 ColliderBox::findFurthestPoint(const Vec3& direction, TransformComponent* pTransform) const

@@ -80,13 +80,13 @@ void Scene::debugProjectPosition(const Entity& entity)
     cout << "Projecting Position of: " << entity.entityName << "-----------" << endl;
 
     cout << "Position:" << endl;
-    log(entity.get<TransformComponent>()->position);
+    log(entity.get<TransformComponent>()->getPosition());
 
     cout << "Transform" << endl;
     log(entity.get<TransformComponent>()->getTransform());
 
     cout << "afterTransform" << endl;
-    auto afterTransform = multiply(entity.get<TransformComponent>()->getTransform(), Vec4(entity.get<TransformComponent>()->position, 1.f));
+    auto afterTransform = multiply(entity.get<TransformComponent>()->getTransform(), Vec4(entity.get<TransformComponent>()->getPosition(), 1.f));
     log(afterTransform);
 
     cout << "afterView" << endl;

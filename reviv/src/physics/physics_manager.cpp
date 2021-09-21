@@ -100,7 +100,7 @@ void PhysicsManager::calculateNewPositionsVelocitiesAndForces(float dt)
 
         if(pPhysical->fixedTranslation == false)
         {
-            pTransform->position += pPhysical->velocity * dt;
+            *pTransform->getPositionPtr() += pPhysical->velocity * dt;
 
             pPhysical->velocity += pPhysical->force / pPhysical->getMass() * dt;
 
@@ -109,9 +109,9 @@ void PhysicsManager::calculateNewPositionsVelocitiesAndForces(float dt)
 
         if(pPhysical->fixedRotation == false)
         {
-            *pTransform->rotation.getPtr(0, 0) += pPhysical->angularVelocity.get(0, 0) * dt;
-            *pTransform->rotation.getPtr(1, 0) += pPhysical->angularVelocity.get(1, 0) * dt;
-            *pTransform->rotation.getPtr(2, 0) += pPhysical->angularVelocity.get(2, 0) * dt;
+            *pTransform->getRotationPtr()->getPtr(0, 0) += pPhysical->angularVelocity.get(0, 0) * dt;
+            *pTransform->getRotationPtr()->getPtr(1, 0) += pPhysical->angularVelocity.get(1, 0) * dt;
+            *pTransform->getRotationPtr()->getPtr(2, 0) += pPhysical->angularVelocity.get(2, 0) * dt;
 
             pPhysical->angularVelocity += *pPhysical->getInverseInertiaTensor() * pPhysical->torque * dt;
 

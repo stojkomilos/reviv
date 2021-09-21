@@ -5,25 +5,92 @@
 
 #include"core/input.h"
 
-#define RV_INFINITE_MASS 100000000.f // used for unmovable/unrotatable objects
+#define RV_INFINITE_MASS 100000.f // used for unmovable/unrotatable objects
+
+float ConstraintPenetration::getB(float dt) const
+{
+    return -bConst * collisionPoints.depth / dt;
+}
+
+Mat<1,12> ConstraintDistance::getJacobian() const
+{
+
+    Vec3 n = pFirst->get<TransformComponent>()->getPosition() - pSecond->get<TransformComponent>()->getPosition();
+    n = n / module(n);
+
+    Mat<1,12> jacobian;
+    jacobian.fill(0.f);
+
+    *jacobian.getPtr(0, 0) = n.get(0, 0);
+    *jacobian.getPtr(0, 1) = n.get(1, 0);
+    *jacobian.getPtr(0, 2) = n.get(2, 0);
+
+    *jacobian.getPtr(0, 6) = -n.get(0, 0);
+    *jacobian.getPtr(0, 7) = -n.get(1, 0);
+    *jacobian.getPtr(0, 8) = -n.get(2, 0);
+
+    return jacobian;
+}
+
+Mat<1,12> ConstraintPenetration::getJacobian() const
+{
+    Vec3 n = collisionPoints.normal;
+    n = n / module(n);
+
+    Vec3 r1n = cross(collisionPoints.firstPoint - pFirst->get<TransformComponent>()->getPosition(), n);
+    Vec3 r2n = cross(collisionPoints.secondPoint - pSecond->get<TransformComponent>()->getPosition(), n);
+
+    Mat<1,12> jacobian;
+
+    *jacobian.getPtr(0, 0) = -n.get(0, 0);
+    *jacobian.getPtr(0, 1) = -n.get(1, 0);
+    *jacobian.getPtr(0, 2) = -n.get(2, 0);
+
+    *jacobian.getPtr(0, 3) = -r1n.get(0, 0);
+    *jacobian.getPtr(0, 4) = -r1n.get(1, 0);
+    *jacobian.getPtr(0, 5) = -r1n.get(2, 0);
+
+    *jacobian.getPtr(0, 6) = n.get(0, 0);
+    *jacobian.getPtr(0, 7) = n.get(1, 0);
+    *jacobian.getPtr(0, 8) = n.get(2, 0);
+
+    *jacobian.getPtr(0, 9) = r2n.get(0, 0);
+    *jacobian.getPtr(0, 10) = r2n.get(1, 0);
+    *jacobian.getPtr(0, 11) = r2n.get(2, 0);
+
+    return jacobian;
+}
+
+bool ConstraintDistance::getIsBroken() const
+{
+    Vec3 positionDifference = pFirst->get<TransformComponent>()->getPosition() - pSecond->get<TransformComponent>()->getPosition();
+    if(abs(dot(positionDifference, positionDifference) - distanceSquared) > 0.001f)
+        return true;
+    else return false;
+}
+
+bool ConstraintPenetration::getIsBroken() const
+{
+    return true;
+}
 
 void Constraint::solve(float dt)
 {
 
     Mat<12, 1> positions;
-    *positions.getPtr(0, 0) = pFirst->get<TransformComponent>()->position.get(0, 0);
-    *positions.getPtr(1, 0) = pFirst->get<TransformComponent>()->position.get(1, 0);
-    *positions.getPtr(2, 0) = pFirst->get<TransformComponent>()->position.get(2, 0);
-    *positions.getPtr(3, 0) = pFirst->get<TransformComponent>()->rotation.get(0, 0);
-    *positions.getPtr(4, 0) = pFirst->get<TransformComponent>()->rotation.get(1, 0);
-    *positions.getPtr(5, 0) = pFirst->get<TransformComponent>()->rotation.get(2, 0);
+    *positions.getPtr(0, 0) = pFirst->get<TransformComponent>()->getPosition().get(0, 0);
+    *positions.getPtr(1, 0) = pFirst->get<TransformComponent>()->getPosition().get(1, 0);
+    *positions.getPtr(2, 0) = pFirst->get<TransformComponent>()->getPosition().get(2, 0);
+    *positions.getPtr(3, 0) = pFirst->get<TransformComponent>()->getRotation().get(0, 0);
+    *positions.getPtr(4, 0) = pFirst->get<TransformComponent>()->getRotation().get(1, 0);
+    *positions.getPtr(5, 0) = pFirst->get<TransformComponent>()->getRotation().get(2, 0);
 
-    *positions.getPtr(6, 0) = pSecond->get<TransformComponent>()->position.get(0, 0);
-    *positions.getPtr(7, 0) = pSecond->get<TransformComponent>()->position.get(1, 0);
-    *positions.getPtr(8, 0) = pSecond->get<TransformComponent>()->position.get(2, 0);
-    *positions.getPtr(9, 0) = pSecond->get<TransformComponent>()->rotation.get(0, 0);
-    *positions.getPtr(10, 0) = pSecond->get<TransformComponent>()->rotation.get(1, 0);
-    *positions.getPtr(11, 0) = pSecond->get<TransformComponent>()->rotation.get(2, 0);
+    *positions.getPtr(6, 0) = pSecond->get<TransformComponent>()->getPosition().get(0, 0);
+    *positions.getPtr(7, 0) = pSecond->get<TransformComponent>()->getPosition().get(1, 0);
+    *positions.getPtr(8, 0) = pSecond->get<TransformComponent>()->getPosition().get(2, 0);
+    *positions.getPtr(9, 0) = pSecond->get<TransformComponent>()->getRotation().get(0, 0);
+    *positions.getPtr(10, 0) = pSecond->get<TransformComponent>()->getRotation().get(1, 0);
+    *positions.getPtr(11, 0) = pSecond->get<TransformComponent>()->getRotation().get(2, 0);
 
     // set velocities
 
@@ -45,8 +112,8 @@ void Constraint::solve(float dt)
 
     // set masses and moments of inertia
     
-    Vec3 firstPosition = pFirst->get<TransformComponent>()->position;
-    Vec3 secondPosition = pSecond->get<TransformComponent>()->position;
+    Vec3 firstPosition = pFirst->get<TransformComponent>()->getPosition();
+    Vec3 secondPosition = pSecond->get<TransformComponent>()->getPosition();
 
     float firstInverseMass = pFirst->get<PhysicalComponent>()->physical.getInverseMass();
     float secondInverseMass = pSecond->get<PhysicalComponent>()->physical.getInverseMass();
@@ -57,9 +124,7 @@ void Constraint::solve(float dt)
     {
         if(this->getIsBroken())
         {
-            Mat<1, 12> jacobian;
-
-            this->getJacobian(&jacobian);
+            Mat<1,12> jacobian = this->getJacobian();
 
             Mat<12, 12> massInverse;
             massInverse.fill(0.f);
@@ -92,7 +157,6 @@ void Constraint::solve(float dt)
                 }
 
             Mat<12, 1> fe;
-            fe.fill(0.f);
 
             *fe.getPtr(0, 0)  = pFirst->get<PhysicalComponent>()->physical.force.get(0, 0);
             *fe.getPtr(1, 0)  = pFirst->get<PhysicalComponent>()->physical.force.get(1, 0);
@@ -109,40 +173,22 @@ void Constraint::solve(float dt)
             *fe.getPtr(11, 0) = pSecond->get<PhysicalComponent>()->physical.torque.get(2, 0);
 
 
-            //MatHeap right1(massInverse.height, fe.width); // m^(-1) * F_{ext}
-            //multiply(&right1, massInverse, fe);
-            Mat<massInverse.getHeight(), fe.getWidth()> right1 = massInverse * fe;
+            float b = this->getB(dt);
+            auto v1 = velocities + massInverse * fe * dt;
 
-            Mat<velocities.getHeight(), velocities.getWidth()> right2 = velocities * (1.f/dt); // v / dt
+            auto left = jacobian * massInverse * transpose(jacobian);
+            auto right = (-b - (jacobian * v1).get(0, 0)) / dt;
 
-            //Mat<right2.getHeight(), right2.getWidth()> right3 = right1 * right2;
-            Mat<right2.getHeight(), right2.getWidth()> right3;
+            Mat<left.height, 1> lambda;
+            lambda.randomize(-1, 1);
+            solveGaussSeidel(&lambda, left, Vec1(right), 5);
 
-            Mat<jacobian.getHeight(), right1.getWidth()> right4 = jacobian * right3;
+            Mat<12, 1> fc = transpose(jacobian) * lambda;
 
-            Mat<right4.getHeight(), right4.getWidth()> rightTotal = right4 * -1.f;
-
-            Mat<jacobian.getWidth(), jacobian.getHeight()> jacobianTrans = transpose(jacobian);
-
-            Mat<massInverse.getHeight(), jacobianTrans.getWidth()> left1 = massInverse * jacobianTrans;
-
-            Mat<jacobian.getHeight(), left1.getWidth()> leftTotal = jacobian * left1;
-
-            RV_ASSERT(leftTotal.height == leftTotal.width, "can't inverse a non-square matrix");
-            Mat<jacobianTrans.getWidth(), 1> lambda;
-            lambda.fill(0.f);
-
-            solveGaussSeidel(&lambda, leftTotal, rightTotal, 10);
-
-            Mat<12, 1> fc = jacobianTrans * lambda;
-
-            if(1)
+            if(1) // constraint solver debug
             {
                 cout << "jacobian: " << endl;
                 log(jacobian);
-
-                cout << "jacobianTrans: " << endl;
-                log(jacobianTrans);
 
                 cout << "fe: " << endl;
                 log(fe);
@@ -150,23 +196,14 @@ void Constraint::solve(float dt)
                 cout << "massInverse: " << endl;
                 log(massInverse);
 
-                cout << "righ1: " << endl;
-                log(right1);
-                cout << "righ2: " << endl;
-                log(right2);
-                cout << "righTOTAL: " << endl;
-                log(rightTotal);
-                cout << "left1: " << endl;
-                log(left1);
-                cout << "leftTOTAL: " << endl;
-                log(leftTotal);
-
-
                 cout << "lambda: " << endl;
                 log(lambda);
 
                 cout << "fc: " << endl;
                 log(fc);
+
+                cout << "b: " << b << endl;
+
                 cout << "------\n";
             }
 
@@ -198,59 +235,6 @@ void Constraint::solve(float dt)
             }
         }
     }
-}
-
-void ConstraintDistance::getJacobian(Mat<1, 12>* pJacobian) const
-{
-
-    Vec3 n = pFirst->get<TransformComponent>()->position - pSecond->get<TransformComponent>()->position;
-    n = n / module(n);
-
-    *pJacobian->getPtr(0, 0) = n.get(0, 0);
-    *pJacobian->getPtr(0, 1) = n.get(1, 0);
-    *pJacobian->getPtr(0, 2) = n.get(2, 0);
-
-    *pJacobian->getPtr(0, 6) = -n.get(0, 0);
-    *pJacobian->getPtr(0, 7) = -n.get(1, 0);
-    *pJacobian->getPtr(0, 8) = -n.get(2, 0);
-}
-
-void ConstraintPenetration::getJacobian(Mat<1, 12>* pJacobian) const
-{
-    Vec3 n = collisionPoints.normal;
-    n = n / module(n);
-
-    Vec3 r1n = cross(collisionPoints.firstPoint - pFirst->get<TransformComponent>()->position, n);
-    Vec3 r2n = cross(collisionPoints.secondPoint - pSecond->get<TransformComponent>()->position, n);
-
-    *pJacobian->getPtr(0, 0) = -n.get(0, 0);
-    *pJacobian->getPtr(0, 1) = -n.get(1, 0);
-    *pJacobian->getPtr(0, 2) = -n.get(2, 0);
-
-    *pJacobian->getPtr(0, 3) = -r1n.get(0, 0);
-    *pJacobian->getPtr(0, 4) = -r1n.get(1, 0);
-    *pJacobian->getPtr(0, 5) = -r1n.get(2, 0);
-
-    *pJacobian->getPtr(0, 6) = n.get(0, 0);
-    *pJacobian->getPtr(0, 7) = n.get(1, 0);
-    *pJacobian->getPtr(0, 8) = n.get(2, 0);
-
-    *pJacobian->getPtr(0, 9) = r2n.get(0, 0);
-    *pJacobian->getPtr(0, 10) = r2n.get(1, 0);
-    *pJacobian->getPtr(0, 11) = r2n.get(2, 0);
-}
-
-bool ConstraintDistance::getIsBroken() const
-{
-    Vec3 positionDifference = pFirst->get<TransformComponent>()->position - pSecond->get<TransformComponent>()->position;
-    if(abs(dot(positionDifference, positionDifference) - distanceSquared) > 0.001f)
-        return true;
-    else return false;
-}
-
-bool ConstraintPenetration::getIsBroken() const
-{
-    return true;
 }
 
 Constraint::ConstraintType ConstraintDistance::getType() const

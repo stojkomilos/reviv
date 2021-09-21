@@ -49,14 +49,14 @@ void Environment::setLights()
 
         if(pLight->lightType == LightType::LightTypePoint)
         {
-            set(uniformNameLight + ".position", itEntity->get<TransformComponent>()->position);
+            set(uniformNameLight + ".position", itEntity->get<TransformComponent>()->getPosition());
 
             set(uniformNameLight + ".constant", ((PointLight*)pLight)->constant);
             set(uniformNameLight + ".linear", ((PointLight*)pLight)->linear);
             set(uniformNameLight + ".quadratic", ((PointLight*)pLight)->quadratic);
         }
         else {
-            Vec3 direction = getDirectionFromRotation(itEntity->get<TransformComponent>()->rotation);
+            Vec3 direction = getDirectionFromRotation(itEntity->get<TransformComponent>()->getRotation());
             set(uniformNameLight + ".direction", direction);
         }
 
@@ -91,7 +91,7 @@ void Environment::setShadowMap(Entity* pEntity, Light* pLight, const std::string
             Camera* pCamera = &pLight->getShadowMap()->camera;
             pCamera->nearRenderDistance = pLight->getShadowMap()->nearRenderDistance;
             pCamera->renderDistance = pLight->getShadowMap()->renderDistance;
-            pCamera->setViewMatrix(pEntity->get<TransformComponent>()->position, pEntity->get<TransformComponent>()->rotation);
+            pCamera->setViewMatrix(pEntity->get<TransformComponent>()->getPosition(), pEntity->get<TransformComponent>()->getRotation());
             if(pLight->lightType == LightType::LightTypePoint)
             {
                 pCamera->setPerspectiveProjection(degreesToRadians(90), 1.f);

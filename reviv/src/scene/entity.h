@@ -5,8 +5,6 @@
 #include"stls/stable_vector.h"
 #include"core/mat.h"
 
-#include"transform_component.h"
-
 using std::cin; using std::cout; using std::endl;
 
 using ComponentId = unsigned long long;

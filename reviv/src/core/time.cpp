@@ -35,9 +35,9 @@ void Time::onUpdate()
     {
         cout << "FPS: " << 1 / Time::getDelta() << endl;
         cout << "Position: ";
-        log(Scene::getPlayerEntity()->get<TransformComponent>()->position);
+        log(Scene::getPlayerEntity()->get<TransformComponent>()->getPosition());
         cout << "Rotation: ";
-        log(Scene::getPlayerEntity()->get<TransformComponent>()->rotation);
+        log(Scene::getPlayerEntity()->get<TransformComponent>()->getRotation());
     }
 
 }
