@@ -4,6 +4,8 @@
 #include<vector>
 
 #include"entity.h"
+#include"physics/physics_manager.h"
+#include"physics/constraint.h"
 
 class Scene{
 public:
@@ -24,6 +26,8 @@ public:
     static Entity* setPlayerEntity(Entity* pNewPlayerEntity) { return get()->iSetPlayerEntity(pNewPlayerEntity); }
     static float getGravity() { return get()->iGetGravity(); }
 
+    static ConstraintDistance* addConstraintDistance(Entity* pFirst, Entity* pSecond, float distance) { return get()->iAddConstraintDistance(pFirst, pSecond, distance); }
+
     static Scene* get()
     {
         static Scene instance;
@@ -42,6 +46,8 @@ public:
 
     void debugProjectPosition(const Entity& entity);
 
+    void printEntityList();
+
 private:
     Scene() : entityList(5000000) { }
 
@@ -57,6 +63,8 @@ private:
 
     Entity* iGetPlayerEntity();
     Entity* iSetPlayerEntity(Entity* pNewPlayerEntity);
+
+    ConstraintDistance* iAddConstraintDistance(Entity* pFirst, Entity* pSecond, float distance);
 
     inline float iGetGravity() { return gravity; }
 };

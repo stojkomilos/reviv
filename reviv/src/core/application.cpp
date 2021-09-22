@@ -76,10 +76,12 @@ void Application::run()
     {
         onUpdate();                     // game defined onUpdate function
 
+        float dt = Time::get()->getDelta();
+
         Time::get()->onUpdate();
-        Input::get()->onUpdate();
-        GameStuffManager::get()->onUpdate();
-        PhysicsManager::get()->onUpdate(Time::get()->getDelta());             //TODO: maybe goes before rendermanager? probably doesn't matter too much
+        Input::get()->onUpdate(dt);
+        GameStuffManager::get()->onUpdate(dt);
+        PhysicsManager::get()->onUpdate(dt);             //TODO: maybe goes before rendermanager? probably doesn't matter too much
         RenderManager::get()->onUpdate();
         window.onUpdate();              // update the glfw window
     }

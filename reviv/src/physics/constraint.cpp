@@ -9,7 +9,19 @@
 
 float ConstraintPenetration::getB(float dt) const
 {
-    return -bConst * collisionPoints.depth / dt;
+    PhysicalDynamic* pFirstPhysical = &pFirst->get<PhysicalComponent>()->physical;
+    PhysicalDynamic* pSecondPhysical = &pSecond->get<PhysicalComponent>()->physical;
+
+    Vec3 wra = pFirstPhysical->velocity + cross(pFirstPhysical->angularVelocity, collisionPoints.firstPoint - pFirst->get<TransformComponent>()->getPosition());// TODO: check this
+    Vec3 wrb = -pSecondPhysical->velocity - cross(pSecondPhysical->angularVelocity, collisionPoints.secondPoint - pSecond->get<TransformComponent>()->getPosition());// TODO: check this
+    float bouncyPart = restitution * dot(-collisionPoints.normal, -pFirstPhysical->velocity - wra + pSecondPhysical->velocity + wrb); // TODO: check this
+
+    return -beta * collisionPoints.depth / dt;
+}
+
+float ConstraintDistance::getB(float dt) const
+{
+    return beta / dt * getConstraintValue();
 }
 
 Mat<1,12> ConstraintDistance::getJacobian() const
@@ -61,10 +73,15 @@ Mat<1,12> ConstraintPenetration::getJacobian() const
     return jacobian;
 }
 
-bool ConstraintDistance::getIsBroken() const
+float ConstraintDistance::getConstraintValue() const
 {
     Vec3 positionDifference = pFirst->get<TransformComponent>()->getPosition() - pSecond->get<TransformComponent>()->getPosition();
-    if(abs(dot(positionDifference, positionDifference) - distanceSquared) > 0.001f)
+    return dot(positionDifference, positionDifference) - distanceSquared;
+}
+
+bool ConstraintDistance::getIsBroken() const
+{
+    if(abs(getConstraintValue()) > 0.001f)
         return true;
     else return false;
 }
@@ -106,9 +123,9 @@ void Constraint::solve(float dt)
     *velocities.getPtr(6, 0) = pSecond->get<PhysicalComponent>()->physical.velocity.get(0, 0);
     *velocities.getPtr(7, 0) = pSecond->get<PhysicalComponent>()->physical.velocity.get(1, 0);
     *velocities.getPtr(8, 0) = pSecond->get<PhysicalComponent>()->physical.velocity.get(2, 0);
-    *velocities.getPtr(3, 0) = pSecond->get<PhysicalComponent>()->physical.angularVelocity.get(0, 0);
-    *velocities.getPtr(4, 0) = pSecond->get<PhysicalComponent>()->physical.angularVelocity.get(1, 0);
-    *velocities.getPtr(5, 0) = pSecond->get<PhysicalComponent>()->physical.angularVelocity.get(2, 0);
+    *velocities.getPtr(9, 0) = pSecond->get<PhysicalComponent>()->physical.angularVelocity.get(0, 0);
+    *velocities.getPtr(10, 0) = pSecond->get<PhysicalComponent>()->physical.angularVelocity.get(1, 0);
+    *velocities.getPtr(11, 0) = pSecond->get<PhysicalComponent>()->physical.angularVelocity.get(2, 0);
 
     // set masses and moments of inertia
     
@@ -185,7 +202,7 @@ void Constraint::solve(float dt)
 
             Mat<12, 1> fc = transpose(jacobian) * lambda;
 
-            if(1) // constraint solver debug
+            if(0) // constraint solver debug
             {
                 cout << "jacobian: " << endl;
                 log(jacobian);

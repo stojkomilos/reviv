@@ -6,6 +6,7 @@ Entity* Scene::iCreateEntity(const std::string& entityName)
     entityList.emplaceBack(entityName);
     Entity* pEntity = &entityList[entityList.size()-1];
     pEntity->add<TransformComponent>();
+
     return pEntity;
 }
 
@@ -126,4 +127,26 @@ bool Scene::iIsEntityValid(Entity* pEntity)
 #endif
 
     return pEntity->valid;
+}
+
+ConstraintDistance* Scene::iAddConstraintDistance(Entity* pFirst, Entity* pSecond, float distance)
+{
+    ConstraintDistance* pConstraint = new ConstraintDistance;
+    pConstraint->distanceSquared = distance * distance;
+    pConstraint->pFirst = pFirst;
+    pConstraint->pSecond = pSecond;
+
+    PhysicsManager::get()->constraintsGeneral.push_back(pConstraint);
+
+    return pConstraint;
+}
+
+void Scene::printEntityList()
+{
+    cout << "entityList: ----" << endl;
+    for(int i=0; i<entityList.size(); i++)
+    {
+        cout << entityList[i].entityName << endl;
+    }
+    cout << "---" << endl;
 }

@@ -3,9 +3,9 @@
 static const float sensitivity = 0.0035f;
 #define RV_EPSILON 0.00001f
 
-void Input::onUpdate()
+void Input::onUpdate(float dt)
 {
-    doPlayerControllerPolling();
+    doPlayerControllerPolling(dt);
 }
 
 bool Input::isKeyPressed(int keycode)
@@ -81,8 +81,8 @@ void Input::doPlayerControllerOnEventMouseMoved(Event* event)
     oldMousePosition = ((EventMouseMoved*)event)->m_Position;
 
 
-    *Scene::getPlayerEntity()->get<TransformComponent>()->getRotationPtr()->getPtr(2, 0) -= deltaMouse.get(0, 0) * sensitivity;
-    *Scene::getPlayerEntity()->get<TransformComponent>()->getRotationPtr()->getPtr(1, 0) -= deltaMouse.get(1, 0) * sensitivity;
+    *Scene::getPlayerEntity()->get<TransformComponent>()->getRotationPtr()->getPtr(2, 0) -= deltaMouse.get(0, 0) * sensitivity * Time::get()->timeRatio;
+    *Scene::getPlayerEntity()->get<TransformComponent>()->getRotationPtr()->getPtr(1, 0) -= deltaMouse.get(1, 0) * sensitivity * Time::get()->timeRatio;
 
     if (Scene::getPlayerEntity()->get<TransformComponent>()->getRotation().get(1, 0) >= degreesToRadians(90))
     {
@@ -94,7 +94,7 @@ void Input::doPlayerControllerOnEventMouseMoved(Event* event)
     }
 }
 
-void Input::doPlayerControllerPolling()
+void Input::doPlayerControllerPolling(float dt)
 {
     auto* player = Scene::getPlayerEntity();
     
@@ -124,7 +124,7 @@ void Input::doPlayerControllerPolling()
 
     if((pressedW != pressedS) || (pressedA != pressedD))
     {
-        Vec3 horizontalPlaneDelta = moveDirection / (module(moveDirection) + RV_EPSILON) * speed * Time::get()->getDelta(); // TODO: the + RV_EPSILON thing is probably responsible for a movement bug
+        Vec3 horizontalPlaneDelta = moveDirection / (module(moveDirection) + RV_EPSILON) * speed * dt; // TODO: the + RV_EPSILON thing is probably responsible for a movement bug
         *playerPos += horizontalPlaneDelta;
     }
 
@@ -133,9 +133,9 @@ void Input::doPlayerControllerPolling()
     bool pressedLeftShift = isKeyPressed(RV_KEY_LEFT_SHIFT);
 
     if(pressedSpace && !pressedLeftShift)
-        verticalDelta = verticalSpeed * Vec3(0, 0, 1) * Time::get()->getDelta();
+        verticalDelta = verticalSpeed * Vec3(0, 0, 1) * dt;
         else if(!pressedSpace && pressedLeftShift)
-            verticalDelta = -verticalSpeed * Vec3(0, 0, 1) * Time::get()->getDelta();
+            verticalDelta = -verticalSpeed * Vec3(0, 0, 1) * dt;
 
     *playerPos += verticalDelta;
     

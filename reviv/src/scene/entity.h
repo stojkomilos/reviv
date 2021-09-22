@@ -9,6 +9,8 @@ using std::cin; using std::cout; using std::endl;
 
 using ComponentId = unsigned long long;
 
+class Entity;
+
 class Component
 {
 public:
@@ -19,9 +21,16 @@ public:
     virtual ComponentId getId() const = 0;
     virtual std::string getComponentTypeName() const = 0;
     virtual void log() const = 0;
+
+    inline Entity* getEntity() { return pEntity; } // returns entity that owns the component
+
 protected:
     Component() = default;
     static inline unsigned int m_GenIdCounter = 0;
+
+private:
+    Entity* pEntity;
+    friend class Entity;
 };
 
 class Entity
@@ -115,21 +124,13 @@ bool Entity::has() const
 template <class T, class... Args>
 T* Entity::add(Args&&... args)
 {
-
     RV_ASSERT(has<T>() == false, "One entity can't have more than 1 of the same component type");
 
-//
-//    for(unsigned int i=0; i<components.size(); i++)
-//        if(((T*)components[i])->getId() == T::id)
-//        {
-//            RV_ASSERT(false, "One entity can't have more than 1 of the same component type");
-//        }
-//#endif
-
     Component* result = new T(std::forward<Args>(args)...);
+    result->pEntity = this;
     components.pushBack(result);
-    return (T*)result;
 
+    return (T*)result;
 }
 
 template <class T>
@@ -147,8 +148,7 @@ T* Entity::get() const
             result = (T*)components[i];
         }
     }
-
-    RV_ASSERT(result != nullptr, "not found");
+    RV_ASSERT(result != nullptr, "component not found");
 
     return result;
 }
@@ -158,3 +158,10 @@ std::string SpecificComponent<T>::getComponentTypeName() const
 {
     return componentTypeName;
 }
+
+
+// ------ component specialization
+
+//class PhysicalComponent;
+//template<>
+//PhysicalComponent* Entity::add();

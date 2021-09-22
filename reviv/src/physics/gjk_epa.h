@@ -9,7 +9,6 @@
 
 // some triangle cases may be wrong!
 
-
 namespace gjkEpa
 {
 
@@ -26,10 +25,10 @@ namespace gjkEpa
     };
 
     // used for both, gjk anmd epa
-    SupportFunctionVertex doSupportFunction(const Vec3& direction, Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform);
+    SupportFunctionVertex doSupportFunction(const Vec3& direction, const Collider* pFirstCollider, const TransformComponent* pFirstTransform, const Collider* pSecondCollider, const TransformComponent* pSecondTransform);
 
     // the function to call from outside
-    CollisionPoints doGjkBool(Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform);
+    CollisionPoints doGjkBool(const Collider* pFirstCollider, const TransformComponent* pFirstTransform, const Collider* pSecondCollider, const TransformComponent* pSecondTransform);
     // ---
 
     // checks if 2 vectors are pointing in the same direction / same half-plane
@@ -52,7 +51,7 @@ namespace gjkEpa
         unsigned int a, b;
     };
 
-    CollisionPoints doEpa(SimplexHelpingStruct* pSimplex, TransformComponent* pFirstTransform, Collider* pFirstCollider, TransformComponent* pSecondTransform, Collider* pSecondCollider);
+    CollisionPoints doEpa(const SimplexHelpingStruct* pSimplex, const TransformComponent* pFirstTransform, const Collider* pFirstCollider, const TransformComponent* pSecondTransform, const Collider* pSecondCollider);
     void epaCalculateFaceNormals(std::vector<Vec3>* pNormals, const std::vector<SupportFunctionVertex>& vertices, std::vector<Face>* pFaces);
     void epaGetNearestFace(float* pTempMinFaceDistance, unsigned int* pTempIndexMinFace, const std::vector<Face>& faces, const std::vector<Vec3>& normals, const std::vector<SupportFunctionVertex>& vertices);
     void epaAddEdgeIfUnique(std::vector<Edge>* uniqueEdges, const Edge& edge);

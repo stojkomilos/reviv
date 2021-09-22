@@ -31,9 +31,9 @@ public:
 
     void onEventMouseMoved(Event* event);
     void doPlayerControllerOnEventMouseMoved(Event* event);
-    void doPlayerControllerPolling();
+    void doPlayerControllerPolling(float dt);
 
-    void onUpdate();
+    void onUpdate(float dt);
 
 private:
     Input() = default;

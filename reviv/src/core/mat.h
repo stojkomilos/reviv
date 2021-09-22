@@ -432,7 +432,7 @@ namespace mat{
             {
                 if(a.get(i, i) == 0.f)
                 {
-                    cout << "JES" << endl;
+                    RV_ASSERT(false, "");
                     continue;
                 }
 
@@ -463,6 +463,13 @@ namespace mat{
     }
 
     void debugGaussSeidelTest();
+
+    template<int HEIGHT>
+    Vec3 normalize(const Mat<HEIGHT, 1>& vec)
+    {
+        assert(module(vec) > 0.f);
+        return vec / module(vec);
+    }
 
     template<int HEIGHT, int WIDTH>
     bool compare(const Mat<HEIGHT, WIDTH>& first, const Mat<HEIGHT, WIDTH>& second, float marginOfError)

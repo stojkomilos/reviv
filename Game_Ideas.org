@@ -1,0 +1,3 @@
+slow motion on a press of a button. change graphics when slow motion
+press a button in slow motion for camera to follow bullet (and the target hit)
+angry kill

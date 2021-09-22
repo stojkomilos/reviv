@@ -33,7 +33,7 @@ void Time::onUpdate()
 
     if(Time::isOneSecond())
     {
-        cout << "FPS: " << 1 / Time::getDelta() << endl;
+        cout << "FPS: " << 1 / Time::getDeltaRealtime() << endl;
         cout << "Position: ";
         log(Scene::getPlayerEntity()->get<TransformComponent>()->getPosition());
         cout << "Rotation: ";
@@ -57,6 +57,13 @@ float Time::getTime()
 }
 
 float Time::getDelta()
+{
+    RV_ASSERT(isInited == true, "not initialized");
+
+    return delta * timeRatio;
+}
+
+float Time::getDeltaRealtime()
 {
     RV_ASSERT(isInited == true, "not initialized");
 

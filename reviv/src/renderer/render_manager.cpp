@@ -10,6 +10,7 @@
 void RenderManager::onUpdate()
 {
     renderSceneToFramebuffer(&defaultFramebuffer);
+    RV_ASSERT(defaultFramebuffer.id == 0, "");
 }
 
 void RenderManager::renderSceneToFramebuffer(Framebuffer* pFramebuffer)
@@ -157,8 +158,6 @@ void RenderManager::defferedLightingRenderPass(Framebuffer* pFramebuffer)
 
 void RenderManager::forwardMonochromaRenderPass(Framebuffer* pFramebuffer)
 {
-
-
     pFramebuffer->bind();
 
     RenderCommand::get()->setViewport(0, 0, Application::get()->getWindowWidth(), Application::get()->getWindowHeight());

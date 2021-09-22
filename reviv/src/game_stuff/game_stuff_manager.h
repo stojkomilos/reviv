@@ -15,5 +15,5 @@ public:
     Weather weather;
 
     void init();
-    void onUpdate();
+    void onUpdate(float dt);
 };

@@ -36,3 +36,16 @@ Entity::~Entity()
         delete (*itComponent);
     }
 }
+
+// ------ component specialization
+
+/*
+template<>
+PhysicalComponent* Entity::add()
+{
+    Component* result = new PhysicalComponent(get<TransformComponent>());
+    components.pushBack(result);
+
+    return (T*)result;
+}
+*/

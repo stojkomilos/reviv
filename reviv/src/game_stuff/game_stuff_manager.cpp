@@ -9,7 +9,7 @@ void GameStuffManager::init()
     Entity* player = Scene::setPlayerEntity(Scene::createEntity("Player"));
 }
 
-void GameStuffManager::onUpdate()
+void GameStuffManager::onUpdate(float dt)
 {
     weather.onUpdate();
 }

@@ -28,6 +28,9 @@ public:
 
     void init();
     void onUpdate(float dt);
+
+    void debugDrawingCollisions(); // Debug for collisions
+
 private:
     PhysicsManager() = default;
 
@@ -52,6 +55,8 @@ public:
     inline float getInverseMass() const { return inverseMass; }
     inline const Mat<3,3>* getInverseInertiaTensor() const { return &inverseInertiaTensor; }
 
+    float getKineticEnergy();
+
     void setMass(float newMass);
     
     Vec3 velocity;
@@ -60,6 +65,7 @@ public:
     Vec3 torque;
 
     float gravity;
+    float restitution = 0.8f;
 
     bool fixedTranslation = false;
     bool fixedRotation = false;

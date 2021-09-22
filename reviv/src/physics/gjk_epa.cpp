@@ -8,7 +8,7 @@
 namespace gjkEpa
 {
 
-    SupportFunctionVertex doSupportFunction(const Vec3& direction, Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform)
+    SupportFunctionVertex doSupportFunction(const Vec3& direction, const Collider* pFirstCollider, const TransformComponent* pFirstTransform, const  Collider* pSecondCollider, const TransformComponent* pSecondTransform)
     {
         SupportFunctionVertex result;
         result.vertexFirst = pFirstCollider->findFurthestPoint(direction, pFirstTransform);
@@ -17,9 +17,12 @@ namespace gjkEpa
         return result;
     }
 
-    CollisionPoints doGjkBool(Collider* pFirstCollider, TransformComponent* pFirstTransform, Collider* pSecondCollider, TransformComponent* pSecondTransform)
+    CollisionPoints doGjkBool(const Collider* pFirstCollider,const  TransformComponent* pFirstTransform,const  Collider* pSecondCollider,const  TransformComponent* pSecondTransform)
     {
         Vec3 direction = pSecondTransform->getPosition() - pFirstTransform->getPosition();
+
+        log(pFirstTransform->getPosition());
+        log(pSecondTransform->getPosition());
 
         SupportFunctionVertex newPoint = doSupportFunction(direction, pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
 
@@ -160,7 +163,6 @@ namespace gjkEpa
                 SupportFunctionVertex help = pSimplex->points[0];
                 pSimplex->points[0] = pSimplex->points[1];
                 pSimplex->points[1] = help;
-                //pSimplex->points[2] = c;
             }
         }
 
@@ -347,7 +349,7 @@ namespace gjkEpa
         return false;
     }
 
-    CollisionPoints doEpa(SimplexHelpingStruct* pSimplex, TransformComponent* pFirstTransform, Collider* pFirstCollider, TransformComponent* pSecondTransform, Collider* pSecondCollider)
+    CollisionPoints doEpa(const SimplexHelpingStruct* pSimplex, const TransformComponent* pFirstTransform, const Collider* pFirstCollider, const TransformComponent* pSecondTransform, const Collider* pSecondCollider)
     {
         std::vector<Face> faces;        // all theese can be put as dynamics arrays into Collider structure for performance
         std::vector<SupportFunctionVertex> vertices;
@@ -388,7 +390,7 @@ namespace gjkEpa
             SupportFunctionVertex supportPoint = doSupportFunction(normals[tempIndexMinFace], 
                 pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
 
-            if(abs(dot(normals[tempIndexMinFace], supportPoint.vertexDifference) - tempMinFaceDistance) > 0.0001f)
+            if(abs(dot(normals[tempIndexMinFace], supportPoint.vertexDifference) - tempMinFaceDistance) > 0.001f)
             { 
                 // invalid face
 
@@ -441,7 +443,7 @@ namespace gjkEpa
 
             }
             else { // valid face
-                result.depth = tempMinFaceDistance;
+                result.depth = tempMinFaceDistance + 0.001f;
                 result.normal = normals[tempIndexMinFace] / module(normals[tempIndexMinFace]);
 
                 Mat<3,3> mtx;
@@ -496,11 +498,10 @@ namespace gjkEpa
                 result.firstPoint = furthestVectors[0];
                 result.secondPoint = furthestVectors[1];
 
-                break;
+                return result;
             }
         }
-
-        return result;
+        RV_ASSERT(false, ""); // should not be here
     }
 
     void epaCalculateFaceNormals(std::vector<Vec3>* pNormals, const std::vector<SupportFunctionVertex>& vertices, std::vector<Face>* pFaces)

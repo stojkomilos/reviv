@@ -50,7 +50,7 @@ void Weather::setSunModelPosition()
 
     float distanceFromCamera = Scene::getCameraEntity()->get<CameraComponent>()->camera.renderDistance - 10;
     *pSunModel->get<TransformComponent>()->getPositionPtr() = cameraPosition + sunDirection * distanceFromCamera;
-    *pSunModel->get<TransformComponent>()->getScalePtr() = Vec3(1, 1, 1) * distanceFromCamera / 10; 
+    pSunModel->get<TransformComponent>()->setScale(Vec3(1, 1, 1) * distanceFromCamera / 10);
 }
 
 void Weather::setSunDirectionalLight()

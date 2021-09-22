@@ -27,17 +27,13 @@ public:
         return result;
     }
 
-    inline Vec3 getPosition() const { return position; }
-    inline Vec3 getRotation() const { return rotation; }
-    inline Vec3 getScale() const { return scale; }
+    inline const Vec3& getPosition() const { return position; }
+    inline const Vec3& getRotation() const { return rotation; }
+    inline const Vec3& getScale() const { return scale; }
 
     inline Vec3* getPositionPtr() { return &position; }
     inline Vec3* getRotationPtr() { return &rotation; }
-    inline Vec3* getScalePtr() { return &scale; }
-
-    //inline void setPosition(const Vec3& newPosition) { position = newPosition; }
-    //inline void getRotation(const Vec3& newRotation) { rotation = newRotation; }
-    //inline void getScale(const Vec3& newScale) { scale = newScale; }
+    void setScale(const Vec3& newScale);
 
     virtual void log() const override { cout << componentTypeName << endl; ::log(getTransform()); }
 

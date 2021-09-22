@@ -6,6 +6,7 @@
 #include"scene/components.h"
 
 #include"core/input.h"
+#include"renderer/render_manager.h"
 
 void PhysicsManager::onUpdate(float dt)
 {
@@ -15,6 +16,7 @@ void PhysicsManager::onUpdate(float dt)
 
     precalculateVelocitiesAndForces(dt);
     doCollisionDetection(dt);
+        //debugDrawingCollisions();
     satisfyConstraintsCollision(dt);
     satisfyConstraintsGeneral(dt);
     calculateNewPositionsVelocitiesAndForces(dt);
@@ -71,6 +73,7 @@ void PhysicsManager::satisfyConstraintsCollision(float dt)
         RV_ASSERT((&(constraintsCollision[i]))->getType() == Constraint::ConstraintType::PENETRATION, "non penetration/collision constraint. only penetration/collision constraints should be in this array");
 
         //constraintsCollision[i].pSecond->get<TransformComponent>()->position += (constraintsCollision[i].collisionPoints.depth + 0.0001f) * constraintsCollision[i].collisionPoints.normal;
+
         constraintsCollision[i].solve(dt);
     }
 }
@@ -126,12 +129,12 @@ void PhysicsManager::doCollisionDetection(float dt)
     doCollisionDetectionNarrowPhase(dt);
 }
 
-PhysicalDynamic::PhysicalDynamic(float mass /*= 1f*/ )
+PhysicalDynamic::PhysicalDynamic(float inMass /* = 1.f */)
     : velocity{0, 0, 0}, angularVelocity{0, 0, 0}, force{0, 0, 0}, torque{0, 0, 0}
 {
     gravity = Scene::getGravity();
 
-    setMass(mass);
+    setMass(inMass);
     inertiaTensor.setToIdentity();      // TODO: both
     inverseInertiaTensor.setToIdentity();
 }
@@ -164,43 +167,24 @@ void PhysicsManager::doCollisionDetectionNarrowPhase(float dt)
             if(PhysicsManager::get()->getCollidableFromEntity(pSecond) == nullptr)
                 continue;
 
-            //cout << "Checking collision for: " << pFirst->entityName << " | " << pSecond->entityName << endl;
+            cout << "Checking collision for: " << pFirst->entityName << " | " << pSecond->entityName << endl;
 
+            log(*pSecond);
             CollisionPoints collisionPoints = pColliderFirst->collide(pColliderSecond, pFirst->get<TransformComponent>(), pSecond->get<TransformComponent>());
             if(collisionPoints.hasCollided)
             {
+                cout << "Collision detected: " << pFirst->entityName << " and " << pSecond->entityName << endl;
+
                 constraintsCollision.emplace_back();
+
+                float firstRestitution = pFirst->get<PhysicalComponent>()->physical.restitution;
+                float secondRestitution = pSecond->get<PhysicalComponent>()->physical.restitution;
+                constraintsCollision[constraintsCollision.size()-1].restitution = (firstRestitution + secondRestitution) / 2.f;
+
                 constraintsCollision[constraintsCollision.size()-1].collisionPoints = collisionPoints;
                 constraintsCollision[constraintsCollision.size()-1].pFirst = pFirst;
                 constraintsCollision[constraintsCollision.size()-1].pSecond = pSecond;
             }
-                
-
-
-/*              // Debug
-            if(collisionPoints.hasCollided)
-            {
-                //cout << "collision detected" << endl;
-
-                //collision.pEntity2->get<TransformComponent>()->position += (collision.collisionPoints.depth + 0.00001f) * collision.collisionPoints.normal;
-                pFirst->get<ModelComponent>()->model.pMaterials[0]->reset(&RenderManager::get()->shaderBlend);
-                pFirst->get<ModelComponent>()->model.pMaterials[0]->reset(&RenderManager::get()->shaderBlend);
-
-                pSecond->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec4(1, 0, 0, 0.65));
-                pSecond->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec4(0, 0, 1, 0.65));
-
-                Entity* pDebugLine = Scene::getEntity("DebugLine");
-                pDebugLine->get<TransformComponent>()->position = (collisionPoints.firstPoint + collisionPoints.secondPoint) / 2;
-                pDebugLine->get<TransformComponent>()->rotation = lookAtGetRotation(Vec3(0, 0, 0), -collisionPoints.normal);
-                pDebugLine->get<TransformComponent>()->scale = {collisionPoints.depth, 0.05f, 0.05f};
-            }
-            else {
-                pFirst->get<ModelComponent>()->model.pMaterials[0]->reset(&RenderManager::get()->shaderDefferedGeometry);
-                pFirst->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3(0, 1, 0));
-                pSecond->get<ModelComponent>()->model.pMaterials[0]->reset(&RenderManager::get()->shaderDefferedGeometry);
-                pSecond->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3(0, 1, 0));
-            }
-*/
         }
     }
 }
@@ -210,6 +194,48 @@ void PhysicalDynamic::setMass(float newMass)
     mass = newMass;
     inverseMass = 1.f / newMass;
     // TODO: change moment of inertia
+}
+
+void PhysicsManager::debugDrawingCollisions()
+{
+    if(Time::get()->isOneSecond())
+        cout << "Collision DEBUG mode ON" << endl;
+
+    for(auto it=Scene::getEntityList()->begin(); it != Scene::getEntityList()->end(); it++)
+    {
+        if(it->valid == false)
+            continue;
+
+        if(it->has<ModelComponent>() == false)
+            continue;
+
+        if(it->get<ModelComponent>()->model.pMaterials[0]->pShader == &RenderManager::get()->shaderBlend)
+            //for(int i=0; i<it->get<ModelComponent>()->model.pMaterials.size(); i++)
+            {
+                it->get<ModelComponent>()->model.pMaterials[0]->reset(&RenderManager::get()->shaderDefferedGeometry);
+                it->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3(0, 1, 0));
+            }
+    }
+
+    for(int i=0; i<constraintsCollision.size(); i++)
+    {
+        Entity* pFirst = constraintsCollision[i].pFirst;
+        Entity* pSecond = constraintsCollision[i].pSecond;
+        RV_ASSERT(constraintsCollision[i].collisionPoints.hasCollided, "");
+
+        cout << "drawing DEBUG collision for entities: " << pFirst->entityName << " and " << pSecond->entityName << endl;
+
+        pFirst->get<ModelComponent>()->model.pMaterials[0]->reset(&RenderManager::get()->shaderBlend);
+        pSecond->get<ModelComponent>()->model.pMaterials[0]->reset(&RenderManager::get()->shaderBlend);
+
+        pFirst->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec4(1, 0, 0, 0.65));
+        pSecond->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec4(0, 0, 1, 0.65));
+
+        //Entity* pDebugLine = Scene::getEntity("DebugLine");
+        //*pDebugLine->get<TransformComponent>()->getPositionPtr() = (constraintsCollision[i].collisionPoints.firstPoint + constraintsCollision[i].collisionPoints.secondPoint) / 2;
+        //*pDebugLine->get<TransformComponent>()->getRotationPtr() = lookAtGetRotation(Vec3(0, 0, 0), -constraintsCollision[i].collisionPoints.normal);
+        //pDebugLine->get<TransformComponent>()->setScale({constraintsCollision[i].collisionPoints.depth, 0.05f, 0.05f});
+    }
 }
 
 void PhysicsManager::init()
@@ -226,4 +252,17 @@ void log(const PhysicalDynamic& physical)
 
     cout << "force: ";
     log(physical.force);
+}
+
+float PhysicalDynamic::getKineticEnergy()
+{
+    float linearEnergy = mass / 2.f * dot(velocity, velocity);
+
+    float angularEnergy = 0.f;
+    for(int i=0; i<3; i++)
+    {
+        angularEnergy += inertiaTensor.get(i, 0) / 2.f * angularVelocity.get(i, 0) * angularVelocity.get(i, 0);
+    }
+        
+    return linearEnergy + angularEnergy;
 }
