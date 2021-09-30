@@ -1,11 +1,11 @@
 #include"components.h"
 
+#include"entity.h"
+
 void TransformComponent::setScale(const Vec3& newScale)
 {
     scale = newScale;
-    //if(getEntity()->has<ColliderComponent>() && getEntity()->has<PhysicalComponent>())
-    if(getEntity()->has<PhysicalComponent>())
-    {
-        //get<PhysicalComponent>()->update(TransformComponent* this, );
-    }
+
+    if(getEntity()->has<RigidbodyComponent>())
+        getEntity()->get<RigidbodyComponent>()->rigidbody.calculateMomentOfInertia();
 }

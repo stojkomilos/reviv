@@ -1,4 +1,5 @@
 #include"entity.h"
+#include"components.h"
 
 void log(const Component& component)
 {
@@ -39,13 +40,28 @@ Entity::~Entity()
 
 // ------ component specialization
 
-/*
-template<>
-PhysicalComponent* Entity::add()
+RigidbodyComponent* Entity::addRigidbodyComponent(const RigidbodyShape& rigidbodyShape, const ColliderShape& colliderShape)
 {
-    Component* result = new PhysicalComponent(get<TransformComponent>());
+    Component* result = new RigidbodyComponent(rigidbodyShape, get<TransformComponent>());
     components.pushBack(result);
 
-    return (T*)result;
+    Rigidbody* pRigidbody = &((RigidbodyComponent*)result)->rigidbody;
+
+    switch (colliderShape)
+    {
+        case ColliderShape::SPHERE:
+            pRigidbody->setColliderSphere();
+            break;
+        case ColliderShape::MESH:
+            pRigidbody->setColliderMesh(get<ModelComponent>()->model.pMeshes[0]);
+            if(get<ModelComponent>()->model.pMeshes[0]->m_Indices.size() > 1000)
+            {
+                cout << "WARNING: large mesh used potentialy in collision detection. Potential slowdown" << endl;
+            }
+            break;
+        default:
+            RV_ASSERT(false, ""); // should not be in here
+    }
+
+    return (RigidbodyComponent*)result;
 }
-*/

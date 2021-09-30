@@ -1,7 +1,8 @@
 #pragma once
 
-#include"scene/entity.h"
 #include"collision.h"
+
+class Entity;
 
 class Constraint
 {

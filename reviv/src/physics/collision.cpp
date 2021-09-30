@@ -10,47 +10,77 @@
 #include"renderer/render_manager.h" // temp
 
 
-CollisionPoints CollisionManager::collideSphereSphere(const ColliderSphere* pFirstCollider, const TransformComponent* pFirstTransform, const ColliderSphere* pSecondCollider, const TransformComponent* pSecondTransform)
+namespace collisionImplementation
 {
-    RV_ASSERT((pFirstTransform->getScale().get(0, 0) == pFirstTransform->getScale().get(1, 0)) && (pFirstTransform->getScale().get(1, 0)  == pFirstTransform->getScale().get(2, 0)), "is not actually a sphere");
-    RV_ASSERT((pSecondTransform->getScale().get(0, 0) == pSecondTransform->getScale().get(1, 0)) && (pSecondTransform->getScale().get(1, 0)  == pSecondTransform->getScale().get(2, 0)), "is not actually a sphere");
 
-
-    CollisionPoints collisionPoints;
-    float distance = module(pFirstTransform->getPosition() - pSecondTransform->getPosition());
-    float depth = distance - pFirstTransform->getScale().get(0, 0) + pSecondTransform->getScale().get(0, 0);
-    if(depth < 0)
+    CollisionPoints collideMeshMesh(const ColliderMesh* pFirstCollider, const ColliderMesh* pSecondCollider)
     {
-        collisionPoints.hasCollided = true;
-        collisionPoints.depth = depth;
-        //collisionPoints.pFirst = pFirst->
-        assert(false); // TODO: testiraj + normal vector itd
-    }
-    else
-    {
-        collisionPoints.hasCollided = false;
+        return gjkEpa::doGjkBool(pFirstCollider, pSecondCollider);
     }
 
-    return collisionPoints;
+    CollisionPoints collideSphereSphere(const ColliderSphere* pFirst, const ColliderSphere* pSecond)
+    {
+        CollisionPoints collisionPoints;
+
+        float distance = module(pFirst->getTransformComponent().getPosition() - pSecond->getTransformComponent().getPosition());
+        float depth = -(distance - pFirst->getTransformComponent().getScale().get(0, 0) - pSecond->getTransformComponent().getScale().get(0, 0));
+
+        if(depth > 0)
+        {
+            collisionPoints.hasCollided = true;
+            collisionPoints.depth = depth;
+
+            Vec3 normal = normalize(pFirst->getTransformComponent().getPosition() - pSecond->getTransformComponent().getPosition());
+
+            collisionPoints.firstPoint = pSecond->getTransformComponent().getPosition() + normal * (pSecond->getTransformComponent().getScale().get(0, 0) - depth);
+            collisionPoints.secondPoint = pFirst->getTransformComponent().getPosition() - normal * (pFirst->getTransformComponent().getScale().get(0, 0) - depth);
+
+            //cout << "depth :" << collisionPoints.depth << endl;
+        }
+        else
+        {
+            collisionPoints.hasCollided = false;
+        }
+
+        return collisionPoints;
+    }
+
+    CollisionPoints collideSphereBox(const ColliderSphere* pFirstCollider, const ColliderBox* pSecondCollider)
+    {
+        RV_ASSERT(false, ""); // to be implemented
+    }
+
+    CollisionPoints collideSphereMesh(const ColliderSphere* pFirstCollider, const ColliderMesh* pSecondCollider)
+    {
+        return gjkEpa::doGjkBool(pFirstCollider, pSecondCollider);
+    }
+
+    CollisionPoints collideBoxMesh(const ColliderBox* pFirstCollider, const ColliderMesh* pSecondCollider)
+    {
+        RV_ASSERT(false, ""); // to be implemented
+    }
+
+    CollisionPoints collideBoxBox(const ColliderBox* pFirstCollider, const ColliderBox* pSecondCollider)
+    {
+        RV_ASSERT(false, ""); // to be implemented
+    }
 }
 
-Vec3 ColliderSphere::findFurthestPoint(const Vec3& direction, const TransformComponent* pTransform) const
+Vec3 ColliderSphere::findFurthestPoint(const Vec3& direction) const
 {
-    RV_ASSERT((pTransform->getScale().get(0, 0) == pTransform->getScale().get(1, 0)) && (pTransform->getScale().get(1, 0)  == pTransform->getScale().get(2, 0)), "is not actually a sphere");
-
-    return pTransform->getPosition() + normalize(direction) * pTransform->getScale().get(0, 0);
+    return pTransformComponent->getPosition() + normalize(direction) * pTransformComponent->getScale().get(0, 0);
 }
 
-Vec3 ColliderBox::findFurthestPoint(const Vec3& direction, const TransformComponent* pTransform) const
+Vec3 ColliderBox::findFurthestPoint(const Vec3& direction) const
 {
     RV_ASSERT(false, ""); // temp, can be implemented
 }
 
-Vec3 ColliderMesh::findFurthestPoint(const Vec3& direction, const TransformComponent* pTransform) const
+Vec3 ColliderMesh::findFurthestPoint(const Vec3& direction) const
 {
     RV_ASSERT(pMesh != nullptr, "mesh pointer not set");
 
-    Mat<4,4> worldMatrix = pTransform->getTransform();
+    Mat<4,4> worldMatrix = pTransformComponent->getTransform();
 
     Vec3 result;
 
@@ -70,31 +100,6 @@ Vec3 ColliderMesh::findFurthestPoint(const Vec3& direction, const TransformCompo
     return result;
 }
 
-CollisionPoints CollisionManager::collideSphereBox(const ColliderSphere* pFirstCollider, const TransformComponent* pFirstTransform, const ColliderBox* pSecondCollider, const TransformComponent* pSecondTransform)
-{
-    RV_ASSERT(false, ""); // to be implemented
-}
-
-CollisionPoints CollisionManager::collideSphereMesh(const ColliderSphere* pFirstCollider, const TransformComponent* pFirstTransform, const ColliderMesh* pSecondCollider, const TransformComponent* pSecondTransform)
-{
-    return gjkEpa::doGjkBool(pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
-}
-
-CollisionPoints CollisionManager::collideBoxMesh(const ColliderBox* pFirstCollider, const TransformComponent* pFirstTransform, const ColliderMesh* pSecondCollider, const TransformComponent* pSecondTransform)
-{
-    RV_ASSERT(false, ""); // to be implemented
-}
-
-CollisionPoints CollisionManager::collideBoxBox(const ColliderBox* pFirstCollider, const TransformComponent* pFirstTransform, const ColliderBox* pSecondCollider, const TransformComponent* pSecondTransform)
-{
-    RV_ASSERT(false, ""); // to be implemented
-}
-
-CollisionPoints CollisionManager::collideMeshMesh(const ColliderMesh* pFirstCollider, const TransformComponent* pFirstTransform, const ColliderMesh* pSecondCollider, const TransformComponent* pSecondTransform)
-{
-    return gjkEpa::doGjkBool(pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
-}
-
 void log(const Collider& collider)
 { }
 
@@ -109,70 +114,70 @@ void log(const ColliderBox& collider)
     log((Collider&)collider);
 }
 
-CollisionPoints ColliderSphere::collide(const Collider* pSecondCollider, const TransformComponent* pFirstTransform, const TransformComponent* pSecondTransform) const
+CollisionPoints ColliderSphere::collide(const Collider* pSecondCollider) const
 {
-    return pSecondCollider->collideSphere(this, pFirstTransform, pSecondTransform);
+    return pSecondCollider->collideSphere(this);
 }
 
-CollisionPoints ColliderBox::collide(const Collider* pSecondCollider, const TransformComponent* pFirstTransform, const TransformComponent* pSecondTransform) const
+CollisionPoints ColliderBox::collide(const Collider* pSecondCollider) const
 {
-    return pSecondCollider->collideBox(this, pFirstTransform, pSecondTransform);
+    return pSecondCollider->collideBox(this);
 }
 
-CollisionPoints ColliderMesh::collide(const Collider* pSecondCollider, const TransformComponent* pFirstTransform, const TransformComponent* pSecondTransform) const
+CollisionPoints ColliderMesh::collide(const Collider* pSecondCollider) const
 {
     RV_ASSERT(pMesh != nullptr, "mesh pointer not set");
-    return pSecondCollider->collideMesh(this, pFirstTransform, pSecondTransform);
+    return pSecondCollider->collideMesh(this);
 }
 
 // ------------
 
-CollisionPoints ColliderSphere::collideSphere(const ColliderSphere* pFirstCollider, const TransformComponent* pFirstTransform, const TransformComponent* pSecondTransform) const
+CollisionPoints ColliderSphere::collideSphere(const ColliderSphere* pFirstCollider) const
 {
-    return CollisionManager::collideSphereSphere(this, pSecondTransform, pFirstCollider, pFirstTransform);
+    return collisionImplementation::collideSphereSphere(this, pFirstCollider);
 }
 
-CollisionPoints ColliderSphere::collideBox(const ColliderBox* pFirstCollider, const TransformComponent* pFirstTransform, const TransformComponent* pSecondTransform) const
+CollisionPoints ColliderSphere::collideBox(const ColliderBox* pFirstCollider) const
 {
-    return CollisionManager::collideSphereBox(this, pSecondTransform, pFirstCollider, pFirstTransform);
+    return collisionImplementation::collideSphereBox(this, pFirstCollider);
 }
 
-CollisionPoints ColliderSphere::collideMesh(const ColliderMesh* pFirstCollider, const TransformComponent* pFirstTransform, const TransformComponent* pSecondTransform) const
+CollisionPoints ColliderSphere::collideMesh(const ColliderMesh* pFirstCollider) const
 {
-    return CollisionManager::collideSphereMesh(this, pSecondTransform, pFirstCollider, pFirstTransform);
-}
-
-// -
-
-
-CollisionPoints ColliderBox::collideSphere(const ColliderSphere* pFirstCollider, const TransformComponent* pFirstTransform, const TransformComponent* pSecondTransform) const
-{
-    return CollisionManager::collideSphereBox(pFirstCollider, pFirstTransform, this, pSecondTransform);
-}
-
-CollisionPoints ColliderBox::collideBox(const ColliderBox* pFirstCollider, const TransformComponent* pFirstTransform, const TransformComponent* pSecondTransform) const
-{
-    return CollisionManager::collideBoxBox(this, pSecondTransform, pFirstCollider, pFirstTransform);
-}
-
-CollisionPoints ColliderBox::collideMesh(const ColliderMesh* pFirstCollider, const TransformComponent* pFirstTransform, const TransformComponent* pSecondTransform) const
-{
-    return CollisionManager::collideBoxMesh(this, pSecondTransform, pFirstCollider, pFirstTransform);
+    return collisionImplementation::collideSphereMesh(this, pFirstCollider);
 }
 
 // -
 
-CollisionPoints ColliderMesh::collideSphere(const ColliderSphere* pFirstCollider, const TransformComponent* pFirstTransform, const TransformComponent* pSecondTransform) const
+
+CollisionPoints ColliderBox::collideSphere(const ColliderSphere* pFirstCollider) const
 {
-    return CollisionManager::collideSphereMesh(pFirstCollider, pFirstTransform, this, pSecondTransform);
+    return collisionImplementation::collideSphereBox(pFirstCollider, this);
 }
 
-CollisionPoints ColliderMesh::collideBox(const ColliderBox* pFirstCollider, const TransformComponent* pFirstTransform, const TransformComponent* pSecondTransform) const
+CollisionPoints ColliderBox::collideBox(const ColliderBox* pFirstCollider) const
 {
-    return CollisionManager::collideBoxMesh(pFirstCollider, pFirstTransform, this, pSecondTransform);
+    return collisionImplementation::collideBoxBox(this, pFirstCollider);
 }
 
-CollisionPoints ColliderMesh::collideMesh(const ColliderMesh* pFirstCollider, const TransformComponent* pFirstTransform, const TransformComponent* pSecondTransform) const
+CollisionPoints ColliderBox::collideMesh(const ColliderMesh* pFirstCollider) const
 {
-    return CollisionManager::collideMeshMesh(pFirstCollider, pFirstTransform, this, pSecondTransform);
+    return collisionImplementation::collideBoxMesh(this, pFirstCollider);
+}
+
+// -
+
+CollisionPoints ColliderMesh::collideSphere(const ColliderSphere* pFirstCollider) const
+{
+    return collisionImplementation::collideSphereMesh(pFirstCollider, this);
+}
+
+CollisionPoints ColliderMesh::collideBox(const ColliderBox* pFirstCollider) const
+{
+    return collisionImplementation::collideBoxMesh(pFirstCollider, this);
+}
+
+CollisionPoints ColliderMesh::collideMesh(const ColliderMesh* pFirstCollider) const
+{
+    return collisionImplementation::collideMeshMesh(pFirstCollider, this);
 }

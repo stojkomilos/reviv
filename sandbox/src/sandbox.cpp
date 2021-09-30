@@ -1,6 +1,6 @@
 #include<reviv.h>
 
-Entity *player, *camera, *stanic, *light, *platform, *sphere;
+Entity *player, *camera, *stanic, *light, *platform;
 Entity* map;
 Entity* room;
 
@@ -15,11 +15,6 @@ Entity *transWindow;
 
 bool useMap = false;
 
-Perlin2D perlin;
-
-Texture2D textureWindow;
-
-
 class Sandbox : public Application
 {
 public:
@@ -27,8 +22,9 @@ public:
     void initSnake()
     {
         float distance = 2.3f;
-        int nrParts = 1;
-        float beta = 0.01f;
+        int nrParts = 0;
+        float beta = 0.1f;
+        float betaSpring = 0.001f;
 
         Entity *pOld = nullptr;
 
@@ -38,9 +34,9 @@ public:
             entityName = entityName + (char)(i + '0');
             Entity* pThis = Scene::createEntity(entityName);
             pThis->add<ModelComponent>(&AssetManager::get()->modelLoaderSphere, &RenderManager::get()->shaderDefferedGeometry);
-            pThis->add<PhysicalComponent>();
-            pThis->add<ColliderSphereComponent>();
-            //pThis->get<PhysicalComponent>()->physical.gravity = 0.f;
+            pThis->addRigidbodyComponent(RigidbodyShape::SPHERE, ColliderShape::SPHERE);
+            //pThis->add<ColliderSphereComponent>();
+            //pThis->get<RigidbodyComponent>()->rigidbody.gravity = 0.f;
 
             Vec3 color;
             color.randomize(0, 1);
@@ -54,13 +50,18 @@ public:
                 *pThis->get<TransformComponent>()->getPositionPtr() = 
                     pOld->get<TransformComponent>()->getPosition() 
                     + normalize(Vec3(distance, distance, 0)) * distance;
+
+/*
+                if(i>1)
+                {
+                    std::string name = "snake";
+                    name += (char)(i + '0' - 2);
+                    auto constraintSpring = Scene::addConstraintDistance(pThis, Scene::getEntity(name), distance * 2.f);
+                    constraintSpring->beta = betaSpring;
+                }
+*/
             }
             else {
-                //auto first = platform->get<TransformComponent>()->getPosition();
-                //auto second = Vec3(2.f, 0, platform->get<TransformComponent>()->getScale().get(2, 0) / 2.f);
-                //auto third  = Vec3(2.f, 0, pThis->get<TransformComponent>()->getScale().get(2, 0) + 10.f);
-                //auto fourth = first + second + third;
-                //*pThis->get<TransformComponent>()->getPositionPtr() =  fourth;
 
                 *pThis->get<TransformComponent>()->getPositionPtr() = 
                     platform->get<TransformComponent>()->getPosition() 
@@ -107,92 +108,88 @@ public:
         platform->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->shaderDefferedGeometry);
         platform->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3(1, 1, 0));
         platform->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.5f);
-        platform->add<ColliderMeshComponent>()->collider.pMesh = platform->get<ModelComponent>()->model.pMeshes[0];
+        //platform->add<ColliderMeshComponent>()->collider.pMesh = platform->get<ModelComponent>()->model.pMeshes[0];
         *platform->get<TransformComponent>()->getPositionPtr()->getPtr(2, 0) += platform->get<TransformComponent>()->getScale().get(2, 0) / 2.f;
         //platform->get<ColliderMeshComponent>()->collider.pTransformComponent = platform->get<TransformComponent>();
 
-        platform->add<PhysicalComponent>();
-        platform->get<PhysicalComponent>()->physical.fixedTranslation = true;
-        platform->get<PhysicalComponent>()->physical.fixedRotation = true;
-        platform->get<PhysicalComponent>()->physical.gravity = 0.f;
-
-
-        sphere = Scene::createEntity("Sphere");
-        *sphere->get<TransformComponent>()->getPositionPtr() = {10, -10, 5};
-        sphere->add<ModelComponent>(&AssetManager::get()->modelLoaderSphere, &RenderManager::get()->shaderBlend);
-        sphere->get<ModelComponent>()->model.pMaterials[0]->set("u_Color", Vec4(0, 1, 0, 0.7));
-        auto* pSpherePhysical = sphere->add<PhysicalComponent>();
-        pSpherePhysical->physical.gravity = 0.0;
+        RigidbodyComponent* pRigidbodyComponent = platform->addRigidbodyComponent(RigidbodyShape::BOX, ColliderShape::MESH);
+        // platform->get<RigidbodyComponent>()->rigidbody.fixedTranslation = true;
+        // platform->get<RigidbodyComponent>()->rigidbody.fixedRotation = true;
+        platform->get<RigidbodyComponent>()->rigidbody.gravity = 0.f;
 
         srand(1);
 
         prvo = Scene::createEntity("prvo");
-        *prvo->get<TransformComponent>()->getPositionPtr() = {3, 0, 10};
+        *prvo->get<TransformComponent>()->getPositionPtr() = {10, 3, 3};
         prvo->get<TransformComponent>()->getRotationPtr()->randomize(0, 2*3.14f);
         //prvo->add<ModelComponent>(&AssetManager::get()->modelLoaderDodik, &RenderManager::get()->shaderDefferedGeometry);
-        prvo->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->shaderDefferedGeometry);
+        prvo->add<ModelComponent>(&AssetManager::get()->modelLoaderSphere, &RenderManager::get()->shaderDefferedGeometry);
         prvo->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3(1, 0, 0));
         prvo->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.2f);
-        prvo->add<PhysicalComponent>();
-        auto* pPhysicalPrvo = &prvo->get<PhysicalComponent>()->physical;
-        auto* pColliderPrvo = prvo->add<ColliderMeshComponent>();
-        pColliderPrvo->collider.pMesh = prvo->get<ModelComponent>()->model.pMeshes[0];
-        //pPhysicalPrvo->gravity = 0.f;
+        prvo->addRigidbodyComponent(RigidbodyShape::SPHERE, ColliderShape::SPHERE);
+        // prvo->get<RigidbodyComponent>()->rigidbody.gravity = 0;
 
         drugo = Scene::createEntity("drugo");
-        *drugo->get<TransformComponent>()->getPositionPtr() = prvo->get<TransformComponent>()->getPosition() + Vec3(0.7, 0.5, 3);
+        //*drugo->get<TransformComponent>()->getPositionPtr() = prvo->get<TransformComponent>()->getPosition() + Vec3(0.7, 0.5, 5);
+        *drugo->get<TransformComponent>()->getPositionPtr() = prvo->get<TransformComponent>()->getPosition() + Vec3(0, 0, 2.5);
         *drugo->get<TransformComponent>()->getRotationPtr() = Vec3(rand() / 100.f, rand() / 100.f, rand() / 100.f);
         //drugo->add<ModelComponent>(&AssetManager::get()->modelLoaderHexagon, &RenderManager::get()->shaderDefferedGeometry);
         drugo->add<ModelComponent>(&AssetManager::get()->modelLoaderCube, &RenderManager::get()->shaderDefferedGeometry);
         drugo->get<ModelComponent>()->model.pMaterials[0]->set("u_Diffuse", Vec3(0, 1, 0));
         drugo->get<ModelComponent>()->model.pMaterials[0]->set("u_Specular", 0.2f);
-        drugo->add<PhysicalComponent>();
-        auto* pPhysicalDrugo = &drugo->get<PhysicalComponent>()->physical;
-        auto* pColliderDrugo = drugo->add<ColliderMeshComponent>();
-        pColliderDrugo->collider.pMesh = drugo->get<ModelComponent>()->model.pMeshes[0]; // TODO: automate this somehow
+        drugo->addRigidbodyComponent(RigidbodyShape::BOX, ColliderShape::MESH);
+        // drugo->get<RigidbodyComponent>()->rigidbody.gravity = 0.f;
 
         initSnake();
 
+        //auto help = prvo->get<TransformComponent>()->getPosition();
+        //*prvo->get<TransformComponent>()->getPositionPtr() = drugo->get<TransformComponent>()->getPosition();
+        //*drugo->get<TransformComponent>()->getPositionPtr() = help;
 
-        //prvo->valid = false;
-        drugo->valid = false;
+        prvo->valid = false; // sphere
+        //drugo->valid = false; // cube
     }
 
     void onUpdate() override
     {
-        auto* trans = prvo->get<TransformComponent>();
-        //auto* trans = Scene::getEntity("snake0")->get<TransformComponent>();
+        auto arrowController = &drugo->get<RigidbodyComponent>()->rigidbody.force;
+        //auto arrowController = drugo->get<TransformComponent>()->getPositionPtr();
+        //auto arrowController = &prvo->get<RigidbodyComponent>()->rigidbody.velocity;
+        //float arrowControllerConst = Time::get()->getDelta() * 3.f;
+        float arrowControllerConst = 30.f;
+        
+        //if(PhysicsManager::get()->constraintsCollision.size() > 0)
+        //    log(drugo->get<RigidbodyComponent>()->rigidbody);
 
-        cout << "prvo Total: " << prvo->get<PhysicalComponent>()->physical.getKineticEnergy() + prvo->get<PhysicalComponent>()->physical.getMass() * prvo->get<TransformComponent>()->getPosition().get(2, 0) * prvo->get<PhysicalComponent>()->physical.gravity << endl;
+        //cout << "total: " << Scene::getEntity("snake0")->get<RigidbodyComponent>()->rigidbody.getTotalEnergy() << endl;
+        //cout << "kinetic: " << Scene::getEntity("snake0")->get<RigidbodyComponent>()->rigidbody.getKineticEnergy() << endl;
+        //cout << "potential: " << Scene::getEntity("snake0")->get<RigidbodyComponent>()->rigidbody.getPotentialEnergy() << endl;
+        //cout << "MY position: " << endl;
+        //log(Scene::getEntity("snake0")->get<RigidbodyComponent>()->rigidbody.getTransform()->getPosition());
+
+        //log(*prvo->get<RigidbodyComponent>());
 
         float drugoSpeed = 1.f;
         if(Input::get()->isKeyPressed(RV_KEY_UP))
-            *trans->getPositionPtr() += Time::get()->getDelta() * Vec3(0, 0, 1) * drugoSpeed;
+            *arrowController += Vec3(0, 0, arrowControllerConst);
         if(Input::get()->isKeyPressed(RV_KEY_DOWN))
-            *trans->getPositionPtr() += Time::get()->getDelta() * Vec3(0, 0, -1) * drugoSpeed;
+            *arrowController += Vec3(0, 0, -arrowControllerConst);
 
         if(Input::get()->isKeyPressed(RV_KEY_LEFT))
-            *trans->getPositionPtr() += Time::get()->getDelta() * Vec3(0, 1, 0) * drugoSpeed;
+            *arrowController += Vec3(0, arrowControllerConst, 0);
         if(Input::get()->isKeyPressed(RV_KEY_RIGHT))
-            *trans->getPositionPtr() += Time::get()->getDelta() * Vec3(0, -1, 0) * drugoSpeed;
+            *arrowController += Vec3(0, -arrowControllerConst, 0);
 
         if(Input::get()->isKeyPressed(RV_KEY_U))
         {
-            //Scene::getEntity("snake0")->get<PhysicalComponent>()->physical.force = {0, 0, 1000.f};
-            Scene::getEntity("snake0")->get<PhysicalComponent>()->physical.velocity = {0, 0, 3.f};
+            Scene::getEntity("snake0")->get<RigidbodyComponent>()->rigidbody.force = {0, 0, 100.f};
+            //Scene::getEntity("snake0")->get<RigidbodyComponent>()->rigidbody.velocity = {0, 0, 5.f};
         }
 
-        //trans->position += Time::getDelta() * Vec3(0, 0, -1) * 0.1;
-
-/*
-        prvo->get<TransformComponent>()->rotation.yaw = Time::getTime();
-        prvo->get<TransformComponent>()->rotation.roll = Time::getTime() * 3.1;
-        prvo->get<TransformComponent>()->rotation.pitch = Time::getTime() * 0.3 + 0.7;
-
-        drugo->get<TransformComponent>()->rotation.yaw = Time::getTime() * 0.7;
-        drugo->get<TransformComponent>()->rotation.roll = Time::getTime() * 1.3 + 0.333;
-        drugo->get<TransformComponent>()->rotation.pitch = Time::getTime() * 1.8 + 0.2;
-*/
+        if(Input::get()->isKeyPressed(RV_KEY_P))
+            Time::get()->timeRatio = 0.1f;
+        else Time::get()->timeRatio = 1.f;
+        //Time::get()->timeRatio = 0.1f;
 
 /*
         TransformComponent* plTrans = Scene::getPlayerEntity()->get<TransformComponent>();

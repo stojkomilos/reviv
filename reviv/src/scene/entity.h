@@ -33,6 +33,10 @@ private:
     friend class Entity;
 };
 
+class RigidbodyComponent; // all 3 are used for addRigidbodyComponent
+enum class RigidbodyShape;
+enum class ColliderShape;
+
 class Entity
 {
 public:
@@ -43,8 +47,12 @@ public:
     Entity(const Entity&) = delete; // can be implemented
     Entity& operator=(const Entity&) = delete; // can be implemented
 
+    //RigidbodyComponent* add(RigidbodyShape rigidbodyShape, ColliderShape colliderShape);
+
     template <class T, class... Args>
     T* add(Args&&... args);
+
+    RigidbodyComponent* addRigidbodyComponent(const RigidbodyShape& rigidbodyShape, const ColliderShape& colliderShape); // TODO: remove after making custom DOD ecs
 
     template <class T>
     bool has() const;
@@ -160,8 +168,7 @@ std::string SpecificComponent<T>::getComponentTypeName() const
 }
 
 
-// ------ component specialization
+// ------ component specialization ---------
+// (should be last line in this file)
 
-//class PhysicalComponent;
-//template<>
-//PhysicalComponent* Entity::add();
+#include"component_specialization.h"

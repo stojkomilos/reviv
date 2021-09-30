@@ -9,19 +9,38 @@
 
 float ConstraintPenetration::getB(float dt) const
 {
-    PhysicalDynamic* pFirstPhysical = &pFirst->get<PhysicalComponent>()->physical;
-    PhysicalDynamic* pSecondPhysical = &pSecond->get<PhysicalComponent>()->physical;
+    RV_ASSERT(collisionPoints.depth >= 0, "should always be non negative");
 
-    Vec3 wra = pFirstPhysical->velocity + cross(pFirstPhysical->angularVelocity, collisionPoints.firstPoint - pFirst->get<TransformComponent>()->getPosition());// TODO: check this
-    Vec3 wrb = -pSecondPhysical->velocity - cross(pSecondPhysical->angularVelocity, collisionPoints.secondPoint - pSecond->get<TransformComponent>()->getPosition());// TODO: check this
-    float bouncyPart = restitution * dot(-collisionPoints.normal, -pFirstPhysical->velocity - wra + pSecondPhysical->velocity + wrb); // TODO: check this
+    Rigidbody* pFirstPhysical = &pFirst->get<RigidbodyComponent>()->rigidbody;
+    Rigidbody* pSecondPhysical = &pSecond->get<RigidbodyComponent>()->rigidbody;
 
-    return -beta * collisionPoints.depth / dt;
+    //Vec3 wra = pFirstPhysical->velocity + cross(pFirstPhysical->angularVelocity, collisionPoints.firstPoint - pFirst->get<TransformComponent>()->getPosition());// TODO: check this
+    //Vec3 wrb = -pSecondPhysical->velocity - cross(pSecondPhysical->angularVelocity, collisionPoints.secondPoint - pSecond->get<TransformComponent>()->getPosition());// TODO: check this
+    //float bouncyPart = restitution * dot(-collisionPoints.normal, -pFirstPhysical->velocity - wra + pSecondPhysical->velocity + wrb); // TODO: check this
+
+    float b = -beta * collisionPoints.depth / dt;
+    //b = 0.1f;
+    //cout << pFirst->entityName << " " << pSecond->entityName << endl;
+    //cout << "b: " << b << endl;
+    return b;
 }
 
 float ConstraintDistance::getB(float dt) const
 {
     return beta / dt * getConstraintValue();
+}
+
+float ConstraintDistance::getConstraintValue() const
+{
+    Vec3 positionDifference = pFirst->get<TransformComponent>()->getPosition() - pSecond->get<TransformComponent>()->getPosition();
+    return module(positionDifference) - sqrt(distanceSquared);
+}
+
+bool ConstraintDistance::getIsBroken() const
+{
+    if(abs(getConstraintValue()) > 0.001f)
+        return true;
+    else return false;
 }
 
 Mat<1,12> ConstraintDistance::getJacobian() const
@@ -46,8 +65,8 @@ Mat<1,12> ConstraintDistance::getJacobian() const
 
 Mat<1,12> ConstraintPenetration::getJacobian() const
 {
-    Vec3 n = collisionPoints.normal;
-    n = n / module(n);
+    Vec3 n = normalize(collisionPoints.firstPoint - collisionPoints.secondPoint);
+    // Vec3 n = normalize(pFirst->get<TransformComponent>()->getPosition() - pSecond->get<TransformComponent>()->getPosition());
 
     Vec3 r1n = cross(collisionPoints.firstPoint - pFirst->get<TransformComponent>()->getPosition(), n);
     Vec3 r2n = cross(collisionPoints.secondPoint - pSecond->get<TransformComponent>()->getPosition(), n);
@@ -71,19 +90,6 @@ Mat<1,12> ConstraintPenetration::getJacobian() const
     *jacobian.getPtr(0, 11) = r2n.get(2, 0);
 
     return jacobian;
-}
-
-float ConstraintDistance::getConstraintValue() const
-{
-    Vec3 positionDifference = pFirst->get<TransformComponent>()->getPosition() - pSecond->get<TransformComponent>()->getPosition();
-    return dot(positionDifference, positionDifference) - distanceSquared;
-}
-
-bool ConstraintDistance::getIsBroken() const
-{
-    if(abs(getConstraintValue()) > 0.001f)
-        return true;
-    else return false;
 }
 
 bool ConstraintPenetration::getIsBroken() const
@@ -113,27 +119,27 @@ void Constraint::solve(float dt)
 
     Mat<12, 1> velocities;
 
-    *velocities.getPtr(0, 0) = pFirst->get<PhysicalComponent>()->physical.velocity.get(0, 0);
-    *velocities.getPtr(1, 0) = pFirst->get<PhysicalComponent>()->physical.velocity.get(1, 0);
-    *velocities.getPtr(2, 0) = pFirst->get<PhysicalComponent>()->physical.velocity.get(2, 0);
-    *velocities.getPtr(3, 0) = pFirst->get<PhysicalComponent>()->physical.angularVelocity.get(0, 0);
-    *velocities.getPtr(4, 0) = pFirst->get<PhysicalComponent>()->physical.angularVelocity.get(1, 0);
-    *velocities.getPtr(5, 0) = pFirst->get<PhysicalComponent>()->physical.angularVelocity.get(2, 0);
+    *velocities.getPtr(0, 0) = pFirst->get<RigidbodyComponent>()->rigidbody.velocity.get(0, 0);
+    *velocities.getPtr(1, 0) = pFirst->get<RigidbodyComponent>()->rigidbody.velocity.get(1, 0);
+    *velocities.getPtr(2, 0) = pFirst->get<RigidbodyComponent>()->rigidbody.velocity.get(2, 0);
+    *velocities.getPtr(3, 0) = pFirst->get<RigidbodyComponent>()->rigidbody.angularVelocity.get(0, 0);
+    *velocities.getPtr(4, 0) = pFirst->get<RigidbodyComponent>()->rigidbody.angularVelocity.get(1, 0);
+    *velocities.getPtr(5, 0) = pFirst->get<RigidbodyComponent>()->rigidbody.angularVelocity.get(2, 0);
 
-    *velocities.getPtr(6, 0) = pSecond->get<PhysicalComponent>()->physical.velocity.get(0, 0);
-    *velocities.getPtr(7, 0) = pSecond->get<PhysicalComponent>()->physical.velocity.get(1, 0);
-    *velocities.getPtr(8, 0) = pSecond->get<PhysicalComponent>()->physical.velocity.get(2, 0);
-    *velocities.getPtr(9, 0) = pSecond->get<PhysicalComponent>()->physical.angularVelocity.get(0, 0);
-    *velocities.getPtr(10, 0) = pSecond->get<PhysicalComponent>()->physical.angularVelocity.get(1, 0);
-    *velocities.getPtr(11, 0) = pSecond->get<PhysicalComponent>()->physical.angularVelocity.get(2, 0);
+    *velocities.getPtr(6, 0) = pSecond->get<RigidbodyComponent>()->rigidbody.velocity.get(0, 0);
+    *velocities.getPtr(7, 0) = pSecond->get<RigidbodyComponent>()->rigidbody.velocity.get(1, 0);
+    *velocities.getPtr(8, 0) = pSecond->get<RigidbodyComponent>()->rigidbody.velocity.get(2, 0);
+    *velocities.getPtr(9, 0) = pSecond->get<RigidbodyComponent>()->rigidbody.angularVelocity.get(0, 0);
+    *velocities.getPtr(10, 0) = pSecond->get<RigidbodyComponent>()->rigidbody.angularVelocity.get(1, 0);
+    *velocities.getPtr(11, 0) = pSecond->get<RigidbodyComponent>()->rigidbody.angularVelocity.get(2, 0);
 
     // set masses and moments of inertia
     
     Vec3 firstPosition = pFirst->get<TransformComponent>()->getPosition();
     Vec3 secondPosition = pSecond->get<TransformComponent>()->getPosition();
 
-    float firstInverseMass = pFirst->get<PhysicalComponent>()->physical.getInverseMass();
-    float secondInverseMass = pSecond->get<PhysicalComponent>()->physical.getInverseMass();
+    float firstInverseMass = pFirst->get<RigidbodyComponent>()->rigidbody.getInverseMass();
+    float secondInverseMass = pSecond->get<RigidbodyComponent>()->rigidbody.getInverseMass();
 
     int nrConstraintIterations = 1;
 
@@ -148,11 +154,11 @@ void Constraint::solve(float dt)
 
             for(int i=0; i<3; i++) // set mass for linear momentum
             {
-                if(pFirst->get<PhysicalComponent>()->physical.fixedTranslation)
+                if(pFirst->get<RigidbodyComponent>()->rigidbody.fixedTranslation)
                     *massInverse.getPtr(i, i) = 1.f/RV_INFINITE_MASS;
                 else *massInverse.getPtr(i, i) = firstInverseMass;
 
-                if(pSecond->get<PhysicalComponent>()->physical.fixedTranslation)
+                if(pSecond->get<RigidbodyComponent>()->rigidbody.fixedTranslation)
                     *massInverse.getPtr(i+6, i+6) = 1.f/RV_INFINITE_MASS;
                 else *massInverse.getPtr(i+6, i+6) = secondInverseMass;
             }
@@ -160,34 +166,34 @@ void Constraint::solve(float dt)
             for(int i=0; i<3; i++)      // set inertial mass
                 for(int j=0; j<3; j++)
                 {
-                    if(pFirst->get<PhysicalComponent>()->physical.fixedRotation)
+                    if(pFirst->get<RigidbodyComponent>()->rigidbody.fixedRotation)
                         if(i == j)
                             *massInverse.getPtr(i+3, j+3) = 1.f/RV_INFINITE_MASS;
                         else *massInverse.getPtr(i+3, j+3) = 0.f;
-                    else *massInverse.getPtr(i+3, j+3) = pFirst->get<PhysicalComponent>()->physical.getInverseInertiaTensor()->get(i, j);
+                    else *massInverse.getPtr(i+3, j+3) = pFirst->get<RigidbodyComponent>()->rigidbody.getInverseInertiaTensor().get(i, j);
 
-                    if(pSecond->get<PhysicalComponent>()->physical.fixedRotation)
+                    if(pSecond->get<RigidbodyComponent>()->rigidbody.fixedRotation)
                         if(i == j)
                             *massInverse.getPtr(i+9, j+9) = 1.f/RV_INFINITE_MASS;
                         else *massInverse.getPtr(i+9, j+9) = 0.f;
-                    else *massInverse.getPtr(i+9, j+9) = pSecond->get<PhysicalComponent>()->physical.getInverseInertiaTensor()->get(i, j);
+                    else *massInverse.getPtr(i+9, j+9) = pSecond->get<RigidbodyComponent>()->rigidbody.getInverseInertiaTensor().get(i, j);
                 }
 
             Mat<12, 1> fe;
 
-            *fe.getPtr(0, 0)  = pFirst->get<PhysicalComponent>()->physical.force.get(0, 0);
-            *fe.getPtr(1, 0)  = pFirst->get<PhysicalComponent>()->physical.force.get(1, 0);
-            *fe.getPtr(2, 0)  = pFirst->get<PhysicalComponent>()->physical.force.get(2, 0);
-            *fe.getPtr(3, 0)  = pFirst->get<PhysicalComponent>()->physical.torque.get(0, 0);
-            *fe.getPtr(4, 0)  = pFirst->get<PhysicalComponent>()->physical.torque.get(1, 0);
-            *fe.getPtr(5, 0)  = pFirst->get<PhysicalComponent>()->physical.torque.get(2, 0);
+            *fe.getPtr(0, 0)  = pFirst->get<RigidbodyComponent>()->rigidbody.force.get(0, 0);
+            *fe.getPtr(1, 0)  = pFirst->get<RigidbodyComponent>()->rigidbody.force.get(1, 0);
+            *fe.getPtr(2, 0)  = pFirst->get<RigidbodyComponent>()->rigidbody.force.get(2, 0);
+            *fe.getPtr(3, 0)  = pFirst->get<RigidbodyComponent>()->rigidbody.torque.get(0, 0);
+            *fe.getPtr(4, 0)  = pFirst->get<RigidbodyComponent>()->rigidbody.torque.get(1, 0);
+            *fe.getPtr(5, 0)  = pFirst->get<RigidbodyComponent>()->rigidbody.torque.get(2, 0);
 
-            *fe.getPtr(6, 0)  = pSecond->get<PhysicalComponent>()->physical.force.get(0, 0);
-            *fe.getPtr(7, 0)  = pSecond->get<PhysicalComponent>()->physical.force.get(1, 0);
-            *fe.getPtr(8, 0)  = pSecond->get<PhysicalComponent>()->physical.force.get(2, 0);
-            *fe.getPtr(9, 0)  = pSecond->get<PhysicalComponent>()->physical.torque.get(0, 0);
-            *fe.getPtr(10, 0) = pSecond->get<PhysicalComponent>()->physical.torque.get(1, 0);
-            *fe.getPtr(11, 0) = pSecond->get<PhysicalComponent>()->physical.torque.get(2, 0);
+            *fe.getPtr(6, 0)  = pSecond->get<RigidbodyComponent>()->rigidbody.force.get(0, 0);
+            *fe.getPtr(7, 0)  = pSecond->get<RigidbodyComponent>()->rigidbody.force.get(1, 0);
+            *fe.getPtr(8, 0)  = pSecond->get<RigidbodyComponent>()->rigidbody.force.get(2, 0);
+            *fe.getPtr(9, 0)  = pSecond->get<RigidbodyComponent>()->rigidbody.torque.get(0, 0);
+            *fe.getPtr(10, 0) = pSecond->get<RigidbodyComponent>()->rigidbody.torque.get(1, 0);
+            *fe.getPtr(11, 0) = pSecond->get<RigidbodyComponent>()->rigidbody.torque.get(2, 0);
 
 
             float b = this->getB(dt);
@@ -198,7 +204,7 @@ void Constraint::solve(float dt)
 
             Mat<left.height, 1> lambda;
             lambda.randomize(-1, 1);
-            solveGaussSeidel(&lambda, left, Vec1(right), 5);
+            solveGaussSeidel(&lambda, left, Vec1(right), 100);
 
             Mat<12, 1> fc = transpose(jacobian) * lambda;
 
@@ -224,31 +230,31 @@ void Constraint::solve(float dt)
                 cout << "------\n";
             }
 
-            if(pFirst->get<PhysicalComponent>()->physical.fixedTranslation == false)
+            if(pFirst->get<RigidbodyComponent>()->rigidbody.fixedTranslation == false)
             {
-                *pFirst->get<PhysicalComponent>()->physical.force.getPtr(0, 0) +=  fc.get(0,  0);
-                *pFirst->get<PhysicalComponent>()->physical.force.getPtr(1, 0) +=  fc.get(1,  0);
-                *pFirst->get<PhysicalComponent>()->physical.force.getPtr(2, 0) +=  fc.get(2,  0);
+                *pFirst->get<RigidbodyComponent>()->rigidbody.force.getPtr(0, 0) +=  fc.get(0,  0);
+                *pFirst->get<RigidbodyComponent>()->rigidbody.force.getPtr(1, 0) +=  fc.get(1,  0);
+                *pFirst->get<RigidbodyComponent>()->rigidbody.force.getPtr(2, 0) +=  fc.get(2,  0);
             }
-            if(pFirst->get<PhysicalComponent>()->physical.fixedRotation == false)
+            if(pFirst->get<RigidbodyComponent>()->rigidbody.fixedRotation == false)
             {
-                *pFirst->get<PhysicalComponent>()->physical.torque.getPtr(0, 0) += fc.get(3,  0);
-                *pFirst->get<PhysicalComponent>()->physical.torque.getPtr(1, 0) += fc.get(4,  0);
-                *pFirst->get<PhysicalComponent>()->physical.torque.getPtr(2, 0) += fc.get(5,  0);
-            }
-
-            if(pSecond->get<PhysicalComponent>()->physical.fixedTranslation == false)
-            {
-                *pSecond->get<PhysicalComponent>()->physical.force.getPtr(0, 0) += fc.get(6,  0);
-                *pSecond->get<PhysicalComponent>()->physical.force.getPtr(1, 0) += fc.get(7,  0);
-                *pSecond->get<PhysicalComponent>()->physical.force.getPtr(2, 0) += fc.get(8,  0);
+                *pFirst->get<RigidbodyComponent>()->rigidbody.torque.getPtr(0, 0) += fc.get(3,  0);
+                *pFirst->get<RigidbodyComponent>()->rigidbody.torque.getPtr(1, 0) += fc.get(4,  0);
+                *pFirst->get<RigidbodyComponent>()->rigidbody.torque.getPtr(2, 0) += fc.get(5,  0);
             }
 
-            if(pSecond->get<PhysicalComponent>()->physical.fixedRotation == false)
+            if(pSecond->get<RigidbodyComponent>()->rigidbody.fixedTranslation == false)
             {
-                *pSecond->get<PhysicalComponent>()->physical.torque.getPtr(0, 0) += fc.get(9,  0);
-                *pSecond->get<PhysicalComponent>()->physical.torque.getPtr(1, 0) += fc.get(10, 0);
-                *pSecond->get<PhysicalComponent>()->physical.torque.getPtr(2, 0) += fc.get(11, 0);
+                *pSecond->get<RigidbodyComponent>()->rigidbody.force.getPtr(0, 0) += fc.get(6,  0);
+                *pSecond->get<RigidbodyComponent>()->rigidbody.force.getPtr(1, 0) += fc.get(7,  0);
+                *pSecond->get<RigidbodyComponent>()->rigidbody.force.getPtr(2, 0) += fc.get(8,  0);
+            }
+
+            if(pSecond->get<RigidbodyComponent>()->rigidbody.fixedRotation == false)
+            {
+                *pSecond->get<RigidbodyComponent>()->rigidbody.torque.getPtr(0, 0) += fc.get(9,  0);
+                *pSecond->get<RigidbodyComponent>()->rigidbody.torque.getPtr(1, 0) += fc.get(10, 0);
+                *pSecond->get<RigidbodyComponent>()->rigidbody.torque.getPtr(2, 0) += fc.get(11, 0);
             }
         }
     }

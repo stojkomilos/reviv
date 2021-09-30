@@ -8,6 +8,9 @@
 
 #include"physics/constraint.h"
 
+// semi-implicit euler general rule: to keep it stable, have 4 updates per oscillation
+//                              
+
 class PhysicsManager
 {
 public:
@@ -23,8 +26,6 @@ public:
 
     std::vector<ConstraintPenetration> constraintsCollision;
     std::vector<Constraint*> constraintsGeneral;
-
-    Collider* getCollidableFromEntity(Entity* pEntity);
 
     void init();
     void onUpdate(float dt);
@@ -45,36 +46,3 @@ private:
     void doCollisionDetection(float dt);
     void doCollisionDetectionNarrowPhase(float dt);
 };
-
-class PhysicalDynamic
-{
-public:
-    PhysicalDynamic(float mass = 1.f);
-
-    inline float getMass() const { return mass; } // needs a getter and setter for automaticaly chaning inverseMass and inertiaTensor and inverseInertiaTensor
-    inline float getInverseMass() const { return inverseMass; }
-    inline const Mat<3,3>* getInverseInertiaTensor() const { return &inverseInertiaTensor; }
-
-    float getKineticEnergy();
-
-    void setMass(float newMass);
-    
-    Vec3 velocity;
-    Vec3 angularVelocity;
-    Vec3 force;
-    Vec3 torque;
-
-    float gravity;
-    float restitution = 0.8f;
-
-    bool fixedTranslation = false;
-    bool fixedRotation = false;
-
-private:
-    float mass;
-    float inverseMass;
-    Mat<3,3> inertiaTensor;
-    Mat<3,3> inverseInertiaTensor;
-};
-
-void log(const PhysicalDynamic& physical);

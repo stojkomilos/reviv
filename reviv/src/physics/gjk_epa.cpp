@@ -8,23 +8,20 @@
 namespace gjkEpa
 {
 
-    SupportFunctionVertex doSupportFunction(const Vec3& direction, const Collider* pFirstCollider, const TransformComponent* pFirstTransform, const  Collider* pSecondCollider, const TransformComponent* pSecondTransform)
+    SupportFunctionVertex doSupportFunction(const Vec3& direction, const Collider* pFirstCollider, const  Collider* pSecondCollider)
     {
         SupportFunctionVertex result;
-        result.vertexFirst = pFirstCollider->findFurthestPoint(direction, pFirstTransform);
-        result.vertexDifference = result.vertexFirst - pSecondCollider->findFurthestPoint(-direction, pSecondTransform);
+        result.vertexFirst = pFirstCollider->findFurthestPoint(direction);
+        result.vertexDifference = result.vertexFirst - pSecondCollider->findFurthestPoint(-direction);
 
         return result;
     }
 
-    CollisionPoints doGjkBool(const Collider* pFirstCollider,const  TransformComponent* pFirstTransform,const  Collider* pSecondCollider,const  TransformComponent* pSecondTransform)
+    CollisionPoints doGjkBool(const Collider* pFirstCollider, const  Collider* pSecondCollider)
     {
-        Vec3 direction = pSecondTransform->getPosition() - pFirstTransform->getPosition();
+        Vec3 direction = pSecondCollider->getTransformComponent().getPosition() - pFirstCollider->getTransformComponent().getPosition();
 
-        log(pFirstTransform->getPosition());
-        log(pSecondTransform->getPosition());
-
-        SupportFunctionVertex newPoint = doSupportFunction(direction, pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
+        SupportFunctionVertex newPoint = doSupportFunction(direction, pFirstCollider, pSecondCollider);
 
         SimplexHelpingStruct simplex;
         simplex.points[0] = newPoint;
@@ -42,7 +39,7 @@ namespace gjkEpa
 
         while(true)
         {
-            newPoint = doSupportFunction(direction, pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
+            newPoint = doSupportFunction(direction, pFirstCollider, pSecondCollider);
 
             if(!sDir(direction, newPoint.vertexDifference))
             {
@@ -66,7 +63,7 @@ namespace gjkEpa
 #endif
             if(gjkHandleSimplex(&simplex, &direction))
             {
-                result = doEpa(&simplex, pFirstTransform, pFirstCollider, pSecondTransform, pSecondCollider);
+                result = doEpa(&simplex, pFirstCollider, pSecondCollider);
                 result.hasCollided = true;
                 break;
             }
@@ -349,7 +346,7 @@ namespace gjkEpa
         return false;
     }
 
-    CollisionPoints doEpa(const SimplexHelpingStruct* pSimplex, const TransformComponent* pFirstTransform, const Collider* pFirstCollider, const TransformComponent* pSecondTransform, const Collider* pSecondCollider)
+    CollisionPoints doEpa(const SimplexHelpingStruct* pSimplex, const Collider* pFirstCollider, const Collider* pSecondCollider)
     {
         std::vector<Face> faces;        // all theese can be put as dynamics arrays into Collider structure for performance
         std::vector<SupportFunctionVertex> vertices;
@@ -373,7 +370,7 @@ namespace gjkEpa
     for(int i=0; i<vertices.size(); i++)
         for(int j=i+1; j<vertices.size(); j++)
         {
-            RV_ASSERT(module(vertices[i].vertexDifference - vertices[j].vertexDifference) > 0.001f, "");
+            RV_ASSERT(module(vertices[i].vertexDifference - vertices[j].vertexDifference) > 0.00001f, "");
         }
 #endif
 
@@ -387,8 +384,7 @@ namespace gjkEpa
 
             epaGetNearestFace(&tempMinFaceDistance, &tempIndexMinFace, faces, normals, vertices);
 
-            SupportFunctionVertex supportPoint = doSupportFunction(normals[tempIndexMinFace], 
-                pFirstCollider, pFirstTransform, pSecondCollider, pSecondTransform);
+            SupportFunctionVertex supportPoint = doSupportFunction(normals[tempIndexMinFace], pFirstCollider, pSecondCollider);
 
             if(abs(dot(normals[tempIndexMinFace], supportPoint.vertexDifference) - tempMinFaceDistance) > 0.001f)
             { 
@@ -443,8 +439,8 @@ namespace gjkEpa
 
             }
             else { // valid face
-                result.depth = tempMinFaceDistance + 0.001f;
-                result.normal = normals[tempIndexMinFace] / module(normals[tempIndexMinFace]);
+                result.depth = tempMinFaceDistance + 0.01f;
+                //result.normal = normals[tempIndexMinFace] / module(normals[tempIndexMinFace]);
 
                 Mat<3,3> mtx;
 
@@ -453,7 +449,6 @@ namespace gjkEpa
                     *mtx.getPtr(i, 0) = vertices[faces[tempIndexMinFace].a].vertexDifference.get(i, 0);
                     *mtx.getPtr(i, 1) = vertices[faces[tempIndexMinFace].b].vertexDifference.get(i, 0);
                     *mtx.getPtr(i, 2) = vertices[faces[tempIndexMinFace].c].vertexDifference.get(i, 0);
-
                 }
 
                 Vec3 p;
@@ -492,9 +487,6 @@ namespace gjkEpa
                     furthestVectors[i] = tempMat * barycentricCoordinates;
                 }
 
-                //furthestVectors[0] = pFirstTransform->getTransform() * furthestVectors[0];
-                //furthestVectors[1] = pSecondTransform->getTransform() * furthestVectors[1];
-
                 result.firstPoint = furthestVectors[0];
                 result.secondPoint = furthestVectors[1];
 
@@ -511,12 +503,6 @@ namespace gjkEpa
             Vec3 ab = vertices[(*pFaces)[i].b].vertexDifference - vertices[(*pFaces)[i].a].vertexDifference;
             Vec3 ac = vertices[(*pFaces)[i].c].vertexDifference - vertices[(*pFaces)[i].a].vertexDifference;
             Vec3 normal = cross(ab, ac);
-
-            if(module(normal) < 0.0001f)
-            {
-                cout << endl;
-                RV_ASSERT(false, ""); // TODO: ovo se calluje nekad
-            }
 
             normal = normal / module(normal);
 
