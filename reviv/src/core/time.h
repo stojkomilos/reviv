@@ -21,7 +21,7 @@ public:
     float getTime(); // returns time since the start of rendering
     bool isOneSecond();
 
-    float getLoopCounter() { return get()->gameLoopCounter; }
+    unsigned long long getLoopCounter() { return get()->gameLoopCounter; }
 
     float timeRatio = 1.f; // used for speeding up or slowing down game time
 

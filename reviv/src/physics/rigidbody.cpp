@@ -92,6 +92,7 @@ ColliderSphere* Rigidbody::setColliderSphere() // TODO: prenosenje transformComp
         delete pCollider;
     
     pCollider = new ColliderSphere(pTransformComponent);
+    return (ColliderSphere*)pCollider;
 }
 
 ColliderMesh* Rigidbody::setColliderMesh(const Mesh* pMesh)
@@ -101,6 +102,8 @@ ColliderMesh* Rigidbody::setColliderMesh(const Mesh* pMesh)
     
     pCollider = new ColliderMesh(pTransformComponent);
     ((ColliderMesh*)pCollider)->pMesh = pMesh;
+
+    return (ColliderMesh*)pCollider;
 }
 
 void log(const Rigidbody& rigidbody)

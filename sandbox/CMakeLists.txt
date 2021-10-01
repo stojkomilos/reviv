@@ -23,7 +23,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
         ${MY_EXECUTABLE_OUTPUT_DIRECTORY}/assets
         COMMENT "=====> Release: Copying application assets, from: ${CMAKE_CURRENT_SOURCE_DIR}/assets/ to: ${MY_EXECUTABLE_OUTPUT_DIRECTORY}/assets"
     )
-elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
+else()
     if(MSVC)
         # Sets Visual Studio working directory to the directory of the executable for accessing the asset files
         set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/assets/")
@@ -47,10 +47,11 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
             COMMENT "=====> Debug: Copying application assets, from: ${CMAKE_CURRENT_SOURCE_DIR}/assets/ to: ${MY_EXECUTABLE_OUTPUT_DIRECTORY}/assets"
         )
     endif()
-
-else()
-    message(SEND_ERROR "Build type is is not recognized. ('CMAKE_BUILD_TYPE' neither 'Release' nor 'Debug'.")
 endif()
 
-
-#install(TARGETS ${PROJECT_NAME} DESTINATION bin) # Should be last command
+if(MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE "/W4" "/MP" "/std:c++latest")
+else()	
+    target_compile_options(${PROJECT_NAME} PRIVATE "-Wall" "-g" "-Wextra" "-Wnon-virtual-dtor" "-Woverloaded-virtual" "-Wno-unused-variable" "-Wno-unused-parameter" "-Wnull-dereference" "-Wformat=2")
+    #set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Wall -g -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wno-unused-variable -Wno-unused-parameter -Wnull-dereference -Wformat=2")
+endif()

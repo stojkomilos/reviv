@@ -48,6 +48,7 @@ namespace collisionImplementation
     CollisionPoints collideSphereBox(const ColliderSphere* pFirstCollider, const ColliderBox* pSecondCollider)
     {
         RV_ASSERT(false, ""); // to be implemented
+        return {};
     }
 
     CollisionPoints collideSphereMesh(const ColliderSphere* pFirstCollider, const ColliderMesh* pSecondCollider)
@@ -58,11 +59,13 @@ namespace collisionImplementation
     CollisionPoints collideBoxMesh(const ColliderBox* pFirstCollider, const ColliderMesh* pSecondCollider)
     {
         RV_ASSERT(false, ""); // to be implemented
+        return {};
     }
 
     CollisionPoints collideBoxBox(const ColliderBox* pFirstCollider, const ColliderBox* pSecondCollider)
     {
         RV_ASSERT(false, ""); // to be implemented
+        return {};
     }
 }
 
@@ -74,6 +77,7 @@ Vec3 ColliderSphere::findFurthestPoint(const Vec3& direction) const
 Vec3 ColliderBox::findFurthestPoint(const Vec3& direction) const
 {
     RV_ASSERT(false, ""); // temp, can be implemented
+    return {};
 }
 
 Vec3 ColliderMesh::findFurthestPoint(const Vec3& direction) const
