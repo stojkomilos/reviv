@@ -26,7 +26,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
 else()
     if(MSVC)
         # Sets Visual Studio working directory to the directory of the executable for accessing the asset files
-        set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/assets/")
+        set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/")
     elseif(UNIX AND NOT APPLE) # Creates a symlink on Linux for the asset files
         set(MY_ASSETS_LINK_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/assets")
         set(MY_ASSETS_LINK_DESTINATION "${MY_EXECUTABLE_OUTPUT_DIRECTORY}/assets")
