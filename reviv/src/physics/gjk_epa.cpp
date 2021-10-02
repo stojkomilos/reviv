@@ -69,6 +69,7 @@ namespace gjkEpa
             }
         }
 
+
         return result;
     }
 
@@ -380,7 +381,7 @@ namespace gjkEpa
 
             // find nearest face
             float tempMinFaceDistance = FLT_MAX;
-            unsigned int tempIndexMinFace;
+            unsigned int tempIndexMinFace = (unsigned int)1 << 31;
 
             epaGetNearestFace(&tempMinFaceDistance, &tempIndexMinFace, faces, normals, vertices);
 
@@ -404,7 +405,7 @@ namespace gjkEpa
                 if(indexNewVertex == -1)
                 {
                     vertices.push_back(supportPoint);
-                    indexNewVertex = vertices.size() - 1;
+                    indexNewVertex = (int)vertices.size() - 1;
                 }
 
                 std::vector<Edge> edges;

@@ -76,6 +76,7 @@ if(UNIX AND NOT APPLE) # Detects: linux, BSD, solaris, minix
 elseif(WIN32) # Detects: Windows
     target_link_libraries(${PROJECT_NAME} PRIVATE opengl32)
 endif()
+
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw assimp)
 
 if(MSVC) # Sets Visual Studio working directory to the directory of the executable

@@ -41,6 +41,7 @@ namespace gjkEpa
     bool gjkHandleTetrahedron(SimplexHelpingStruct *pSimplex, Vec3* pDirection);
 
 
+
     struct Face
     {
         int a, b, c;
