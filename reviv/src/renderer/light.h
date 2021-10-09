@@ -77,8 +77,8 @@ protected:
         : lightType(lightType) // TODO: pokusati staviti ove ostale stvari u member initazlier list, i onda sve to mozda u cpp file
     {
         ambient = Vec3(0.1f, 0.1f, 0.1f);
-        diffuse = {0.2, 0.2, 0.2};
-        specular = {0.5, 0.5, 0.5};
+        diffuse = {0.2f, 0.2f, 0.2f};
+        specular = {0.5f, 0.5f, 0.5f};
         on = true;
         intensity = 1.f;
     }

@@ -102,7 +102,7 @@ bool SpecificComponent<T>::runOnFirstInit(const std::string& initCompName)
 template <class T>
 ComponentId SpecificComponent<T>::generateNewComponentId()
 {
-    ComponentId result = 1 << m_GenIdCounter;
+    ComponentId result = (ComponentId) 1 << m_GenIdCounter;
     m_GenIdCounter++;
     RV_ASSERT(m_GenIdCounter < 63, "reaching the end of possible number of unique component types\n | possible solution: change ComponentId to be a larger unsigned type");
 

@@ -22,7 +22,7 @@ public:
     void initSnake()
     {
         float distance = 2.3f;
-        int nrParts = 1;
+        int nrParts = 10;
         float beta = 0.1f;
         float betaSpring = 0.001f;
 
@@ -146,8 +146,13 @@ public:
         //*prvo->get<TransformComponent>()->getPositionPtr() = drugo->get<TransformComponent>()->getPosition();
         //*drugo->get<TransformComponent>()->getPositionPtr() = help;
 
+<<<<<<< HEAD
         prvo->valid = false; // sphere
         drugo->valid = false; // cube
+=======
+        prvo->valid = false;
+        drugo->valid = false;
+>>>>>>> 4ec006bb77bf2f118873df2006469750c67893cf
     }
 
     void onUpdate() override

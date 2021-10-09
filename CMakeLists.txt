@@ -19,6 +19,11 @@ endif()
 # Generate compile_commands.json to make it easier to work with clang based tools
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+if("${CMAKE_BUILD_TYPE}" STREQUAL "")
+    message(STATUS "========> CMAKE_BUILD_TYPE not specified. Selecting Debug as default")
+    set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "thing" FORCE)    
+endif()
+
 # --- Set output directory
 set(MY_EXECUTABLE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}-${CMAKE_SYSTEM_NAME}")
 
@@ -52,3 +57,16 @@ endif()
 # PUBLIC -> svi projekti koji ukljuce taj imaju to
 # PRIVATE -> samo taj projekat ima to
 # INTERFACE -> svi projekti koji ukljuce taj projekat imaju to, ali /sam taj/ projekat /nema/
+
+# Set defines depending on wheather this is a debug or release build
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_definitions(${PROJECT_NAME} PUBLIC RV_DEBUG=1)
+    message(STATUS "========> Debug mode: Enabling Debug compiler definition (RV_DEBUG=1)")
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_compile_definitions(${PROJECT_NAME} PUBLIC RV_DEBUG=0)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC NDEBUG=1)
+    message(STATUS "========> Release mode: Disabling Debug compiler definition (RV_DEBUG=0)")
+    message(STATUS "========> Release mode: Defining NDEBUG")
+else()
+    message(FATAL_ERROR "=======> Invalid build type, should be either Release or Debug or be left empty. Current build type: \"${CMAKE_BUILD_TYPE}\" ")
+endif()

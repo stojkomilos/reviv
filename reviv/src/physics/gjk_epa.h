@@ -41,14 +41,15 @@ namespace gjkEpa
     bool gjkHandleTetrahedron(SimplexHelpingStruct *pSimplex, Vec3* pDirection);
 
 
+
     struct Face
     {
-        unsigned int a, b, c;
+        int a, b, c;
     };
 
     struct Edge
     {
-        unsigned int a, b;
+        int a, b;
     };
 
     CollisionPoints doEpa(const SimplexHelpingStruct* pSimplex, const Collider* pFirstCollider, const Collider* pSecondCollider);

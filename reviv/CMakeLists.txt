@@ -16,6 +16,7 @@ set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shard libs" FORCE)
 set(ASSIMP_INSTALL OFF CACHE BOOL "Assimp: build install" FORCE)
 set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "Assimp: build tests" FORCE)
 set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "Assimp: Build command line tool, (Probably, idk)" FORCE)
+set(ASSIMP_WERROR OFF CACHE BOOL "Assimp: Don't treat warnings as errors" FORCE)
 
 # Compile GLFW for wayland if it's detected
 if(DEFINED ENV{WAYLAND_DISPLAY})
@@ -39,8 +40,8 @@ add_library(reviv STATIC ${SRC_FILES_ALL})
 #set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Wall -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wnull-dereference -Wdouble-promotion -Wformat=2 -g")
 
 if(MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE "/W4" "/MP")
-else()
+    target_compile_options(${PROJECT_NAME} PRIVATE "/W4" "/MP" "/std:c++latest")
+else()	
     target_compile_options(${PROJECT_NAME} PRIVATE "-Wall" "-g" "-Wextra" "-Wnon-virtual-dtor" "-Woverloaded-virtual" "-Wno-unused-variable" "-Wno-unused-parameter" "-Wnull-dereference" "-Wformat=2")
     #set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Wall -g -Wextra -Wnon-virtual-dtor -Woverloaded-virtual -Wno-unused-variable -Wno-unused-parameter -Wnull-dereference -Wformat=2")
 endif()
@@ -75,21 +76,13 @@ if(UNIX AND NOT APPLE) # Detects: linux, BSD, solaris, minix
 elseif(WIN32) # Detects: Windows
     target_link_libraries(${PROJECT_NAME} PRIVATE opengl32)
 endif()
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw assimp)
 
-# Set defines depending on wheather this is a debug or release build
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_compile_definitions(${PROJECT_NAME} PUBLIC RV_DEBUG=1)
-    message(STATUS "========> Debug mode: Enabling Debug compiler definition (RV_DEBUG=1)")
-elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    target_compile_definitions(${PROJECT_NAME} PUBLIC RV_DEBUG=0)
-    target_compile_definitions(${PROJECT_NAME} PUBLIC NDEBUG=1)
-    message(STATUS "========> Release mode: Disabling Debug compiler definition (RV_DEBUG=0)")
-    message(STATUS "========> Release mode: Defining NDEBUG")
-else()
-    message(FATAL_ERROR "========> ERROR: CMAKE_BUILD_TYPE is not recognized. Should be either \"Release\" or \"Debug\"!!!")
-endif()
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw assimp)
 
 if(MSVC) # Sets Visual Studio working directory to the directory of the executable
     set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${MY_EXECUTABLE_OUTPUT_DIRECTORY}")
+endif()
+
+if(MSVC) # Fix assimp stupidness on MSVC
+    target_compile_options(assimp PRIVATE "/WX-")
 endif()

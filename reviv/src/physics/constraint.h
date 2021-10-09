@@ -43,7 +43,7 @@ class ConstraintPenetration : public Constraint
 public:
     virtual ConstraintType getType() const override;
     virtual Mat<1, 12> getJacobian() const override;
-    virtual float getConstraintValue() const override { RV_ASSERT(false, ""); }
+    virtual float getConstraintValue() const override { RV_ASSERT(false, ""); return 0.f;  }
     virtual bool getIsBroken() const override;
     virtual float getB(float dt) const override;
 

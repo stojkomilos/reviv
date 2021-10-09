@@ -78,7 +78,7 @@ namespace stls
         using Iterator = StableVectorIterator<StableVector<T>>;
 
         StableVector();
-        StableVector(unsigned int capacity);
+        StableVector(int capacity);
         StableVector(std::vector<T> inVector);
         StableVector(const StableVector&) = delete;
         ~StableVector();
@@ -92,8 +92,8 @@ namespace stls
         template<class ...Args>
         void emplaceBack(Args&&... args);
 
-        unsigned int size() const;
-        void reserve(unsigned int size);
+        int size() const;
+        void reserve(int size);
         T& back();
 
         void clear();
@@ -107,8 +107,8 @@ namespace stls
             return Iterator((T*)ptr + currentSize);
         }
 
-    unsigned int capacity=0;
-    unsigned int currentSize;
+    int capacity=0;
+    int currentSize;
 
     private:
         void* ptr = nullptr;
@@ -126,7 +126,7 @@ namespace stls
     { }
 
     template<class T>
-    StableVector<T>::StableVector(unsigned int capacity)
+    StableVector<T>::StableVector(int capacity)
         : capacity(capacity), currentSize(0)
     {
         ptr = new T[capacity]();
@@ -202,7 +202,7 @@ namespace stls
 
 
     template<class T>
-    unsigned int StableVector<T>::size() const
+    int StableVector<T>::size() const
     {
         return currentSize;
     }
@@ -218,7 +218,7 @@ namespace stls
     }
 
     template<class T>
-    void StableVector<T>::reserve(unsigned int size)
+    void StableVector<T>::reserve(int size)
     {
         assert(capacity == 0 && ptr == nullptr); // reserve can be used only once on StableVector
         capacity = size;
