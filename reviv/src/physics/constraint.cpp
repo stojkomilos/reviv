@@ -18,7 +18,8 @@ float ConstraintPenetration::getB(float dt) const
     //Vec3 wrb = -pSecondPhysical->velocity - cross(pSecondPhysical->angularVelocity, collisionPoints.secondPoint - pSecond->get<TransformComponent>()->getPosition());// TODO: check this
     //float bouncyPart = restitution * dot(-collisionPoints.normal, -pFirstPhysical->velocity - wra + pSecondPhysical->velocity + wrb); // TODO: check this
 
-    float b = -beta * collisionPoints.depth / dt;
+    float b = beta * collisionPoints.depth / dt;
+    b = 0;
     //b = 0.1f;
     //cout << pFirst->entityName << " " << pSecond->entityName << endl;
     //cout << "b: " << b << endl;
@@ -101,17 +102,17 @@ void Constraint::solve(float dt)
 {
 
     Mat<12, 1> positions;
-    *positions.getPtr(0, 0) = pFirst->get<TransformComponent>()->getPosition().get(0, 0);
-    *positions.getPtr(1, 0) = pFirst->get<TransformComponent>()->getPosition().get(1, 0);
-    *positions.getPtr(2, 0) = pFirst->get<TransformComponent>()->getPosition().get(2, 0);
-    *positions.getPtr(3, 0) = pFirst->get<TransformComponent>()->getRotation().get(0, 0);
-    *positions.getPtr(4, 0) = pFirst->get<TransformComponent>()->getRotation().get(1, 0);
-    *positions.getPtr(5, 0) = pFirst->get<TransformComponent>()->getRotation().get(2, 0);
+    *positions.getPtr(0, 0)  = pFirst->get<TransformComponent>()->getPosition().get(0, 0);
+    *positions.getPtr(1, 0)  = pFirst->get<TransformComponent>()->getPosition().get(1, 0);
+    *positions.getPtr(2, 0)  = pFirst->get<TransformComponent>()->getPosition().get(2, 0);
+    *positions.getPtr(3, 0)  = pFirst->get<TransformComponent>()->getRotation().get(0, 0);
+    *positions.getPtr(4, 0)  = pFirst->get<TransformComponent>()->getRotation().get(1, 0);
+    *positions.getPtr(5, 0)  = pFirst->get<TransformComponent>()->getRotation().get(2, 0);
 
-    *positions.getPtr(6, 0) = pSecond->get<TransformComponent>()->getPosition().get(0, 0);
-    *positions.getPtr(7, 0) = pSecond->get<TransformComponent>()->getPosition().get(1, 0);
-    *positions.getPtr(8, 0) = pSecond->get<TransformComponent>()->getPosition().get(2, 0);
-    *positions.getPtr(9, 0) = pSecond->get<TransformComponent>()->getRotation().get(0, 0);
+    *positions.getPtr(6, 0)  = pSecond->get<TransformComponent>()->getPosition().get(0, 0);
+    *positions.getPtr(7, 0)  = pSecond->get<TransformComponent>()->getPosition().get(1, 0);
+    *positions.getPtr(8, 0)  = pSecond->get<TransformComponent>()->getPosition().get(2, 0);
+    *positions.getPtr(9, 0)  = pSecond->get<TransformComponent>()->getRotation().get(0, 0);
     *positions.getPtr(10, 0) = pSecond->get<TransformComponent>()->getRotation().get(1, 0);
     *positions.getPtr(11, 0) = pSecond->get<TransformComponent>()->getRotation().get(2, 0);
 
@@ -119,17 +120,17 @@ void Constraint::solve(float dt)
 
     Mat<12, 1> velocities;
 
-    *velocities.getPtr(0, 0) = pFirst->get<RigidbodyComponent>()->rigidbody.velocity.get(0, 0);
-    *velocities.getPtr(1, 0) = pFirst->get<RigidbodyComponent>()->rigidbody.velocity.get(1, 0);
-    *velocities.getPtr(2, 0) = pFirst->get<RigidbodyComponent>()->rigidbody.velocity.get(2, 0);
-    *velocities.getPtr(3, 0) = pFirst->get<RigidbodyComponent>()->rigidbody.angularVelocity.get(0, 0);
-    *velocities.getPtr(4, 0) = pFirst->get<RigidbodyComponent>()->rigidbody.angularVelocity.get(1, 0);
-    *velocities.getPtr(5, 0) = pFirst->get<RigidbodyComponent>()->rigidbody.angularVelocity.get(2, 0);
+    *velocities.getPtr(0, 0)  = pFirst->get<RigidbodyComponent>()->rigidbody.velocity.get(0, 0);
+    *velocities.getPtr(1, 0)  = pFirst->get<RigidbodyComponent>()->rigidbody.velocity.get(1, 0);
+    *velocities.getPtr(2, 0)  = pFirst->get<RigidbodyComponent>()->rigidbody.velocity.get(2, 0);
+    *velocities.getPtr(3, 0)  = pFirst->get<RigidbodyComponent>()->rigidbody.angularVelocity.get(0, 0);
+    *velocities.getPtr(4, 0)  = pFirst->get<RigidbodyComponent>()->rigidbody.angularVelocity.get(1, 0);
+    *velocities.getPtr(5, 0)  = pFirst->get<RigidbodyComponent>()->rigidbody.angularVelocity.get(2, 0);
 
-    *velocities.getPtr(6, 0) = pSecond->get<RigidbodyComponent>()->rigidbody.velocity.get(0, 0);
-    *velocities.getPtr(7, 0) = pSecond->get<RigidbodyComponent>()->rigidbody.velocity.get(1, 0);
-    *velocities.getPtr(8, 0) = pSecond->get<RigidbodyComponent>()->rigidbody.velocity.get(2, 0);
-    *velocities.getPtr(9, 0) = pSecond->get<RigidbodyComponent>()->rigidbody.angularVelocity.get(0, 0);
+    *velocities.getPtr(6, 0)  = pSecond->get<RigidbodyComponent>()->rigidbody.velocity.get(0, 0);
+    *velocities.getPtr(7, 0)  = pSecond->get<RigidbodyComponent>()->rigidbody.velocity.get(1, 0);
+    *velocities.getPtr(8, 0)  = pSecond->get<RigidbodyComponent>()->rigidbody.velocity.get(2, 0);
+    *velocities.getPtr(9, 0)  = pSecond->get<RigidbodyComponent>()->rigidbody.angularVelocity.get(0, 0);
     *velocities.getPtr(10, 0) = pSecond->get<RigidbodyComponent>()->rigidbody.angularVelocity.get(1, 0);
     *velocities.getPtr(11, 0) = pSecond->get<RigidbodyComponent>()->rigidbody.angularVelocity.get(2, 0);
 
@@ -208,7 +209,18 @@ void Constraint::solve(float dt)
 
             Mat<12, 1> fc = transpose(jacobian) * lambda;
 
-            if(0) // constraint solver debug
+            if(1)
+            {
+                cout << pFirst->entityName << " | " << pSecond->entityName << " fc: ";
+                log(transpose(fc));
+                cout << endl;
+                auto* colPoint = &((ConstraintPenetration*)(this))->collisionPoints;
+                cout << "penVec: ";
+                log(colPoint->secondPoint - colPoint->firstPoint);
+                cout << endl;
+            }
+
+            if(1) // constraint solver debug
             {
                 cout << "jacobian: " << endl;
                 log(jacobian);

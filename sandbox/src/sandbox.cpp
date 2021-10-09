@@ -22,7 +22,7 @@ public:
     void initSnake()
     {
         float distance = 2.3f;
-        int nrParts = 0;
+        int nrParts = 1;
         float beta = 0.1f;
         float betaSpring = 0.001f;
 
@@ -113,8 +113,8 @@ public:
         //platform->get<ColliderMeshComponent>()->collider.pTransformComponent = platform->get<TransformComponent>();
 
         RigidbodyComponent* pRigidbodyComponent = platform->addRigidbodyComponent(RigidbodyShape::BOX, ColliderShape::MESH);
-        // platform->get<RigidbodyComponent>()->rigidbody.fixedTranslation = true;
-        // platform->get<RigidbodyComponent>()->rigidbody.fixedRotation = true;
+        platform->get<RigidbodyComponent>()->rigidbody.fixedTranslation = true;
+        platform->get<RigidbodyComponent>()->rigidbody.fixedRotation = true;
         platform->get<RigidbodyComponent>()->rigidbody.gravity = 0.f;
 
         srand(1);
@@ -147,7 +147,7 @@ public:
         //*drugo->get<TransformComponent>()->getPositionPtr() = help;
 
         prvo->valid = false; // sphere
-        //drugo->valid = false; // cube
+        drugo->valid = false; // cube
     }
 
     void onUpdate() override
